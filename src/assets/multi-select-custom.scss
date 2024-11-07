@@ -1,0 +1,40 @@
+@import 'variables.scss';
+
+.rmsc.dark {
+  --rmsc-main: #{$teal};
+  --rmsc-hover: #3f4750;
+  --rmsc-selected: #3f4750;
+  --rmsc-border: #333333;
+  --rmsc-gray: #555555;
+  --rmsc-h: 28px;
+  --rmsc-p: 5px;
+  --rmsc-bg: #{$gray-550};
+  margin: 5px;
+  // color: $body-color;
+}
+
+.rmsc .search input {
+  font-size: 1.2em !important;
+  background-color: $gray-550 !important;   
+}
+
+.rmsc .search, .rmsc .font-size {
+  font-size: .8em;  
+}
+
+.rmsc .dropdown-content {
+  z-index: 1000 !important;
+  font-size: .8em;  
+}
+
+.rmsc.dark .dropdown-heading {
+  padding-right: 0px;
+  font-size: .8em;
+  border-left: 5px solid $teal;
+  border-radius: 3px;
+  width: 175px;  
+}
+
+.rmsc.dark .dropdown-container:focus-within {
+  box-shadow: none;
+}

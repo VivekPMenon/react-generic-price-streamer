@@ -1,0 +1,82 @@
+@import './variables.scss';
+
+.multi-widget-dashboard {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
+  .dashboard-header {    
+    padding: 10px;
+    display: flex;
+
+    .search-box {
+      display: flex;
+      flex-basis: 100%;   
+      // background-color: $input-bg;
+      // border-radius: 10px;
+      align-items: center;
+      cursor: pointer;
+
+      .search-icon {
+        margin-left: 10px;
+      }
+    }
+
+    .action-buttons {
+      display: flex;
+      align-items: center;
+
+      i {
+        margin-left: 20px;
+      }      
+
+      i:last-child {
+        margin-right: 10px;
+      }
+    }
+  }
+
+  .dashboard-content {
+    display: flex;
+    flex: 1 1 90%;
+    padding: 5px;    
+    flex-wrap: wrap;
+
+    .widget:first-child {
+      flex-basis: 100%;
+    }
+
+    .widget {      
+      margin: 5px;
+      display: flex;      
+      flex-direction: column;      
+      flex: 1;
+      background-color: $widget-bg;
+      border-radius: $border-radius-lg;
+      min-width: 500px;
+
+      .widget-header {
+        flex-basis: 40px;
+        padding: 5px;
+
+        .widget-label {
+          text-transform: uppercase;          
+          color: $teal;
+          padding: 5px;
+          font-weight: bold;
+          font-size: $label-font-size;
+        }
+      }
+
+      .widget-content {
+
+      }
+
+      .widget-summary {
+        background-color: $body-bg;
+        font-size: .8rem;
+        padding: 5px;
+      }
+    }
+  }
+}
