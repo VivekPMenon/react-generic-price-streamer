@@ -13,7 +13,6 @@ export function Dashboard() {
 
         <div className="dashboard-content">
           <Pricing></Pricing>
-          <RunsSummary></RunsSummary>
           <Trace></Trace>
           <div className="widget">
             <div className="widget-header">
