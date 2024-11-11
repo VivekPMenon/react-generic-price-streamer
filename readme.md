@@ -6,9 +6,7 @@ This project is an attempt to create a generic price streaming interface based o
 
 ## How to run the app
 
-'npm i'
-'npm start'
+npm i
 
-to build 
+npm start
 
-'npm run build'
