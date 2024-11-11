@@ -1,6 +1,8 @@
 # About this Project
 This project is an attempt to create a generic price streaming interface based off of React framework and AG Grid.
-This project will also demonstrate how to efficiently use GitHub Dev containers for small scale projects
+
+1. Familiarzing with CoPilot
+2. Using GitHub CodeSpace for faster Dev Env set up
 
 # Getting Started with Create React App
 
