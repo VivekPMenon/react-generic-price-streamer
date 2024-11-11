@@ -16,6 +16,45 @@ class WebApihandler {
 
     return result.data;
   }
+
+  async post(url: string, data: object, webApiOptions?: WebApihandlerOptions) {
+    // caching if needed
+
+    const apiResult = await axios({
+        url,
+        method: 'POST',
+        data,
+        ...webApiOptions
+    });
+
+    return apiResult.data;
+  }
+
+  async put(url: string, data: object, webApiOptions?: WebApihandlerOptions) {
+    // caching if needed
+
+    const apiResult = await axios({
+        url,
+        method: 'PUT',
+        data,
+        ...webApiOptions
+    });
+
+    return apiResult.data;
+  }
+
+  async delete(url: string, webApiOptions?: WebApihandlerOptions) {
+    // caching if needed
+
+    const apiResult = await axios({
+        url,
+        method: 'DELETE',
+        ...webApiOptions
+    });
+
+    return apiResult.data;
+  }
+
 }
 
 // singleton ?
