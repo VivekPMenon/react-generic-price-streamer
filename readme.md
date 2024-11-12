@@ -1,68 +1,21 @@
-<article align="center">
+# React Generic Price Streamer
 
-![image](https://github.com/prafullmaru/ims-proto-design/assets/105120779/a2cc5061-1fd2-4a6c-a13c-cd2e4ed52aa5)
+The **React Generic Price Streamer** is an intuitive and efficient web-based application built using [React](https://reactjs.org/). Designed for professionals in the trading and finance sectors, this dashboard empowers users to monitor, analyze, and interact with trade data and market prices in real time. It streamlines the trade pricing process, providing robust visualizations and comprehensive details for improved decision-making.
 
-</article><hr>
+## Key Features
 
-<p align='center'>
-  We are looking for sponsor.
-  Rate us so we can continue to improve and expand our network to reachout to multiple enthuastic developer
- <a href="[https://github.com/sponsors/alexandresanlim](https://github.com/prafullmaru/ePanchayat)">
-    <img src="https://img.shields.io/badge/sponsor-30363D?style=for-the-badge&logo=GitHub-Sponsors&logoColor=#white" />
-  </a>&nbsp;&nbsp;
-  <a href="#">
-  <img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/prafullmaru/ePanchayat?style=for-the-badge">
-</a>&nbsp;&nbsp;
-</p>
-
-<a name="welcome-to-epanchayat"></a>
-
-# Welcome to ePanchayat
-ePnachayat is a suite of features that helps Panchayat(A village Council) for their day to day office activities, share information and provide analytics. It offers modules to manage finance and grievance redresal flow.
-Our mission is to provide simple user friendly design with goal to provide unique view to all onboarded panchayats.
-
-Overview of features:
-- Finance : Finance module provides ledger for detailed record of all the transactions and we will have statistics reports around expenditures.
-  - Ledger
-  - Balance Sheet
-  - Tax Collection
-- Complain redressal system: One-stop platform for citizens to seek redressal of their grievances and provide feedback for improvements.
-- Events and Announcement
-- eGovernance: E-governance is most cutting-edge efforts to develop effective governance. Provides connectivity to all e-governance aspects.
-- Gallery
-  - Photos
-  - Videos
-- Analytics - Systematic computational analysis of data or statistics presented as report and graphs.
-  - By Gender
-  - By Qualification
-  - By Employment
-- Admin portal:
-  - Panchayat Onboarding
-  - User Onboarding
-  - Reference data management
-- more....
-
-<a name="Outreach"></a>
-
-## Outreach
-We are passionate about helping people from all backgrounds start their open source journey. Your suggestions are welcome!
-
-## Table of Contents
-
-- [Welcome to ePanchayat 👋](#welcome-to-epanchayat-)
-  - [Outreach](#outreach)
-  - [Table of Contents](#table-of-contents)
-  - [Live demo 💻](#live-demo-)
-  - [Tech stack 📚](#tech-stack-)
-  - [Socials 📱](#socials-)
-  - [Want to Contribute? 👩‍💻](#want-to-contribute-)
-  - [Building with Gitpod | Codespaces 💣](#building-with-gitpod--codespaces-)
-  - [Maintainers 🤝](#maintainers-)
-  - [Top 50 Contributors ✨](#top-50-contributors-)
+- **Real-Time Data Updates**: Track and visualize market prices and trade data with real-time updates for accurate and immediate insights.
+- **Adaptability to difference Pricing Sources**: You can easily configure/switch the underlying Price sources.
+- **Interactive Graphs & Tables**: Intuitive data visualization tools, such as dynamic graphs and detailed tables, allow for easier trend analysis and reporting.
+- **Customizable Dashboards**: Tailor the dashboard to your specific needs with flexible layout and widget customization options.
+- **Advanced Filtering and Search Capabilities**: Quickly filter and search trade data to find critical information with ease.
+- **Responsive Design**: Optimized for desktops, tablets, and mobile devices, ensuring a seamless user experience across all screen sizes.
+- **Integration-Ready**: Easily connect with APIs, external data sources, and other enterprise systems for a more comprehensive data landscape.
+- **User-Friendly Interface**: Clean and modern UI built using React components, providing an efficient and enjoyable user experience.
 
 <a name="demo"></a>
 ## Live demo 💻
-Visit our live demo at - https://e-panchayat-xi.vercel.app/#/
+Visit our live demo at - https://react-generic-price-streamer-git-main-vivekpmenons-projects.vercel.app/
 
 <a name="tech-stack"></a>
 
@@ -75,8 +28,8 @@ Visit our live demo at - https://e-panchayat-xi.vercel.app/#/
   <a href="https://www.typescriptlang.org/">
     <img src="https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white" alt="Next.js Official Website"/>
   </a>
-  <a href="https://angular.dev/">
-    <img src="https://img.shields.io/badge/Angular-DD0031?style=for-the-badge&logo=angular&logoColor=white" alt="TailWind CSS Official Website"/>
+  <a href="https://react.dev/">
+    <img src="https://img.shields.io/badge/React-61DAFB?style=for-the-badge&logo=react&logoColor=white" alt="TailWind CSS Official Website"/>
   </a>
   <a href="https://www.typescriptlang.org/">
     <img src="https://img.shields.io/badge/.NET-512BD4?style=for-the-badge&logo=dotnet&logoColor=white" alt="TypeScript official Website"/>
@@ -90,9 +43,9 @@ Visit our live demo at - https://e-panchayat-xi.vercel.app/#/
 ## Socials 📱
 
 Connect with us for future updates
-- Follow us on [X (Twitter) ](https://x.com/prafull_maru) <img src="https://uxwing.com/wp-content/themes/uxwing/download/brands-and-social-media/x-social-media-logo-icon.png" alt="Discord" width="25" height="25"  align="center"> 
+- Follow us on [X (Twitter) ](https://x.com/vivekpariyadath) <img src="https://uxwing.com/wp-content/themes/uxwing/download/brands-and-social-media/x-social-media-logo-icon.png" alt="Discord" width="25" height="25"  align="center"> 
  for updates. 
-- Follow us on [LinkedIn](https://www.linkedin.com/in/prafull-maru-4bb66528/) <img src="https://github.com/shelar1423/LinksHub/assets/82649533/08ffebb8-68a1-4cd1-9078-97f284de5cef" alt="Discord" width="18" height="18"  align="center">  to stay in touch.
+- Follow us on [LinkedIn](www.linkedin.com/in/vivek-menon-ab7ab410b) <img src="https://github.com/shelar1423/LinksHub/assets/82649533/08ffebb8-68a1-4cd1-9078-97f284de5cef" alt="Discord" width="18" height="18"  align="center">  to stay in touch.
 
 
 ---
@@ -101,9 +54,7 @@ Connect with us for future updates
 
 ## Want to Contribute? 👩‍💻
 
-Please follow our [CONTRIBUTING guidelines](https://github.com/rupali-codes/LinksHub/blob/main/CONTRIBUTING.md) for the following:-
-
-- Setup ePanchayat on your local machine
+- Setup React Generic Price Streamer on your local machine (It is just `npm i` and `npm start`)
 - Raise issue for suggestion/improvement/bug
 - Asist with existing issue
 - And more!
@@ -115,10 +66,10 @@ Need help while contributing? Tag any of the maintainers when creating the issue
 
 <table>
   <tr>
-    <td align="center" width="200"><pre><a href="https://github.com/prafullmaru"><img src="https://github.com/prafullmaru.png" width="200" alt="GitHub Profile picture of Prafull Maru" /><br><sub>Prafull Maru</sub></a></pre></td>
-    <td align="center" width="200"><pre><a href="https://github.com/mohandivraniya"><img src="https://github.com/mohandivraniya.png" width="200" alt="GitHub Profile picture of Mohan Divraniya" /><br><sub>Mohan Divraniya</sub></a></pre></td>
-    <td align="center" width="200"><pre><a href="https://github.com/Abhishek-Kuvalekar"><img src="https://github.com/Abhishek-Kuvalekar.png" width="200" alt="GitHub Profile picture of Abhishek Kuvalekar" /><br><sub>Abhishek Kuvalekar</sub></a></pre></td>
-    <td align="center" width="200"><pre><a href="https://github.com/Narigara007"><img src="https://github.com/Narigara007.png" width="200" alt="GitHub Profile Picture of Dipak Narigara"/><br><sub>Dipak Narigara</sub></a></pre></td>
+    <td align="center" width="200"><pre><a href="https://github.com/VivekPMenon"><img src="https://github.com/vivekpmenon.png" width="200" alt="GitHub Profile picture of Vivek Menon" /><br><sub>Vivek Menon</sub></a></pre></td>
+    <td align="center" width="200"><pre><a href="https://github.com/sandheepsoman"><img src="https://github.com/sandheepsoman.png" width="200" alt="GitHub Profile picture of Sandheep Soman" /><br><sub>Sandheep Soman</sub></a></pre></td>
+    <td align="center" width="200"><pre><a href="https://github.com/dmaciag"><img src="https://github.com/dmaciag.png" width="200" alt="GitHub Profile picture of Daniel Maciag" /><br><sub>Daniel Maciag</sub></a></pre></td>
+    <td align="center" width="200"><pre><a href="https://github.com/pramodsankarl"><img src="https://github.com/pramodsankarl.png" width="200" alt="GitHub Profile Picture of Pramod Sankar"/><br><sub>Pramod Sankar</sub></a></pre></td>
   </tr>
 </table>
 
@@ -128,10 +79,10 @@ Need help while contributing? Tag any of the maintainers when creating the issue
 
 We would like to express our sincere gratitude to all the contributors who have helped make ePanchayat available and we are building it brick-brick! Without your contributions, this project wouldn't have been possible. Thank you so much for your time, effort, and dedication! 😄
 
-<a href="https://github.com/prafullmaru/ePanchayat/graphs/contributors">
-  <img src="https://contrib.rocks/image?max=10&repo=prafullmaru/ePanchayat" />
+<a href="https://github.com/VivekPMenon/react-generic-price-streamer/graphs/contributors">
+  <img src="https://contrib.rocks/image?max=10&repo=vivekpmenon/react-generic-price-streamer" />
 </a>
 
-Full list of contributors [Contributors](https://github.com/prafullmaru/ePanchayat/graphs/contributors)
+Full list of contributors [Contributors](https://github.com/VivekPMenon/react-generic-price-streamer/graphs/contributors)
 
 Thanks for your support.
