@@ -1,0 +1,1502 @@
+[
+  {
+    "tradeID": "TR784933412",
+    "executionDate": "2024-11-05",
+    "executionTime": "14:20:20",
+    "securityID": "CUSIP141905",
+    "securityType": "Corporate Bond",
+    "buySellIndicator": "Sell",
+    "tradePrice": 102.98,
+    "tradeQuantity": 634516,
+    "counterpartyID": "CP39264",
+    "tradeDate": "2024-11-05",
+    "settlementDate": "2024-11-08",
+    "executionVenue": "Exchange",
+    "yield": 4.75,
+    "spread": 0.86,
+    "tradeStatus": "Reported",
+    "reportingPartyID": "RP74235",
+    "contraPartyID": "CP61142",
+    "tradeReportingType": "TRACE",
+    "currency": "USD",
+    "priceNotation": {
+      "notationType": "Decimal",
+      "value": 102.98
+    },
+    "transactionFee": {
+      "amount": 252.82,
+      "currency": "USD"
+    },
+    "specialCondition": "None"
+  },
+  {
+    "tradeID": "TR652249678",
+    "executionDate": "2024-11-04",
+    "executionTime": "19:18:02",
+    "securityID": "CUSIP335468",
+    "securityType": "Corporate Bond",
+    "buySellIndicator": "Buy",
+    "tradePrice": 97.38,
+    "tradeQuantity": 204342,
+    "counterpartyID": "CP35804",
+    "tradeDate": "2024-11-04",
+    "settlementDate": "2024-11-07",
+    "executionVenue": "Exchange",
+    "yield": 2.28,
+    "spread": 0.56,
+    "tradeStatus": "Reported",
+    "reportingPartyID": "RP14113",
+    "contraPartyID": "CP99982",
+    "tradeReportingType": "TRACE",
+    "currency": "USD",
+    "priceNotation": {
+      "notationType": "Decimal",
+      "value": 97.38
+    },
+    "transactionFee": {
+      "amount": 343.47,
+      "currency": "USD"
+    },
+    "specialCondition": "Special"
+  },
+  {
+    "tradeID": "TR553857169",
+    "executionDate": "2024-10-25",
+    "executionTime": "00:26:25",
+    "securityID": "CUSIP206143",
+    "securityType": "Corporate Bond",
+    "buySellIndicator": "Buy",
+    "tradePrice": 98.9,
+    "tradeQuantity": 381527,
+    "counterpartyID": "CP28718",
+    "tradeDate": "2024-10-25",
+    "settlementDate": "2024-10-28",
+    "executionVenue": "Exchange",
+    "yield": 2.55,
+    "spread": 0.85,
+    "tradeStatus": "Reported",
+    "reportingPartyID": "RP69925",
+    "contraPartyID": "CP71765",
+    "tradeReportingType": "TRACE",
+    "currency": "USD",
+    "priceNotation": {
+      "notationType": "Decimal",
+      "value": 98.9
+    },
+    "transactionFee": {
+      "amount": 129.49,
+      "currency": "USD"
+    },
+    "specialCondition": "Special"
+  },
+  {
+    "tradeID": "TR871992781",
+    "executionDate": "2024-10-27",
+    "executionTime": "05:29:34",
+    "securityID": "CUSIP736680",
+    "securityType": "Corporate Bond",
+    "buySellIndicator": "Sell",
+    "tradePrice": 97.97,
+    "tradeQuantity": 638262,
+    "counterpartyID": "CP68035",
+    "tradeDate": "2024-10-27",
+    "settlementDate": "2024-10-30",
+    "executionVenue": "Exchange",
+    "yield": 0.58,
+    "spread": 1.42,
+    "tradeStatus": "Reported",
+    "reportingPartyID": "RP15305",
+    "contraPartyID": "CP84373",
+    "tradeReportingType": "TRACE",
+    "currency": "USD",
+    "priceNotation": {
+      "notationType": "Decimal",
+      "value": 97.97
+    },
+    "transactionFee": {
+      "amount": 431.34,
+      "currency": "USD"
+    },
+    "specialCondition": "Special"
+  },
+  {
+    "tradeID": "TR290593729",
+    "executionDate": "2024-11-06",
+    "executionTime": "06:04:57",
+    "securityID": "CUSIP392753",
+    "securityType": "Corporate Bond",
+    "buySellIndicator": "Sell",
+    "tradePrice": 101.71,
+    "tradeQuantity": 422023,
+    "counterpartyID": "CP58179",
+    "tradeDate": "2024-11-06",
+    "settlementDate": "2024-11-09",
+    "executionVenue": "OTC",
+    "yield": 3.08,
+    "spread": 0.68,
+    "tradeStatus": "Reported",
+    "reportingPartyID": "RP76078",
+    "contraPartyID": "CP51310",
+    "tradeReportingType": "TRACE",
+    "currency": "USD",
+    "priceNotation": {
+      "notationType": "Decimal",
+      "value": 101.71
+    },
+    "transactionFee": {
+      "amount": 387.3,
+      "currency": "USD"
+    },
+    "specialCondition": "Special"
+  },
+  {
+    "tradeID": "TR596864180",
+    "executionDate": "2024-10-20",
+    "executionTime": "15:05:49",
+    "securityID": "CUSIP232452",
+    "securityType": "Corporate Bond",
+    "buySellIndicator": "Sell",
+    "tradePrice": 99.42,
+    "tradeQuantity": 555380,
+    "counterpartyID": "CP50765",
+    "tradeDate": "2024-10-20",
+    "settlementDate": "2024-10-23",
+    "executionVenue": "OTC",
+    "yield": 4.34,
+    "spread": 0.67,
+    "tradeStatus": "Reported",
+    "reportingPartyID": "RP93613",
+    "contraPartyID": "CP78498",
+    "tradeReportingType": "TRACE",
+    "currency": "USD",
+    "priceNotation": {
+      "notationType": "Decimal",
+      "value": 99.42
+    },
+    "transactionFee": {
+      "amount": 252.01,
+      "currency": "USD"
+    },
+    "specialCondition": "Special"
+  },
+  {
+    "tradeID": "TR405928854",
+    "executionDate": "2024-11-06",
+    "executionTime": "16:16:13",
+    "securityID": "CUSIP916782",
+    "securityType": "Corporate Bond",
+    "buySellIndicator": "Sell",
+    "tradePrice": 98.13,
+    "tradeQuantity": 211916,
+    "counterpartyID": "CP49907",
+    "tradeDate": "2024-11-06",
+    "settlementDate": "2024-11-09",
+    "executionVenue": "Exchange",
+    "yield": 0.84,
+    "spread": 1.13,
+    "tradeStatus": "Reported",
+    "reportingPartyID": "RP61494",
+    "contraPartyID": "CP39507",
+    "tradeReportingType": "TRACE",
+    "currency": "USD",
+    "priceNotation": {
+      "notationType": "Decimal",
+      "value": 98.13
+    },
+    "transactionFee": {
+      "amount": 367.64,
+      "currency": "USD"
+    },
+    "specialCondition": "Special"
+  },
+  {
+    "tradeID": "TR355319054",
+    "executionDate": "2024-11-02",
+    "executionTime": "04:31:27",
+    "securityID": "CUSIP777947",
+    "securityType": "Corporate Bond",
+    "buySellIndicator": "Sell",
+    "tradePrice": 100.64,
+    "tradeQuantity": 270015,
+    "counterpartyID": "CP20249",
+    "tradeDate": "2024-11-02",
+    "settlementDate": "2024-11-05",
+    "executionVenue": "Exchange",
+    "yield": 1.6,
+    "spread": 1.39,
+    "tradeStatus": "Reported",
+    "reportingPartyID": "RP68465",
+    "contraPartyID": "CP22836",
+    "tradeReportingType": "TRACE",
+    "currency": "USD",
+    "priceNotation": {
+      "notationType": "Decimal",
+      "value": 100.64
+    },
+    "transactionFee": {
+      "amount": 319.8,
+      "currency": "USD"
+    },
+    "specialCondition": "None"
+  },
+  {
+    "tradeID": "TR447287178",
+    "executionDate": "2024-10-19",
+    "executionTime": "16:17:52",
+    "securityID": "CUSIP394918",
+    "securityType": "Corporate Bond",
+    "buySellIndicator": "Sell",
+    "tradePrice": 95.49,
+    "tradeQuantity": 697209,
+    "counterpartyID": "CP66237",
+    "tradeDate": "2024-10-19",
+    "settlementDate": "2024-10-22",
+    "executionVenue": "OTC",
+    "yield": 1.89,
+    "spread": 0.78,
+    "tradeStatus": "Reported",
+    "reportingPartyID": "RP67797",
+    "contraPartyID": "CP12949",
+    "tradeReportingType": "TRACE",
+    "currency": "USD",
+    "priceNotation": {
+      "notationType": "Decimal",
+      "value": 95.49
+    },
+    "transactionFee": {
+      "amount": 311.74,
+      "currency": "USD"
+    },
+    "specialCondition": "None"
+  },
+  {
+    "tradeID": "TR865166675",
+    "executionDate": "2024-10-27",
+    "executionTime": "11:55:51",
+    "securityID": "CUSIP747579",
+    "securityType": "Corporate Bond",
+    "buySellIndicator": "Sell",
+    "tradePrice": 104.5,
+    "tradeQuantity": 852838,
+    "counterpartyID": "CP94421",
+    "tradeDate": "2024-10-27",
+    "settlementDate": "2024-10-30",
+    "executionVenue": "Exchange",
+    "yield": 2.51,
+    "spread": 0.9,
+    "tradeStatus": "Reported",
+    "reportingPartyID": "RP13322",
+    "contraPartyID": "CP50905",
+    "tradeReportingType": "TRACE",
+    "currency": "USD",
+    "priceNotation": {
+      "notationType": "Decimal",
+      "value": 104.5
+    },
+    "transactionFee": {
+      "amount": 130.78,
+      "currency": "USD"
+    },
+    "specialCondition": "Special"
+  },
+  {
+    "tradeID": "TR728138342",
+    "executionDate": "2024-11-01",
+    "executionTime": "15:24:14",
+    "securityID": "CUSIP879480",
+    "securityType": "Corporate Bond",
+    "buySellIndicator": "Sell",
+    "tradePrice": 99.93,
+    "tradeQuantity": 736659,
+    "counterpartyID": "CP84225",
+    "tradeDate": "2024-11-01",
+    "settlementDate": "2024-11-04",
+    "executionVenue": "OTC",
+    "yield": 3.19,
+    "spread": 0.71,
+    "tradeStatus": "Reported",
+    "reportingPartyID": "RP29538",
+    "contraPartyID": "CP44438",
+    "tradeReportingType": "TRACE",
+    "currency": "USD",
+    "priceNotation": {
+      "notationType": "Decimal",
+      "value": 99.93
+    },
+    "transactionFee": {
+      "amount": 312.95,
+      "currency": "USD"
+    },
+    "specialCondition": "Special"
+  },
+  {
+    "tradeID": "TR494678793",
+    "executionDate": "2024-11-06",
+    "executionTime": "22:57:08",
+    "securityID": "CUSIP160482",
+    "securityType": "Corporate Bond",
+    "buySellIndicator": "Sell",
+    "tradePrice": 100.99,
+    "tradeQuantity": 937197,
+    "counterpartyID": "CP41671",
+    "tradeDate": "2024-11-06",
+    "settlementDate": "2024-11-09",
+    "executionVenue": "OTC",
+    "yield": 4.08,
+    "spread": 0.41,
+    "tradeStatus": "Reported",
+    "reportingPartyID": "RP39117",
+    "contraPartyID": "CP25458",
+    "tradeReportingType": "TRACE",
+    "currency": "USD",
+    "priceNotation": {
+      "notationType": "Decimal",
+      "value": 100.99
+    },
+    "transactionFee": {
+      "amount": 363.76,
+      "currency": "USD"
+    },
+    "specialCondition": "Special"
+  },
+  {
+    "tradeID": "TR856452622",
+    "executionDate": "2024-10-13",
+    "executionTime": "15:50:23",
+    "securityID": "CUSIP422019",
+    "securityType": "Corporate Bond",
+    "buySellIndicator": "Buy",
+    "tradePrice": 103.67,
+    "tradeQuantity": 164525,
+    "counterpartyID": "CP63185",
+    "tradeDate": "2024-10-13",
+    "settlementDate": "2024-10-16",
+    "executionVenue": "Exchange",
+    "yield": 3.22,
+    "spread": 0.36,
+    "tradeStatus": "Reported",
+    "reportingPartyID": "RP27731",
+    "contraPartyID": "CP77781",
+    "tradeReportingType": "TRACE",
+    "currency": "USD",
+    "priceNotation": {
+      "notationType": "Decimal",
+      "value": 103.67
+    },
+    "transactionFee": {
+      "amount": 494.74,
+      "currency": "USD"
+    },
+    "specialCondition": "Special"
+  },
+  {
+    "tradeID": "TR205165819",
+    "executionDate": "2024-10-18",
+    "executionTime": "13:05:27",
+    "securityID": "CUSIP846757",
+    "securityType": "Corporate Bond",
+    "buySellIndicator": "Sell",
+    "tradePrice": 103.74,
+    "tradeQuantity": 924496,
+    "counterpartyID": "CP75120",
+    "tradeDate": "2024-10-18",
+    "settlementDate": "2024-10-21",
+    "executionVenue": "OTC",
+    "yield": 3.51,
+    "spread": 0.8,
+    "tradeStatus": "Reported",
+    "reportingPartyID": "RP78864",
+    "contraPartyID": "CP25056",
+    "tradeReportingType": "TRACE",
+    "currency": "USD",
+    "priceNotation": {
+      "notationType": "Decimal",
+      "value": 103.74
+    },
+    "transactionFee": {
+      "amount": 214.71,
+      "currency": "USD"
+    },
+    "specialCondition": "None"
+  },
+  {
+    "tradeID": "TR544522282",
+    "executionDate": "2024-10-13",
+    "executionTime": "03:57:32",
+    "securityID": "CUSIP456433",
+    "securityType": "Corporate Bond",
+    "buySellIndicator": "Sell",
+    "tradePrice": 99.91,
+    "tradeQuantity": 247148,
+    "counterpartyID": "CP51468",
+    "tradeDate": "2024-10-13",
+    "settlementDate": "2024-10-16",
+    "executionVenue": "Exchange",
+    "yield": 3.31,
+    "spread": 0.29,
+    "tradeStatus": "Reported",
+    "reportingPartyID": "RP13336",
+    "contraPartyID": "CP37522",
+    "tradeReportingType": "TRACE",
+    "currency": "USD",
+    "priceNotation": {
+      "notationType": "Decimal",
+      "value": 99.91
+    },
+    "transactionFee": {
+      "amount": 449.81,
+      "currency": "USD"
+    },
+    "specialCondition": "Special"
+  },
+  {
+    "tradeID": "TR443998005",
+    "executionDate": "2024-11-03",
+    "executionTime": "09:07:59",
+    "securityID": "CUSIP798413",
+    "securityType": "Corporate Bond",
+    "buySellIndicator": "Buy",
+    "tradePrice": 101.34,
+    "tradeQuantity": 281573,
+    "counterpartyID": "CP72174",
+    "tradeDate": "2024-11-03",
+    "settlementDate": "2024-11-06",
+    "executionVenue": "OTC",
+    "yield": 4.53,
+    "spread": 1.12,
+    "tradeStatus": "Reported",
+    "reportingPartyID": "RP79140",
+    "contraPartyID": "CP51439",
+    "tradeReportingType": "TRACE",
+    "currency": "USD",
+    "priceNotation": {
+      "notationType": "Decimal",
+      "value": 101.34
+    },
+    "transactionFee": {
+      "amount": 429.61,
+      "currency": "USD"
+    },
+    "specialCondition": "Special"
+  },
+  {
+    "tradeID": "TR203083577",
+    "executionDate": "2024-11-04",
+    "executionTime": "16:27:48",
+    "securityID": "CUSIP813659",
+    "securityType": "Corporate Bond",
+    "buySellIndicator": "Buy",
+    "tradePrice": 98.77,
+    "tradeQuantity": 417227,
+    "counterpartyID": "CP94031",
+    "tradeDate": "2024-11-04",
+    "settlementDate": "2024-11-07",
+    "executionVenue": "Exchange",
+    "yield": 1.15,
+    "spread": 0.94,
+    "tradeStatus": "Reported",
+    "reportingPartyID": "RP78945",
+    "contraPartyID": "CP39391",
+    "tradeReportingType": "TRACE",
+    "currency": "USD",
+    "priceNotation": {
+      "notationType": "Decimal",
+      "value": 98.77
+    },
+    "transactionFee": {
+      "amount": 485.99,
+      "currency": "USD"
+    },
+    "specialCondition": "None"
+  },
+  {
+    "tradeID": "TR850169411",
+    "executionDate": "2024-10-21",
+    "executionTime": "02:01:56",
+    "securityID": "CUSIP984531",
+    "securityType": "Corporate Bond",
+    "buySellIndicator": "Buy",
+    "tradePrice": 96.5,
+    "tradeQuantity": 283430,
+    "counterpartyID": "CP84689",
+    "tradeDate": "2024-10-21",
+    "settlementDate": "2024-10-24",
+    "executionVenue": "Exchange",
+    "yield": 1.57,
+    "spread": 0.81,
+    "tradeStatus": "Reported",
+    "reportingPartyID": "RP95699",
+    "contraPartyID": "CP27318",
+    "tradeReportingType": "TRACE",
+    "currency": "USD",
+    "priceNotation": {
+      "notationType": "Decimal",
+      "value": 96.5
+    },
+    "transactionFee": {
+      "amount": 247.68,
+      "currency": "USD"
+    },
+    "specialCondition": "None"
+  },
+  {
+    "tradeID": "TR135521944",
+    "executionDate": "2024-10-22",
+    "executionTime": "21:57:05",
+    "securityID": "CUSIP307822",
+    "securityType": "Corporate Bond",
+    "buySellIndicator": "Sell",
+    "tradePrice": 96.28,
+    "tradeQuantity": 348905,
+    "counterpartyID": "CP52691",
+    "tradeDate": "2024-10-22",
+    "settlementDate": "2024-10-25",
+    "executionVenue": "OTC",
+    "yield": 3.68,
+    "spread": 1.09,
+    "tradeStatus": "Reported",
+    "reportingPartyID": "RP42790",
+    "contraPartyID": "CP15532",
+    "tradeReportingType": "TRACE",
+    "currency": "USD",
+    "priceNotation": {
+      "notationType": "Decimal",
+      "value": 96.28
+    },
+    "transactionFee": {
+      "amount": 372.24,
+      "currency": "USD"
+    },
+    "specialCondition": "None"
+  },
+  {
+    "tradeID": "TR196302951",
+    "executionDate": "2024-10-13",
+    "executionTime": "19:17:45",
+    "securityID": "CUSIP162366",
+    "securityType": "Corporate Bond",
+    "buySellIndicator": "Sell",
+    "tradePrice": 100.72,
+    "tradeQuantity": 521142,
+    "counterpartyID": "CP83218",
+    "tradeDate": "2024-10-13",
+    "settlementDate": "2024-10-16",
+    "executionVenue": "OTC",
+    "yield": 1.64,
+    "spread": 0.73,
+    "tradeStatus": "Reported",
+    "reportingPartyID": "RP77684",
+    "contraPartyID": "CP46620",
+    "tradeReportingType": "TRACE",
+    "currency": "USD",
+    "priceNotation": {
+      "notationType": "Decimal",
+      "value": 100.72
+    },
+    "transactionFee": {
+      "amount": 356.12,
+      "currency": "USD"
+    },
+    "specialCondition": "Special"
+  },
+  {
+    "tradeID": "TR395593800",
+    "executionDate": "2024-10-17",
+    "executionTime": "20:23:19",
+    "securityID": "CUSIP922603",
+    "securityType": "Corporate Bond",
+    "buySellIndicator": "Buy",
+    "tradePrice": 103.96,
+    "tradeQuantity": 914811,
+    "counterpartyID": "CP48722",
+    "tradeDate": "2024-10-17",
+    "settlementDate": "2024-10-20",
+    "executionVenue": "Exchange",
+    "yield": 2.43,
+    "spread": 0.78,
+    "tradeStatus": "Reported",
+    "reportingPartyID": "RP78729",
+    "contraPartyID": "CP67729",
+    "tradeReportingType": "TRACE",
+    "currency": "USD",
+    "priceNotation": {
+      "notationType": "Decimal",
+      "value": 103.96
+    },
+    "transactionFee": {
+      "amount": 449.91,
+      "currency": "USD"
+    },
+    "specialCondition": "None"
+  },
+  {
+    "tradeID": "TR652773979",
+    "executionDate": "2024-10-18",
+    "executionTime": "20:52:15",
+    "securityID": "CUSIP822173",
+    "securityType": "Corporate Bond",
+    "buySellIndicator": "Buy",
+    "tradePrice": 104.84,
+    "tradeQuantity": 272437,
+    "counterpartyID": "CP34964",
+    "tradeDate": "2024-10-18",
+    "settlementDate": "2024-10-21",
+    "executionVenue": "OTC",
+    "yield": 0.5,
+    "spread": 1.42,
+    "tradeStatus": "Reported",
+    "reportingPartyID": "RP69060",
+    "contraPartyID": "CP79684",
+    "tradeReportingType": "TRACE",
+    "currency": "USD",
+    "priceNotation": {
+      "notationType": "Decimal",
+      "value": 104.84
+    },
+    "transactionFee": {
+      "amount": 489.2,
+      "currency": "USD"
+    },
+    "specialCondition": "None"
+  },
+  {
+    "tradeID": "TR733696820",
+    "executionDate": "2024-10-19",
+    "executionTime": "01:47:43",
+    "securityID": "CUSIP653148",
+    "securityType": "Corporate Bond",
+    "buySellIndicator": "Sell",
+    "tradePrice": 101.98,
+    "tradeQuantity": 876589,
+    "counterpartyID": "CP64994",
+    "tradeDate": "2024-10-19",
+    "settlementDate": "2024-10-22",
+    "executionVenue": "Exchange",
+    "yield": 2.13,
+    "spread": 0.33,
+    "tradeStatus": "Reported",
+    "reportingPartyID": "RP46697",
+    "contraPartyID": "CP45783",
+    "tradeReportingType": "TRACE",
+    "currency": "USD",
+    "priceNotation": {
+      "notationType": "Decimal",
+      "value": 101.98
+    },
+    "transactionFee": {
+      "amount": 388.11,
+      "currency": "USD"
+    },
+    "specialCondition": "None"
+  },
+  {
+    "tradeID": "TR237268996",
+    "executionDate": "2024-10-13",
+    "executionTime": "16:58:39",
+    "securityID": "CUSIP802735",
+    "securityType": "Corporate Bond",
+    "buySellIndicator": "Sell",
+    "tradePrice": 102.71,
+    "tradeQuantity": 131817,
+    "counterpartyID": "CP39047",
+    "tradeDate": "2024-10-13",
+    "settlementDate": "2024-10-16",
+    "executionVenue": "OTC",
+    "yield": 0.65,
+    "spread": 1.01,
+    "tradeStatus": "Reported",
+    "reportingPartyID": "RP36355",
+    "contraPartyID": "CP96016",
+    "tradeReportingType": "TRACE",
+    "currency": "USD",
+    "priceNotation": {
+      "notationType": "Decimal",
+      "value": 102.71
+    },
+    "transactionFee": {
+      "amount": 163.18,
+      "currency": "USD"
+    },
+    "specialCondition": "Special"
+  },
+  {
+    "tradeID": "TR599461843",
+    "executionDate": "2024-11-03",
+    "executionTime": "15:43:55",
+    "securityID": "CUSIP632879",
+    "securityType": "Corporate Bond",
+    "buySellIndicator": "Sell",
+    "tradePrice": 96.32,
+    "tradeQuantity": 233721,
+    "counterpartyID": "CP30946",
+    "tradeDate": "2024-11-03",
+    "settlementDate": "2024-11-06",
+    "executionVenue": "Exchange",
+    "yield": 1.27,
+    "spread": 0.38,
+    "tradeStatus": "Reported",
+    "reportingPartyID": "RP86109",
+    "contraPartyID": "CP26516",
+    "tradeReportingType": "TRACE",
+    "currency": "USD",
+    "priceNotation": {
+      "notationType": "Decimal",
+      "value": 96.32
+    },
+    "transactionFee": {
+      "amount": 175.26,
+      "currency": "USD"
+    },
+    "specialCondition": "Special"
+  },
+  {
+    "tradeID": "TR791924602",
+    "executionDate": "2024-10-18",
+    "executionTime": "00:46:46",
+    "securityID": "CUSIP526329",
+    "securityType": "Corporate Bond",
+    "buySellIndicator": "Buy",
+    "tradePrice": 100.58,
+    "tradeQuantity": 294492,
+    "counterpartyID": "CP71725",
+    "tradeDate": "2024-10-18",
+    "settlementDate": "2024-10-21",
+    "executionVenue": "OTC",
+    "yield": 3.95,
+    "spread": 1.38,
+    "tradeStatus": "Reported",
+    "reportingPartyID": "RP60241",
+    "contraPartyID": "CP46361",
+    "tradeReportingType": "TRACE",
+    "currency": "USD",
+    "priceNotation": {
+      "notationType": "Decimal",
+      "value": 100.58
+    },
+    "transactionFee": {
+      "amount": 119.51,
+      "currency": "USD"
+    },
+    "specialCondition": "None"
+  },
+  {
+    "tradeID": "TR286035478",
+    "executionDate": "2024-11-05",
+    "executionTime": "23:56:46",
+    "securityID": "CUSIP335387",
+    "securityType": "Corporate Bond",
+    "buySellIndicator": "Buy",
+    "tradePrice": 103.13,
+    "tradeQuantity": 265269,
+    "counterpartyID": "CP25495",
+    "tradeDate": "2024-11-05",
+    "settlementDate": "2024-11-08",
+    "executionVenue": "Exchange",
+    "yield": 0.56,
+    "spread": 0.35,
+    "tradeStatus": "Reported",
+    "reportingPartyID": "RP71362",
+    "contraPartyID": "CP36720",
+    "tradeReportingType": "TRACE",
+    "currency": "USD",
+    "priceNotation": {
+      "notationType": "Decimal",
+      "value": 103.13
+    },
+    "transactionFee": {
+      "amount": 402.6,
+      "currency": "USD"
+    },
+    "specialCondition": "None"
+  },
+  {
+    "tradeID": "TR360072249",
+    "executionDate": "2024-10-31",
+    "executionTime": "04:40:09",
+    "securityID": "CUSIP285971",
+    "securityType": "Corporate Bond",
+    "buySellIndicator": "Sell",
+    "tradePrice": 102.44,
+    "tradeQuantity": 293684,
+    "counterpartyID": "CP74213",
+    "tradeDate": "2024-10-31",
+    "settlementDate": "2024-11-03",
+    "executionVenue": "Exchange",
+    "yield": 2.42,
+    "spread": 0.48,
+    "tradeStatus": "Reported",
+    "reportingPartyID": "RP72641",
+    "contraPartyID": "CP85287",
+    "tradeReportingType": "TRACE",
+    "currency": "USD",
+    "priceNotation": {
+      "notationType": "Decimal",
+      "value": 102.44
+    },
+    "transactionFee": {
+      "amount": 408.66,
+      "currency": "USD"
+    },
+    "specialCondition": "None"
+  },
+  {
+    "tradeID": "TR467505904",
+    "executionDate": "2024-10-30",
+    "executionTime": "16:29:53",
+    "securityID": "CUSIP560821",
+    "securityType": "Corporate Bond",
+    "buySellIndicator": "Sell",
+    "tradePrice": 99.7,
+    "tradeQuantity": 481423,
+    "counterpartyID": "CP81656",
+    "tradeDate": "2024-10-30",
+    "settlementDate": "2024-11-02",
+    "executionVenue": "OTC",
+    "yield": 3.86,
+    "spread": 1.42,
+    "tradeStatus": "Reported",
+    "reportingPartyID": "RP12939",
+    "contraPartyID": "CP53653",
+    "tradeReportingType": "TRACE",
+    "currency": "USD",
+    "priceNotation": {
+      "notationType": "Decimal",
+      "value": 99.7
+    },
+    "transactionFee": {
+      "amount": 126.78,
+      "currency": "USD"
+    },
+    "specialCondition": "Special"
+  },
+  {
+    "tradeID": "TR294401486",
+    "executionDate": "2024-11-05",
+    "executionTime": "17:23:29",
+    "securityID": "CUSIP613211",
+    "securityType": "Corporate Bond",
+    "buySellIndicator": "Buy",
+    "tradePrice": 100.72,
+    "tradeQuantity": 571163,
+    "counterpartyID": "CP90169",
+    "tradeDate": "2024-11-05",
+    "settlementDate": "2024-11-08",
+    "executionVenue": "Exchange",
+    "yield": 4.07,
+    "spread": 0.46,
+    "tradeStatus": "Reported",
+    "reportingPartyID": "RP78436",
+    "contraPartyID": "CP85323",
+    "tradeReportingType": "TRACE",
+    "currency": "USD",
+    "priceNotation": {
+      "notationType": "Decimal",
+      "value": 100.72
+    },
+    "transactionFee": {
+      "amount": 212.7,
+      "currency": "USD"
+    },
+    "specialCondition": "None"
+  },
+  {
+    "tradeID": "TR616557253",
+    "executionDate": "2024-10-23",
+    "executionTime": "12:52:04",
+    "securityID": "CUSIP298089",
+    "securityType": "Corporate Bond",
+    "buySellIndicator": "Buy",
+    "tradePrice": 104.86,
+    "tradeQuantity": 977635,
+    "counterpartyID": "CP61375",
+    "tradeDate": "2024-10-23",
+    "settlementDate": "2024-10-26",
+    "executionVenue": "OTC",
+    "yield": 1.8,
+    "spread": 1.25,
+    "tradeStatus": "Reported",
+    "reportingPartyID": "RP81370",
+    "contraPartyID": "CP15360",
+    "tradeReportingType": "TRACE",
+    "currency": "USD",
+    "priceNotation": {
+      "notationType": "Decimal",
+      "value": 104.86
+    },
+    "transactionFee": {
+      "amount": 437.38,
+      "currency": "USD"
+    },
+    "specialCondition": "None"
+  },
+  {
+    "tradeID": "TR580634825",
+    "executionDate": "2024-10-29",
+    "executionTime": "11:55:25",
+    "securityID": "CUSIP993319",
+    "securityType": "Corporate Bond",
+    "buySellIndicator": "Buy",
+    "tradePrice": 98.28,
+    "tradeQuantity": 112182,
+    "counterpartyID": "CP40190",
+    "tradeDate": "2024-10-29",
+    "settlementDate": "2024-11-01",
+    "executionVenue": "OTC",
+    "yield": 3.17,
+    "spread": 0.43,
+    "tradeStatus": "Reported",
+    "reportingPartyID": "RP28799",
+    "contraPartyID": "CP39735",
+    "tradeReportingType": "TRACE",
+    "currency": "USD",
+    "priceNotation": {
+      "notationType": "Decimal",
+      "value": 98.28
+    },
+    "transactionFee": {
+      "amount": 357.54,
+      "currency": "USD"
+    },
+    "specialCondition": "Special"
+  },
+  {
+    "tradeID": "TR560115592",
+    "executionDate": "2024-10-30",
+    "executionTime": "19:59:23",
+    "securityID": "CUSIP180364",
+    "securityType": "Corporate Bond",
+    "buySellIndicator": "Sell",
+    "tradePrice": 104.55,
+    "tradeQuantity": 423492,
+    "counterpartyID": "CP27163",
+    "tradeDate": "2024-10-30",
+    "settlementDate": "2024-11-02",
+    "executionVenue": "OTC",
+    "yield": 0.66,
+    "spread": 0.69,
+    "tradeStatus": "Reported",
+    "reportingPartyID": "RP16358",
+    "contraPartyID": "CP10906",
+    "tradeReportingType": "TRACE",
+    "currency": "USD",
+    "priceNotation": {
+      "notationType": "Decimal",
+      "value": 104.55
+    },
+    "transactionFee": {
+      "amount": 370.24,
+      "currency": "USD"
+    },
+    "specialCondition": "None"
+  },
+  {
+    "tradeID": "TR264870473",
+    "executionDate": "2024-10-20",
+    "executionTime": "03:51:39",
+    "securityID": "CUSIP833806",
+    "securityType": "Corporate Bond",
+    "buySellIndicator": "Sell",
+    "tradePrice": 99.16,
+    "tradeQuantity": 121503,
+    "counterpartyID": "CP83984",
+    "tradeDate": "2024-10-20",
+    "settlementDate": "2024-10-23",
+    "executionVenue": "Exchange",
+    "yield": 1.02,
+    "spread": 0.53,
+    "tradeStatus": "Reported",
+    "reportingPartyID": "RP88086",
+    "contraPartyID": "CP78383",
+    "tradeReportingType": "TRACE",
+    "currency": "USD",
+    "priceNotation": {
+      "notationType": "Decimal",
+      "value": 99.16
+    },
+    "transactionFee": {
+      "amount": 499.82,
+      "currency": "USD"
+    },
+    "specialCondition": "None"
+  },
+  {
+    "tradeID": "TR711592513",
+    "executionDate": "2024-10-13",
+    "executionTime": "09:35:44",
+    "securityID": "CUSIP934832",
+    "securityType": "Corporate Bond",
+    "buySellIndicator": "Buy",
+    "tradePrice": 95.01,
+    "tradeQuantity": 355340,
+    "counterpartyID": "CP23426",
+    "tradeDate": "2024-10-13",
+    "settlementDate": "2024-10-16",
+    "executionVenue": "OTC",
+    "yield": 2.35,
+    "spread": 0.4,
+    "tradeStatus": "Reported",
+    "reportingPartyID": "RP84493",
+    "contraPartyID": "CP21424",
+    "tradeReportingType": "TRACE",
+    "currency": "USD",
+    "priceNotation": {
+      "notationType": "Decimal",
+      "value": 95.01
+    },
+    "transactionFee": {
+      "amount": 170.04,
+      "currency": "USD"
+    },
+    "specialCondition": "None"
+  },
+  {
+    "tradeID": "TR366048975",
+    "executionDate": "2024-10-31",
+    "executionTime": "07:40:59",
+    "securityID": "CUSIP295467",
+    "securityType": "Corporate Bond",
+    "buySellIndicator": "Buy",
+    "tradePrice": 103.04,
+    "tradeQuantity": 911394,
+    "counterpartyID": "CP77543",
+    "tradeDate": "2024-10-31",
+    "settlementDate": "2024-11-03",
+    "executionVenue": "Exchange",
+    "yield": 3.43,
+    "spread": 0.88,
+    "tradeStatus": "Reported",
+    "reportingPartyID": "RP41824",
+    "contraPartyID": "CP10854",
+    "tradeReportingType": "TRACE",
+    "currency": "USD",
+    "priceNotation": {
+      "notationType": "Decimal",
+      "value": 103.04
+    },
+    "transactionFee": {
+      "amount": 311.22,
+      "currency": "USD"
+    },
+    "specialCondition": "Special"
+  },
+  {
+    "tradeID": "TR371420754",
+    "executionDate": "2024-10-22",
+    "executionTime": "13:01:21",
+    "securityID": "CUSIP364967",
+    "securityType": "Corporate Bond",
+    "buySellIndicator": "Buy",
+    "tradePrice": 98.97,
+    "tradeQuantity": 867662,
+    "counterpartyID": "CP64606",
+    "tradeDate": "2024-10-22",
+    "settlementDate": "2024-10-25",
+    "executionVenue": "OTC",
+    "yield": 2.84,
+    "spread": 1.18,
+    "tradeStatus": "Reported",
+    "reportingPartyID": "RP26317",
+    "contraPartyID": "CP40230",
+    "tradeReportingType": "TRACE",
+    "currency": "USD",
+    "priceNotation": {
+      "notationType": "Decimal",
+      "value": 98.97
+    },
+    "transactionFee": {
+      "amount": 112.16,
+      "currency": "USD"
+    },
+    "specialCondition": "None"
+  },
+  {
+    "tradeID": "TR683086993",
+    "executionDate": "2024-10-28",
+    "executionTime": "03:03:09",
+    "securityID": "CUSIP910109",
+    "securityType": "Corporate Bond",
+    "buySellIndicator": "Sell",
+    "tradePrice": 102.09,
+    "tradeQuantity": 282639,
+    "counterpartyID": "CP99860",
+    "tradeDate": "2024-10-28",
+    "settlementDate": "2024-10-31",
+    "executionVenue": "Exchange",
+    "yield": 1.35,
+    "spread": 0.9,
+    "tradeStatus": "Reported",
+    "reportingPartyID": "RP33750",
+    "contraPartyID": "CP86290",
+    "tradeReportingType": "TRACE",
+    "currency": "USD",
+    "priceNotation": {
+      "notationType": "Decimal",
+      "value": 102.09
+    },
+    "transactionFee": {
+      "amount": 214.46,
+      "currency": "USD"
+    },
+    "specialCondition": "None"
+  },
+  {
+    "tradeID": "TR529829384",
+    "executionDate": "2024-10-30",
+    "executionTime": "11:45:49",
+    "securityID": "CUSIP878597",
+    "securityType": "Corporate Bond",
+    "buySellIndicator": "Buy",
+    "tradePrice": 103.58,
+    "tradeQuantity": 211408,
+    "counterpartyID": "CP31580",
+    "tradeDate": "2024-10-30",
+    "settlementDate": "2024-11-02",
+    "executionVenue": "OTC",
+    "yield": 2.86,
+    "spread": 0.14,
+    "tradeStatus": "Reported",
+    "reportingPartyID": "RP97712",
+    "contraPartyID": "CP28982",
+    "tradeReportingType": "TRACE",
+    "currency": "USD",
+    "priceNotation": {
+      "notationType": "Decimal",
+      "value": 103.58
+    },
+    "transactionFee": {
+      "amount": 244.29,
+      "currency": "USD"
+    },
+    "specialCondition": "Special"
+  },
+  {
+    "tradeID": "TR857415397",
+    "executionDate": "2024-11-07",
+    "executionTime": "01:36:21",
+    "securityID": "CUSIP899925",
+    "securityType": "Corporate Bond",
+    "buySellIndicator": "Buy",
+    "tradePrice": 99.37,
+    "tradeQuantity": 590610,
+    "counterpartyID": "CP67820",
+    "tradeDate": "2024-11-07",
+    "settlementDate": "2024-11-10",
+    "executionVenue": "OTC",
+    "yield": 4.74,
+    "spread": 1.32,
+    "tradeStatus": "Reported",
+    "reportingPartyID": "RP98722",
+    "contraPartyID": "CP85705",
+    "tradeReportingType": "TRACE",
+    "currency": "USD",
+    "priceNotation": {
+      "notationType": "Decimal",
+      "value": 99.37
+    },
+    "transactionFee": {
+      "amount": 366.75,
+      "currency": "USD"
+    },
+    "specialCondition": "Special"
+  },
+  {
+    "tradeID": "TR851273984",
+    "executionDate": "2024-10-24",
+    "executionTime": "04:29:05",
+    "securityID": "CUSIP405297",
+    "securityType": "Corporate Bond",
+    "buySellIndicator": "Buy",
+    "tradePrice": 101.09,
+    "tradeQuantity": 160759,
+    "counterpartyID": "CP30174",
+    "tradeDate": "2024-10-24",
+    "settlementDate": "2024-10-27",
+    "executionVenue": "Exchange",
+    "yield": 3.55,
+    "spread": 0.63,
+    "tradeStatus": "Reported",
+    "reportingPartyID": "RP96188",
+    "contraPartyID": "CP36922",
+    "tradeReportingType": "TRACE",
+    "currency": "USD",
+    "priceNotation": {
+      "notationType": "Decimal",
+      "value": 101.09
+    },
+    "transactionFee": {
+      "amount": 195.52,
+      "currency": "USD"
+    },
+    "specialCondition": "None"
+  },
+  {
+    "tradeID": "TR704400433",
+    "executionDate": "2024-10-28",
+    "executionTime": "17:12:59",
+    "securityID": "CUSIP627709",
+    "securityType": "Corporate Bond",
+    "buySellIndicator": "Sell",
+    "tradePrice": 96.66,
+    "tradeQuantity": 912109,
+    "counterpartyID": "CP79515",
+    "tradeDate": "2024-10-28",
+    "settlementDate": "2024-10-31",
+    "executionVenue": "OTC",
+    "yield": 0.54,
+    "spread": 1.43,
+    "tradeStatus": "Reported",
+    "reportingPartyID": "RP85926",
+    "contraPartyID": "CP71240",
+    "tradeReportingType": "TRACE",
+    "currency": "USD",
+    "priceNotation": {
+      "notationType": "Decimal",
+      "value": 96.66
+    },
+    "transactionFee": {
+      "amount": 362.65,
+      "currency": "USD"
+    },
+    "specialCondition": "None"
+  },
+  {
+    "tradeID": "TR206591155",
+    "executionDate": "2024-11-10",
+    "executionTime": "16:25:43",
+    "securityID": "CUSIP984592",
+    "securityType": "Corporate Bond",
+    "buySellIndicator": "Buy",
+    "tradePrice": 95.16,
+    "tradeQuantity": 610361,
+    "counterpartyID": "CP34202",
+    "tradeDate": "2024-11-10",
+    "settlementDate": "2024-11-13",
+    "executionVenue": "OTC",
+    "yield": 2.11,
+    "spread": 1.13,
+    "tradeStatus": "Reported",
+    "reportingPartyID": "RP30052",
+    "contraPartyID": "CP28247",
+    "tradeReportingType": "TRACE",
+    "currency": "USD",
+    "priceNotation": {
+      "notationType": "Decimal",
+      "value": 95.16
+    },
+    "transactionFee": {
+      "amount": 367.2,
+      "currency": "USD"
+    },
+    "specialCondition": "Special"
+  },
+  {
+    "tradeID": "TR612556029",
+    "executionDate": "2024-10-17",
+    "executionTime": "05:39:12",
+    "securityID": "CUSIP565903",
+    "securityType": "Corporate Bond",
+    "buySellIndicator": "Sell",
+    "tradePrice": 99.05,
+    "tradeQuantity": 190569,
+    "counterpartyID": "CP75987",
+    "tradeDate": "2024-10-17",
+    "settlementDate": "2024-10-20",
+    "executionVenue": "Exchange",
+    "yield": 4.3,
+    "spread": 1.34,
+    "tradeStatus": "Reported",
+    "reportingPartyID": "RP58546",
+    "contraPartyID": "CP50978",
+    "tradeReportingType": "TRACE",
+    "currency": "USD",
+    "priceNotation": {
+      "notationType": "Decimal",
+      "value": 99.05
+    },
+    "transactionFee": {
+      "amount": 163.46,
+      "currency": "USD"
+    },
+    "specialCondition": "None"
+  },
+  {
+    "tradeID": "TR388694483",
+    "executionDate": "2024-10-18",
+    "executionTime": "17:43:50",
+    "securityID": "CUSIP199012",
+    "securityType": "Corporate Bond",
+    "buySellIndicator": "Sell",
+    "tradePrice": 104.81,
+    "tradeQuantity": 436026,
+    "counterpartyID": "CP96220",
+    "tradeDate": "2024-10-18",
+    "settlementDate": "2024-10-21",
+    "executionVenue": "OTC",
+    "yield": 2.66,
+    "spread": 0.81,
+    "tradeStatus": "Reported",
+    "reportingPartyID": "RP67115",
+    "contraPartyID": "CP71577",
+    "tradeReportingType": "TRACE",
+    "currency": "USD",
+    "priceNotation": {
+      "notationType": "Decimal",
+      "value": 104.81
+    },
+    "transactionFee": {
+      "amount": 279.09,
+      "currency": "USD"
+    },
+    "specialCondition": "None"
+  },
+  {
+    "tradeID": "TR345010204",
+    "executionDate": "2024-11-04",
+    "executionTime": "17:36:42",
+    "securityID": "CUSIP419963",
+    "securityType": "Corporate Bond",
+    "buySellIndicator": "Sell",
+    "tradePrice": 98.49,
+    "tradeQuantity": 952226,
+    "counterpartyID": "CP42210",
+    "tradeDate": "2024-11-04",
+    "settlementDate": "2024-11-07",
+    "executionVenue": "Exchange",
+    "yield": 1.98,
+    "spread": 0.18,
+    "tradeStatus": "Reported",
+    "reportingPartyID": "RP74309",
+    "contraPartyID": "CP78537",
+    "tradeReportingType": "TRACE",
+    "currency": "USD",
+    "priceNotation": {
+      "notationType": "Decimal",
+      "value": 98.49
+    },
+    "transactionFee": {
+      "amount": 170.87,
+      "currency": "USD"
+    },
+    "specialCondition": "None"
+  },
+  {
+    "tradeID": "TR781194516",
+    "executionDate": "2024-11-10",
+    "executionTime": "05:33:01",
+    "securityID": "CUSIP672848",
+    "securityType": "Corporate Bond",
+    "buySellIndicator": "Sell",
+    "tradePrice": 103.78,
+    "tradeQuantity": 271668,
+    "counterpartyID": "CP83190",
+    "tradeDate": "2024-11-10",
+    "settlementDate": "2024-11-13",
+    "executionVenue": "Exchange",
+    "yield": 4.77,
+    "spread": 1.19,
+    "tradeStatus": "Reported",
+    "reportingPartyID": "RP79136",
+    "contraPartyID": "CP73782",
+    "tradeReportingType": "TRACE",
+    "currency": "USD",
+    "priceNotation": {
+      "notationType": "Decimal",
+      "value": 103.78
+    },
+    "transactionFee": {
+      "amount": 271.75,
+      "currency": "USD"
+    },
+    "specialCondition": "None"
+  },
+  {
+    "tradeID": "TR825239072",
+    "executionDate": "2024-10-21",
+    "executionTime": "01:52:00",
+    "securityID": "CUSIP102466",
+    "securityType": "Corporate Bond",
+    "buySellIndicator": "Buy",
+    "tradePrice": 99.07,
+    "tradeQuantity": 699972,
+    "counterpartyID": "CP61987",
+    "tradeDate": "2024-10-21",
+    "settlementDate": "2024-10-24",
+    "executionVenue": "Exchange",
+    "yield": 1.57,
+    "spread": 1.44,
+    "tradeStatus": "Reported",
+    "reportingPartyID": "RP92675",
+    "contraPartyID": "CP63252",
+    "tradeReportingType": "TRACE",
+    "currency": "USD",
+    "priceNotation": {
+      "notationType": "Decimal",
+      "value": 99.07
+    },
+    "transactionFee": {
+      "amount": 381.08,
+      "currency": "USD"
+    },
+    "specialCondition": "None"
+  },
+  {
+    "tradeID": "TR685366403",
+    "executionDate": "2024-11-08",
+    "executionTime": "19:13:36",
+    "securityID": "CUSIP847727",
+    "securityType": "Corporate Bond",
+    "buySellIndicator": "Sell",
+    "tradePrice": 100.05,
+    "tradeQuantity": 177313,
+    "counterpartyID": "CP80484",
+    "tradeDate": "2024-11-08",
+    "settlementDate": "2024-11-11",
+    "executionVenue": "OTC",
+    "yield": 2.16,
+    "spread": 0.24,
+    "tradeStatus": "Reported",
+    "reportingPartyID": "RP52305",
+    "contraPartyID": "CP56530",
+    "tradeReportingType": "TRACE",
+    "currency": "USD",
+    "priceNotation": {
+      "notationType": "Decimal",
+      "value": 100.05
+    },
+    "transactionFee": {
+      "amount": 286.18,
+      "currency": "USD"
+    },
+    "specialCondition": "None"
+  },
+  {
+    "tradeID": "TR741593027",
+    "executionDate": "2024-10-18",
+    "executionTime": "14:16:43",
+    "securityID": "CUSIP141335",
+    "securityType": "Corporate Bond",
+    "buySellIndicator": "Buy",
+    "tradePrice": 104.66,
+    "tradeQuantity": 788236,
+    "counterpartyID": "CP31737",
+    "tradeDate": "2024-10-18",
+    "settlementDate": "2024-10-21",
+    "executionVenue": "Exchange",
+    "yield": 4.19,
+    "spread": 1.45,
+    "tradeStatus": "Reported",
+    "reportingPartyID": "RP61123",
+    "contraPartyID": "CP36942",
+    "tradeReportingType": "TRACE",
+    "currency": "USD",
+    "priceNotation": {
+      "notationType": "Decimal",
+      "value": 104.66
+    },
+    "transactionFee": {
+      "amount": 219.22,
+      "currency": "USD"
+    },
+    "specialCondition": "None"
+  }
+]

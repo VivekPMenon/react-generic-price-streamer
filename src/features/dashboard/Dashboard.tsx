@@ -1,7 +1,6 @@
 import { SearchDataContextProvider } from '../../business-services/search-data-context';
 import { DashboardHeader } from '../dashboard-header';
 import { Pricing } from '../pricing';
-import { RunsSummary } from '../runs-summary';
 import { Trace } from '../trace';
 
 export function Dashboard() {

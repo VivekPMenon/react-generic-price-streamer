@@ -1,19 +1,35 @@
 import { useState } from 'react';
 import { ColDef } from 'ag-grid-community';
 import { DataGrid } from '../../common-components/data-grid';
+import traceJson from '../../business-services/pricing-data/trace.json';
 
 export function Trace() {
 
-  const [rowData] = useState([
-    { make: "Toyota", model: "Celica", price: 35000 },
-    { make: "Ford", model: "Mondeo", price: 32000 },
-    { make: "Porsche", model: "Boxster", price: 72000 }
-  ]);
+  const [rowData] = useState<any[]>(traceJson as any[]);
 
   const [columnDefs] = useState<ColDef[]>([
-    { field: 'make' },
-    { field: 'model' },
-    { field: 'price' }
+    { "field": "tradeID" },
+    { "field": "executionDate" },
+    { "field": "executionTime" },
+    { "field": "securityID" },
+    { "field": "securityType" },
+    { "field": "buySellIndicator" },
+    { "field": "tradePrice" },
+    { "field": "tradeQuantity" },
+    { "field": "counterpartyID" },
+    { "field": "tradeDate" },
+    { "field": "settlementDate" },
+    { "field": "executionVenue" },
+    { "field": "yield" },
+    { "field": "spread" },
+    { "field": "tradeStatus" },
+    { "field": "reportingPartyID" },
+    { "field": "contraPartyID" },
+    { "field": "tradeReportingType" },
+    { "field": "currency" },
+    { "field": "priceNotation" },
+    { "field": "transactionFee" },
+    { "field": "specialCondition" }
   ]);
 
   return (

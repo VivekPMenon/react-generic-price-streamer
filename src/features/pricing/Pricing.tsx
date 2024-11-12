@@ -12,10 +12,31 @@ export function Pricing() {
   const [selected, setSelected] = useState([]);
   const { searchData } = useContext(SearchDataContext);
 
-  const options = [
-    { label: "Grapes 🍇", value: "grapes" },
-    { label: "Mango 🥭", value: "mango" },
-    { label: "Strawberry 🍓", value: "strawberry", disabled: true },
+  const sectorOptions = [
+    { "label": "Technology", "value": "Technology" },
+    { "label": "Healthcare", "value": "Healthcare" },
+    { "label": "Financials", "value": "Financials" },
+    { "label": "Consumer Discretionary", "value": "Consumer Discretionary" },
+    { "label": "Consumer Staples", "value": "Consumer Staples" },
+    { "label": "Energy", "value": "Energy" },
+    { "label": "Industrials", "value": "Industrials" },
+    { "label": "Materials", "value": "Materials" },
+    { "label": "Utilities", "value": "Utilities" },
+    { "label": "Real Estate", "value": "Real Estate" },
+    { "label": "Communication Services", "value": "Communication Services" }
+  ];
+
+  const tickerOptions = [
+    { "label": "Apple Inc.", "value": "AAPL" },
+    { "label": "Microsoft Corporation", "value": "MSFT" },
+    { "label": "Amazon.com, Inc.", "value": "AMZN" },
+    { "label": "Tesla, Inc.", "value": "TSLA" },
+    { "label": "Alphabet Inc. (Class A)", "value": "GOOGL" },
+    { "label": "Meta Platforms, Inc.", "value": "META" },
+    { "label": "NVIDIA Corporation", "value": "NVDA" },
+    { "label": "Berkshire Hathaway Inc. (Class B)", "value": "BRK.B" },
+    { "label": "JPMorgan Chase & Co.", "value": "JPM" },
+    { "label": "Johnson & Johnson", "value": "JNJ" }
   ];
 
   let filteredInstruments: any[] = [];
@@ -48,10 +69,10 @@ export function Pricing() {
       </div>
 
       <div className='widget-content'>
-        <div className='d-flex'>
+        <div className='d-flex mb-2'>
           <MultiSelect
             className="dark"
-            options={options}
+            options={sectorOptions}
             value={selected}
             onChange={setSelected}
             labelledBy='Select Sector'
@@ -60,7 +81,7 @@ export function Pricing() {
 
           <MultiSelect
             className="dark"
-            options={options}
+            options={tickerOptions}
             value={selected}
             onChange={setSelected}
             labelledBy="Select Ticker"
