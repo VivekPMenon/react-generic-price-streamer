@@ -14,7 +14,9 @@ The **React Generic Price Streamer** is a web-based application built using [Rea
 
 <a name="demo"></a>
 ## Live demo 💻
-Visit our live demo at - https://react-generic-price-streamer-git-main-vivekpmenons-projects.vercel.app/
+Visit our live demo at - https://react-generic-price-streamer-git-main-vivekpmenons-projects.vercel.app/  
+<br>
+![Demo](https://github.com/VivekPMenon/react-generic-price-streamer/blob/main/public/demo.gif)
 
 <a name="tech-stack"></a>
 
