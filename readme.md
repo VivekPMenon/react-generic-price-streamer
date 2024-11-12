@@ -1,17 +1,16 @@
 # React Generic Price Streamer
 
-The **React Generic Price Streamer** is an intuitive and efficient web-based application built using [React](https://reactjs.org/). Designed for professionals in the trading and finance sectors, this dashboard empowers users to monitor, analyze, and interact with trade data and market prices in real time. It streamlines the trade pricing process, providing robust visualizations and comprehensive details for improved decision-making.
+The **React Generic Price Streamer** is a web-based application built using [React](https://reactjs.org/). This dashboard empowers users to monitor, analyze, and interact with trade data and market prices in real time. We designed thie website generically so that people with similar Pricing Visualization needs can repurpose this implementation with their favorite Price Soruces.
 
 ## Key Features
 
-- **Real-Time Data Updates**: Track and visualize market prices and trade data with real-time updates for accurate and immediate insights.
+- **Real-Time Data Updates**: Track and visualize market prices and trade data with real-time updates using web socket streaming.
 - **Adaptability to difference Pricing Sources**: You can easily configure/switch the underlying Price sources.
-- **Interactive Graphs & Tables**: Intuitive data visualization tools, such as dynamic graphs and detailed tables, allow for easier trend analysis and reporting.
+- **Interactive Graphs & Tables**: Intuitive data visualization tools, such as dynamic graphs and detailed tables
 - **Customizable Dashboards**: Tailor the dashboard to your specific needs with flexible layout and widget customization options.
 - **Advanced Filtering and Search Capabilities**: Quickly filter and search trade data to find critical information with ease.
 - **Responsive Design**: Optimized for desktops, tablets, and mobile devices, ensuring a seamless user experience across all screen sizes.
 - **Integration-Ready**: Easily connect with APIs, external data sources, and other enterprise systems for a more comprehensive data landscape.
-- **User-Friendly Interface**: Clean and modern UI built using React components, providing an efficient and enjoyable user experience.
 
 <a name="demo"></a>
 ## Live demo 💻
@@ -77,7 +76,7 @@ Need help while contributing? Tag any of the maintainers when creating the issue
 
 ## Thanks To Contributors ✨
 
-We would like to express our sincere gratitude to all the contributors who have helped make ePanchayat available and we are building it brick-brick! Without your contributions, this project wouldn't have been possible. Thank you so much for your time, effort, and dedication! 😄
+We would like to express our sincere gratitude to all the contributors who have helped make this project available and we are building it brick-brick! Without your contributions, this project wouldn't have been possible. Thank you so much for your time, effort, and dedication! 😄
 
 <a href="https://github.com/VivekPMenon/react-generic-price-streamer/graphs/contributors">
   <img src="https://contrib.rocks/image?max=10&repo=vivekpmenon/react-generic-price-streamer" />
