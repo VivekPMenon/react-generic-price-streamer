@@ -1,11 +1,22 @@
-import { useState } from 'react';
+import { useState, useContext, useMemo } from 'react';
 import { ColDef } from 'ag-grid-community';
 import { DataGrid } from '../../common-components/data-grid';
 import traceJson from '../../business-services/pricing-data/trace.json';
+import { SearchDataContext } from '../../business-services/search-data-context';
 
 export function Trace() {
 
   const [rowData] = useState<any[]>(traceJson as any[]);
+  const { searchData } = useContext(SearchDataContext);
+
+  const filteredTraces = useMemo(() => {
+    if (!rowData?.length) {
+      return;
+    }
+    
+    return rowData
+      .filter((instrument: any) => !searchData?.text || instrument.securityID.includes(searchData.text));
+  }, [rowData, searchData?.text]);
 
   const [columnDefs] = useState<ColDef[]>([
     { "field": "tradeID" },
@@ -40,7 +51,7 @@ export function Trace() {
 
       <div className="widget-content full-height">
         <DataGrid
-          rowData={rowData}
+          rowData={filteredTraces}
           columnDefs={columnDefs}>
         </DataGrid>
       </div>
