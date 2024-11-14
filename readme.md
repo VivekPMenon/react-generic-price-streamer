@@ -1,7 +1,7 @@
 
 # React Generic Price Streamer
 
-The **React Generic Price Streamer** is a web-based application built using [React](https://reactjs.org/). This dashboard empowers users to monitor, analyze, and interact with trade data and market prices in real time. We designed thie website generically so that people with similar Pricing Visualization needs can repurpose this implementation with their favorite Price Soruces.
+The **React Generic Price Streamer** is a web-based application built using [React](https://reactjs.org/). This dashboard empowers users to monitor, analyze, and interact with trade data and market prices in real time. We designed this website generically so that people with similar Pricing Visualization can repurpose this implementation with their favorite Price Sources.
 
 ## Key Features
 
