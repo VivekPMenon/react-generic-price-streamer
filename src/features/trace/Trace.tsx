@@ -38,11 +38,10 @@ export function Trace() {
         <span className="widget-label">Trace</span>
       </div>
 
-      <div className="widget-content">
+      <div className="widget-content full-height">
         <DataGrid
           rowData={rowData}
-          columnDefs={columnDefs}
-          height={400}>
+          columnDefs={columnDefs}>
         </DataGrid>
       </div>
     </div>

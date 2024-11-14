@@ -5,6 +5,26 @@
   flex-direction: column;
   height: 100%;
 
+  .full-height {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 100%;
+  }
+
+  .bottom-widgets {
+    display: flex;    
+    flex: 1 1 50%;
+
+    .widget:first-child {
+      flex: 1 1 30% !important;
+    }
+
+    .widget {
+      flex: 1 1 60% !important;
+    }
+  }
+
   .dashboard-header {    
     padding: 10px;
     display: flex;
@@ -38,12 +58,12 @@
 
   .dashboard-content {
     display: flex;
+    flex-direction: column;
     flex: 1 1 90%;
     padding: 5px;    
-    flex-wrap: wrap;
 
     .widget:first-child {
-      flex-basis: 100%;
+      flex-basis: 50%;
     }
 
     .widget {      
@@ -77,6 +97,10 @@
         font-size: .8rem;
         padding: 5px;
       }
+    }
+
+    .pricing-widget {
+      min-height: 350px;
     }
   }
 }

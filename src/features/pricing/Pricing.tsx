@@ -63,12 +63,12 @@ export function Pricing() {
   }
 
   return (
-    <div className='widget'>
+    <div className='widget pricing-widget'>
       <div className='widget-header'>
         <span className='widget-label'>Pricing</span>
       </div>
 
-      <div className='widget-content'>
+      <div className='widget-content full-height'>
         <div className='d-flex mb-2'>
           <MultiSelect
             className="dark"
@@ -90,10 +90,9 @@ export function Pricing() {
         </div>
         
 
-        <DataGrid
+        <DataGrid 
           rowData={filteredInstruments}
-          columnDefs={columnDefs}
-          height={400}>
+          columnDefs={columnDefs}>
         </DataGrid>
       </div>
     </div>

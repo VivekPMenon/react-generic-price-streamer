@@ -57,7 +57,7 @@ export function DataGrid(props: IDataGridProps) {
         </div>
       </div> */}
 
-      <div className="ag-theme-balham-dark" style={{ height: props.height }}>
+      <div className="ag-theme-balham-dark full-height" style={{ height: props.height }}>
         <AgGridReact {...finalProps}
           statusBar={statusBar}
           onGridReady={onGridReady}>
