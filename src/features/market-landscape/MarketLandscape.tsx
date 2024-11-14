@@ -43,7 +43,7 @@ export function MarketLandscape() {
   return (
     <div className="widget">
       <div className="widget-header">
-        <span className="widget-label">Market Landscape - TODO</span>
+        <span className="widget-label">Market Landscape</span>
       </div>
       <div className='widget-body'>
         <HighchartsReact highcharts={Highcharts} options={options} />
