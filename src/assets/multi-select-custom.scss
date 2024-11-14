@@ -1,5 +1,19 @@
 @import 'variables.scss';
 
+.rbt {
+  width: 100% !important;
+  height: 35px;
+
+  .rbt-token {
+    background-color: #065d5a;
+    color: white;
+  }
+
+  .dropdown-item {
+    font-size: 12px;
+  }
+}
+
 .rmsc.dark {
   --rmsc-main: #{$teal};
   --rmsc-hover: #3f4750;
