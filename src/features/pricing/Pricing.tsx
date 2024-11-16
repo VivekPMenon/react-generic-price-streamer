@@ -4,10 +4,11 @@ import { MultiSelect } from 'react-multi-select-component';
 import { DataGrid, getNumberColDefTemplate } from '../../common-components/data-grid';
 import { pricingDataService } from '../../business-services/pricing-data';
 import { SearchDataContext } from '../../business-services/search-data-context';
+import { SecurityData } from '../../business-services/pricing-data/model';
 
 export function Pricing() {
 
-  const [allInstruments, setAllInstruments] = useState<any>([]); // todo add type
+  const [allInstruments, setAllInstruments] = useState<SecurityData[]>([]); // todo add type
   const [columnDefs] = useState<ColDef[]>(getColumnDefs());
   const [selected, setSelected] = useState([]);
   const { searchData } = useContext(SearchDataContext);
