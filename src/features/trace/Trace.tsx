@@ -7,13 +7,14 @@ import { SearchDataContext } from '../../business-services/search-data-context';
 export function Trace() {
 
   const [rowData] = useState<any[]>(traceJson as any[]);
+  const [isExpanded, setIsExpanded] = useState<boolean>(false);
   const { searchData } = useContext(SearchDataContext);
 
   const filteredTraces = useMemo(() => {
     if (!rowData?.length) {
       return;
     }
-    
+
     return rowData
       .filter((instrument: any) => !searchData?.text || instrument.securityID.includes(searchData.text));
   }, [rowData, searchData?.text]);
@@ -43,10 +44,18 @@ export function Trace() {
     { "field": "specialCondition" }
   ]);
 
+  function toggle() {
+    setIsExpanded(!isExpanded);
+  }
+
   return (
-    <div className="widget">
+    <div className={isExpanded ? 'widget expanded': 'widget'}>
       <div className="widget-header">
         <span className="widget-label">Trace</span>
+
+        <div className='toggler' onClick={toggle}>
+          <i className={isExpanded ? 'cil-window-restore' : 'cil-window-maximize'}></i>
+        </div>
       </div>
 
       <div className="widget-content full-height">
