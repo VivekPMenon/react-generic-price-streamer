@@ -9,6 +9,7 @@ import { SecurityData } from '../../business-services/pricing-data/model';
 export function Pricing() {
 
   const [allInstruments, setAllInstruments] = useState<SecurityData[]>([]); // todo add type
+  const [isExpanded, setIsExpanded] = useState<boolean>(false);
   const [columnDefs] = useState<ColDef[]>(getColumnDefs());
   const [selected, setSelected] = useState([]);
   const { searchData } = useContext(SearchDataContext);
@@ -63,10 +64,18 @@ export function Pricing() {
       .filter((instrument: any) => !searchData?.text || instrument.cusip.includes(searchData.text));
   }
 
+  function toggle() {
+    setIsExpanded(!isExpanded);
+  }
+
   return (
-    <div className='widget pricing-widget'>
+    <div className={isExpanded ? 'widget pricing-widget expanded': 'widget pricing-widget'}>
       <div className='widget-header'>
         <span className='widget-label'>Pricing</span>
+
+        <div className='toggler' onClick={toggle}>
+          <i className={isExpanded ? 'cil-window-restore' : 'cil-window-maximize'}></i>
+        </div>
       </div>
 
       <div className='widget-content full-height'>
