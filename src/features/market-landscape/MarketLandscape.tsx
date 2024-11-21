@@ -41,22 +41,60 @@ export function MarketLandscape() {
       {
         name: 'ATT',
         type: 'spline',
-        data: [20, 22, 21, 23, 25, 24] // Main spline series data
+        data: [28, 32, 27, 30, 29, 33] // Main spline series data
+      },
+      {
+        name: 'MSFT Trades',
+        type: 'scatter',
+        data: [[0, 350], [2, 250], [4, 400]], // Example scatter points for trades
+        marker: {
+          symbol: 'circle'
+        },
+        tooltip: {
+          pointFormat: 'Trade Price: {point.y} USD'
+        }
+      },
+      {
+        name: 'AAPL Trades',
+        type: 'scatter',
+        data: [[1, 180], [3, 220], [5, 200]], // Example scatter points for trades
+        marker: {
+          symbol: 'triangle'
+        },
+        tooltip: {
+          pointFormat: 'Trade Price: {point.y} USD'
+        }
+      },
+      {
+        name: 'ATT Trades',
+        type: 'scatter',
+        data: [[0, 29], [2, 28], [4, 34]], // Example scatter points for trades
+        marker: {
+          symbol: 'square'
+        },
+        tooltip: {
+          pointFormat: 'Trade Price: {point.y} USD'
+        }
       }
     ]
   };
 
+  function toggle() {
+    setIsExpanded(!isExpanded);
+  }
+
   return (
-    <div>
-      <button onClick={() => setIsExpanded(!isExpanded)}>
-        {isExpanded ? 'Collapse' : 'Expand'}
-      </button>
-      {isExpanded && (
-        <HighchartsReact
-          highcharts={Highcharts}
-          options={options}
-        />
-      )}
+    <div className={isExpanded ? 'widget expanded': 'widget'}>
+      <div className="widget-header">
+        <span className="widget-label">Market Landscape - Work In Progress</span>
+
+        <div className='toggler' onClick={toggle}>
+          <i className={isExpanded ? 'cil-window-restore' : 'cil-window-maximize'}></i>
+        </div>
+      </div>
+      <div className='widget-body'>
+        <HighchartsReact highcharts={Highcharts} options={options} />
+      </div>
     </div>
   );
-}
+} 
