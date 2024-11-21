@@ -1,10 +1,13 @@
 import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
 import darkTheme from '../../common-components/charts/dark-theme';
+import { useState } from 'react';
 
 Highcharts.setOptions(darkTheme);
 
 export function MarketLandscape() {
+
+  const [isExpanded, setIsExpanded] = useState<boolean>(false);
 
   const options = {
     chart: {
@@ -76,10 +79,18 @@ export function MarketLandscape() {
     ]
   };
 
+  function toggle() {
+    setIsExpanded(!isExpanded);
+  }
+
   return (
-    <div className="widget">
+    <div className={isExpanded ? 'widget expanded': 'widget'}>
       <div className="widget-header">
         <span className="widget-label">Market Landscape - Work In Progress</span>
+
+        <div className='toggler' onClick={toggle}>
+          <i className={isExpanded ? 'cil-window-restore' : 'cil-window-maximize'}></i>
+        </div>
       </div>
       <div className='widget-body'>
         <HighchartsReact highcharts={Highcharts} options={options} />
