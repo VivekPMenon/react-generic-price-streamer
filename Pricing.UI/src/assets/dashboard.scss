@@ -75,9 +75,21 @@
       border-radius: $border-radius-lg;
       min-width: 500px;
 
+      &.expanded {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: 100%;
+        z-index: 99;
+        padding-right: 10px;
+      }
+
       .widget-header {
         flex-basis: 40px;
         padding: 5px;
+        justify-content: space-between;
+        display: flex;
 
         .widget-label {
           text-transform: uppercase;          
@@ -85,6 +97,12 @@
           padding: 5px;
           font-weight: bold;
           font-size: $label-font-size;
+        }
+
+        .toggler {
+          display: flex;
+          padding: 3px;
+          cursor: pointer;
         }
       }
 
