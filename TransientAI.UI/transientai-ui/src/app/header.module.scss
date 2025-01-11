@@ -1,0 +1,24 @@
+.title {
+  font-size: 15px;
+  // font-weight: bold;
+  color: white;
+  display: flex;
+  gap: 5px;
+
+  img {
+    // border-radius: 3px;
+    height: 20px;
+    width: 20x;
+  }
+}
+
+.profilePic {
+  background-color: white;
+  color: black;
+  border-radius: 50%;
+  height: 35px;
+  width: 35px;
+  align-items: center;
+  justify-content: center;
+  display: flex;
+}
