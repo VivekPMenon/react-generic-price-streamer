@@ -1,0 +1,19 @@
+@import './variables.scss';
+
+.hyperlink {
+  background-color: transparent;
+  /* Blue link-style button */
+  border: none;
+  font-size: 14px;
+  cursor: pointer;
+  padding: 10px 0;
+  text-align: left;
+
+  &.primary {
+    color: $teal;
+  }
+
+  &:hover {
+    text-decoration: underline;
+  }
+}

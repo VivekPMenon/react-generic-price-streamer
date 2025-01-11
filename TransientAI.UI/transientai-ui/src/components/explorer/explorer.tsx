@@ -8,7 +8,7 @@ export function Explorer() {
       <div className="menu">
         <div className="menu-item">
           <div className='parent-menu'>
-            <span className="icon">☀️</span>
+            <span className="icon fa-solid fa-user"></span>
             <span className="text">Today</span>
             <span className="badge">5</span>
           </div>

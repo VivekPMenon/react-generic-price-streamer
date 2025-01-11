@@ -1,0 +1,67 @@
+@import '../../assets/variables.scss';
+
+.chatbot-response {
+  font-size: 14px;
+  display: flex;
+  flex-direction: column;
+}
+
+.chat-message {
+  margin-bottom: 20px;
+  border-radius: 8px;
+
+  p {
+    background-color: $gray-1000;
+    padding: 10px;
+    border-radius: 5px;
+    width: 100%;
+  }
+}
+
+.message-content {
+  display: flex;
+  gap: 10px;
+  align-items: baseline;
+}
+
+.message-header {
+  height: 30px;
+  width: 30px;
+}
+
+.chat-message.user {
+}
+
+.assistant {
+  background-color: $gray-1000;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.message-time {
+  font-size: 0.8rem;
+  margin-top: 5px;
+  text-align: right;
+  color: $font-color-200;
+}
+
+.recommendation-card {
+  display: flex;
+  align-items: center;
+  margin-top: 10px;
+  padding: 10px;
+  background-color: $gray-100;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+}
+
+.recommendation-icon {
+  font-size: 1.2rem;
+  margin-right: 10px;
+  color: $teal;
+}
+
+.recommendation-text {
+  color: $font-color-100;
+}

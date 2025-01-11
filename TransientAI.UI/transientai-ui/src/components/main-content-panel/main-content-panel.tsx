@@ -13,7 +13,7 @@ export function MainContentPanel() {
           <Tabs.Trigger value="settings">Settings</Tabs.Trigger>
         </Tabs.List>
 
-        <Box pt="3">
+        <Box pt="3" className='height-100p pb-15px'>
           <Tabs.Content value="account" className='height-100p'>
             <div className='height-100p tab-content'>
               Content goes here

@@ -26,16 +26,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        {/* <link
-          rel="stylesheet"
-          href="https://cdn.jsdelivr.net/npm/@coreui/icons/css/coreui-icons.min.css"
-        /> */}
+        <script src="https://kit.fontawesome.com/9a71b0f99c.js" crossOrigin="anonymous"></script>
 
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased font-sans dark`}
       >
-        <Theme>
+        <Theme accentColor="teal" className="height-100p">
           {children}
         </Theme>
       </body>

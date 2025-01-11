@@ -6,6 +6,9 @@
 @import '../assets/variables.scss';
 @import '../assets/menu.scss';
 @import '../assets/tabs.scss';
+@import '../assets/buttons.scss';
+@import '../assets/profile.scss';
+@import '../assets/radix-overrides.scss';
 
 :root {
   --background: #{$body-bg};
@@ -16,6 +19,7 @@
   :root {
     --background: #0a0a0a;
     --foreground: #ededed;
+    --accent-indicator: red;
   }
 }
 

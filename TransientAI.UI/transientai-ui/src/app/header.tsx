@@ -8,7 +8,7 @@ export function Header() {
         TransientAI
       </div>
 
-      <div className={styles.profilePic}>
+      <div className='profile-pic'>
         VM
       </div>
     </header>
