@@ -1,53 +1,66 @@
+'use client';
+
+import { ActiveMenuData, MenuContextData, MenuInfo, menuInfoList } from '@/services/menu-data';
 import styles from './explorer.module.scss';
+import { useContext, useMemo, useState } from 'react';
 
 export function Explorer() {
+
+  const { activeMenuData, setActiveMenuData } = useContext(MenuContextData);
+
+  const [selectedTab, setSelectedTab] = useState<string>('Daily Insights');
+
+  function onParentMenuClick(selectedMenuInfo: MenuInfo) {
+    const newMenuList: MenuInfo[] = [...activeMenuData?.activeMenuList!];
+
+    if(!newMenuList.find(menu => menu.description === selectedMenuInfo.description)) {
+      newMenuList.push(selectedMenuInfo);
+    }
+
+    setActiveMenuData!({
+      activeMenuList: newMenuList,
+      selectedMenu: selectedMenuInfo
+    });
+  }
+
+  function onChildMenuClick(menuInfo: MenuInfo) {
+    setActiveMenuData!({
+      activeMenuList: [
+        ...activeMenuData?.activeMenuList!,
+        menuInfo
+      ],
+      selectedMenu: menuInfo
+    });
+  }
+
   return (
     <div className={styles.explorer}>
       Explorer
 
       <div className="menu">
-        <div className="menu-item">
-          <div className='parent-menu'>
-            <span className="icon fa-solid fa-user"></span>
-            <span className="text">Today</span>
-            <span className="badge">5</span>
-          </div>
-        </div>
+        {
+          menuInfoList.map(menuInfo => (
+            <div className="menu-item" key={menuInfo.description}>
+              <div className='parent-menu' onClick={() => onParentMenuClick(menuInfo)}>
+                <span className={`icon ${menuInfo.icon}`}></span>
+                <span className="text">{menuInfo.description}</span>
+                <span className="badge">{menuInfo.badgeCount}</span>
+              </div>
 
-        <div className="menu-item collapsible">
-          <div className='parent-menu'>
-            <span className="icon">📂</span>
-            <span className="text">Client Activity</span>
-            <span className="badge">4</span>
-          </div>
-          <div className="submenu">
-            <div className="submenu-item">Active Orders</div>
-            <div className="submenu-item">Recent Trades</div>
-            <div className="submenu-item">Call Notes</div>
-            <div className="submenu-item">Position Changes <span className="timestamp">11/24 9:45am</span></div>
-          </div>
-        </div>
+              {
+                menuInfo.children ? menuInfo.children.map(childMenu => (
+                  <div className="submenu" key={childMenu.description}>
+                    <div className="submenu-item" onClick={() => onChildMenuClick(menuInfo)}>
+                      {childMenu.description}
+                      <span className="timestamp">{childMenu.subDescription}</span>
+                    </div>
+                  </div>
+                )) : <></>
+              }
 
-        <div className="menu-item collapsible">
-          <div className='parent-menu'>
-            <span className="icon">📘</span>
-            <span className="text">Client Books</span>
-            <span className="badge">4</span>
-          </div>
-        </div>
-
-        <div className="menu-item collapsible">
-          <div className='parent-menu'>
-            <span className="icon">📊</span>
-            <span className="text">Market Analysis</span>
-          </div>
-          <div className="submenu">
-            <div className="submenu-item">Breaking News <span className="timestamp">11/24 11:15am</span></div>
-            <div className="submenu-item">Earnings Updates</div>
-            <div className="submenu-item">Rating Changes</div>
-            <div className="submenu-item">Research Notes <span className="timestamp">11/24 8:45am</span></div>
-          </div>
-        </div>
+            </div>
+          ))
+        }
       </div>
 
     </div>

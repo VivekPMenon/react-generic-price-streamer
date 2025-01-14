@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Theme } from "@radix-ui/themes";
 import "./globals.scss";
+import { MenuContextDataProvider } from "@/services/menu-data";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -29,11 +30,11 @@ export default function RootLayout({
         <script src="https://kit.fontawesome.com/9a71b0f99c.js" crossOrigin="anonymous"></script>
 
       </head>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased font-sans dark`}
-      >
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased font-sans dark`}>
         <Theme accentColor="teal" className="height-100p">
-          {children}
+          <MenuContextDataProvider>
+            {children}
+          </MenuContextDataProvider>
         </Theme>
       </body>
     </html>

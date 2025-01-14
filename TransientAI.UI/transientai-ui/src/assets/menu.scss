@@ -1,6 +1,6 @@
 .menu {
   padding: 10px;
-  max-width: 300px;
+  max-width: 350px;
   font-size: 13px;
 }
 
@@ -17,10 +17,13 @@
   display: flex;
   justify-content: space-between;
   width: 100%;
+  align-items: baseline;
 }
 
 .menu-item .icon {
-  margin-right: 5px;
+  width: 30px;
+  font-size: 16px;
+  color: $font-color-gray;
 }
 
 .menu-item .text {
@@ -37,16 +40,16 @@
 
 .submenu {
   width: 100%;
-  padding: 5px 25px;
+  padding: 5px 30px;
 }
 
-.collapsible .submenu-item {
+.submenu-item {
   padding: 5px 0;
   display: flex;
   justify-content: space-between;
-  color: #aaa;
+  color: $font-color-200;
 }
 
-.collapsible .submenu-item .timestamp {
+.submenu-item .timestamp {
   color: #777;
 }
