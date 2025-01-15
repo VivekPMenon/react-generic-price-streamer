@@ -4,6 +4,7 @@
   font-size: 14px;
   display: flex;
   flex-direction: column;
+  height: 100%;
 }
 
 .chat-message {
@@ -11,11 +12,28 @@
   border-radius: 8px;
 
   p {
+    display: flex;
     background-color: $gray-1000;
     padding: 10px;
     border-radius: 5px;
     width: 100%;
+    justify-content: space-between;
+    align-items: center;
   }
+}
+
+.search-bar {
+  margin-top: auto;
+  margin-bottom: 20px;
+}
+
+.search-bar input {
+  width: 100%;
+  padding: 10px;
+  font-size: 14px;
+  border: none;
+  border-radius: 5px;
+  background-color: $gray-1000;
 }
 
 .message-content {

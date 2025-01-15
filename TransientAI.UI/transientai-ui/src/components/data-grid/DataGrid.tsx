@@ -24,6 +24,7 @@ export function DataGrid(props: IDataGridProps) {
       resizable: true,
       suppressHeaderMenuButton: true,
       width: 120,
+      
       ...props.defaultColDef
     },
     sideBar: false,
@@ -56,7 +57,8 @@ export function DataGrid(props: IDataGridProps) {
       <div className="ag-theme-balham-dark height-100p" style={{ height: props.height }}>
         <AgGridReact {...finalProps}
           statusBar={statusBar}
-          onGridReady={onGridReady}>
+          onGridReady={onGridReady}
+          rowHeight={35}>
         </AgGridReact>
       </div>
     </>

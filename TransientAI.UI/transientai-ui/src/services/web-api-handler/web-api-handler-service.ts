@@ -19,9 +19,9 @@ class WebApihandler {
     const result = await axios({
       url: finalUrl,
       params: {
-        bank_Id: this.bankId,
-        view_Id: this.viewId,
-        user_Id: this.userId,
+        bank_id: this.bankId,
+        view_id: this.viewId,
+        user_id: this.userId,
         ...params
       },
       method: 'GET'

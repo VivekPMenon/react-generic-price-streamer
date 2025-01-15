@@ -7,10 +7,23 @@ import { ChatbotResponse } from './chatbot-response';
 export function Chatbot() {
 
   const [isResponseShown, setIsResponseShown] = useState<boolean>(false);
+  const [query, setQuery] = useState<string>('');
+  
+  function onKeyDown(event: any) {
+    if (event.key !== "Enter") {
+      return;
+    }
 
-  if (isResponseShown) {
+    const inputValue = event.target.value;
+    setQuery(inputValue);
+  }
+
+
+  if (query) {
     return <div className={styles['chatbot-container']}>
-      <ChatbotResponse></ChatbotResponse>
+      <ChatbotResponse
+        query={query}>
+      </ChatbotResponse>
     </div>;
   }
 
@@ -22,7 +35,7 @@ export function Chatbot() {
       </div>
 
       <div className={styles['search-bar']} >
-        <input type="text" placeholder="Ask TransientAI anything - use '@' to find files, folders and other trading data" />
+        <input type="text" placeholder="Ask TransientAI anything - use '@' to find files, folders and other trading data" onKeyDown={onKeyDown} />
       </div>
 
       <div className={styles['workflow-list']}>
