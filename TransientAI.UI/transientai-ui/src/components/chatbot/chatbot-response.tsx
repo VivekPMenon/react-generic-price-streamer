@@ -4,10 +4,12 @@ import { chatbotDataService } from '@/services/chatbot-data/chatbot-data-service
 import { ChatbotResponseType, ChatHistory } from '@/services/chatbot-data/model';
 import { Spinner } from '@radix-ui/themes';
 import ReactMarkdown from 'react-markdown';
+import { getCurrentTimestamp } from '@/lib/utility-functions/date-operations';
 
 export interface ChatbotResponseProps {
   query?: string;
   isPastQuery?: boolean;
+  navigateBack?: () => void;
 }
 
 export function ChatbotResponse(props: ChatbotResponseProps) {
@@ -16,15 +18,24 @@ export function ChatbotResponse(props: ChatbotResponseProps) {
 
   useEffect(() => executeChatbotRequest(props.query!), [props.query]);
 
+  function onKeyDown(event: any) {
+    if (event.key !== "Enter") {
+      return;
+    }
+
+    const inputValue = event.target.value;
+    executeChatbotRequest(inputValue);
+  }
+
   function executeChatbotRequest(query: string) {
     const executeChatbotRequestAsync = async () => {
-
       const newChatHistories: ChatHistory[] = [
         ...chatHistories,
         {
           request: {
             query,
-            isLoading: true
+            isLoading: true,
+            timestamp: getCurrentTimestamp()
           }
         }
       ];
@@ -35,6 +46,7 @@ export function ChatbotResponse(props: ChatbotResponseProps) {
       const lastChatHistory = newChatHistories[newChatHistories.length - 1];
       lastChatHistory.response = response;
       lastChatHistory.request!.isLoading = false;
+      lastChatHistory.response.timestamp = getCurrentTimestamp();
 
       setChatHistories([
         ...newChatHistories
@@ -56,7 +68,7 @@ export function ChatbotResponse(props: ChatbotResponseProps) {
             </p>
           </div>
 
-          <div className={styles['message-time']}>10:33 AM</div>
+          <div className={styles['message-time']}>{chatHistory.request?.timestamp}</div>
         </div>
 
         {
@@ -71,7 +83,7 @@ export function ChatbotResponse(props: ChatbotResponseProps) {
               </div> */}
             </div>
 
-            <div className={styles['message-time']}>10:33 AM</div>
+            <div className={`${styles['assistant-message-time']}`}>{chatHistory.response?.timestamp}</div>
           </div> : <></>
         }
       </>
@@ -80,12 +92,14 @@ export function ChatbotResponse(props: ChatbotResponseProps) {
 
   return (
     <div className={styles['chatbot-response']}>
-      <button className='hyperlink'>Back to List</button>
+      <button className='hyperlink' onClick={props.navigateBack}>Back to List</button>
 
-      {chatHistoryElement}
+      <div className={styles['chat-history']}>
+        {chatHistoryElement}
+      </div>
 
       <div className={styles['search-bar']} >
-        <input type="text" placeholder="Ask TransientAI anything - use '@' to find files, folders and other trading data" />
+        <input type="text" placeholder="Ask TransientAI anything - use '@' to find files, folders and other trading data" onKeyDown={onKeyDown}/>
       </div>
     </div>
   );

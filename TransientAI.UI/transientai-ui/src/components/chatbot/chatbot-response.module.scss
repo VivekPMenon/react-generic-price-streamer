@@ -5,10 +5,11 @@
   display: flex;
   flex-direction: column;
   height: 100%;
+  color: $font-color-200;
 }
 
 .chat-message {
-  margin-bottom: 20px;
+  margin-bottom: 10px;
   border-radius: 8px;
 
   p {
@@ -63,6 +64,12 @@
   color: $font-color-200;
 }
 
+.assistant-message-time {
+  @extend .message-time;
+  text-align: left;
+  margin-bottom: 25px;
+}
+
 .recommendation-card {
   display: flex;
   align-items: center;
@@ -82,4 +89,31 @@
 
 .recommendation-text {
   color: $font-color-100;
+}
+
+.chat-history {
+  height: 80vh;
+  overflow-y: auto;
+}
+
+.chat-history::-webkit-scrollbar {
+  width: 0px;
+}
+
+.chat-history:hover::-webkit-scrollbar {
+  width: 10px;
+}
+
+.chat-history::-webkit-scrollbar-track {
+  background: $gray-1000;
+}
+
+.chat-history::-webkit-scrollbar-thumb {
+  background: $scrollbar-thumb-bg;
+  border-radius: 5px;
+}
+
+.chat-history::-webkit-scrollbar-thumb:hover {
+  background: $scrollbar-hover-bg;
+  display: block;
 }

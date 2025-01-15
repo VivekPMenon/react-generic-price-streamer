@@ -16,13 +16,15 @@ export function Chatbot() {
 
     const inputValue = event.target.value;
     setQuery(inputValue);
+    setIsResponseShown(true);
   }
 
 
-  if (query) {
+  if (isResponseShown) {
     return <div className={styles['chatbot-container']}>
       <ChatbotResponse
-        query={query}>
+        query={query}
+        navigateBack={() => setIsResponseShown(false)}>
       </ChatbotResponse>
     </div>;
   }
