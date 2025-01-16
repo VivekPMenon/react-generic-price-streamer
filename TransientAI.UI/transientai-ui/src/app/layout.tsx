@@ -27,7 +27,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <script src="https://kit.fontawesome.com/9a71b0f99c.js" crossOrigin="anonymous"></script>
+        <script src="https://kit.fontawesome.com/9a71b0f99c.js" crossOrigin="anonymous" async></script>
 
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased font-sans dark`}>

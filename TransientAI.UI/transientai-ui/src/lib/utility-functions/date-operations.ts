@@ -40,7 +40,7 @@ export function isDateRightNow(timestamp: Date): boolean {
 }
 
 export function isDateToday(timestamp: Date): boolean {
-  let dateOfNow = new Date();
+  const dateOfNow = new Date();
   const datesHaveSameYear = isSameYear(timestamp, dateOfNow);
   const datesHaveSameMonth = isSameMonth(timestamp, dateOfNow);
   const datesHaveSameDay = isSameDayDate(timestamp, dateOfNow);

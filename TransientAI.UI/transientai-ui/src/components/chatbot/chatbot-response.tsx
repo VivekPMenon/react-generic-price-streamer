@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import styles from './chatbot-response.module.scss';
 import { chatbotDataService } from '@/services/chatbot-data/chatbot-data-service';
-import { ChatbotResponseType, ChatHistory } from '@/services/chatbot-data/model';
+import { ChatHistory } from '@/services/chatbot-data/model';
 import { Spinner } from '@radix-ui/themes';
 import ReactMarkdown from 'react-markdown';
 import { getCurrentTimestamp } from '@/lib/utility-functions/date-operations';

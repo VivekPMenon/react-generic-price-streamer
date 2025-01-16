@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useContext, useMemo, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { ColDef } from 'ag-grid-community';
 import { DataGrid } from '../data-grid';
 import { BondInfo, productBrowserDataService } from '@/services/product-browser-data';
