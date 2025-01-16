@@ -8,7 +8,12 @@ export function Chatbot() {
 
   const [isResponseShown, setIsResponseShown] = useState<boolean>(false);
   const [query, setQuery] = useState<string>('');
-  
+  const pastQueries = [
+    'Recommended bond sales, Monday 12/19/24',
+    'BlackRock portfolio analysis & recommendations',
+    'S&P 500 sector rotation strategy'
+  ];
+
   function onKeyDown(event: any) {
     if (event.key !== "Enter") {
       return;
@@ -16,6 +21,11 @@ export function Chatbot() {
 
     const inputValue = event.target.value;
     setQuery(inputValue);
+    setIsResponseShown(true);
+  }
+
+  function selectPastQuery(pastQuery: string) {
+    setQuery(pastQuery);
     setIsResponseShown(true);
   }
 
@@ -42,18 +52,15 @@ export function Chatbot() {
 
       <div className={styles['workflow-list']}>
         <h2>Past chats & workflows</h2>
-        <div className={styles['workflow-item']} onClick={() => setIsResponseShown(true)}>
-          <p>Recommended bond sales, Monday 12/19/24</p>
-          <span>2 days</span>
-        </div>
-        <div className={styles['workflow-item']}>
-          <p>BlackRock portfolio analysis & recommendations</p>
-          <span>3 days</span>
-        </div>
-        <div className={styles['workflow-item']}>
-          <p>S&P 500 sector rotation strategy</p>
-          <span>4 days</span>
-        </div>
+        {
+          pastQueries.map(pastQuery => (
+            <div className={styles['workflow-item']} onClick={() => selectPastQuery(pastQuery)} key={pastQuery}>
+              <p>{pastQuery}</p>
+              <span>2 days</span>
+            </div>
+          ))
+        }
+
         <button className='hyperlink primary'>Show more</button>
       </div>
     </div>

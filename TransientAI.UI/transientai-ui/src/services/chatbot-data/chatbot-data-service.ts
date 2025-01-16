@@ -15,6 +15,16 @@ class ChatbotDataService {
       responseText: result.response
     };
   }
+
+  async streamChatbotResponse(request: ChatbotRequestType): Promise<Response> {
+    const result = await webApihandler.getStream('local_search', {
+      stream: true,
+      response_type: 'Multiple Paragraphs',
+      ...request
+    });
+
+    return result;
+  }
 }
 
 export const chatbotDataService = new ChatbotDataService();

@@ -14,6 +14,7 @@ export interface ChatbotResponseProps {
 
 export function ChatbotResponse(props: ChatbotResponseProps) {
 
+  const [query, setQuery] = useState<string>('');
   const [chatHistories, setChatHistories] = useState<ChatHistory[]>([]);
 
   useEffect(() => executeChatbotRequest(props.query!), [props.query]);
@@ -25,8 +26,14 @@ export function ChatbotResponse(props: ChatbotResponseProps) {
 
     const inputValue = event.target.value;
     executeChatbotRequest(inputValue);
+    
+    setQuery('');
   }
 
+  function onQueryChange(event: any) {
+    setQuery(event.target.value);
+  }
+  
   function executeChatbotRequest(query: string) {
     const executeChatbotRequestAsync = async () => {
       const newChatHistories: ChatHistory[] = [
@@ -40,7 +47,7 @@ export function ChatbotResponse(props: ChatbotResponseProps) {
         }
       ];
       setChatHistories(newChatHistories);
-
+      
       const response = await chatbotDataService.getChatbotResponse({ query });
 
       const lastChatHistory = newChatHistories[newChatHistories.length - 1];
@@ -99,8 +106,80 @@ export function ChatbotResponse(props: ChatbotResponseProps) {
       </div>
 
       <div className={styles['search-bar']} >
-        <input type="text" placeholder="Ask TransientAI anything - use '@' to find files, folders and other trading data" onKeyDown={onKeyDown}/>
+        <input type="text" 
+          placeholder="Ask TransientAI anything - use '@' to find files, folders and other trading data" 
+          onKeyDown={onKeyDown}
+          onChange={onQueryChange} 
+          value={query}/>
       </div>
     </div>
   );
 }
+
+
+
+// function executeChatbotRequest(query: string) {
+//   const executeChatbotRequestAsync = async () => {
+//     const newChatHistories: ChatHistory[] = [
+//       ...chatHistories,
+//       {
+//         request: {
+//           query,
+//           isLoading: true,
+//           timestamp: getCurrentTimestamp()
+//         }
+//       }
+//     ];
+//     setChatHistories(newChatHistories);
+
+//     const response = await chatbotDataService.streamChatbotResponse({ query });
+//     if (!response.body) throw new Error('ReadableStream not supported');
+
+//     const reader = response.body.getReader();
+//     const decoder = new TextDecoder('utf-8');
+//     let chatbotResponse = '';
+
+//     // Read the streamed response
+//     while (true) {
+//       const { done, value } = await reader.read();
+//       if (done) break;
+
+//       // Decode the chunk of data and append it to the chatbot response
+//       chatbotResponse += decoder.decode(value, { stream: true });
+
+//       console.log(chatbotResponse)
+//       const parsedResponse = extractResponse(chatbotResponse);
+//       if (!parsedResponse) {
+//         continue;
+//       }
+
+//       const lastChatHistory = newChatHistories[newChatHistories.length - 1];
+//       lastChatHistory.response = { responseText: parsedResponse };
+
+//       setChatHistories([
+//         ...newChatHistories
+//       ]);
+//     }
+
+//     const lastChatHistory = newChatHistories[newChatHistories.length - 1];
+//     lastChatHistory.request!.isLoading = false;
+//     lastChatHistory.response!.timestamp = getCurrentTimestamp();
+//     setChatHistories([
+//       ...newChatHistories
+//     ]);
+//   };
+
+//   executeChatbotRequestAsync();
+// }
+
+// function extractResponse(jsonString: string) {
+//   const regex = /"response":\s*"([^"]*)"/;
+
+//   const match = jsonString.match(regex);
+
+//   if (match && match[1]) {
+//     return match[1];
+//   } else {
+//     return null; 
+//   }
+// }

@@ -30,6 +30,19 @@ class WebApihandler {
     return result.data;
   }
 
+  async getStream(url:string, params: {[key: string]: any}, options?: WebApihandlerOptions)  {
+     const currentEnv = endpointFinder.getCurrentEnvInfo();
+     const finalParams = {...params, user_id: this.userId};
+     const finalUrl = `${currentEnv.httpsEndpoint}/${url}?${new URLSearchParams(finalParams).toString()}`;
+
+     return await fetch(finalUrl, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    });
+  }
+
   async post(url:string, data: any, params?: {[key: string]: any}, options?: WebApihandlerOptions)  {
     // todo.. caching 
      const currentEnv = endpointFinder.getCurrentEnvInfo();
