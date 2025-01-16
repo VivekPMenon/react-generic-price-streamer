@@ -1,3 +1,4 @@
+using Hosting;
 using PricingData.Api.Interfaces;
 using PricingData.Api.Repositories;
 
@@ -14,6 +15,8 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddTransient<ITraceRepository, TraceRepository>();
 builder.Services.AddTransient<IPriceRepository, PriceRepository>();
 
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -22,6 +25,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseExceptionHandler();
 
 app.UseHttpsRedirection();
 
