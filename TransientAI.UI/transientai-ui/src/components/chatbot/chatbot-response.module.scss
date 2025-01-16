@@ -48,6 +48,14 @@
   width: 30px;
 }
 
+.clip-conversation {
+  cursor: pointer;
+  
+  &:hover {
+    color: $white;
+  }
+}
+
 .chat-message.user {
 }
 

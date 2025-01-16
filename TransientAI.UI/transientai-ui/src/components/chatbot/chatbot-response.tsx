@@ -1,10 +1,11 @@
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import styles from './chatbot-response.module.scss';
 import { chatbotDataService } from '@/services/chatbot-data/chatbot-data-service';
 import { ChatHistory } from '@/services/chatbot-data/model';
 import { Spinner } from '@radix-ui/themes';
 import ReactMarkdown from 'react-markdown';
 import { getCurrentTimestamp } from '@/lib/utility-functions/date-operations';
+import { MenuContextData, MenuInfo } from '@/services/menu-data';
 
 export interface ChatbotResponseProps {
   selectedChatHistory: ChatHistory;
@@ -14,9 +15,11 @@ export interface ChatbotResponseProps {
 
 export function ChatbotResponse(props: ChatbotResponseProps) {
 
+  const { activeMenuData, setActiveMenuData } = useContext(MenuContextData);
+
   const [query, setQuery] = useState<string>('');
   const [chatHistories, setChatHistories] = useState<ChatHistory[]>([]);
-  
+
   useEffect(() => calculateChatHistory(), [props.selectedChatHistory]);
 
   function onKeyDown(event: any) {
@@ -26,7 +29,7 @@ export function ChatbotResponse(props: ChatbotResponseProps) {
 
     const inputValue = event.target.value;
     executeChatbotRequest(inputValue);
-    
+
     setQuery('');
   }
 
@@ -35,14 +38,14 @@ export function ChatbotResponse(props: ChatbotResponseProps) {
   }
 
   function calculateChatHistory() {
-    if(props.selectedChatHistory.conversation_id) {
+    if (props.selectedChatHistory.conversation_id) {
       setChatHistories([props.selectedChatHistory]);
       return;
     }
 
     executeChatbotRequest(props.selectedChatHistory.request?.query!);
   }
-  
+
   function executeChatbotRequest(query: string) {
     const executeChatbotRequestAsync = async () => {
       const newChatHistories: ChatHistory[] = [
@@ -56,7 +59,7 @@ export function ChatbotResponse(props: ChatbotResponseProps) {
         }
       ];
       setChatHistories(newChatHistories);
-      
+
       const response = await chatbotDataService.getChatbotResponse({ query });
 
       const lastChatHistory = newChatHistories[newChatHistories.length - 1];
@@ -74,8 +77,21 @@ export function ChatbotResponse(props: ChatbotResponseProps) {
     executeChatbotRequestAsync();
   }
 
+  function clipChatHistory(chatHistory: ChatHistory) {
+    const newMenuList: MenuInfo[] = [...activeMenuData?.fullMenuLIst!];
+    newMenuList.push({
+      description: chatHistory.title,
+      icon: 'fa-solid fa-thumbtack'
+    });
+
+    setActiveMenuData!({
+      ...activeMenuData,
+      fullMenuLIst: newMenuList
+    });
+  }
+
   const chatHistoryElement = chatHistories?.length ?
-    chatHistories.map(chatHistory => (
+    chatHistories.map((chatHistory, index) => (
       <>
         <div className={styles['chat-message']}>
           <div className={styles['message-content']}>
@@ -83,6 +99,13 @@ export function ChatbotResponse(props: ChatbotResponseProps) {
             <p>
               {chatHistory.request?.query}
               {chatHistory.request?.isLoading ? <Spinner size='3' className='ml-2'></Spinner> : <></>}
+
+              {
+                index === 0 ?
+                  <i onClick={() => clipChatHistory(chatHistory)}
+                    className={styles['clip-conversation'] + ' fa-solid fa-thumbtack'}>
+                  </i> : <></>
+              }
             </p>
           </div>
 
@@ -117,11 +140,11 @@ export function ChatbotResponse(props: ChatbotResponseProps) {
       </div>
 
       <div className={styles['search-bar']} >
-        <input type="text" 
-          placeholder="Ask TransientAI anything - use '@' to find files, folders and other trading data" 
+        <input type="text"
+          placeholder="Ask TransientAI anything - use '@' to find files, folders and other trading data"
           onKeyDown={onKeyDown}
-          onChange={onQueryChange} 
-          value={query}/>
+          onChange={onQueryChange}
+          value={query} />
       </div>
     </div>
   );
@@ -191,6 +214,6 @@ export function ChatbotResponse(props: ChatbotResponseProps) {
 //   if (match && match[1]) {
 //     return match[1];
 //   } else {
-//     return null; 
+//     return null;
 //   }
 // }
