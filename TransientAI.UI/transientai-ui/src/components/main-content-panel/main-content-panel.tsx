@@ -3,7 +3,7 @@
 import styles from './main-content-panel.module.scss';
 import { Box, Tabs } from "@radix-ui/themes";
 import { TabInfo } from './model';
-import { useContext, useMemo, useState } from 'react';
+import { useContext, useMemo } from 'react';
 import { ActiveMenuData, MenuContextData, MenuInfo } from '@/services/menu-data';
 import { TodaysAxes } from '../axes/todays-axes';
 
@@ -12,7 +12,7 @@ export function MainContentPanel() {
 
   const { activeMenuData, setActiveMenuData } = useContext(MenuContextData);
 
-  const tabs = useMemo<TabInfo[]>(() => calculateTabs(activeMenuData!), [activeMenuData]);
+  const tabs = useMemo<TabInfo[]>(() => calculateTabs(activeMenuData!), [activeMenuData?.activeMenuList]);
 
   function calculateTabs(activeMenuData: ActiveMenuData) {
     const tabs: TabInfo[] = [
@@ -37,29 +37,31 @@ export function MainContentPanel() {
   function selectTab(tab: TabInfo) {
     setActiveMenuData!({
       activeMenuList: activeMenuData?.activeMenuList,
-      selectedMenu: activeMenuData?.activeMenuList?.find(activeMenu => activeMenu.description === tab.description)
+      selectedMenu: { description: tab.description }
     });
   }
 
-  function closeTab(tab: TabInfo) {
+  function closeTab(event: any, tab: TabInfo) {
     const newMenuList: MenuInfo[] = [...activeMenuData?.activeMenuList!];
     const index = newMenuList?.findIndex(menu => menu.description === tab.description);
     newMenuList?.splice(index!, 1);
 
-    const newSelectedMenu = tab.description === activeMenuData?.selectedMenu?.description ? newMenuList[0] : activeMenuData?.selectedMenu;
+    const newSelectedMenu = tab.description === activeMenuData?.selectedMenu?.description ? tabs[0] : activeMenuData?.selectedMenu;
 
     setActiveMenuData!({
       activeMenuList: newMenuList,
       selectedMenu: newSelectedMenu
     });
+
+    event.stopPropagation();
   }
 
   return (
     <div className={styles['main-content']}>
-      <Tabs.Root defaultValue={defaultTab} 
-        value={activeMenuData?.selectedMenu?.description} 
+      <Tabs.Root defaultValue={defaultTab}
+        value={activeMenuData?.selectedMenu?.description}
         className='height-100p'
-        >
+      >
         <Tabs.List>
           {
             tabs.map(tab => (
@@ -67,7 +69,8 @@ export function MainContentPanel() {
                 onClick={() => selectTab(tab)} key={tab.description}>
                 {tab.description}
 
-                {tab.description === defaultTab ? <></> : <i className={`${styles['close-button']} fa-solid fa-xmark`} onClick={() => closeTab(tab)}></i>}
+                {tab.description === defaultTab ? <></> :
+                  <i className={`${styles['close-button']} fa-solid fa-xmark`} onClick={event => closeTab(event, tab)}></i>}
               </Tabs.Trigger>
             ))
           }
@@ -75,15 +78,20 @@ export function MainContentPanel() {
 
         {/* TODO... Use Router here so that dynamical loading of components can be done */}
         <Box pt="3" className='height-100p pb-15px'>
-          <Tabs.Content value={defaultTab} className='height-100p'>
-            <div className='height-100p tab-content'>
-              <TodaysAxes></TodaysAxes>
-            </div>
-          </Tabs.Content>
 
-          <Tabs.Content value="documents">
+          {
+            activeMenuData?.selectedMenu?.description === defaultTab ?
+              <div className='height-100p tab-content'>
+                <TodaysAxes></TodaysAxes>
+              </div> : <></>
+          }
 
-          </Tabs.Content>
+          {
+            activeMenuData?.selectedMenu?.description === `Today's Axes` ?
+              <div className='height-100p tab-content'>
+                <TodaysAxes></TodaysAxes>
+              </div> : <></>
+          }
 
           <Tabs.Content value="settings">
 

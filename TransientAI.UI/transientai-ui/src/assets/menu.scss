@@ -11,6 +11,11 @@
   justify-content: space-between;
   padding: 5px;
   cursor: pointer;
+  color: $font-color-200;
+
+  &:hover {
+    color: $white;
+  }
 }
 
 .parent-menu {
@@ -20,10 +25,18 @@
   align-items: baseline;
 }
 
+.active {
+  color: $white;
+}
+
 .menu-item .icon {
   width: 30px;
   font-size: 16px;
   color: $font-color-gray;
+}
+
+.active .icon {
+  color: $white;
 }
 
 .menu-item .text {

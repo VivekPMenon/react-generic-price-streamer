@@ -41,7 +41,8 @@ export function Explorer() {
         {
           menuInfoList.map(menuInfo => (
             <div className="menu-item" key={menuInfo.description}>
-              <div className='parent-menu' onClick={() => onParentMenuClick(menuInfo)}>
+              <div className={`parent-menu ${menuInfo.description === activeMenuData?.selectedMenu?.description ? 'active': ''}`} 
+                onClick={() => onParentMenuClick(menuInfo)}>
                 <span className={`icon ${menuInfo.icon}`}></span>
                 <span className="text">{menuInfo.description}</span>
                 <span className="badge">{menuInfo.badgeCount}</span>
