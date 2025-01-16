@@ -1,5 +1,5 @@
 import { webApihandler } from "../web-api-handler";
-import { ChatbotRequestType, ChatbotResponseType } from "./model";
+import { ChatbotRequestType, ChatbotResponseType, ChatConversation } from "./model";
 
 
 class ChatbotDataService {
@@ -14,6 +14,11 @@ class ChatbotDataService {
     return {
       responseText: result.response
     };
+  }
+
+  async getChatHistory(): Promise<ChatConversation[]> {
+    const result = await webApihandler.get('chat_history/' + webApihandler.userId, {});
+    return result.conversations;
   }
 
   async streamChatbotResponse(request: ChatbotRequestType): Promise<Response> {

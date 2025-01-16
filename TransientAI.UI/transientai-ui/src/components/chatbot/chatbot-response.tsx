@@ -7,17 +7,17 @@ import ReactMarkdown from 'react-markdown';
 import { getCurrentTimestamp } from '@/lib/utility-functions/date-operations';
 
 export interface ChatbotResponseProps {
-  query?: string;
-  isPastQuery?: boolean;
-  navigateBack?: () => void;
+  selectedChatHistory: ChatHistory;
+  onNavigateBack: () => void;
+  onNewQueryExecuted: () => void;
 }
 
 export function ChatbotResponse(props: ChatbotResponseProps) {
 
   const [query, setQuery] = useState<string>('');
   const [chatHistories, setChatHistories] = useState<ChatHistory[]>([]);
-
-  useEffect(() => executeChatbotRequest(props.query!), [props.query]);
+  
+  useEffect(() => calculateChatHistory(), [props.selectedChatHistory]);
 
   function onKeyDown(event: any) {
     if (event.key !== "Enter") {
@@ -32,6 +32,15 @@ export function ChatbotResponse(props: ChatbotResponseProps) {
 
   function onQueryChange(event: any) {
     setQuery(event.target.value);
+  }
+
+  function calculateChatHistory() {
+    if(props.selectedChatHistory.conversation_id) {
+      setChatHistories([props.selectedChatHistory]);
+      return;
+    }
+
+    executeChatbotRequest(props.selectedChatHistory.request?.query!);
   }
   
   function executeChatbotRequest(query: string) {
@@ -58,6 +67,8 @@ export function ChatbotResponse(props: ChatbotResponseProps) {
       setChatHistories([
         ...newChatHistories
       ]);
+
+      props.onNewQueryExecuted();
     };
 
     executeChatbotRequestAsync();
@@ -99,7 +110,7 @@ export function ChatbotResponse(props: ChatbotResponseProps) {
 
   return (
     <div className={styles['chatbot-response']}>
-      <button className='hyperlink' onClick={props.navigateBack}>Back to List</button>
+      <button className='hyperlink' onClick={props.onNavigateBack}>Back to List</button>
 
       <div className={styles['chat-history']}>
         {chatHistoryElement}
