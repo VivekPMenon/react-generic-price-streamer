@@ -1,6 +1,5 @@
 import { MenuInfo } from "./model";
 
-
 export const menuInfoList: MenuInfo[] = [
   {
     description: 'Today',

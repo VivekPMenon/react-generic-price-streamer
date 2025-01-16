@@ -36,7 +36,7 @@ export function MainContentPanel() {
 
   function selectTab(tab: TabInfo) {
     setActiveMenuData!({
-      activeMenuList: activeMenuData?.activeMenuList,
+      ...activeMenuData,
       selectedMenu: { description: tab.description }
     });
   }
@@ -49,6 +49,7 @@ export function MainContentPanel() {
     const newSelectedMenu = tab.description === activeMenuData?.selectedMenu?.description ? tabs[0] : activeMenuData?.selectedMenu;
 
     setActiveMenuData!({
+      ...activeMenuData,
       activeMenuList: newMenuList,
       selectedMenu: newSelectedMenu
     });

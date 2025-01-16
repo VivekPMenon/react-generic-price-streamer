@@ -1,6 +1,6 @@
 'use client';
 
-import { ActiveMenuData, MenuContextData, MenuInfo, menuInfoList } from '@/services/menu-data';
+import { ActiveMenuData, MenuContextData, MenuInfo } from '@/services/menu-data';
 import styles from './explorer.module.scss';
 import { useContext, useMemo, useState } from 'react';
 
@@ -8,16 +8,15 @@ export function Explorer() {
 
   const { activeMenuData, setActiveMenuData } = useContext(MenuContextData);
 
-  const [selectedTab, setSelectedTab] = useState<string>('Daily Insights');
-
   function onParentMenuClick(selectedMenuInfo: MenuInfo) {
     const newMenuList: MenuInfo[] = [...activeMenuData?.activeMenuList!];
 
-    if(!newMenuList.find(menu => menu.description === selectedMenuInfo.description)) {
+    if (!newMenuList.find(menu => menu.description === selectedMenuInfo.description)) {
       newMenuList.push(selectedMenuInfo);
     }
 
     setActiveMenuData!({
+      ...activeMenuData,
       activeMenuList: newMenuList,
       selectedMenu: selectedMenuInfo
     });
@@ -29,6 +28,7 @@ export function Explorer() {
         ...activeMenuData?.activeMenuList!,
         menuInfo
       ],
+      fullMenuLIst: activeMenuData?.fullMenuLIst,
       selectedMenu: menuInfo
     });
   }
@@ -39,13 +39,14 @@ export function Explorer() {
 
       <div className="menu">
         {
-          menuInfoList.map(menuInfo => (
+          activeMenuData?.fullMenuLIst?.map(menuInfo => (
             <div className="menu-item" key={menuInfo.description}>
-              <div className={`parent-menu ${menuInfo.description === activeMenuData?.selectedMenu?.description ? 'active': ''}`} 
+
+              <div className={`parent-menu ${menuInfo.description === activeMenuData?.selectedMenu?.description ? 'active' : ''}`}
                 onClick={() => onParentMenuClick(menuInfo)}>
                 <span className={`icon ${menuInfo.icon}`}></span>
                 <span className="text">{menuInfo.description}</span>
-                <span className="badge">{menuInfo.badgeCount}</span>
+                {menuInfo.badgeCount! > 0 ? <span className="badge">{menuInfo.badgeCount}</span> : <></>}
               </div>
 
               {

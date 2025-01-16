@@ -1,18 +1,54 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import styles from './chatbot.module.scss';
 import { ChatbotResponse } from './chatbot-response';
+import { ChatConversation, ChatHistory } from '@/services/chatbot-data/model';
+import { chatbotDataService } from '@/services/chatbot-data/chatbot-data-service';
 
 export function Chatbot() {
 
   const [isResponseShown, setIsResponseShown] = useState<boolean>(false);
-  const [query, setQuery] = useState<string>('');
-  const pastQueries = [
-    'Recommended bond sales, Monday 12/19/24',
-    'BlackRock portfolio analysis & recommendations',
-    'S&P 500 sector rotation strategy'
-  ];
+  const [chatHistories, setChatHistories] = useState<ChatHistory[]>([]);
+  const [selectedChatHistory, setSelectedChatHistory] = useState<ChatHistory>();
+  const [isAllChatsShown, setIsAllChatsShown] = useState<boolean>(false);
+
+  const visisbleChatHistories = useMemo<ChatHistory[]>(() => calculateVisibleHistories(), [
+    isAllChatsShown,
+    chatHistories
+  ])
+
+  useEffect(() => loadChatHistories(), []);
+
+  function loadChatHistories() {
+    const loadChatHistoriesAsync = async () => {
+      const rawChatHistories = await chatbotDataService.getChatHistory();
+
+      const chatHistories = rawChatHistories.map(rawChatHistory => {
+        return {
+          title: rawChatHistory.title,
+          conversation_id: rawChatHistory.conversation_id,
+          request: {
+            query: rawChatHistory.messages?.length ? rawChatHistory.messages[0].content : 'not available'
+          },
+          response: {
+            responseText: rawChatHistory.messages?.length! > 1 ? rawChatHistory.messages![1].content : 'not available'
+          }
+        } as ChatHistory;
+      });
+      setChatHistories(chatHistories);
+    };
+
+    loadChatHistoriesAsync();
+  }
+
+  function calculateVisibleHistories(): ChatHistory[] {
+    if (isAllChatsShown) {
+      return chatHistories;
+    }
+
+    return chatHistories.slice(0, 5);
+  }
 
   function onKeyDown(event: any) {
     if (event.key !== "Enter") {
@@ -20,21 +56,23 @@ export function Chatbot() {
     }
 
     const inputValue = event.target.value;
-    setQuery(inputValue);
+    setSelectedChatHistory({
+      request: {query: inputValue}
+    });
     setIsResponseShown(true);
   }
 
-  function selectPastQuery(pastQuery: string) {
-    setQuery(pastQuery);
+  function selectPastQuery(chatConversation: ChatHistory) {
     setIsResponseShown(true);
+    setSelectedChatHistory(chatConversation);
   }
-
 
   if (isResponseShown) {
     return <div className={styles['chatbot-container']}>
       <ChatbotResponse
-        query={query}
-        navigateBack={() => setIsResponseShown(false)}>
+        selectedChatHistory={selectedChatHistory!}
+        onNewQueryExecuted={loadChatHistories}
+        onNavigateBack={() => setIsResponseShown(false)}>
       </ChatbotResponse>
     </div>;
   }
@@ -53,16 +91,16 @@ export function Chatbot() {
       <div className={styles['workflow-list']}>
         <h2>Past chats & workflows</h2>
         {
-          pastQueries.map(pastQuery => (
-            <div className={styles['workflow-item']} onClick={() => selectPastQuery(pastQuery)} key={pastQuery}>
-              <p>{pastQuery}</p>
+          visisbleChatHistories.map(chatHistory => (
+            <div className={styles['workflow-item']} onClick={() => selectPastQuery(chatHistory)} key={chatHistory.title}>
+              <p>{chatHistory.title}</p>
               <span>2 days</span>
             </div>
           ))
         }
-
-        <button className='hyperlink primary'>Show more</button>
       </div>
+      
+      <button className='hyperlink primary' onClick={() => setIsAllChatsShown(!isAllChatsShown)}>{isAllChatsShown ? 'Show less' : 'Show More'}</button>
     </div>
   );
 }

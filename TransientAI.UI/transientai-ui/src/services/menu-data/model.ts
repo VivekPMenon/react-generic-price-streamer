@@ -10,6 +10,7 @@ export interface MenuInfo {
 export interface ActiveMenuData {
   selectedMenu?: MenuInfo;
   activeMenuList?: MenuInfo[];
+  fullMenuLIst?: MenuInfo[];
 }
 
 export interface MenuContextDataType {
