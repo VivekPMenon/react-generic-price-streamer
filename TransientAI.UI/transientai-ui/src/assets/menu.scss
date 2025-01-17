@@ -57,7 +57,7 @@
 }
 
 .submenu-item {
-  padding: 5px 0;
+  padding: 0;
   display: flex;
   justify-content: space-between;
   color: $font-color-200;
@@ -66,3 +66,4 @@
 .submenu-item .timestamp {
   color: #777;
 }
+

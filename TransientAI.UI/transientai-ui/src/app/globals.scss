@@ -2,13 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
+
 @import "@radix-ui/themes/styles.css";
 @import 'ag-grid-community/styles/ag-grid.css';
 @import 'ag-grid-community/styles/ag-theme-balham.css';
 @import '../assets/ag-grid-custom.scss';
 @import '../assets/variables.scss';
 @import '../assets/menu.scss';
-@import '../assets/tabs.scss';
+@import '../assets/filters.scss';
 @import '../assets/buttons.scss';
 @import '../assets/profile.scss';
 @import '../assets/radix-overrides.scss';
@@ -20,10 +21,14 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
+    --background: #{$body-bg};
     --foreground: #ededed;
     --accent-indicator: red;
   }
+}
+
+.dark {
+  --sage-1: #0C101B;
 }
 
 html {
@@ -33,7 +38,7 @@ html {
 
 body {
   color: var(--foreground);
-  background: var(--background);
+  background: $body-bg;
   font-family: Arial, Helvetica, sans-serif;
   height: 100%;
   width: 100%;
@@ -45,4 +50,10 @@ body {
   flex: 1 1 100%;
   flex-direction: column;
   height: 100%;
+}
+
+.widget {
+  border: 1px solid $border-color;
+  border-radius: $border-radius;
+  padding: 5px 10px;
 }

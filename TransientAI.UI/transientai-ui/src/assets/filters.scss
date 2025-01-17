@@ -1,0 +1,45 @@
+@import './variables.scss';
+
+.filters {
+  display: flex;
+  gap: 10px;
+  padding: 5px 0;
+
+  .filter {
+    background-color: $gray-1000;
+    border-radius: 3px;
+    padding: 5px;
+    align-content: center;
+    min-width: 50px;
+    cursor: pointer;
+
+    &:hover {
+      background-color: $gray-200;
+    }
+
+    &.active {
+      color: black;
+      background-color: $active-bg;
+    }
+  }
+}
+
+.pill {
+  border-radius: 3px;
+  padding: 0px 7px;
+  color: black;
+
+  &.blue {
+    background-color: $blue;
+  }
+
+  &.pink {
+    background-color: $pink;
+  }
+
+  &.orange {
+    background-color: $orange;
+  }
+}
+
+

@@ -78,7 +78,7 @@ export function Chatbot() {
   }
 
   return (
-    <div className={styles['chatbot-container']}>
+    <div className={`${styles['chatbot-container']} widget`}>
       <div className={styles['chatbot-header']}>
         <h1>Trade with TransientAI</h1>
         <p>Start a new chat or make edits to an existing workflow below</p>

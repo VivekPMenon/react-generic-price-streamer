@@ -1,0 +1,46 @@
+@import '../../assets/variables.scss';
+
+.notifications {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 50%;
+  // padding: 0 10px;
+  font-size: 14px;
+  width: 375px;
+}
+
+.notification-items {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 10px 0px;
+
+  .notification-item {
+    border-radius: 5px;
+    color: $font-color-200;
+    font-size: 12px;
+    padding: 15px;
+    background-color: $gray-1000;
+    align-content: baseline;
+  }
+
+  .notification-title {
+    display: flex;
+    gap: 5px;
+    align-items: baseline;
+
+    .name {
+      font-size: 14px;
+      color: $white;
+    }
+  }
+
+  .notification-count {
+  }
+
+  .notification-menu {
+    margin-left: auto;
+    display: flex;
+    align-items: baseline;
+  }
+}

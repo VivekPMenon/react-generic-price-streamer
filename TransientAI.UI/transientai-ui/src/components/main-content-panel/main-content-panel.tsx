@@ -58,7 +58,7 @@ export function MainContentPanel() {
   }
 
   return (
-    <div className={styles['main-content']}>
+    <div className={`${styles['main-content']} widget`}>
       <Tabs.Root defaultValue={defaultTab}
         value={activeMenuData?.selectedMenu?.description}
         className='height-100p'

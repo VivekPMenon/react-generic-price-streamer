@@ -34,7 +34,7 @@ export function Explorer() {
   }
 
   return (
-    <div className={styles.explorer}>
+    <div className={`${styles.explorer} widget`}>
       Explorer
 
       <div className="menu">
