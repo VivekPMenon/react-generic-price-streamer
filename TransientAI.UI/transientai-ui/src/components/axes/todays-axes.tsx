@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { ColDef } from 'ag-grid-community';
 import { DataGrid } from '../data-grid';
 import { BondInfo, productBrowserDataService } from '@/services/product-browser-data';
+import styles from './todays-axes.module.scss';
 
 export function TodaysAxes() {
 
@@ -21,15 +22,15 @@ export function TodaysAxes() {
 
   function getColumnDef(): ColDef[] {
     return [
-      { field: 'product_description', headerName: 'Product Description' },
-      { field: 'isin', headerName: 'ISIN' },
-      { field: 'bond_type', headerName: 'Bond Type' },
-      { field: 'bond_issuer', headerName: 'Bond Issuer' },
-      { field: 'coupon_rate', headerName: 'Coupon Rate' },
-      { field: 'b_size_m', headerName: 'B Size M' },
-      { field: 'a_size_m', headerName: 'A Size M' },
-      { field: 'b_yield', headerName: 'B Yield' },
-      { field: 'a_yield', headerName: 'A Yield' },
+      { field: 'product_description', headerName: 'Product Description', width: 150 },
+      { field: 'isin', headerName: 'ISIN', cellClass: 'orange-color', width: 120 },
+      { field: 'bond_type', headerName: 'Bond Type', width: 100 },
+      { field: 'bond_issuer', headerName: 'Bond Issuer', width: 180 },
+      { field: 'coupon_rate', headerName: 'Coupon Rate', width: 120 },
+      { field: 'b_size_m', headerName: 'B Size M', width: 120 },
+      { field: 'a_size_m', headerName: 'A Size M', width: 120 },
+      { field: 'b_yield', headerName: 'B Yield', width: 120 },
+      { field: 'a_yield', headerName: 'A Yield', width: 120 },
       { field: 'bid_price', headerName: 'Bid Price' },
       { field: 'ask_price', headerName: 'Ask Price' },
       { field: 'b_spread', headerName: 'B Spread' },
@@ -53,11 +54,35 @@ export function TodaysAxes() {
   }
 
   return (
-    <div className='height-100p'>
-      <DataGrid
-        rowData={rowData}
-        columnDefs={columnDefs}>
-      </DataGrid>
+    <div className={styles['todays-axes']}>
+      <div className={styles['axes']}>
+        <div className='sub-header'>Axes</div>
+
+        <DataGrid isSummaryGrid={true}
+          rowData={rowData}
+          columnDefs={columnDefs}>
+        </DataGrid>
+      </div>
+
+      <div className={styles['clients-and-holdings']}>
+        <div>
+          <div className='sub-header'>Clients</div>
+
+          <DataGrid isSummaryGrid={true}
+            rowData={rowData}
+            columnDefs={columnDefs}>
+          </DataGrid>
+        </div>
+
+        <div>
+          <div className='sub-header'>Holdings</div>
+
+          <DataGrid isSummaryGrid={true}
+            rowData={rowData}
+            columnDefs={columnDefs}>
+          </DataGrid>
+        </div>
+      </div>
     </div>
   );
 } 

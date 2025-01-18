@@ -13,6 +13,8 @@
 @import '../assets/buttons.scss';
 @import '../assets/profile.scss';
 @import '../assets/radix-overrides.scss';
+@import '../assets/color-utils.scss';
+@import '../assets/form.scss';
 
 :root {
   --background: #{$body-bg};

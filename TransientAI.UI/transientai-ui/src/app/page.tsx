@@ -15,9 +15,15 @@ export default function Home() {
           <Explorer></Explorer>
           <Notifications></Notifications>
         </div>
-        
-        <MainContentPanel></MainContentPanel>
-        <Chatbot></Chatbot>
+
+        <div className={styles['middle-panel']}>
+          <MainContentPanel></MainContentPanel>
+          <Chatbot></Chatbot>
+        </div>
+
+        <div className={styles['right-panel']}>
+          Details and News
+        </div>
       </main>
     </div>
   );

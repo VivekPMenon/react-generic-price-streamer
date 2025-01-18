@@ -23,8 +23,22 @@
   .left-panel {
     display: flex;
     flex-direction: column;
-    flex: 1 1 15%;
+    flex: 1 1 10%;
     gap: 10px;
+    max-width: 400px;
+    min-width: 400px;
   }
   
+  .middle-panel {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 65%;
+    gap: 10px;
+  }
+
+  .right-panel {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 25%;
+  }
 }

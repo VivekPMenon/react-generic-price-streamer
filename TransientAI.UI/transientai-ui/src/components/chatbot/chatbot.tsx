@@ -68,7 +68,7 @@ export function Chatbot() {
   }
 
   if (isResponseShown) {
-    return <div className={styles['chatbot-container']}>
+    return <div className={`${styles['chatbot-container']} widget`}>
       <ChatbotResponse
         selectedChatHistory={selectedChatHistory!}
         onNewQueryExecuted={loadChatHistories}

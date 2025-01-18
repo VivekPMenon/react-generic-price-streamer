@@ -50,7 +50,7 @@
 
 .clip-conversation {
   cursor: pointer;
-  
+
   &:hover {
     color: $white;
   }
@@ -100,7 +100,7 @@
 }
 
 .chat-history {
-  height: 80vh;
+  height: 35vh;
   overflow-y: auto;
 }
 
