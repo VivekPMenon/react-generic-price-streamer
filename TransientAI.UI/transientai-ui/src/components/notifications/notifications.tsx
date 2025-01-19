@@ -69,7 +69,7 @@ export function Notifications() {
           </div>
         </div>
 
-        <div className={styles['notification-item']}>
+        <div className={styles['notification-item']}> 
           <div className={styles['notification-title']}>
             <i className='fa-solid fa-newspaper'></i>
             <span className={styles.name}>NEWS FEED 11/12/24</span>
