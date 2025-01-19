@@ -25,10 +25,14 @@
   border-bottom: 1px solid $border-color;
 }
 
-.trading-opportunity {
+.trading-opportunity, .market-context {
   display: flex;
   flex-direction: column;
   gap: 10px;
   padding: 10px 0px 20px 5px;
-  // border-bottom: 1px solid $border-color;
+  border-bottom: 1px solid $border-color;
+}
+
+.market-context {
+  border: none;
 }

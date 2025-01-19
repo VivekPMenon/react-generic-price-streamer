@@ -183,6 +183,19 @@ export function PriceGraph() {
           <div>Need to move today</div>
         </div>
       </div>
+
+      <div className={styles['market-context']}>
+
+        <span>Market Context</span>
+
+        <ul className="list-disc pl-5 off-white-color">
+          <li>Trading 15bp wider on union headlines</li>
+          <li>10bp wide to lockhead</li>
+          <li>Technical support at current levels</li>
+          <li>Fourth sentence in the list</li>
+        </ul>
+      </div>
+
     </div>
   );
 }
