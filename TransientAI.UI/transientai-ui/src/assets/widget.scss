@@ -1,0 +1,24 @@
+@import './variables.scss';
+
+.widget {
+  border: 1px solid $border-color;
+  border-radius: $border-radius;
+  padding: 5px 10px;
+  font-size: 14px;
+  color: $font-color-100;
+}
+
+.widget-title {
+  display: flex;
+  align-items: center;
+
+  .toggler {
+    margin-left: auto;
+    cursor: pointer;
+    color: $font-color-200;
+
+    &:hover {
+      color: $white;
+    }
+  }
+}

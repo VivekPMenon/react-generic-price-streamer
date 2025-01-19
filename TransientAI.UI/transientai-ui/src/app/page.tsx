@@ -6,18 +6,43 @@ import { MainContentPanel } from '@/components/main-content-panel/main-content-p
 import { Chatbot } from '@/components/chatbot/chatbot';
 import { Notifications } from '@/components/notifications';
 import dynamic from 'next/dynamic';
+import { useState } from 'react';
 
 // dynamic loading to addres build issue when importing highcharts
 const PriceGraph = dynamic(() => import("@/components/market-data").then(module => module.PriceGraph), { ssr: false, });
 
 export default function Home() {
+
+  const [expandedPanels, setExpandedPanels] = useState<string[]>([]);
+
+  function onExpandCollapse(panelName: string, isExpanded: boolean) {
+    const latestExpandedPanels = [...expandedPanels];
+
+    if (isExpanded) {
+      latestExpandedPanels.push(panelName);
+    } else {
+      const index = latestExpandedPanels.findIndex(panel => panel === panelName);
+      latestExpandedPanels.splice(index, 1);
+    }
+
+    setExpandedPanels(latestExpandedPanels);
+  }
+
   return (
     <div className={styles.home}>
       <Header></Header>
       <main>
         <div className={styles['left-panel']}>
-          <Explorer></Explorer>
-          <Notifications></Notifications>
+          {
+            !expandedPanels.includes('notifications') ?
+              <Explorer onExpandCollapse={isExpanded => onExpandCollapse('explorer', isExpanded)}>
+              </Explorer> : <></>
+          }
+          {
+            !expandedPanels.includes('explorer') ?
+              <Notifications onExpandCollapse={isExpanded => onExpandCollapse('notifications', isExpanded)}>
+              </Notifications> : <></>
+          }
         </div>
 
         <div className={styles['middle-panel']}>

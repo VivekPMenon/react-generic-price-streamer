@@ -1,9 +1,25 @@
+import { useState } from 'react';
 import styles from './notifications.module.scss';
 
-export function Notifications() {
+export interface NotificationsProps {
+  onExpandCollapse: (state: boolean) => void;
+}
+
+export function Notifications(props: NotificationsProps) {
+  const [isExpanded, setIsExpanded] = useState<boolean>(false);
+
+  function expandOrCollapsePanel() {
+    setIsExpanded(!isExpanded);
+    props.onExpandCollapse(!isExpanded);
+  }
+
   return (
+    //TODO .. create a common component for WIdget with transclusion so that widget tiel etc. can be reused
     <div className={`${styles.notifications} widget`}>
-      Notifications
+      <div className='widget-title'>
+        Notifications
+        <i className='fa-solid fa-expand toggler' onClick={() => expandOrCollapsePanel()}></i>
+      </div>
 
       <div className='filters'>
         <button className='filter active'>All</button>

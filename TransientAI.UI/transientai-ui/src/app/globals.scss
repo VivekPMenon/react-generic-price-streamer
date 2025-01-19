@@ -17,6 +17,7 @@
 @import '../assets/form.scss';
 @import '../assets/news.scss';
 @import '../assets/font-utils.scss';
+@import '../assets/widget.scss';
 
 :root {
   --background: #{$body-bg};
@@ -54,14 +55,6 @@ body {
   flex: 1 1 100%;
   flex-direction: column;
   height: 100%;
-}
-
-.widget {
-  border: 1px solid $border-color;
-  border-radius: $border-radius;
-  padding: 5px 10px;
-  font-size: 14px;
-  color: $font-color-100;
 }
 
 .highcharts-range-selector-buttons {
