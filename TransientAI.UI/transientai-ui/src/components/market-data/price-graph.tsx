@@ -1,6 +1,10 @@
-import Highcharts from 'highcharts/highstock'
-import HighchartsReact from 'highcharts-react-official';
 import styles from './price-graph.module.scss';
+
+import dynamic from 'next/dynamic';
+
+// Dynamically import HighchartsReact with SSR disabled
+const HighchartsReact = dynamic(() => import('highcharts-react-official'), { ssr: false });
+import Highstock from 'highcharts/highstock';
 
 export function PriceGraph() {
   const chartOptions: Highcharts.Options = {
@@ -96,7 +100,6 @@ export function PriceGraph() {
     ],
   };
 
-
   return (
     <div className={`${styles['price-graph']} widget`}>
       Details
@@ -112,7 +115,7 @@ export function PriceGraph() {
       </div>
 
       <HighchartsReact
-        highcharts={Highcharts}
+        highcharts={Highstock}
         constructorType={'stockChart'}
         options={chartOptions}
       />
