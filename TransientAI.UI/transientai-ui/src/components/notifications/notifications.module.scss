@@ -3,7 +3,7 @@
 .notifications {
   display: flex;
   flex-direction: column;
-  flex: 1 1 70%;
+  flex: 1 1 60%;
   // padding: 0 10px;
   font-size: 14px;
 }
@@ -41,5 +41,15 @@
     margin-left: auto;
     display: flex;
     align-items: baseline;
+  }
+
+  .notification-content {
+    display: flex;
+    flex-direction: column;
+    padding: 10px 0;
+    
+    li {
+      padding: 3px;
+    }
   }
 }

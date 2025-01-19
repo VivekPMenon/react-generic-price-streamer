@@ -60,8 +60,8 @@ export function DataGrid(props: IDataGridProps) {
         <AgGridReact {...finalProps}
           statusBar={props.isSummaryGrid ? undefined : statusBar}
           onGridReady={onGridReady}
-          rowHeight={props.isSummaryGrid ? 50 : 35}
-          headerHeight={props.isSummaryGrid ? 50 : 35}>
+          rowHeight={props.isSummaryGrid ? 45 : 35}
+          headerHeight={props.isSummaryGrid ? 45 : 35}>
         </AgGridReact>
       </div>
     </>
