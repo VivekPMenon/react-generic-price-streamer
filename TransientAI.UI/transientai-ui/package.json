@@ -16,6 +16,8 @@
     "ag-grid-enterprise": "^32.2.0",
     "ag-grid-react": "^32.2.0",
     "axios": "^1.4.0",
+    "highcharts": "^12.1.2",
+    "highcharts-react-official": "^3.2.1",
     "next": "15.1.4",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",

@@ -1,15 +1,15 @@
+@import '../../assets/variables.scss';
 
-  
-  .main-content {
-    flex: 1 1 70%;
-  }
-  
-  .close-button {
-    opacity: .6;
-    margin-left: 10px;
-    cursor: pointer;
+.main-content {
+  flex: 1 1 70%;
+}
 
-    :hover {
-      opacity: 1;
-    }
+.close-button {
+  opacity: .6;
+  margin-left: 10px;
+  cursor: pointer;
+
+  :hover {
+    opacity: 1;
   }
+}

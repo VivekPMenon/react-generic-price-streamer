@@ -5,6 +5,7 @@ import styles from './page.module.scss';
 import { MainContentPanel } from '@/components/main-content-panel/main-content-panel';
 import { Chatbot } from '@/components/chatbot/chatbot';
 import { Notifications } from '@/components/notifications';
+import { PriceGraph } from '@/components/market-data';
 
 export default function Home() {
   return (
@@ -22,7 +23,7 @@ export default function Home() {
         </div>
 
         <div className={styles['right-panel']}>
-          Details and News
+          <PriceGraph></PriceGraph>
         </div>
       </main>
     </div>

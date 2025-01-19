@@ -28,6 +28,10 @@
   border-radius: 3px;
   padding: 0px 7px;
   color: black;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
 
   &.blue {
     background-color: $blue;
@@ -39,6 +43,19 @@
 
   &.orange {
     background-color: $orange;
+  }
+
+  &.gray {
+    background-color: $gray-1000;
+    color: $font-color-100;
+  }
+
+  &.padded {
+    padding: 7px;
+  }
+
+  &.rounded {
+    border-radius: 5px;
   }
 }
 

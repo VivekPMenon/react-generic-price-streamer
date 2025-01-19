@@ -15,7 +15,8 @@
 @import '../assets/radix-overrides.scss';
 @import '../assets/color-utils.scss';
 @import '../assets/form.scss';
-@import '../assets/notifications.scss';
+@import '../assets/news.scss';
+@import '../assets/font-utils.scss';
 
 :root {
   --background: #{$body-bg};
@@ -25,7 +26,7 @@
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #{$body-bg};
-    --foreground: #ededed;
+    --foreground: #{$font-color-100};
     --accent-indicator: red;
   }
 }
@@ -59,4 +60,12 @@ body {
   border: 1px solid $border-color;
   border-radius: $border-radius;
   padding: 5px 10px;
+  font-size: 14px;
+  color: $font-color-100;
+}
+
+.highcharts-range-selector-buttons {
+  margin-left: auto;
+  display: flex;
+  justify-content: flex-end;
 }
