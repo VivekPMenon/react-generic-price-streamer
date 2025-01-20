@@ -75,7 +75,7 @@ export function PriceGraph() {
           ],
         },
         lineColor: '#198754',
-        lineWidth: 5,
+        lineWidth: 1,
         marker: { enabled: true, radius: 3 },
         threshold: null,
       },

@@ -116,7 +116,7 @@ export function ChatbotResponse(props: ChatbotResponseProps) {
           chatHistory.response?.responseText ? <div className={`${styles['chat-message']}}`}>
             <div className={styles['assistant']}>
               <p>
-                <ReactMarkdown>{chatHistory.response?.responseText}</ReactMarkdown>
+                <ReactMarkdown className='markdown'>{chatHistory.response?.responseText}</ReactMarkdown>
               </p>
               {/* <div className={styles['recommendation-card']}>
                 <div className={styles['recommendation-icon']}>✅</div>

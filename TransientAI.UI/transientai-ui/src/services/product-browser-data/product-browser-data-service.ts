@@ -1,5 +1,5 @@
 import { webApihandler } from "../web-api-handler";
-import { BondInfo } from "./model";
+import { BondInfo, TopRecommendation } from "./model";
 
 class ProductBrowserDataService {
 
@@ -9,6 +9,16 @@ class ProductBrowserDataService {
       page_size: 500
     });
     return result.bonds_data;
+  }
+
+  async getTopRecommendations(): Promise<string[]> {
+    const result = await webApihandler.get('unsolicited/companies', {});
+    return result;
+  }
+
+  async getRecommendationsDetails(company: string): Promise<TopRecommendation> {
+    const result = await webApihandler.get('unsolicited', { company });
+    return result.top_recommendations[0];
   }
 }
 

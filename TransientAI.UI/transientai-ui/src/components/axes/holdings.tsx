@@ -1,42 +1,42 @@
-import { useState } from "react";
-import { DataGrid } from "../data-grid";
+import { useEffect, useState } from "react";
+import { DataGrid, getNumberColDefTemplate } from "../data-grid";
 import { ColDef } from "ag-grid-community";
+import { ClientHolding, clientHoldingsDataService } from "@/services/client-holding-data";
 
 export function Holdings() {
-  const rowData = [
-    {
-      "ClientName": "Vanguard",
-      "Security": "AAPL",
-      "Holding": 150
-    },
-    {
-      "ClientName": "Goldman Sachs",
-      "Security": "GOOGL",
-      "Holding": 75
-    },
-    {
-      "ClientName": "Morgan Stanley",
-      "Security": "AMZN",
-      "Holding": 200
-    },
-    {
-      "ClientName": "BlackRock",
-      "Security": "MSFT",
-      "Holding": 50
-    },
-    {
-      "ClientName": "JP Morgan",
-      "Security": "TSLA",
-      "Holding": 100
-    }
-  ];
+
+  const [rowData, setRowData] = useState<ClientHolding[]>();
   const [columnDefs] = useState<ColDef[]>(getColumnDef());
+
+  useEffect(() => {
+    const loadClientHoldings = async () => {
+      const bonds = await clientHoldingsDataService.getClientHoldings();
+      setRowData(bonds);
+    };
+
+    loadClientHoldings();
+  }, []);
+
 
   function getColumnDef(): ColDef[] {
     return [
-      { field: 'ClientName', headerName: 'Client', width: 150 },
-      { field: 'Security', headerName: 'Security', cellClass: 'orange-color', width: 120 },
-      { field: 'Holding', headerName: 'Current Holding', width: 150 }
+      {
+        field: 'client_name',
+        headerName: 'Client',
+        width: 120
+      },
+      {
+        field: 'security',
+        headerName: 'Security',
+        cellClass: 'orange-color',
+        width: 120
+      },
+      {
+        ...getNumberColDefTemplate(2),
+        field: 'par_held',
+        headerName: 'Current Holding',
+        width: 120
+      }
     ];
   }
 
