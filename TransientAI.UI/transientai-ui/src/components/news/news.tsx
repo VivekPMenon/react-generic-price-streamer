@@ -16,7 +16,7 @@ export function News(props: NewsProps) {
 
   function loadNewsArticles() {
     const loadNewsArticlesAsync = async () => {
-      const articles = await newsDataService.getArticles();
+      const articles = await newsDataService.getArticlesMock();
       setArticles(articles.slice(0, 15));
     };
 
