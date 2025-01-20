@@ -101,7 +101,7 @@ export function ChatbotResponse(props: ChatbotResponseProps) {
               {chatHistory.request?.isLoading ? <Spinner size='3' className='ml-2'></Spinner> : <></>}
 
               {
-                index === 0 ?
+                index === 0 &&  !chatHistory.request?.isLoading?
                   <i onClick={() => clipChatHistory(chatHistory)}
                     className={styles['clip-conversation'] + ' fa-solid fa-thumbtack'}>
                   </i> : <></>

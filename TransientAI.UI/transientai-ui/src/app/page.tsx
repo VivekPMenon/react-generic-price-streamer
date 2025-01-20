@@ -7,6 +7,7 @@ import { Chatbot } from '@/components/chatbot/chatbot';
 import { Notifications } from '@/components/notifications';
 import dynamic from 'next/dynamic';
 import { useState } from 'react';
+import { News } from '@/components/news';
 
 // dynamic loading to addres build issue when importing highcharts
 const PriceGraph = dynamic(() => import("@/components/market-data").then(module => module.PriceGraph), { ssr: false, });
@@ -51,7 +52,14 @@ export default function Home() {
         </div>
 
         <div className={styles['right-panel']}>
-          <PriceGraph></PriceGraph>
+          {
+            !expandedPanels.includes('news') ?
+              <PriceGraph onExpandCollapse={isExpanded => onExpandCollapse('price-graph', isExpanded)}></PriceGraph> : <></>
+          }
+          {
+            !expandedPanels.includes('price-graph') ?
+              <News onExpandCollapse={isExpanded => onExpandCollapse('news', isExpanded)}></News> : <></>
+          }
         </div>
       </main>
     </div>

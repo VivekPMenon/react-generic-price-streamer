@@ -88,7 +88,7 @@ export function Chatbot() {
         <input type="text" placeholder="Ask TransientAI anything - use '@' to find files, folders and other trading data" onKeyDown={onKeyDown} />
       </div>
 
-      <div className={styles['workflow-list']}>
+      <div className={`${styles['workflow-list']} scrollable-div`}>
         <h2>Past chats & workflows</h2>
         {
           visisbleChatHistories.map(chatHistory => (

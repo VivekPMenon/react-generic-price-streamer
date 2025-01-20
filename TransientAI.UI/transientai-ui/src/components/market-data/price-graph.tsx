@@ -5,8 +5,16 @@ import dynamic from 'next/dynamic';
 // Dynamically import HighchartsReact with SSR disabled
 const HighchartsReact = dynamic(() => import('highcharts-react-official'), { ssr: false });
 import Highstock from 'highcharts/highstock';
+import { useState } from 'react';
 
-export function PriceGraph() {
+export interface PriceGraphProps {
+  onExpandCollapse: (state: boolean) => void;
+}
+
+export function PriceGraph(props: PriceGraphProps) {
+
+  const [isExpanded, setIsExpanded] = useState<boolean>(false);
+
   const chartOptions: Highcharts.Options = {
     chart: {
       type: 'area',
@@ -99,10 +107,19 @@ export function PriceGraph() {
       },
     ],
   };
+  
+  function expandOrCollapsePanel() {
+    setIsExpanded(!isExpanded);
+    props.onExpandCollapse(!isExpanded);
+  }
 
   return (
     <div className={`${styles['price-graph']} widget`}>
-      Details
+      
+      <div className='widget-title'>
+        Details
+        <i className='fa-solid fa-expand toggler' onClick={() => expandOrCollapsePanel()}></i>
+      </div>
 
       <div className={`${styles['price-graph-title']}`}>
         <i className='fa-solid fa-ban'></i>
@@ -149,53 +166,57 @@ export function PriceGraph() {
         </div>
       </div>
 
-      <div className={styles['trading-opportunity']}>
-        BOEING (B.A) 5.875% 2040 Trading Opportunity
+      {
+        isExpanded ? <div className={styles['trading-opportunity']}>
+          <div className={styles['title']}>Trading Opportunity</div>
 
-        <span>Bond Details</span>
+          <div className={styles['bond-details']}>
+            <span>Bond Details</span>
 
-        <div className="grid grid-cols-[25%_75%] gap-2 fs-13 off-white-color">
-          <div>CUSIP</div>
-          <div>098FGT67U</div>
-        </div>
-        <div className="grid grid-cols-[25%_75%] gap-2 fs-13 off-white-color">
-          <div>Maturity</div>
-          <div>2040</div>
-        </div>
-        <div className="grid grid-cols-[25%_75%] gap-2 fs-13 off-white-color">
-          <div>Coupon</div>
-          <div>5.2%</div>
-        </div>
-        <div className="grid grid-cols-[25%_75%] gap-2 fs-13 off-white-color">
-          <div>Size</div>
-          <div>$10 MM (Up to $250 MM)</div>
-        </div>
-        <div className="grid grid-cols-[25%_75%] gap-2 fs-13 off-white-color">
-          <div>Axe Price</div>
-          <div>92.75</div>
-        </div>
-        <div className="grid grid-cols-[25%_75%] gap-2 fs-13 off-white-color">
-          <div>Spread</div>
-          <div>+250bp</div>
-        </div>
-        <div className="grid grid-cols-[25%_75%] gap-2 fs-13 off-white-color">
-          <div>Trader Note</div>
-          <div>Need to move today</div>
-        </div>
-      </div>
+            <div className="grid grid-cols-[25%_75%] gap-2 fs-13 off-white-color">
+              <div>CUSIP</div>
+              <div>098FGT67U</div>
+            </div>
+            <div className="grid grid-cols-[25%_75%] gap-2 fs-13 off-white-color">
+              <div>Maturity</div>
+              <div>2040</div>
+            </div>
+            <div className="grid grid-cols-[25%_75%] gap-2 fs-13 off-white-color">
+              <div>Coupon</div>
+              <div>5.2%</div>
+            </div>
+            <div className="grid grid-cols-[25%_75%] gap-2 fs-13 off-white-color">
+              <div>Size</div>
+              <div>$10 MM (Up to $250 MM)</div>
+            </div>
+            <div className="grid grid-cols-[25%_75%] gap-2 fs-13 off-white-color">
+              <div>Axe Price</div>
+              <div>92.75</div>
+            </div>
+            <div className="grid grid-cols-[25%_75%] gap-2 fs-13 off-white-color">
+              <div>Spread</div>
+              <div>+250bp</div>
+            </div>
+            <div className="grid grid-cols-[25%_75%] gap-2 fs-13 off-white-color">
+              <div>Trader Note</div>
+              <div>Need to move today</div>
+            </div>
+          </div>
 
-      <div className={styles['market-context']}>
+          <div className={styles['market-context']}>
 
-        <span>Market Context</span>
+            <span>Market Context</span>
 
-        <ul className="list-disc pl-5 off-white-color">
-          <li>Trading 15bp wider on union headlines</li>
-          <li>10bp wide to lockhead</li>
-          <li>Technical support at current levels</li>
-          <li>Fourth sentence in the list</li>
-        </ul>
-      </div>
+            <ul className="list-disc pl-5 off-white-color">
+              <li>Trading 15bp wider on union headlines</li>
+              <li>10bp wide to lockhead</li>
+              <li>Technical support at current levels</li>
+              <li>Fourth sentence in the list</li>
+            </ul>
+          </div>
 
+        </div> : <></>
+      }
     </div>
   );
 }

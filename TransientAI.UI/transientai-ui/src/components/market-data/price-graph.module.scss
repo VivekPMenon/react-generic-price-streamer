@@ -4,7 +4,6 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
-  
 }
 
 .price-graph-title {
@@ -22,17 +21,23 @@
   flex-direction: column;
   gap: 15px;
   padding: 10px 0px 20px 5px;
-  border-bottom: 1px solid $border-color;
+  // border-bottom: 1px solid $border-color;
 }
 
-.trading-opportunity, .market-context {
+.trading-opportunity {
+  display: flex;
+  flex-wrap: wrap;
+
+  .title {
+    flex: 2 1 100%;
+    text-transform: uppercase;
+  }
+}
+
+.bond-details, .market-context {
+  flex: 1 1 50%;
   display: flex;
   flex-direction: column;
   gap: 10px;
   padding: 10px 0px 20px 5px;
-  border-bottom: 1px solid $border-color;
-}
-
-.market-context {
-  border: none;
 }

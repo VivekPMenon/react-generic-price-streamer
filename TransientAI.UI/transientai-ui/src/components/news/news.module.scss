@@ -1,0 +1,9 @@
+.news-articles {
+  flex: 1 1 55%;
+  max-height: 40vh;
+  overflow-y: auto;
+}
+
+.expanded {
+  max-height: 90vh;
+}

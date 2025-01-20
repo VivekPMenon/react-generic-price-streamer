@@ -25,7 +25,7 @@
 }
 
 .search-bar input {
-  width: 100%;
+  width: 98%;
   padding: 10px;
   font-size: 14px;
   border: none;
@@ -43,28 +43,6 @@
 .workflow-list {
   max-height: 30vh;
   overflow-y: auto;
-}
-
-.workflow-list::-webkit-scrollbar {
-  width: 0px;
-}
-
-.workflow-list:hover::-webkit-scrollbar {
-  width: 10px;
-}
-
-.workflow-list::-webkit-scrollbar-track {
-  background: $gray-1000;
-}
-
-.workflow-list::-webkit-scrollbar-thumb {
-  background: $scrollbar-thumb-bg;
-  border-radius: 5px;
-}
-
-.workflow-list::-webkit-scrollbar-thumb:hover {
-  background: $scrollbar-hover-bg;
-  display: block;
 }
 
 .workflow-list h2 {

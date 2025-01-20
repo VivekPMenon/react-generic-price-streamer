@@ -10,3 +10,43 @@
   text-align: right;
   justify-content: flex-end;
 }
+
+.ellipsis {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.multi-line-ellipsis {
+  display: -webkit-box;         /* Use flexbox for layout */
+  -webkit-line-clamp: 3;        /* Number of lines to show */
+  -webkit-box-orient: vertical; /* Set orientation to vertical */
+  overflow: hidden;             /* Hide overflowing text */
+  text-overflow: ellipsis;      /* Add ellipsis (...) for overflow */
+}
+
+.scrollable-div {
+  overflow-y: auto;
+}
+
+.scrollable-div::-webkit-scrollbar {
+  width: 7px;
+}
+
+.scrollable-div:hover::-webkit-scrollbar {
+  width: 7px;
+}
+
+.scrollable-div::-webkit-scrollbar-track {
+  background: $gray-1000;
+}
+
+.scrollable-div::-webkit-scrollbar-thumb {
+  background: $scrollbar-thumb-bg;
+  border-radius: 5px;
+}
+
+.scrollable-div::-webkit-scrollbar-thumb:hover {
+  background: $scrollbar-hover-bg;
+  display: block;
+}
