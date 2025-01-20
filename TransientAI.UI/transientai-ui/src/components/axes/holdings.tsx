@@ -35,7 +35,8 @@ export function Holdings() {
         ...getNumberColDefTemplate(2),
         field: 'par_held',
         headerName: 'Current Holding',
-        width: 120
+        width: 140,
+        sort: 'desc'
       }
     ];
   }
