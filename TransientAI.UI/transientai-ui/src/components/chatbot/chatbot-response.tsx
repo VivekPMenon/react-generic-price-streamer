@@ -135,7 +135,7 @@ export function ChatbotResponse(props: ChatbotResponseProps) {
     <div className={styles['chatbot-response']}>
       <button className='hyperlink' onClick={props.onNavigateBack}>Back to List</button>
 
-      <div className={styles['chat-history']}>
+      <div className={`${styles['chat-history']} scrollable-div`}>
         {chatHistoryElement}
       </div>
 

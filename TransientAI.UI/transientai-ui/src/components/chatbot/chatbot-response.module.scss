@@ -100,28 +100,6 @@
 }
 
 .chat-history {
-  height: 35vh;
+  height: 78vh;
   overflow-y: auto;
-}
-
-.chat-history::-webkit-scrollbar {
-  width: 0px;
-}
-
-.chat-history:hover::-webkit-scrollbar {
-  width: 10px;
-}
-
-.chat-history::-webkit-scrollbar-track {
-  background: $gray-1000;
-}
-
-.chat-history::-webkit-scrollbar-thumb {
-  background: $scrollbar-thumb-bg;
-  border-radius: 5px;
-}
-
-.chat-history::-webkit-scrollbar-thumb:hover {
-  background: $scrollbar-hover-bg;
-  display: block;
 }

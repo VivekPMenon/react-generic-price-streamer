@@ -118,7 +118,7 @@ export function PriceGraph(props: PriceGraphProps) {
       
       <div className='widget-title'>
         Details
-        <i className='fa-solid fa-expand toggler' onClick={() => expandOrCollapsePanel()}></i>
+        {/* <i className='fa-solid fa-expand toggler' onClick={() => expandOrCollapsePanel()}></i> */}
       </div>
 
       <div className={`${styles['price-graph-title']}`}>

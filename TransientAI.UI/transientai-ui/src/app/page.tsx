@@ -48,18 +48,15 @@ export default function Home() {
 
         <div className={styles['middle-panel']}>
           <MainContentPanel></MainContentPanel>
-          <Chatbot></Chatbot>
+
+          <div className={styles['middle-panel-bottom-widgets']}>
+            <PriceGraph onExpandCollapse={isExpanded => onExpandCollapse('price-graph', isExpanded)}></PriceGraph>
+            <News onExpandCollapse={isExpanded => onExpandCollapse('news', isExpanded)}></News>
+          </div>
         </div>
 
         <div className={styles['right-panel']}>
-          {
-            !expandedPanels.includes('news') ?
-              <PriceGraph onExpandCollapse={isExpanded => onExpandCollapse('price-graph', isExpanded)}></PriceGraph> : <></>
-          }
-          {
-            !expandedPanels.includes('price-graph') ?
-              <News onExpandCollapse={isExpanded => onExpandCollapse('news', isExpanded)}></News> : <></>
-          }
+          <Chatbot></Chatbot>
         </div>
       </main>
     </div>

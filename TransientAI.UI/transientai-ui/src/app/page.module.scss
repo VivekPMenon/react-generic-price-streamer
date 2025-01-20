@@ -36,6 +36,12 @@
     gap: 10px;
   }
 
+  .middle-panel-bottom-widgets {
+    display: flex;
+    gap: 10px;
+    flex: 1 1 40%;
+  }
+
   .right-panel {
     display: flex;
     flex-direction: column;

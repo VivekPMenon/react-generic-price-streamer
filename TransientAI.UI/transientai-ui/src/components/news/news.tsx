@@ -33,7 +33,7 @@ export function News(props: NewsProps) {
       
       <div className='widget-title'>
         Trending News
-        <i className='fa-solid fa-expand toggler' onClick={() => expandOrCollapsePanel()}></i>
+        {/* <i className='fa-solid fa-expand toggler' onClick={() => expandOrCollapsePanel()}></i> */}
       </div>
       
       {

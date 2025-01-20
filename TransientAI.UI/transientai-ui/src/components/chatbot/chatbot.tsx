@@ -47,7 +47,7 @@ export function Chatbot() {
       return chatHistories;
     }
 
-    return chatHistories.slice(0, 5);
+    return chatHistories.slice(0, 10);
   }
 
   function onKeyDown(event: any) {
