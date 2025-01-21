@@ -14,3 +14,21 @@ export interface ClientHolding {
   bclass3: string;
   px_close: number;
 }
+
+export interface BondTrade {
+  amount: number;
+  benchmark: string;
+  bond_issuer: string;
+  bond_type: string;
+  date: string; 
+  institution_name: string;
+  level: number;
+  maturity: string; 
+  price: number;
+  security: string;
+  spread: number;
+  trade_status: string;
+  trade_type: string;
+  trader: string;
+  yield_: number; 
+}

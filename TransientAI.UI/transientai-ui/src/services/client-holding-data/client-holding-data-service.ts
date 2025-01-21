@@ -1,6 +1,6 @@
 
 import { webApihandler } from "../web-api-handler";
-import { ClientHolding } from "./model";
+import { BondTrade, ClientHolding } from "./model";
 
 class ClientHoldingDataService {
 
@@ -10,6 +10,13 @@ class ClientHoldingDataService {
       page_size: 5000
     });
     return result.client_holding_data;
+  }
+
+  async getTradingActivity(): Promise<BondTrade[]> {
+    const result = await webApihandler.post('client_activity/get_client_activity_data', {}, {
+      live_or_historical: 'historical'
+    });
+    return result.activity_data;
   }
 }
 
