@@ -1,16 +1,19 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useContext, useEffect, useMemo, useState } from 'react';
 import styles from './chatbot.module.scss';
 import { ChatbotResponse } from './chatbot-response';
-import { ChatConversation, ChatHistory } from '@/services/chatbot-data/model';
+import { ChatbotConversation, ChatHistory } from '@/services/chatbot-data/model';
 import { chatbotDataService } from '@/services/chatbot-data/chatbot-data-service';
+import { ChatbotDataContext } from '@/services/chatbot-data';
 
 export function Chatbot() {
 
+  const { chatbotData, setChatbotData } = useContext(ChatbotDataContext);
+
   const [isResponseShown, setIsResponseShown] = useState<boolean>(false);
   const [chatHistories, setChatHistories] = useState<ChatHistory[]>([]);
-  const [selectedChatHistory, setSelectedChatHistory] = useState<ChatHistory>();
+  const [query, setQuery] = useState<string>();
   const [isAllChatsShown, setIsAllChatsShown] = useState<boolean>(false);
 
   const visisbleChatHistories = useMemo<ChatHistory[]>(() => calculateVisibleHistories(), [
@@ -56,21 +59,32 @@ export function Chatbot() {
     }
 
     const inputValue = event.target.value;
-    setSelectedChatHistory({
-      request: {query: inputValue}
-    });
+    setQuery(inputValue);
     setIsResponseShown(true);
   }
 
   function selectPastQuery(chatConversation: ChatHistory) {
     setIsResponseShown(true);
-    setSelectedChatHistory(chatConversation);
+
+    setChatbotData({
+      title: chatConversation.title,
+      conversations: [
+        {
+          request: {
+            query: chatConversation.request?.query
+          },
+          response: {
+            responseText: chatConversation.response?.responseText
+          }
+        }
+      ]
+    });
   }
 
   if (isResponseShown) {
     return <div className={`${styles['chatbot-container']} widget`}>
       <ChatbotResponse
-        selectedChatHistory={selectedChatHistory!}
+        query={query!}
         onNewQueryExecuted={loadChatHistories}
         onNavigateBack={() => setIsResponseShown(false)}>
       </ChatbotResponse>

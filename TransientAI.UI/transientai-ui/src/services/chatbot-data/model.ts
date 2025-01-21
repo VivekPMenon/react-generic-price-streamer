@@ -22,7 +22,23 @@ export interface ChatHistory {
   conversation_id?: string;
 }
 
-export interface ChatConversation {
+export interface ChatbotData {
+  title?: string;
+  conversationId?: string;
+  conversations?: ChatbotConversation[];
+}
+
+export interface ChatbotConversation {
+  request?: ChatbotRequestType;
+  response?: ChatbotResponseType;
+}
+
+export interface ChatbotDataContextType {
+  chatbotData: ChatbotData;
+  setChatbotData: (data: ChatbotData) => void;
+}
+
+export interface ChatConversationApiResponse {
   conversation_id?: string;
   user_id?: string;
   title?: string;

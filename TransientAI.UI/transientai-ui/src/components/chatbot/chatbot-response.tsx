@@ -1,14 +1,15 @@
 import { useContext, useEffect, useState } from 'react';
 import styles from './chatbot-response.module.scss';
 import { chatbotDataService } from '@/services/chatbot-data/chatbot-data-service';
-import { ChatHistory } from '@/services/chatbot-data/model';
+import { ChatbotConversation, ChatHistory } from '@/services/chatbot-data/model';
 import { Spinner } from '@radix-ui/themes';
 import ReactMarkdown from 'react-markdown';
 import { getCurrentTimestamp } from '@/lib/utility-functions/date-operations';
 import { MenuContextData, MenuInfo } from '@/services/menu-data';
+import { ChatbotDataContext } from '@/services/chatbot-data';
 
 export interface ChatbotResponseProps {
-  selectedChatHistory: ChatHistory;
+  query: string;
   onNavigateBack: () => void;
   onNewQueryExecuted: () => void;
 }
@@ -16,11 +17,11 @@ export interface ChatbotResponseProps {
 export function ChatbotResponse(props: ChatbotResponseProps) {
 
   const { activeMenuData, setActiveMenuData } = useContext(MenuContextData);
+  const { chatbotData, setChatbotData } = useContext(ChatbotDataContext);
 
   const [query, setQuery] = useState<string>('');
-  const [chatHistories, setChatHistories] = useState<ChatHistory[]>([]);
 
-  useEffect(() => calculateChatHistory(), [props.selectedChatHistory]);
+  useEffect(() => loadChatbotResponse(), [props.query]);
 
   function onKeyDown(event: any) {
     if (event.key !== "Enter") {
@@ -37,19 +38,20 @@ export function ChatbotResponse(props: ChatbotResponseProps) {
     setQuery(event.target.value);
   }
 
-  function calculateChatHistory() {
-    if (props.selectedChatHistory.conversation_id) {
-      setChatHistories([props.selectedChatHistory]);
+  function loadChatbotResponse() {
+    if (!props.query) {
       return;
     }
 
-    executeChatbotRequest(props.selectedChatHistory.request?.query!);
+    executeChatbotRequest(props.query!);
   }
 
   function executeChatbotRequest(query: string) {
     const executeChatbotRequestAsync = async () => {
-      const newChatHistories: ChatHistory[] = [
-        ...chatHistories,
+
+      const existingConversations = chatbotData.conversations || [];
+      const newChatConversations: ChatbotConversation[] = [
+        ...existingConversations,
         {
           request: {
             query,
@@ -58,18 +60,22 @@ export function ChatbotResponse(props: ChatbotResponseProps) {
           }
         }
       ];
-      setChatHistories(newChatHistories);
+      setChatbotData({
+        ...chatbotData,
+        conversations: newChatConversations
+      });
 
       const response = await chatbotDataService.getChatbotResponse({ query });
 
-      const lastChatHistory = newChatHistories[newChatHistories.length - 1];
+      const lastChatHistory = newChatConversations[newChatConversations.length - 1];
       lastChatHistory.response = response;
       lastChatHistory.request!.isLoading = false;
       lastChatHistory.response.timestamp = getCurrentTimestamp();
 
-      setChatHistories([
-        ...newChatHistories
-      ]);
+      setChatbotData({
+        ...chatbotData,
+        conversations: newChatConversations
+      });
 
       props.onNewQueryExecuted();
     };
@@ -90,8 +96,15 @@ export function ChatbotResponse(props: ChatbotResponseProps) {
     });
   }
 
-  const chatHistoryElement = chatHistories?.length ?
-    chatHistories.map((chatHistory, index) => (
+  function navigateBack() {
+    setChatbotData({
+      conversations: []
+    });
+    props.onNavigateBack();
+  }
+
+  const chatHistoryElement = chatbotData.conversations?.length ?
+    chatbotData.conversations.map((chatHistory, index) => (
       <>
         <div className={styles['chat-message']}>
           <div className={styles['message-content']}>
@@ -101,7 +114,7 @@ export function ChatbotResponse(props: ChatbotResponseProps) {
               {chatHistory.request?.isLoading ? <Spinner size='3' className='ml-2'></Spinner> : <></>}
 
               {
-                index === 0 &&  !chatHistory.request?.isLoading?
+                index === 0 && !chatHistory.request?.isLoading ?
                   <i onClick={() => clipChatHistory(chatHistory)}
                     className={styles['clip-conversation'] + ' fa-solid fa-thumbtack'}>
                   </i> : <></>
@@ -133,7 +146,7 @@ export function ChatbotResponse(props: ChatbotResponseProps) {
 
   return (
     <div className={styles['chatbot-response']}>
-      <button className='hyperlink' onClick={props.onNavigateBack}>Back to List</button>
+      <button className='hyperlink' onClick={navigateBack}>Back to List</button>
 
       <div className={`${styles['chat-history']} scrollable-div`}>
         {chatHistoryElement}
