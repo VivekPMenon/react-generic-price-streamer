@@ -35,7 +35,7 @@ export function PriceGraph(props: PriceGraphProps) {
   // todo.. move highchart options to a common component so theming can be controlled
   // todo. migrate theming from TS to CSS
   function getChartOptions() {
-    
+
     let seriesData: any[] = [];
     if (graphDataPoints) {
       seriesData = graphDataPoints.map(graphDataPoint => {
@@ -56,6 +56,11 @@ export function PriceGraph(props: PriceGraphProps) {
       },
       xAxis: {
         type: 'datetime',
+        events: {
+          afterSetExtremes: function (e) {
+            console.log('Min:', new Date(e.min), 'Max:', new Date(e.max));
+          },
+        },
         labels: { style: { color: '#dddddd' } },
         gridLineWidth: 0
       },
@@ -75,14 +80,19 @@ export function PriceGraph(props: PriceGraphProps) {
         inputEnabled: false,
         buttons: [
           {
-            type: 'month',
-            count: 1,
-            text: '1M', // Label for the button
+            type: 'day',
+            count: 7,
+            text: '1W', // Label for the button
+          },
+          {
+            type: 'day',
+            count: 14,
+            text: '2W', // Label for the button
           },
           {
             type: 'month',
-            count: 3,
-            text: '3M', // Label for the button
+            count: 1,
+            text: '1M', // Label for the button
           },
           {
             type: 'all',
