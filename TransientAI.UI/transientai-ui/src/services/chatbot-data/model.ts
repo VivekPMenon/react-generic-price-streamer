@@ -26,6 +26,7 @@ export interface ChatbotData {
   title?: string;
   conversationId?: string;
   conversations?: ChatbotConversation[];
+  isChatbotResponseActive?: boolean;
 }
 
 export interface ChatbotConversation {

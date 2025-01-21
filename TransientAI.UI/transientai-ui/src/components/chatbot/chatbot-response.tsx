@@ -10,7 +10,6 @@ import { ChatbotDataContext } from '@/services/chatbot-data';
 
 export interface ChatbotResponseProps {
   query: string;
-  onNavigateBack: () => void;
   onNewQueryExecuted: () => void;
 }
 
@@ -98,9 +97,9 @@ export function ChatbotResponse(props: ChatbotResponseProps) {
 
   function navigateBack() {
     setChatbotData({
+      isChatbotResponseActive: false,
       conversations: []
     });
-    props.onNavigateBack();
   }
 
   const chatHistoryElement = chatbotData.conversations?.length ?

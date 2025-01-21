@@ -1,10 +1,13 @@
 import { productBrowserDataService, TopRecommendation } from '@/services/product-browser-data';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import * as Dialog from "@radix-ui/react-dialog";
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import { ChatbotDataContext } from '@/services/chatbot-data';
 
 export function TopClients() {
+
+  const { chatbotData, setChatbotData } = useContext(ChatbotDataContext);
 
   const [topRecommendations, setTopRecommendations] = useState<TopRecommendation[]>();
   const [isDetailsVisible, setIsDetailsVisible] = useState<boolean>(false);
@@ -43,6 +46,23 @@ export function TopClients() {
     loadTopRecommendationsAsync();
   }
 
+  function selectRecommendation(recommendation: TopRecommendation) {
+    setChatbotData({
+      title: recommendation.company,
+      isChatbotResponseActive: true,
+      conversations: [
+        {
+          request: {
+            query: recommendation.company
+          },
+          response: {
+            responseText: recommendation.reasoning
+          }
+        }
+      ]
+    });
+  }
+
   return (
     <div>
       <div className='sub-header'>Top Recommendations</div>
@@ -50,7 +70,7 @@ export function TopClients() {
       <div className='news'>
         {
           topRecommendations?.map(topRecommendation =>
-            <div className='news-item'>
+            <div className='news-item' onClick={() => selectRecommendation(topRecommendation)}>
               <div className='news-content'>
                 <div className='news-title'>
                   {topRecommendation.company}

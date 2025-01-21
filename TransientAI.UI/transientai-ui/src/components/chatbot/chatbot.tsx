@@ -11,7 +11,6 @@ export function Chatbot() {
 
   const { chatbotData, setChatbotData } = useContext(ChatbotDataContext);
 
-  const [isResponseShown, setIsResponseShown] = useState<boolean>(false);
   const [chatHistories, setChatHistories] = useState<ChatHistory[]>([]);
   const [query, setQuery] = useState<string>();
   const [isAllChatsShown, setIsAllChatsShown] = useState<boolean>(false);
@@ -60,14 +59,16 @@ export function Chatbot() {
 
     const inputValue = event.target.value;
     setQuery(inputValue);
-    setIsResponseShown(true);
+    setChatbotData({
+      ...chatbotData,
+      isChatbotResponseActive: true
+    });
   }
 
   function selectPastQuery(chatConversation: ChatHistory) {
-    setIsResponseShown(true);
-
     setChatbotData({
       title: chatConversation.title,
+      isChatbotResponseActive: true,
       conversations: [
         {
           request: {
@@ -81,12 +82,11 @@ export function Chatbot() {
     });
   }
 
-  if (isResponseShown) {
+  if (chatbotData?.isChatbotResponseActive) {
     return <div className={`${styles['chatbot-container']} widget`}>
       <ChatbotResponse
         query={query!}
-        onNewQueryExecuted={loadChatHistories}
-        onNavigateBack={() => setIsResponseShown(false)}>
+        onNewQueryExecuted={loadChatHistories}>
       </ChatbotResponse>
     </div>;
   }

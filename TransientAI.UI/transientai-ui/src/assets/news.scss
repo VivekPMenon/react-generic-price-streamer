@@ -17,6 +17,11 @@
     background-color: $gray-1000;
     align-content: baseline;
     display: flex;
+    cursor: pointer;
+
+    &:hover {
+      box-shadow: 0 0 3px $green;
+    }
 
     .news-menu {
        margin-left: auto; 
