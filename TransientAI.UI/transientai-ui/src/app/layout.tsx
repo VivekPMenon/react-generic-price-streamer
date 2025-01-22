@@ -4,6 +4,7 @@ import { Theme } from "@radix-ui/themes";
 import "./globals.scss";
 import { MenuContextDataProvider } from "@/services/menu-data";
 import { ChatbotDataContextProvider } from "@/services/chatbot-data";
+import { SearchDataContextProvider } from "@/services/search-data";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -35,7 +36,9 @@ export default function RootLayout({
         <Theme accentColor="teal" className="height-100p">
           <MenuContextDataProvider>
             <ChatbotDataContextProvider>
-              {children}
+              <SearchDataContextProvider>
+                {children}
+              </SearchDataContextProvider>
             </ChatbotDataContextProvider>
           </MenuContextDataProvider>
         </Theme>

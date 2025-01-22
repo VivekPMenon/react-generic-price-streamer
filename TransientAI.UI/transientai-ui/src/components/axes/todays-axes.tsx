@@ -1,26 +1,50 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { ColDef } from 'ag-grid-community';
+import { useState, useEffect, useContext, useMemo } from 'react';
+import { ColDef, RowDoubleClickedEvent } from 'ag-grid-community';
 import { DataGrid } from '../data-grid';
 import { BondInfo, productBrowserDataService } from '@/services/product-browser-data';
 import styles from './todays-axes.module.scss';
 import { TopClients } from './top-clients';
 import { Holdings } from './holdings';
+import { SearchData, SearchDataContext } from '@/services/search-data';
 
 export function TodaysAxes() {
 
-  const [rowData, setRowData] = useState<BondInfo[]>();
+  const {searchData, setSearchData} = useContext(SearchDataContext);
+
+  const [axes, setAxes] = useState<BondInfo[]>();
   const [columnDefs] = useState<ColDef[]>(getColumnDef());
+
+  const visiableAxes = useMemo<BondInfo[] | null>(applyFilter, [axes, searchData?.id]);
 
   useEffect(() => {
     const loadAxesAsync = async () => {
       const bonds = await productBrowserDataService.getTodaysAxes();
-      setRowData(bonds);
+      setAxes(bonds);
     };
 
     loadAxesAsync();
   }, []);
+
+  function applyFilter():BondInfo[] | null {
+    if(!axes) {
+      return null;
+    }
+
+    if(!searchData.id) {
+      return axes!;
+    }
+
+    return axes?.filter(axe => axe.isin === searchData.id)!;
+  }
+
+  function onRowDoubleClicked(event:RowDoubleClickedEvent<BondInfo>) {
+    setSearchData({
+      description: event.data?.product_description,
+      id: event.data?.isin
+    });
+  }
 
   function getColumnDef(): ColDef[] {
     return [
@@ -61,8 +85,9 @@ export function TodaysAxes() {
         <div className='sub-header'>Axes</div>
 
         <DataGrid isSummaryGrid={true}
-          rowData={rowData}
-          columnDefs={columnDefs}>
+          rowData={visiableAxes}
+          columnDefs={columnDefs}
+          onRowDoubleClicked={onRowDoubleClicked} >
         </DataGrid>
       </div>
 

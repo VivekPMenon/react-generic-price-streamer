@@ -1,8 +1,11 @@
+@import '../assets/variables.scss';
+
 .title {
   font-size: 15px;
   // font-weight: bold;
   color: white;
   display: flex;
+  flex: 2 1 80%;
   gap: 5px;
 
   img {
@@ -10,4 +13,43 @@
     height: 20px;
     width: 20x;
   }
+}
+
+.global-search {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: $font-color-200;
+  font-size: 13px;
+}
+
+.selected-security {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background-color: $gray-1000;
+  border-radius: 5px;
+  padding: 5px 10px;
+  width: fit-content;
+  margin-right: 30px;
+  color: $white;
+
+  i {
+    font-size: 10px;
+    color: $red;
+    
+    cursor: pointer;
+    padding: 5px 0px 5px 5px;
+
+    &:hover {
+      
+    }
+  }
+}
+
+.search-pill {
+  background-color: $teal-100;
+  padding: 3px;
+  border-radius: $border-radius;
+  color: $white;
 }
