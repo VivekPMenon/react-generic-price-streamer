@@ -1,3 +1,5 @@
+'use client';
+
 import { useEffect, useState } from "react";
 import { DataGrid, getNumberColDefTemplate } from "../data-grid";
 import { ColDef } from "ag-grid-community";

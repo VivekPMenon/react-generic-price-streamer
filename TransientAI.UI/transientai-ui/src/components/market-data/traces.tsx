@@ -1,7 +1,8 @@
+'use client';
+
 import { useEffect, useState } from "react";
 import { DataGrid, getNumberColDefTemplate } from "../data-grid";
 import { ColDef } from "ag-grid-community";
-import { BondTrade, ClientHolding, clientHoldingsDataService } from "@/services/client-holding-data";
 import { marketDataService, Price, TraceData } from "@/services/market-data";
 
 export function Traces() {

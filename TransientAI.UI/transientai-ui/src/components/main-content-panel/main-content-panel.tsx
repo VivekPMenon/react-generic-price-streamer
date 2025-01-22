@@ -7,7 +7,8 @@ import { useContext, useMemo } from 'react';
 import { ActiveMenuData, MenuContextData, MenuInfo } from '@/services/menu-data';
 import { TodaysAxes } from '../axes/todays-axes';
 import { TradingActivity } from '../trading-activity';
-import { MarketDataTable, Traces } from '../market-data';
+import { MarketDataTable } from '../market-data/market-data-table';
+import { Traces } from '../market-data/traces';
 
 export function MainContentPanel() {
   const defaultTab = 'Daily Insights';

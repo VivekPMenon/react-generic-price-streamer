@@ -1,6 +1,5 @@
 import { Notification, NotificationType } from "./model";
 
-
 class NotificationsDataService {
 
   getNotifications(): Notification[] {
