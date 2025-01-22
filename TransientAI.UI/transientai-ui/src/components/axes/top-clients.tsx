@@ -19,7 +19,7 @@ export function TopClients() {
   function loadTopRecommendations() {
     const loadTopRecommendationsAsync = async () => {
       let selectedCompany = '';
-      if(searchData.id) {
+      if (searchData.id) {
         const bondInfo = await productBrowserDataService.getTodaysAxes(searchData.id);
         selectedCompany = bondInfo.length ? bondInfo[0].bond_issuer! : '';
       }
@@ -49,6 +49,16 @@ export function TopClients() {
       });
 
       setTopRecommendations(results);
+
+      // if security is in context, and a recommendation is found, that will be set in the cahtbot as well
+      if (searchData.id && results?.length) {
+        selectRecommendation(results[0]);
+      } else {
+        setChatbotData({
+          ...chatbotData,
+          isChatbotResponseActive: false
+        });
+      }
     };
 
     loadTopRecommendationsAsync();
@@ -99,11 +109,11 @@ export function TopClients() {
                   <Dialog.Content className="DialogContent">
                     <Dialog.Title className="DialogTitle">{topRecommendation.company} Details</Dialog.Title>
                     <Dialog.Description className="DialogDescription">
-                      
+
                     </Dialog.Description>
                     <div>
                       <ReactMarkdown className='markdown' remarkPlugins={[remarkGfm]}>{topRecommendation.reasoning}</ReactMarkdown>
-{/* 
+                      {/* 
                       <Dialog.Close asChild>
                         <button className="Button green">CLOSE</button>
                       </Dialog.Close> */}

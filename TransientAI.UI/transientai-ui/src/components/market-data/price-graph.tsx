@@ -5,8 +5,9 @@ import dynamic from 'next/dynamic';
 // Dynamically import HighchartsReact with SSR disabled
 const HighchartsReact = dynamic(() => import('highcharts-react-official'), { ssr: false });
 import Highstock from 'highcharts/highstock';
-import { useEffect, useMemo, useState } from 'react';
+import { useContext, useEffect, useMemo, useState } from 'react';
 import { GraphDataPoint, marketDataService } from '@/services/market-data';
+import { SearchDataContext } from '@/services/search-data';
 
 export interface PriceGraphProps {
   onExpandCollapse: (state: boolean) => void;
@@ -16,16 +17,18 @@ export function PriceGraph(props: PriceGraphProps) {
 
   const bondName = 'INTC 4.15 08/05/32';
 
+  const { searchData, setSearchData } = useContext(SearchDataContext);
+
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
   const [graphDataPoints, setGraphDataPoints] = useState<GraphDataPoint[]>([]);
 
   const chartOptions = useMemo<Highcharts.Options>(() => getChartOptions(), [graphDataPoints])
 
-  useEffect(() => loadGraphDataPoints(), []);
+  useEffect(() => loadGraphDataPoints(), [searchData.description]);
 
   function loadGraphDataPoints() {
     const loadGraphDataPointsAsync = async () => {
-      const result = await marketDataService.getMarketDataGraph('1M', bondName);
+      const result = await marketDataService.getMarketDataGraph('1M', searchData.description ?? bondName);
       setGraphDataPoints(result);
     };
 
@@ -172,7 +175,7 @@ export function PriceGraph(props: PriceGraphProps) {
 
       <div className={`${styles['price-graph-title']}`}>
         <i className='fa-solid fa-ban'></i>
-        {bondName}
+        {searchData.description ?? bondName}
 
         <div className='pill gray padded ml-auto rounded'>
           <i className='fa-solid fa-chart-simple'></i>
