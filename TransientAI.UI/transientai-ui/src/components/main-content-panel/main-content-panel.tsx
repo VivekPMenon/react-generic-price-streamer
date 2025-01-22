@@ -7,6 +7,7 @@ import { useContext, useMemo } from 'react';
 import { ActiveMenuData, MenuContextData, MenuInfo } from '@/services/menu-data';
 import { TodaysAxes } from '../axes/todays-axes';
 import { TradingActivity } from '../trading-activity';
+import { MarketDataTable, Traces } from '../market-data';
 
 export function MainContentPanel() {
   const defaultTab = 'Daily Insights';
@@ -99,6 +100,14 @@ export function MainContentPanel() {
             activeMenuData?.selectedMenu?.description === `Trading Activity` ?
               <div className='height-100p tab-content'>
                 <TradingActivity></TradingActivity>
+              </div> : <></>
+          }
+
+          {
+            activeMenuData?.selectedMenu?.description === `Market Data` ?
+              <div className={`${styles['market-data']}`}>
+                <MarketDataTable></MarketDataTable>
+                <Traces></Traces>
               </div> : <></>
           }
         </Box>

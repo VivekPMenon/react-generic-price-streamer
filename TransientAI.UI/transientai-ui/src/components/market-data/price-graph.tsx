@@ -25,7 +25,7 @@ export function PriceGraph(props: PriceGraphProps) {
 
   function loadGraphDataPoints() {
     const loadGraphDataPointsAsync = async () => {
-      const result = await marketDataService.getMarketData('1M', bondName);
+      const result = await marketDataService.getMarketDataGraph('1M', bondName);
       setGraphDataPoints(result);
     };
 
