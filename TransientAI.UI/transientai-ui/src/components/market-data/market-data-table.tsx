@@ -1,25 +1,34 @@
 'use client';
 
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { DataGrid, getNumberColDefTemplate } from "../data-grid";
-import { ColDef } from "ag-grid-community";
+import { ColDef, RowDoubleClickedEvent } from "ag-grid-community";
 import { BondTrade, ClientHolding, clientHoldingsDataService } from "@/services/client-holding-data";
 import { marketDataService, Price } from "@/services/market-data";
+import { SearchDataContext } from "@/services/search-data";
 
 export function MarketDataTable() {
+
+  const { searchData, setSearchData } = useContext(SearchDataContext);
 
   const [prices, setPrices] = useState<Price[]>();
   const [columnDefs] = useState<ColDef[]>(getColumnDef());
 
   useEffect(() => {
     const loadPrices = async () => {
-      const prices = await marketDataService.getMarketDataPrices();
+      const prices = await marketDataService.getMarketDataPrices(searchData.id);
       setPrices(prices);
     };
 
     loadPrices();
-  }, []);
+  }, [searchData.id]);
 
+  function onRowDoubleClicked(event: RowDoubleClickedEvent<Price>) {
+    setSearchData({
+      description: event.data?.bond,
+      id: event.data?.isin
+    });
+  }
 
   function getColumnDef(): ColDef[] {
     return [
@@ -42,7 +51,8 @@ export function MarketDataTable() {
 
       <DataGrid isSummaryGrid={true}
         rowData={prices}
-        columnDefs={columnDefs}>
+        columnDefs={columnDefs}
+        onRowDoubleClicked={onRowDoubleClicked}>
       </DataGrid>
     </div>
   );

@@ -1,30 +1,40 @@
 'use client';
 
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { DataGrid, getNumberColDefTemplate } from "../data-grid";
-import { ColDef } from "ag-grid-community";
+import { ColDef, RowDoubleClickedEvent } from "ag-grid-community";
 import { marketDataService, Price, TraceData } from "@/services/market-data";
+import { SearchDataContext } from "@/services/search-data";
 
 export function Traces() {
+
+  const { searchData, setSearchData } = useContext(SearchDataContext);
 
   const [traces, setTraces] = useState<TraceData[]>();
   const [columnDefs] = useState<ColDef[]>(getColumnDef());
 
   useEffect(() => {
     const loadTraces = async () => {
-      const traces = await marketDataService.getTraces();
+      const traces = await marketDataService.getTraces(searchData.id);
       setTraces(traces);
     };
 
     loadTraces();
-  }, []);
+  }, [searchData.id]);
+
+  function onRowDoubleClicked(event: RowDoubleClickedEvent<TraceData>) {
+    setSearchData({
+      description: event.data?.security,
+      id: event.data?.isin
+    });
+  }
 
   function getColumnDef(): ColDef[] {
     return [
       { field: 'security', headerName: 'Bond', cellClass: 'orange-color' },
       { field: 'isin', headerName: 'ISIN' },
       { field: 'date', headerName: 'Date', width: 90 },
-      { field: 'side', headerName: 'Side', width: 70},
+      { field: 'side', headerName: 'Side', width: 70 },
       { field: 'size_m', headerName: 'Size (M)', width: 90, ...getNumberColDefTemplate(0) },
       { field: 'spread_change', headerName: 'Spread Change', width: 90, ...getNumberColDefTemplate(2) },
       { field: 'time', headerName: 'Time', width: 90 },
@@ -46,7 +56,8 @@ export function Traces() {
 
       <DataGrid isSummaryGrid={true}
         rowData={traces}
-        columnDefs={columnDefs}>
+        columnDefs={columnDefs}
+        onRowDoubleClicked={onRowDoubleClicked}>
       </DataGrid>
     </div>
   );

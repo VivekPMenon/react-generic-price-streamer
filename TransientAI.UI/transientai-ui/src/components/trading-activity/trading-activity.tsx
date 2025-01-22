@@ -1,23 +1,34 @@
 'use client';
 
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { DataGrid, getNumberColDefTemplate } from "../data-grid";
-import { ColDef } from "ag-grid-community";
+import { ColDef, RowDoubleClickedEvent } from "ag-grid-community";
 import { BondTrade, clientHoldingsDataService } from "@/services/client-holding-data";
+import { SearchDataContext } from "@/services/search-data";
 
 export function TradingActivity() {
+
+  const { searchData, setSearchData } = useContext(SearchDataContext);
 
   const [trades, setTrades] = useState<BondTrade[]>();
   const [columnDefs] = useState<ColDef[]>(getColumnDef());
 
   useEffect(() => {
     const loadTrades = async () => {
-      const trades = await clientHoldingsDataService.getTradingActivity();
+      const trades = await clientHoldingsDataService.getTradingActivity(searchData.description);
       setTrades(trades);
     };
 
     loadTrades();
-  }, []);
+  }, [searchData.description]);
+
+
+  function onRowDoubleClicked(event: RowDoubleClickedEvent<BondTrade>) {
+    setSearchData({
+      description: event.data?.security,
+      id: event.data?.security
+    });
+  }
 
   function getColumnDef(): ColDef[] {
     return [
@@ -45,7 +56,7 @@ export function TradingActivity() {
         width: 100,
         cellClass: 'numeric-cell',
       },
-      
+
       {
         ...getNumberColDefTemplate(2),
         field: 'amount',
@@ -119,8 +130,9 @@ export function TradingActivity() {
 
       <DataGrid isSummaryGrid={true}
         rowData={trades}
-        columnDefs={columnDefs}>
+        columnDefs={columnDefs}
+        onRowDoubleClicked={onRowDoubleClicked} >
       </DataGrid>
-      </>
+    </>
   );
 }

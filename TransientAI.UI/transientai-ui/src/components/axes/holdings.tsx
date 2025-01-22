@@ -1,22 +1,31 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { DataGrid, getNumberColDefTemplate } from "../data-grid";
-import { ColDef } from "ag-grid-community";
+import { ColDef, RowDoubleClickedEvent } from "ag-grid-community";
 import { ClientHolding, clientHoldingsDataService } from "@/services/client-holding-data";
+import { SearchDataContext } from "@/services/search-data";
 
 export function Holdings() {
+
+  const { searchData, setSearchData } = useContext(SearchDataContext);
 
   const [rowData, setRowData] = useState<ClientHolding[]>();
   const [columnDefs] = useState<ColDef[]>(getColumnDef());
 
   useEffect(() => {
     const loadClientHoldings = async () => {
-      const bonds = await clientHoldingsDataService.getClientHoldings();
+      const bonds = await clientHoldingsDataService.getClientHoldings(searchData.id);
       setRowData(bonds);
     };
 
     loadClientHoldings();
-  }, []);
+  }, [searchData?.id]);
 
+  function onRowDoubleClicked(event: RowDoubleClickedEvent<ClientHolding>) {
+    setSearchData({
+      description: event.data?.security,
+      id: event.data?.isin
+    });
+  }
 
   function getColumnDef(): ColDef[] {
     return [
@@ -47,7 +56,8 @@ export function Holdings() {
 
       <DataGrid isSummaryGrid={true}
         rowData={rowData}
-        columnDefs={columnDefs}>
+        columnDefs={columnDefs}
+        onRowDoubleClicked={onRowDoubleClicked}>
       </DataGrid>
     </div>
   );

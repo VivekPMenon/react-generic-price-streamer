@@ -13,13 +13,13 @@ class MarketDataService {
     return result.data[bondNames!];
   }
 
-  async getMarketDataPrices(): Promise<Price[]> {
-    const result = await webApihandler.post('market/market_data', {}, {});
+  async getMarketDataPrices(isin?: string): Promise<Price[]> {
+    const result = await webApihandler.post('market/market_data', { isin }, {});
     return result.market_data;
   }
 
-  async getTraces(): Promise<TraceData[]> {
-    const result = await webApihandler.post('trace/trace_data', {}, {page: 1});
+  async getTraces(isin?: string): Promise<TraceData[]> {
+    const result = await webApihandler.post('trace/trace_data', { isin }, { page: 1 });
     return result.trace_data;
   }
 }
