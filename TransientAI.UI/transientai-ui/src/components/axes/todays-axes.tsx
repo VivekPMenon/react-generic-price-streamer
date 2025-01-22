@@ -16,28 +16,14 @@ export function TodaysAxes() {
   const [axes, setAxes] = useState<BondInfo[]>();
   const [columnDefs] = useState<ColDef[]>(getColumnDef());
 
-  const visiableAxes = useMemo<BondInfo[] | null>(applyFilter, [axes, searchData?.id]);
-
   useEffect(() => {
     const loadAxesAsync = async () => {
-      const bonds = await productBrowserDataService.getTodaysAxes();
+      const bonds = await productBrowserDataService.getTodaysAxes(searchData.id);
       setAxes(bonds);
     };
 
     loadAxesAsync();
-  }, []);
-
-  function applyFilter():BondInfo[] | null {
-    if(!axes) {
-      return null;
-    }
-
-    if(!searchData.id) {
-      return axes!;
-    }
-
-    return axes?.filter(axe => axe.isin === searchData.id)!;
-  }
+  }, [searchData.id]);
 
   function onRowDoubleClicked(event:RowDoubleClickedEvent<BondInfo>) {
     setSearchData({
@@ -85,7 +71,7 @@ export function TodaysAxes() {
         <div className='sub-header'>Axes</div>
 
         <DataGrid isSummaryGrid={true}
-          rowData={visiableAxes}
+          rowData={axes}
           columnDefs={columnDefs}
           onRowDoubleClicked={onRowDoubleClicked} >
         </DataGrid>

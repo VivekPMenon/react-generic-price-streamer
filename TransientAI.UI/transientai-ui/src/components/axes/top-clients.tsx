@@ -4,23 +4,31 @@ import * as Dialog from "@radix-ui/react-dialog";
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { ChatbotDataContext } from '@/services/chatbot-data';
+import { SearchDataContext } from '@/services/search-data';
 
 export function TopClients() {
 
   const { chatbotData, setChatbotData } = useContext(ChatbotDataContext);
+  const { searchData, setSearchData } = useContext(SearchDataContext);
 
   const [topRecommendations, setTopRecommendations] = useState<TopRecommendation[]>();
   const [isDetailsVisible, setIsDetailsVisible] = useState<boolean>(false);
 
-  useEffect(() => loadTopRecommendations(), []);
+  useEffect(() => loadTopRecommendations(), [searchData.id]);
 
   function loadTopRecommendations() {
     const loadTopRecommendationsAsync = async () => {
+      let selectedCompany = '';
+      if(searchData.id) {
+        const bondInfo = await productBrowserDataService.getTodaysAxes(searchData.id);
+        selectedCompany = bondInfo.length ? bondInfo[0].bond_issuer! : '';
+      }
+
       const topCompanies = await productBrowserDataService.getTopRecommendations();
-      const firstFiveComapanies = topCompanies.slice(0, 4);
+      const firstFiveComapanies = selectedCompany ? topCompanies.filter(topCompany => topCompany === selectedCompany) : topCompanies.slice(0, 4);
 
       const promises = firstFiveComapanies
-        .map(companyName => productBrowserDataService.getRecommendationsDetails(companyName));
+        ?.map(companyName => productBrowserDataService.getRecommendationsDetails(companyName));
 
       const results: TopRecommendation[] = await Promise.all(promises);
       results.forEach(result => {

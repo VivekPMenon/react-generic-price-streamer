@@ -3,8 +3,8 @@ import { BondInfo, TopRecommendation } from "./model";
 
 class ProductBrowserDataService {
 
-  async getTodaysAxes(): Promise<BondInfo[]> {
-    const result = await webApihandler.post('inventory/get_product_browser_data', {}, {
+  async getTodaysAxes(isin?: string): Promise<BondInfo[]> {
+    const result = await webApihandler.post('inventory/get_product_browser_data', { isin }, {
       page: 1,
       page_size: 500
     });

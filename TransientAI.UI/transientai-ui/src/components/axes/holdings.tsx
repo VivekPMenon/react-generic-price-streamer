@@ -46,7 +46,12 @@ export function Holdings() {
         headerName: 'Current Holding',
         width: 140,
         sort: 'desc'
-      }
+      },
+      {
+        field: 'issuer_name',
+        headerName: 'Issuer',
+        width: 140
+      },
     ];
   }
 
