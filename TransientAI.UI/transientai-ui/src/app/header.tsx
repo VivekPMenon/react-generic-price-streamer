@@ -50,7 +50,7 @@ export function Header() {
         </div>
 
         <div className='profile-pic'>
-          <img src="/images/ProfilePic.png"></img>
+          <img src="/images/ProfilePic.jpeg"></img>
         </div>
       </div>
     </header>
