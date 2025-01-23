@@ -50,7 +50,7 @@ export function Header() {
         </div>
 
         <div className='profile-pic'>
-          VM
+          <img src="/images/ProfilePic.png"></img>
         </div>
       </div>
     </header>
