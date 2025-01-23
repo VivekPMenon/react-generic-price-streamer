@@ -9,8 +9,8 @@ export function Header() {
   return (
     <header>
       <div className={styles.title}>
-        <img src="/images/logo.png" />
-        TransientAI
+        <img src="/images/HurricaneLogo_Brightened.png" />
+        HURRICANE CAPITAL
       </div>
 
       <div className={styles['global-search']}>
@@ -41,8 +41,11 @@ export function Header() {
 
       </div>
 
-      <div className='profile-pic'>
-        VM
+      <div style={{display: 'flex', gap: '10px'}}>
+        {/* <img src="/images/HurricaneLogo.png" width='80px' height='85px'/> */}
+        <div className='profile-pic'>
+          VM
+        </div>
       </div>
     </header>
   );

@@ -1,6 +1,8 @@
+import OpenAI from "openai";
 import { webApihandler } from "../web-api-handler";
 import { endpointFinder } from "../web-api-handler/endpoint-finder-service";
 import { Article } from "./model";
+import axios from "axios";
 
 
 class NewsDataService {
@@ -16,6 +18,33 @@ class NewsDataService {
     });
 
     return result.articles;
+  }
+
+  async getBreakingNews() {
+    // const response = await axios.post(
+    //   'https://api.openai.com/v1/chat/completions',
+    //   {
+    //     model: 'gpt-4o-mini',
+    //     messages: [
+    //       {
+    //         role: "user",
+    //         content: "show me top 10 news from today relevant to global markets ",
+    //       },
+    //       {
+    //         role: "user",
+    //         content: "Show me earning updates from last 2 weeks",
+    //       }
+    //     ],
+    //   },
+    //   {
+    //     headers: {
+    //       'Content-Type': 'application/json',
+    //       Authorization: `Bearer ${process.env.NEXT_PUBLIC_OPENAI_API_KEY}`, // Load from environment variable
+    //     },
+    //   }
+    // );
+
+    // console.log('Response from OpenAI:', response.data.choices[0].message.content);
   }
 
   async getArticlesMock(): Promise<any[]> {

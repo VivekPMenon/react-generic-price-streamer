@@ -20,6 +20,7 @@
     "highcharts": "^12.1.2",
     "highcharts-react-official": "^3.2.1",
     "next": "15.1.4",
+    "openai": "^4.80.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-markdown": "^9.0.3",
