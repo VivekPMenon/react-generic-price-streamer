@@ -107,7 +107,9 @@ export function ChatbotResponse(props: ChatbotResponseProps) {
       <>
         <div className={styles['chat-message']}>
           <div className={styles['message-content']}>
-            <div className={styles['message-header'] + ' profile-pic'}>VM</div>
+            <div className={styles['message-header'] + ' profile-pic'}>
+              <img src="/images/ProfilePic.jpeg"></img>
+            </div>
             <p>
               {chatHistory.request?.query}
               {chatHistory.request?.isLoading ? <Spinner size='3' className='ml-2'></Spinner> : <></>}
