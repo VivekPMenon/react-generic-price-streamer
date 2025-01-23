@@ -9,7 +9,7 @@ export function Header() {
   return (
     <header>
       <div className={styles.title}>
-        <img src="/images/TransientAILogo.png" />
+        <img src="/images/TransientAILogo.jpeg" />
         TransientAI
       </div>
 

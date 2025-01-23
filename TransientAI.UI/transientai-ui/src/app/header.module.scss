@@ -7,7 +7,7 @@
   display: flex;
   align-items: center;
   flex: 2 1 50%;
-  gap: 5px;
+  gap: 0px;
 
   img {
     // border-radius: 3px;
@@ -26,12 +26,14 @@
 
 .client-logo {
   display: flex;
-  gap: 5px;
+  gap: 3px;
   align-items: center;
-  margin-right: 10px;
+  margin-right: 20px;
 
   span {
-    font-size: 12px;
+    font-size: 11px;
+    width: 70px;
+    text-align: center;
   }
 
   img {
