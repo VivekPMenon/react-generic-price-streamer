@@ -9,6 +9,7 @@ import { TodaysAxes } from '../axes/todays-axes';
 import { TradingActivity } from '../trading-activity';
 import { MarketDataTable } from '../market-data/market-data-table';
 import { Traces } from '../market-data/traces';
+import { BreakingNews } from '../breaking-news';
 
 export function MainContentPanel() {
   const defaultTab = 'Daily Insights';
@@ -81,6 +82,7 @@ export function MainContentPanel() {
         </Tabs.List>
 
         {/* TODO... Use Router here so that dynamical loading of components can be done */}
+        {/* Use constants for the menu names */}
         <Box pt="3" className='height-100p pb-15px'>
 
           {
@@ -109,6 +111,13 @@ export function MainContentPanel() {
               <div className={`${styles['market-data']}`}>
                 <MarketDataTable></MarketDataTable>
                 <Traces></Traces>
+              </div> : <></>
+          }
+
+          {
+            activeMenuData?.selectedMenu?.description === `Breaking News` ?
+              <div className='height-100p tab-content'>
+                <BreakingNews></BreakingNews>
               </div> : <></>
           }
         </Box>
