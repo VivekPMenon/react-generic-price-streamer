@@ -10,7 +10,7 @@ export function Header() {
     <header>
       <div className={styles.title}>
         <img src="/images/TransientAILogo.jpeg" />
-        TransientAI
+        {/* TransientAI */}
       </div>
 
       <div className={styles['global-search']}>
