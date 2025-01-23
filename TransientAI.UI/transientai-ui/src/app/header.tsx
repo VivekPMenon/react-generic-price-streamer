@@ -9,8 +9,8 @@ export function Header() {
   return (
     <header>
       <div className={styles.title}>
-        <img src="/images/HurricaneLogo_Brightened.png" />
-        HURRICANE CAPITAL
+        <img src="/images/TransientAILogo.png" />
+        TransientAI
       </div>
 
       <div className={styles['global-search']}>
@@ -41,8 +41,14 @@ export function Header() {
 
       </div>
 
-      <div style={{display: 'flex', gap: '10px'}}>
-        {/* <img src="/images/HurricaneLogo.png" width='80px' height='85px'/> */}
+      {/* // todo remove inlines tyling */}
+      <div className='flex'>
+        
+        <div className={styles['client-logo']}>
+          <img src="/images/HurricaneLogo_Brightened.png"/>
+          <span>HURRICANE CAPITAL</span>
+        </div>
+
         <div className='profile-pic'>
           VM
         </div>

@@ -1,17 +1,18 @@
 @import '../assets/variables.scss';
 
 .title {
-  font-size: 13px;
+  font-size: 14px;
   // font-weight: bold;
   color: white;
   display: flex;
-  flex: 2 1 80%;
+  align-items: center;
+  flex: 2 1 50%;
   gap: 5px;
 
   img {
     // border-radius: 3px;
-    height: 20px;
-    width: 20x;
+    height: 40px;
+    width: 40x;
   }
 }
 
@@ -23,6 +24,22 @@
   font-size: 13px;
 }
 
+.client-logo {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+  margin-right: 10px;
+
+  span {
+    font-size: 12px;
+  }
+
+  img {
+    width: 30px;
+    height: 30px;
+  }
+}
+
 .selected-security {
   display: flex;
   align-items: center;
@@ -31,19 +48,17 @@
   border-radius: 5px;
   padding: 5px 10px;
   width: fit-content;
-  margin-right: 30px;
+  margin-right: 40px;
   color: $white;
 
   i {
     font-size: 10px;
     color: $red;
-    
+
     cursor: pointer;
     padding: 5px 0px 5px 5px;
 
-    &:hover {
-      
-    }
+    &:hover {}
   }
 }
 
