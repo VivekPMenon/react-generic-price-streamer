@@ -6,6 +6,10 @@ import { TabInfo } from './model';
 import { useContext, useMemo } from 'react';
 import { ActiveMenuData, MenuContextData, MenuInfo } from '@/services/menu-data';
 import { TodaysAxes } from '../axes/todays-axes';
+import { TradingActivity } from '../trading-activity';
+import { MarketDataTable } from '../market-data/market-data-table';
+import { Traces } from '../market-data/traces';
+import { BreakingNews } from '../breaking-news';
 
 export function MainContentPanel() {
   const defaultTab = 'Daily Insights';
@@ -58,7 +62,7 @@ export function MainContentPanel() {
   }
 
   return (
-    <div className={styles['main-content']}>
+    <div className={`${styles['main-content']} widget`}>
       <Tabs.Root defaultValue={defaultTab}
         value={activeMenuData?.selectedMenu?.description}
         className='height-100p'
@@ -78,6 +82,7 @@ export function MainContentPanel() {
         </Tabs.List>
 
         {/* TODO... Use Router here so that dynamical loading of components can be done */}
+        {/* Use constants for the menu names */}
         <Box pt="3" className='height-100p pb-15px'>
 
           {
@@ -94,9 +99,27 @@ export function MainContentPanel() {
               </div> : <></>
           }
 
-          <Tabs.Content value="settings">
+          {
+            activeMenuData?.selectedMenu?.description === `Trading Activity` ?
+              <div className='height-100p tab-content'>
+                <TradingActivity></TradingActivity>
+              </div> : <></>
+          }
 
-          </Tabs.Content>
+          {
+            activeMenuData?.selectedMenu?.description === `Market Data` ?
+              <div className={`${styles['market-data']}`}>
+                <MarketDataTable></MarketDataTable>
+                <Traces></Traces>
+              </div> : <></>
+          }
+
+          {
+            activeMenuData?.selectedMenu?.description === `Breaking News` ?
+              <div className='height-100p tab-content'>
+                <BreakingNews></BreakingNews>
+              </div> : <></>
+          }
         </Box>
       </Tabs.Root>
     </div>

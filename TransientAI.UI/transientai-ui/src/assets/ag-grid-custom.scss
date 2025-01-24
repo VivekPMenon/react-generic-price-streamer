@@ -1,26 +1,41 @@
 @import './variables.scss';
 
 .ag-theme-balham-dark {
-  --ag-background-color: #1a1a1a;
-  --ag-control-panel-background-color:$grid-bg;
+  --ag-background-color: #{$body-bg};
+  --ag-control-panel-background-color: $grid-bg;
   --ag-borders-critical: none;
   --ag-foreground-color: #{$font-color-200};
   --ag-row-border-width: 0px;
   --ag-font-size: 11px;
   --ag-borders-side-button: 0px;
   --ag-widget-vertical-spacing: 10px;
-  
+
   // todo .. theme variable is not working here.. find out
-  --ag-header-background-color: #1a1a1a; 
+  --ag-header-background-color: #{$body-bg};
   --ag-checkbox-background-color: white;
   --ag-balham-active-color: #00b2ac;
-  --ag-odd-row-background-color: #1a1a1a;
+  --ag-odd-row-background-color: #{$body-bg};
+
+  &.summary-grid {
+    --ag-font-size: 13px;
+    --ag-foreground-color: #{$font-color-200};
+  }
 
   &:hover {
-    .ag-body-horizontal-scroll, 
+
+    .ag-body-horizontal-scroll,
     .ag-body-vertical-scroll {
       display: flex;
-    }  
+    }
+  }
+
+  .ag-row.ag-row-hover:before {
+    background-color: $hover-bg;
+    color: $hover-bg;
+  }
+
+  .ag-row {
+    border-bottom: 1px solid $border-alt;
   }
 
   .ag-body-horizontal-scroll,
@@ -28,7 +43,8 @@
     display: none;
   }
 
-  .ag-filter, .ag-menu-list {
+  .ag-filter,
+  .ag-menu-list {
     background-color: $body-bg;
   }
 
@@ -48,12 +64,22 @@
   }
 
   .ag-status-bar {
-    border-top: none;    
+    border-top: none;
     color: $grid-font-color;
   }
 
-  .ag-ltr .ag-header-cell:before, .ag-ltr .ag-header-group-cell:not(.ag-header-span-height.ag-header-group-cell-no-group):before {
+  .ag-ltr .ag-header-cell:before,
+  .ag-ltr .ag-header-group-cell:not(.ag-header-span-height.ag-header-group-cell-no-group):before {
     display: none;
+  }
+
+  .ag-header-row {
+    color: #{$font-color-100};
+  }
+
+  .ag-cell {
+    display: flex;
+    align-items: center;
   }
 }
 

@@ -10,6 +10,7 @@ import 'ag-grid-enterprise';
 export interface IDataGridProps extends AgGridReactProps {
   showGridTopSummary?: boolean;
   height?: number;
+  isSummaryGrid?: boolean;
 }
 
 export function DataGrid(props: IDataGridProps) {
@@ -18,13 +19,13 @@ export function DataGrid(props: IDataGridProps) {
 
   const finalProps: AgGridReactProps = {
     defaultColDef: {
-      floatingFilter: true,
+      floatingFilter: props.isSummaryGrid ? false: true,
       filter: 'agTextColumnFilter',
       sortable: true,
       resizable: true,
       suppressHeaderMenuButton: true,
       width: 120,
-      
+      suppressHeaderFilterButton: true,
       ...props.defaultColDef
     },
     sideBar: false,
@@ -54,11 +55,13 @@ export function DataGrid(props: IDataGridProps) {
 
   return (
     <>
-      <div className="ag-theme-balham-dark height-100p" style={{ height: props.height }}>
+      <div className={`ag-theme-balham-dark height-100p ${props.isSummaryGrid ? 'summary-grid' : ''}`} 
+        style={{ height: props.height }}>
         <AgGridReact {...finalProps}
-          statusBar={statusBar}
+          statusBar={props.isSummaryGrid ? undefined : statusBar}
           onGridReady={onGridReady}
-          rowHeight={35}>
+          rowHeight={props.isSummaryGrid ? 45 : 35}
+          headerHeight={props.isSummaryGrid ? 45 : 35}>
         </AgGridReact>
       </div>
     </>

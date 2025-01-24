@@ -29,3 +29,12 @@ export interface BondInfo {
   trader?: string;
   level?: number | null;
 }
+
+export interface TopRecommendation {
+  company?: string;
+  overview?: string;
+  clients_to_contact?: string[];
+  reasoning?: string;
+  news?: any[];
+  current_axes?: any[];
+}

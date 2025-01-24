@@ -1,0 +1,64 @@
+@import './variables.scss';
+
+.filters {
+  display: flex;
+  gap: 10px;
+  padding: 5px 0;
+
+  .filter {
+    background-color: $gray-1000;
+    border-radius: 3px;
+    padding: 5px;
+    align-content: center;
+    text-align: center;
+    min-width: 40px;
+    cursor: pointer;
+
+    &:hover {
+      background-color: $gray-200;
+    }
+
+    &.active {
+      color: black;
+      background-color: $active-bg;
+    }
+  }
+}
+
+.pill {
+  border-radius: 3px;
+  padding: 0px 7px;
+  color: black;
+  font-size: 12px;
+  display: flex;
+  text-transform: uppercase;
+  align-items: center;
+  gap: 5px;
+
+  &.blue {
+    background-color: $blue;
+  }
+
+  &.pink {
+    background-color: $pink;
+  }
+
+  &.orange {
+    background-color: $orange;
+  }
+
+  &.gray {
+    background-color: $gray-1000;
+    color: $font-color-100;
+  }
+
+  &.padded {
+    padding: 7px;
+  }
+
+  &.rounded {
+    border-radius: 5px;
+  }
+}
+
+

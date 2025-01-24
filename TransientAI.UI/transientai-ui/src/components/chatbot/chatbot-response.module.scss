@@ -29,7 +29,7 @@
 }
 
 .search-bar input {
-  width: 100%;
+  width: 98%;
   padding: 10px;
   font-size: 14px;
   border: none;
@@ -40,17 +40,17 @@
 .message-content {
   display: flex;
   gap: 10px;
-  align-items: baseline;
+  align-items: center;
 }
 
 .message-header {
-  height: 30px;
-  width: 30px;
+  // height: 30px;
+  // width: 30px;
 }
 
 .clip-conversation {
   cursor: pointer;
-  
+
   &:hover {
     color: $white;
   }
@@ -100,28 +100,6 @@
 }
 
 .chat-history {
-  height: 80vh;
+  height: 78vh;
   overflow-y: auto;
-}
-
-.chat-history::-webkit-scrollbar {
-  width: 0px;
-}
-
-.chat-history:hover::-webkit-scrollbar {
-  width: 10px;
-}
-
-.chat-history::-webkit-scrollbar-track {
-  background: $gray-1000;
-}
-
-.chat-history::-webkit-scrollbar-thumb {
-  background: $scrollbar-thumb-bg;
-  border-radius: 5px;
-}
-
-.chat-history::-webkit-scrollbar-thumb:hover {
-  background: $scrollbar-hover-bg;
-  display: block;
 }

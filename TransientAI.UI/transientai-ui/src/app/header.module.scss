@@ -1,13 +1,72 @@
+@import '../assets/variables.scss';
+
 .title {
-  font-size: 15px;
+  font-size: 14px;
   // font-weight: bold;
   color: white;
   display: flex;
-  gap: 5px;
+  align-items: center;
+  flex: 2 1 50%;
+  gap: 0px;
 
   img {
     // border-radius: 3px;
-    height: 20px;
-    width: 20x;
+    height: 40px;
+    width: 40x;
   }
+}
+
+.global-search {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: $font-color-200;
+  font-size: 13px;
+}
+
+.client-logo {
+  display: flex;
+  gap: 3px;
+  align-items: center;
+  margin-right: 20px;
+
+  span {
+    font-size: 11px;
+    width: 70px;
+    text-align: center;
+  }
+
+  img {
+    width: 30px;
+    height: 30px;
+  }
+}
+
+.selected-security {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background-color: $gray-1000;
+  border-radius: 5px;
+  padding: 5px 10px;
+  width: fit-content;
+  margin-right: 40px;
+  color: $white;
+
+  i {
+    font-size: 10px;
+    color: $red;
+
+    cursor: pointer;
+    padding: 5px 0px 5px 5px;
+
+    &:hover {}
+  }
+}
+
+.search-pill {
+  background-color: $teal-100;
+  padding: 3px;
+  border-radius: $border-radius;
+  color: $white;
 }

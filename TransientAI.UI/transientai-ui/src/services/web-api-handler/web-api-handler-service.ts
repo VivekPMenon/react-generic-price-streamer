@@ -14,7 +14,9 @@ class WebApihandler {
   async get(url:string, params: {[key: string]: any}, options?: WebApihandlerOptions)  {
     // todo.. caching 
      const currentEnv = endpointFinder.getCurrentEnvInfo();
-     const finalUrl = `${currentEnv.httpsEndpoint}/${url}`;
+
+     const httpsEndpoint = options?.serviceName ? currentEnv.httpsServices![options.serviceName] : currentEnv.httpsEndpoint; 
+     const finalUrl = `${httpsEndpoint}/${url}`;
 
     const result = await axios({
       url: finalUrl,

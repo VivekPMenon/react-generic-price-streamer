@@ -4,9 +4,19 @@ import { ActiveMenuData, MenuContextData, MenuInfo } from '@/services/menu-data'
 import styles from './explorer.module.scss';
 import { useContext, useMemo, useState } from 'react';
 
-export function Explorer() {
+export interface NotificationsProps {
+  onExpandCollapse: (state: boolean) => void;
+}
+
+export function Explorer(props: NotificationsProps) {
 
   const { activeMenuData, setActiveMenuData } = useContext(MenuContextData);
+  const [isExpanded, setIsExpanded] = useState<boolean>(false);
+
+  function expandOrCollapsePanel() {
+    setIsExpanded(!isExpanded);
+    props.onExpandCollapse(!isExpanded);
+  }
 
   function onParentMenuClick(selectedMenuInfo: MenuInfo) {
     const newMenuList: MenuInfo[] = [...activeMenuData?.activeMenuList!];
@@ -34,8 +44,11 @@ export function Explorer() {
   }
 
   return (
-    <div className={styles.explorer}>
-      Explorer
+    <div className={`${styles.explorer} widget`}>
+      <div className='widget-title'>
+        Explorer
+        <i className='fa-solid fa-expand toggler' onClick={() => expandOrCollapsePanel()}></i>
+      </div>
 
       <div className="menu">
         {
