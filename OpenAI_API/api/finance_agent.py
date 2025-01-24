@@ -22,7 +22,7 @@ yfinance_tools = YFinanceTools(
 
 finance_agent = Agent(
   name="Breaking News Agent",
-  model=OpenAIChat(id="gpt-3.5-turbo", api_key=OPENAI_API_KEY),
+  model=OpenAIChat(id="gpt-4o-mini", api_key=OPENAI_API_KEY),
   tools=[yfinance_tools],
   instructions=[
     "Summarize the top 10 market news as JSON with 'headline', 'summary', and 'source'."
