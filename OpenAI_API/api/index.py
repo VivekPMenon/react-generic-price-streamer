@@ -1,8 +1,11 @@
+import logging
 from flask import Flask, jsonify
 from flask_cors import CORS
 from finance_agent import fetch_news_with_token_usage
 
 app = Flask(__name__)
+
+logging.basicConfig(level=logging.DEBUG)
 
 CORS(app)
 
