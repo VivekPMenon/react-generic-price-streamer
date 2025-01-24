@@ -3,3 +3,4 @@ flask-cors
 openai
 yfinance
 phidata
+dotenv

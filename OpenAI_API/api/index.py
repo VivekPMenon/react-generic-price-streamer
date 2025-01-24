@@ -13,3 +13,4 @@ def home():
 
 # Expose the Flask app for Vercel
 app = app
+# app.run(debug=True)
