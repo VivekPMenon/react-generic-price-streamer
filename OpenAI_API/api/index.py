@@ -1,3 +1,9 @@
+import sys
+import os
+
+# Add the `api` folder to the module search path
+sys.path.append(os.path.dirname(__file__))
+
 import logging
 from flask import Flask, jsonify
 from flask_cors import CORS
