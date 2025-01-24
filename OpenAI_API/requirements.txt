@@ -1,2 +1,5 @@
 Flask
 flask-cors
+openai
+yfinance
+phidata

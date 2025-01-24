@@ -1,6 +1,12 @@
+import os
 from phi.agent import Agent
 from phi.model.openai import OpenAIChat
 from phi.tools.yfinance import YFinanceTools
+
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+
+if not OPENAI_API_KEY:
+  raise ValueError("OpenAI API key is not set in environment variables.")
 
 # Configure YFinanceTools for breaking market news
 yfinance_tools = YFinanceTools(
@@ -13,7 +19,7 @@ yfinance_tools = YFinanceTools(
 # Create the agent with the YFinanceTools configuration
 finance_agent = Agent(
   name="Breaking News Agent",
-  model=OpenAIChat(id="gpt-3.5-turbo"),
+  model=OpenAIChat(id="gpt-3.5-turbo", api_key=OPENAI_API_KEY),
   tools=[yfinance_tools],
   instructions=["Extract and summarize the top 10 breaking news stories in the market."],
   show_tool_calls=True,
@@ -38,4 +44,4 @@ def fetch_news_with_token_usage():
   finance_agent.print_response("What are the top 10 breaking news stories in the market?", stream=True)
 
 # Call the function
-fetch_news_with_token_usage()
+# fetch_news_with_token_usage()
