@@ -11,7 +11,8 @@ class EndpointFinderService {
       newsApiKey: 'ecf2b4a0ade14e5a8613b8d9fec645a9',
       randomStr: '',
       httpsServices: {
-        'news-api': 'https://newsapi.org/v2'
+        'news-api': 'https://newsapi.org/v2',
+        'openai-api': 'https://react-generic-price-streamer-one.vercel.app/api'
       }
     }
   }

@@ -8,6 +8,7 @@ import axios from "axios";
 class NewsDataService {
 
   readonly newsApiName = 'news-api';
+  readonly openAiApiName = 'openai-api';
 
   async getArticles(): Promise<Article[]> {
     const result = await webApihandler.get('top-headlines', {
@@ -21,30 +22,11 @@ class NewsDataService {
   }
 
   async getBreakingNews() {
-    // const response = await axios.post(
-    //   'https://api.openai.com/v1/chat/completions',
-    //   {
-    //     model: 'gpt-4o-mini',
-    //     messages: [
-    //       {
-    //         role: "user",
-    //         content: "show me top 10 news from today relevant to global markets ",
-    //       },
-    //       {
-    //         role: "user",
-    //         content: "Show me earning updates from last 2 weeks",
-    //       }
-    //     ],
-    //   },
-    //   {
-    //     headers: {
-    //       'Content-Type': 'application/json',
-    //       Authorization: `Bearer ${process.env.NEXT_PUBLIC_OPENAI_API_KEY}`, // Load from environment variable
-    //     },
-    //   }
-    // );
+    const result = await webApihandler.get('news', {}, {
+      serviceName: this.openAiApiName
+    });
 
-    // console.log('Response from OpenAI:', response.data.choices[0].message.content);
+    return result.articles;
   }
 
   async getArticlesMock(): Promise<any[]> {
