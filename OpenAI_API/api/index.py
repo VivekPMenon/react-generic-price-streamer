@@ -1,4 +1,3 @@
-import requests
 import sys
 import os
 from flask_caching import Cache
@@ -22,11 +21,7 @@ CORS(app)
 @cache.cached()
 def get_news():
   #fetch_news_with_token_usage()
-   try:
-    response = requests.get('https://www.google.com', timeout=5)
-    return {"status": "success", "code": response.status_code}
-   except Exception as e:
-    return {"status": "failure", "error": str(e)}
+  return jsonify(fetch_news_with_token_usage())
 
 # Expose the Flask app for Vercel
 app = app
