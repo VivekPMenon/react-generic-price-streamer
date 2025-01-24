@@ -21,22 +21,7 @@ CORS(app)
 @cache.cached()
 def get_news():
   #fetch_news_with_token_usage()
-  from phi.tools.yfinance import YFinanceTools
-
-    # Initialize the YFinanceTools
-  yfinance_tools = YFinanceTools(
-        stock_price=False,
-        analyst_recommendations=False,
-        company_info=False,
-        company_news=True
-    )
-    
-  try:
-        # Replace with a test query
-    result = yfinance_tools.get_company_news(symbol="AAPL", num_stories=1)
-    return {"status": "success", "data": result}
-  except Exception as e:
-    return {"status": "failure", "error": str(e)}
+  return jsonify(fetch_news_with_token_usage())
 
 # Expose the Flask app for Vercel
 app = app
