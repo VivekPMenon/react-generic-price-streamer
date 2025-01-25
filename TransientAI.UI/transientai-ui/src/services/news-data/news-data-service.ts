@@ -1,7 +1,7 @@
 import OpenAI from "openai";
 import { webApihandler } from "../web-api-handler";
 import { endpointFinder } from "../web-api-handler/endpoint-finder-service";
-import { Article } from "./model";
+import { Article, FinanceArticle } from "./model";
 import axios from "axios";
 
 
@@ -21,12 +21,26 @@ class NewsDataService {
     return result.articles;
   }
 
-  async getBreakingNews() {
+  async getBreakingNews(): Promise<FinanceArticle[]> {
     const result = await webApihandler.get('news', {}, {
       serviceName: this.openAiApiName
     });
 
-    return result.articles;
+    const jsonMatch = result.match(/```json\n([\s\S]*?)\n```/);
+    let jsonObject = [];
+    if (jsonMatch) {
+      try {
+        // Parse the extracted JSON into a JavaScript object
+        jsonObject = JSON.parse(jsonMatch[1]);
+        console.log(jsonObject);
+      } catch (error) {
+        console.error("Failed to parse JSON:", error);
+      }
+    } else {
+      console.error("JSON not found in the string.");
+    }
+
+    return jsonObject;
   }
 
   async getArticlesMock(): Promise<any[]> {
