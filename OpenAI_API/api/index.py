@@ -2,7 +2,6 @@ import sys
 import os
 from flask_caching import Cache
 
-# Add the `api` folder to the module search path
 sys.path.append(os.path.dirname(__file__))
 
 import logging
@@ -17,11 +16,19 @@ app = Flask(__name__)
 cache = Cache(app, config={"CACHE_TYPE": "SimpleCache", "CACHE_DEFAULT_TIMEOUT": 28900})  # 8 hours
 CORS(app)
 
+cached_data = None
+
+def init_cache():
+  global cached_data 
+  cached_data = fetch_news_with_token_usage()
+
+init_cache()
+
 @app.route('/api/news', methods=['GET'])
-@cache.cached()
+# @cache.cached()
 def get_news():
   #fetch_news_with_token_usage()
-  return jsonify(fetch_news_with_token_usage())
+  return cached_data if cached_data is not None else fetch_news_with_token_usage()
 
 # Expose the Flask app for Vercel
 app = app
