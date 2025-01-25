@@ -1,10 +1,15 @@
+from flask_caching import Cache
 from flask import Flask, request, jsonify
 import os
 from phi.agent import Agent
 from phi.model.openai import OpenAIChat
 from phi.tools.yfinance import YFinanceTools
+from flask_cors import CORS
 
 app = Flask(__name__)
+
+cache = Cache(app, config={"CACHE_TYPE": "SimpleCache", "CACHE_DEFAULT_TIMEOUT": 28900})  # 8 hours
+CORS(app)
 
 # Load API key from environment variables
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
@@ -32,6 +37,7 @@ finance_agent = Agent(
   markdown=False
 )
 
+@cache.cached()
 @app.route('/news', methods=['GET'])
 def fetch_news():
   response = finance_agent.run("Give top 10 market news as JSON")
