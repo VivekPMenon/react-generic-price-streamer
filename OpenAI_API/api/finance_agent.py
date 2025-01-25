@@ -25,7 +25,7 @@ finance_agent = Agent(
   model=OpenAIChat(id="gpt-4o-mini", api_key=OPENAI_API_KEY),
   tools=[yfinance_tools],
   instructions=[
-    "Summarize the top 10 market news as JSON with 'headline', 'summary', and 'source'."
+    "Summarize the top 10 market news as JSON with 'headline', 'summary', and 'source' as url to the source news."
   ],  
   show_tool_calls=True,
   markdown=False
