@@ -37,8 +37,8 @@ finance_agent = Agent(
   markdown=False
 )
 
-@cache.cached()
 @app.route('/news', methods=['GET'])
+@cache.cached()
 def fetch_news():
   response = finance_agent.run("Give top 10 market news as JSON")
   return response.content

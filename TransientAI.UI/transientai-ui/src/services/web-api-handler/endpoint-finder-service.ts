@@ -12,7 +12,7 @@ class EndpointFinderService {
       randomStr: '',
       httpsServices: {
         'news-api': 'https://newsapi.org/v2',
-        'openai-api': 'https://react-generic-price-streamer-one.vercel.app/api'
+        'openai-api': 'https://news-api-r966.onrender.com'
       }
     }
   }
