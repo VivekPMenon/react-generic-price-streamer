@@ -1,4 +1,4 @@
-import { Article, FinanceArticle, newsDataService } from '@/services/news-data';
+import { Article, ConsolidatedArticles, FinanceArticle, newsDataService } from '@/services/news-data';
 import styles from './breaking-news.module.scss';
 import { useEffect, useState } from 'react';
 
@@ -10,7 +10,7 @@ export function BreakingNews() {
   //     url: 'test'
   //   } as Article;
   // });
-  const [articles, setArticles] = useState<FinanceArticle[]>([]);
+  const [articles, setArticles] = useState<ConsolidatedArticles>({});
 
   useEffect(() => {
     const loadAsync = async () => {
@@ -22,34 +22,63 @@ export function BreakingNews() {
   }, []);
 
   return (
-    <div className={`${styles['breaking-news']} cards scrollable-div`}>
-      {/* 
-      <div className='sub-header'>Breaking News</div> */}
-
-      {
-        articles.map(article => (
-          <div className='card'>
-            {/* <div className='card-image'>
+    <div className={`${styles['breaking-news']} scrollable-div`}>
+      <div className='cards'>
+        Market News
+        {
+          articles.market_news?.map(article => (
+            <div className='card'>
+              {/* <div className='card-image'>
               <img
                 src={article.urlToImage}
                 alt={article.title}
               />
             </div> */}
 
-            <div className='card-content'>
-              <div className='card-title'>
-                <a href={article.source} className="inline-block" target="_blank">
-                  {article.headline}
-                </a>
-              </div>
+              <div className='card-content'>
+                <div className='card-title'>
+                  <a href={article.source} className="inline-block" target="_blank">
+                    {article.headline}
+                  </a>
+                </div>
 
-              <div className="card-description">
-                {article.summary}
+                <div className="card-description">
+                  {article.summary}
+                </div>
               </div>
             </div>
-          </div>
-        ))
-      }
+          ))
+        }
+      </div>
+
+      <div className='cards'>
+        Earning Updates
+        {
+          articles.earnings_updates?.map(article => (
+            <div className='card'>
+              {/* <div className='card-image'>
+              <img
+                src={article.urlToImage}
+                alt={article.title}
+              />
+            </div> */}
+
+              <div className='card-content'>
+                <div className='card-title'>
+                  <a href={article.source} className="inline-block" target="_blank">
+                    {article.headline}
+                  </a>
+                </div>
+
+                <div className="card-description">
+                  {article.summary}
+                </div>
+              </div>
+            </div>
+          ))
+        }
+      </div>
+
     </div>
   );
 }

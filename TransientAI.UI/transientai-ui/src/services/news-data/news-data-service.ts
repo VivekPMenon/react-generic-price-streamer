@@ -1,7 +1,7 @@
 import OpenAI from "openai";
 import { webApihandler } from "../web-api-handler";
 import { endpointFinder } from "../web-api-handler/endpoint-finder-service";
-import { Article, FinanceArticle } from "./model";
+import { Article, ConsolidatedArticles, FinanceArticle } from "./model";
 import axios from "axios";
 
 
@@ -21,7 +21,7 @@ class NewsDataService {
     return result.articles;
   }
 
-  async getBreakingNews(): Promise<FinanceArticle[]> {
+  async getBreakingNews(): Promise<ConsolidatedArticles> {
     const result = await webApihandler.get('news', {}, {
       serviceName: this.openAiApiName
     });

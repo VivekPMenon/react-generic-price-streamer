@@ -11,3 +11,8 @@ export interface FinanceArticle {
   source?: string;
   summary?: string;
 }
+
+export interface ConsolidatedArticles {
+  earnings_updates?: FinanceArticle[];
+  market_news?: FinanceArticle[];
+}

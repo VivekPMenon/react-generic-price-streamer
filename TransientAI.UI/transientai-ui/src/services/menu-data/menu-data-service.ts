@@ -1,11 +1,11 @@
 import { MenuInfo } from "./model";
 
 export const menuInfoList: MenuInfo[] = [
-  {
-    description: 'Today',
-    badgeCount: 5,
-    icon: 'fa-regular fa-snowflake'
-  },
+  // {
+  //   description: 'Today',
+  //   badgeCount: 5,
+  //   icon: 'fa-regular fa-snowflake'
+  // },
   {
     description: `Today's Axes`,
     badgeCount: 4,
@@ -26,12 +26,12 @@ export const menuInfoList: MenuInfo[] = [
     description: 'Market Data',
     badgeCount: 4,
     icon: 'fa-solid fa-chart-simple',
-    children: [
-      {description: 'Breaking News', subDescription: '11/24 7:45am'},
-      {description: 'Earnings Updates'},
-      {description: 'Rating Changes'},
-      {description: 'Research Notes', subDescription: '11/24 8:45am'}
-    ]
+    // children: [
+    //   {description: 'Breaking News', subDescription: '11/24 7:45am'},
+    //   {description: 'Earnings Updates'},
+    //   {description: 'Rating Changes'},
+    //   {description: 'Research Notes', subDescription: '11/24 8:45am'}
+    // ]
   },
   {
     description: 'Client Data',
