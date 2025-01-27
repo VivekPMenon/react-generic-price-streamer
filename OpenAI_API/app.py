@@ -21,7 +21,7 @@ def execute_openai_api(command):
   yfinance_tools = YFinanceTools(
     stock_price=True,
     analyst_recommendations=False,
-    company_info=False,
+    company_info=True,
     company_news=True
   )
 
@@ -29,10 +29,7 @@ def execute_openai_api(command):
     name="Breaking News Agent",
     model=OpenAIChat(id="gpt-4o-mini", api_key=OPENAI_API_KEY),
     tools=[yfinance_tools],
-    instructions=["Always summarize, and include the most relevant data only", 
-                  "Provide 'Read More' as a Hyperlink that will open the source article in a separate browser tab",
-                  "Use Numbers instead of Bullets for the first level"
-                  ],
+    instructions=[],
     # show_tool_calls=True,
     markdown=True
   )
@@ -44,7 +41,7 @@ def execute_openai_api(command):
 @cache.cached()
 def fetch_news():
   market_news = execute_openai_api("Give me a summary of top 10 trending market news")
-  earning_updates = execute_openai_api(" Create small summary of the earning updates for top 10 companies, listing the earning numbers, and 1 line market response to the earnings.")
+  earning_updates = execute_openai_api("Create small summary of the earning updates for top 10 companies listing the earning numbers, Revenue and 1 line market response to the earnings.")
   return {
     "market_news": market_news,
     "earning_updates": earning_updates

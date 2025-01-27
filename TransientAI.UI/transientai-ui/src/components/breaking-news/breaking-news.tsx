@@ -50,14 +50,38 @@ export function BreakingNews() {
           //     </div>
           //   </div>
           // ))
-          <ReactMarkdown className='markdown' remarkPlugins={[remarkGfm]}>{articles.market_news}</ReactMarkdown>
+          <ReactMarkdown className='markdown'
+            components={{
+              a: ({ node, children, ...props }) => {
+                if (props.href?.includes('http')) {
+                  props.target = '_blank'
+                  props.rel = 'noopener noreferrer'
+                }
+                return <a {...props}>{children}</a>
+              },
+            }}
+            remarkPlugins={[remarkGfm]}>
+            {articles.market_news}
+          </ReactMarkdown>
         }
       </div>
 
       <div className='cards'>
         Earning Updates
-        
-        <ReactMarkdown className='markdown' remarkPlugins={[remarkGfm]}>{articles.earning_updates}</ReactMarkdown>
+
+        <ReactMarkdown className='markdown'
+          components={{
+            a: ({ node, children, ...props }) => {
+              if (props.href?.includes('http')) {
+                props.target = '_blank'
+                props.rel = 'noopener noreferrer'
+              }
+              return <a {...props}>{children}</a>
+            },
+          }}
+          remarkPlugins={[remarkGfm]}>
+          {articles.earning_updates}
+        </ReactMarkdown>
       </div>
 
     </div>
