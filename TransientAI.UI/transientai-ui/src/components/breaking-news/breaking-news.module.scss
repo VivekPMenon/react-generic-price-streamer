@@ -1,3 +1,4 @@
+@import '../../assets/variables.scss';
 
 .breaking-news {
   display: flex;
@@ -5,6 +6,7 @@
   padding: 0px;
   justify-content: flex-start;
   max-height: 42vh;
+  color: $font-color-100;
 
   & > div {
     flex: 1 1 50%; /* Each item takes 50% of the width minus the gap */

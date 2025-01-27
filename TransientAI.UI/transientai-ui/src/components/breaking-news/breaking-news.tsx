@@ -25,7 +25,7 @@ export function BreakingNews() {
 
   return (
     <div className={`${styles['breaking-news']} scrollable-div`}>
-      <div className='cards'>
+      <div className=''>
         {
           // articles.market_news?.map(article => (
           //   <div className='card'>
@@ -65,7 +65,7 @@ export function BreakingNews() {
         }
       </div>
 
-      <div className='cards'>
+      <div className=''>
         <ReactMarkdown className='markdown'
           components={{
             a: ({ node, children, ...props }) => {
