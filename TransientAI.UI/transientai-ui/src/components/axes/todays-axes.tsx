@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useContext, useMemo } from 'react';
 import { ColDef, RowDoubleClickedEvent } from 'ag-grid-community';
-import { DataGrid } from '../data-grid';
+import { DataGrid, getNumberColDefTemplate } from '../data-grid';
 import { BondInfo, productBrowserDataService } from '@/services/product-browser-data';
 import styles from './todays-axes.module.scss';
 import { TopClients } from './top-clients';
@@ -11,7 +11,7 @@ import { SearchData, SearchDataContext } from '@/services/search-data';
 
 export function TodaysAxes() {
 
-  const {searchData, setSearchData} = useContext(SearchDataContext);
+  const { searchData, setSearchData } = useContext(SearchDataContext);
 
   const [axes, setAxes] = useState<BondInfo[]>();
   const [columnDefs] = useState<ColDef[]>(getColumnDef());
@@ -25,7 +25,7 @@ export function TodaysAxes() {
     loadAxesAsync();
   }, [searchData.id]);
 
-  function onRowDoubleClicked(event:RowDoubleClickedEvent<BondInfo>) {
+  function onRowDoubleClicked(event: RowDoubleClickedEvent<BondInfo>) {
     setSearchData({
       description: event.data?.product_description,
       id: event.data?.isin
@@ -38,15 +38,15 @@ export function TodaysAxes() {
       { field: 'isin', headerName: 'ISIN', cellClass: 'orange-color', width: 120 },
       { field: 'bond_type', headerName: 'Bond Type', width: 100, hide: true },
       { field: 'bond_issuer', headerName: 'Bond Issuer', width: 180, hide: true },
-      { field: 'coupon_rate', headerName: 'Coupon Rate', width: 120, hide: true },
-      { field: 'b_size_m', headerName: 'B Size M', width: 120 },
-      { field: 'a_size_m', headerName: 'A Size M', width: 120 },
-      { field: 'b_yield', headerName: 'B Yield', width: 120, hide: true },
-      { field: 'a_yield', headerName: 'A Yield', width: 120, hide: true },
-      { field: 'bid_price', headerName: 'Bid Price', hide: true },
-      { field: 'ask_price', headerName: 'Ask Price', hide: true },
-      { field: 'b_spread', headerName: 'B Spread', hide: true },
-      { field: 'a_spread', headerName: 'A Spread', hide: true },
+      { field: 'coupon_rate', headerName: 'Coupon Rate', width: 100, hide: true },
+      { field: 'b_size_m', headerName: 'B Size M', width: 80, ...getNumberColDefTemplate(2) },
+      { field: 'a_size_m', headerName: 'A Size M', width: 80, ...getNumberColDefTemplate(2) },
+      { field: 'b_yield', headerName: 'B Yield', width: 80, hide: true, ...getNumberColDefTemplate(2) },
+      { field: 'a_yield', headerName: 'A Yield', width: 80, hide: true, ...getNumberColDefTemplate(2) },
+      { field: 'bid_price', headerName: 'Bid Price', width: 80, ...getNumberColDefTemplate(2) },
+      { field: 'ask_price', headerName: 'Ask Price', width: 80, ...getNumberColDefTemplate(2) },
+      { field: 'b_spread', headerName: 'B Spread', width: 80, ...getNumberColDefTemplate(2) },
+      { field: 'a_spread', headerName: 'A Spread', width: 80, ...getNumberColDefTemplate(2) },
       { field: 'b_gspread', headerName: 'B G Spread', hide: true },
       { field: 'a_gspread', headerName: 'A G Spread', hide: true },
       { field: 'b_zspread', headerName: 'B Z Spread', hide: true },
