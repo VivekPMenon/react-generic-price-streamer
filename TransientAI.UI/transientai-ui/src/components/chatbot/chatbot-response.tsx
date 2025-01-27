@@ -108,7 +108,7 @@ export function ChatbotResponse(props: ChatbotResponseProps) {
         <div className={styles['chat-message']}>
           <div className={styles['message-content']}>
             <div className={styles['message-header'] + ' profile-pic'}>
-              <img src="/images/ProfilePic.jpeg"></img>
+              <img src="/images/ProfilePicAI.png"></img>
             </div>
             <p>
               {chatHistory.request?.query}
