@@ -19,7 +19,7 @@ if not OPENAI_API_KEY:
 
 def execute_openai_api(command):
   yfinance_tools = YFinanceTools(
-    stock_price=False,
+    stock_price=True,
     analyst_recommendations=False,
     company_info=False,
     company_news=True
@@ -29,7 +29,10 @@ def execute_openai_api(command):
     name="Breaking News Agent",
     model=OpenAIChat(id="gpt-4o-mini", api_key=OPENAI_API_KEY),
     tools=[yfinance_tools],
-    instructions=["Always summarize, and include the most relevant data only"],
+    instructions=["Always summarize, and include the most relevant data only", 
+                  "Provide 'Read More' as a Hyperlink that will open the source article in a separate browser tab",
+                  "Use Numbers instead of Bullets for the first level"
+                  ],
     # show_tool_calls=True,
     markdown=True
   )

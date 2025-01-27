@@ -26,21 +26,7 @@ class NewsDataService {
       serviceName: this.openAiApiName
     });
 
-    const jsonMatch = result.match(/```json\n([\s\S]*?)\n```/);
-    let jsonObject = [];
-    if (jsonMatch) {
-      try {
-        // Parse the extracted JSON into a JavaScript object
-        jsonObject = JSON.parse(jsonMatch[1]);
-        console.log(jsonObject);
-      } catch (error) {
-        console.error("Failed to parse JSON:", error);
-      }
-    } else {
-      console.error("JSON not found in the string.");
-    }
-
-    return jsonObject;
+    return result;
   }
 
   async getArticlesMock(): Promise<any[]> {

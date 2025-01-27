@@ -13,6 +13,6 @@ export interface FinanceArticle {
 }
 
 export interface ConsolidatedArticles {
-  earnings_updates?: FinanceArticle[];
-  market_news?: FinanceArticle[];
+  earning_updates?: string;
+  market_news?: string;
 }
