@@ -136,6 +136,7 @@ export function ChatbotResponse(props: ChatbotResponseProps) {
                 <div className={styles['recommendation-icon']}>✅</div>
                 <div className={styles['recommendation-text']}>Tech Sector Bond Recommendations</div>
               </div> */}
+              
             </div>
 
             <div className={`${styles['assistant-message-time']}`}>{chatHistory.response?.timestamp}</div>
