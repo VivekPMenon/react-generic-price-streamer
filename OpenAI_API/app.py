@@ -17,33 +17,35 @@ OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 if not OPENAI_API_KEY:
   raise ValueError("OpenAI API key is not set in environment variables.")
 
-# Configure YFinanceTools
-yfinance_tools = YFinanceTools(
-  stock_price=False,
-  analyst_recommendations=False,
-  company_info=False,
-  company_news=True
-)
+def execute_openai_api(command):
+  yfinance_tools = YFinanceTools(
+    stock_price=False,
+    analyst_recommendations=False,
+    company_info=False,
+    company_news=True
+  )
 
-# Configure the agent
-finance_agent = Agent(
-  name="Breaking News Agent",
-  model=OpenAIChat(id="gpt-4o-mini", api_key=OPENAI_API_KEY),
-  tools=[yfinance_tools],
-  instructions=[
-    "Summarize the top market news.",
-    "Show me earning updates from last 2 weeks",
-    "Give me as JSON with 'headline', 'summary', and 'source' as URL to the related source"
-  ],
-  show_tool_calls=True,
-  markdown=False
-)
+  finance_agent = Agent(
+    name="Breaking News Agent",
+    model=OpenAIChat(id="gpt-4o-mini", api_key=OPENAI_API_KEY),
+    tools=[yfinance_tools],
+    instructions=["Always summarize, and include the most relevant data only"],
+    # show_tool_calls=True,
+    markdown=True
+  )
+  
+  response = finance_agent.run(command)
+  return response.content
 
 @app.route('/news', methods=['GET'])
 @cache.cached()
 def fetch_news():
-  response = finance_agent.run("Give top 10 market news and 2 weeks earning updates as JSON")
-  return response.content
+  market_news = execute_openai_api("Give me a summary of top 10 trending market news")
+  earning_updates = execute_openai_api(" Create small summary of the earning updates for top 10 companies, listing the earning numbers, and 1 line market response to the earnings.")
+  return {
+    "market_news": market_news,
+    "earning_updates": earning_updates
+  }
 
 if __name__ == "__main__":
   app.run(host="0.0.0.0", port=8080)
