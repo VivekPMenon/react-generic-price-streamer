@@ -66,6 +66,7 @@ export function Chatbot() {
   }
 
   function selectPastQuery(chatConversation: ChatHistory) {
+    setQuery('');
     setChatbotData({
       title: chatConversation.title,
       isChatbotResponseActive: true,
