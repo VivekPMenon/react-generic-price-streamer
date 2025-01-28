@@ -17,7 +17,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Hurricane Capital",
+  title: "Transient AI",
   description: "AI Solution for your trading activities",
 };
 
