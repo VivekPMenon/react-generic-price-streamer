@@ -6,3 +6,7 @@ export function numberFormatter(value: any, decimal: number) {
     }
   );
 }
+
+export function isNumeric(str: any) {
+  return !isNaN(str) && !isNaN(parseFloat(str));
+}
