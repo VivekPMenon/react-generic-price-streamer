@@ -44,18 +44,18 @@ export function Header() {
       {/* // todo remove inlines tyling */}
       <div className='flex'>
 
-        {/* <div className={styles['client-logo']}>
+        <div className={styles['client-logo']}>
           <img src="/images/HurricaneLogo_Brightened.png"/>
           <span>HURRICANE CAPITAL</span>
-        </div> */}
-
-        {/* <div className='profile-pic'>
-          <img src="/images/ProfilePic.jpeg"></img>
-        </div> */}
+        </div>
 
         <div className='profile-pic'>
-          <img src="/images/ProfilePicAI.png"></img>
+          <img src="/images/ProfilePic.jpeg"></img>
         </div>
+
+        {/* <div className='profile-pic'>
+          <img src="/images/ProfilePicAI.png"></img>
+        </div> */}
       </div>
     </header>
   );

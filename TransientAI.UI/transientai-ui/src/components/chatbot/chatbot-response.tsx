@@ -108,7 +108,8 @@ export function ChatbotResponse(props: ChatbotResponseProps) {
         <div className={styles['chat-message']}>
           <div className={styles['message-content']}>
             <div className={styles['message-header'] + ' profile-pic'}>
-              <img src="/images/ProfilePicAI.png"></img>
+              {/* <img src="/images/ProfilePicAI.png"></img> */}
+              <img src="/images/ProfilePic.jpeg"></img>
             </div>
             <p>
               {chatHistory.request?.query}
@@ -136,7 +137,6 @@ export function ChatbotResponse(props: ChatbotResponseProps) {
                 <div className={styles['recommendation-icon']}>✅</div>
                 <div className={styles['recommendation-text']}>Tech Sector Bond Recommendations</div>
               </div> */}
-              
             </div>
 
             <div className={`${styles['assistant-message-time']}`}>{chatHistory.response?.timestamp}</div>
