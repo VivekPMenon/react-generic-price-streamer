@@ -29,7 +29,7 @@ export function News(props: NewsProps) {
   }, []);
 
   return (
-    <div className={`${styles['news-articles']} scrollable-div`}>
+    <div className={`${styles['news-articles']} scrollable-div widget`}>
       {
         isLoading ?
           <div className="flex justify-center items-center h-full">

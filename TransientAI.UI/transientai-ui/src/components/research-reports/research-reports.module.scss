@@ -1,0 +1,62 @@
+@import '../../assets/variables.scss';
+
+.research-reports {
+  display: flex;
+  color: $font-color-100;
+  gap: 15px;
+}
+
+.report-list {
+  flex: 1 1 20%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  font-size: 15px;
+  max-width: 350px;
+  min-width: 350px;
+
+  .report {
+    display: flex;
+    align-items: center;
+    padding: 0;
+    gap: 10px
+  }
+
+  .filter-panel {
+    display: flex;
+    padding: 10px 10px 5px 10px;
+    align-items: center;
+    gap: 10px;
+  }
+}
+
+.email-content {
+  flex: 1 1 40%;
+  padding: 10px;
+  max-height: 42vh;
+  font-size: 12px;
+  border-radius: 5px;
+  background-color: $gray-1000;
+}
+
+.ai-summary {
+  flex: 1 1 40%;
+  max-height: 42vh;
+  font-size: 14px;
+  padding: 5px;
+
+  .key-words {
+    padding-bottom: 5px;
+
+    span {
+      color: $white;
+      font-style: italic;
+      
+      color: $blue-alt;
+
+      &:hover {
+        color: $blue-alt;
+      }
+    }
+  }
+}

@@ -43,4 +43,9 @@ export const menuInfoList: MenuInfo[] = [
     badgeCount: 5,
     icon: 'fa-solid fa-newspaper'
   },
+  {
+    description: 'Research Reports',
+    badgeCount: 1,
+    icon: 'fa-solid fa-book'
+  },
 ];

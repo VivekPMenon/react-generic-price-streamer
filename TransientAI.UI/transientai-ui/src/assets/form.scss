@@ -18,11 +18,16 @@
 }
 
 .multi-line-ellipsis {
-  display: -webkit-box;         /* Use flexbox for layout */
-  -webkit-line-clamp: 3;        /* Number of lines to show */
-  -webkit-box-orient: vertical; /* Set orientation to vertical */
-  overflow: hidden;             /* Hide overflowing text */
-  text-overflow: ellipsis;      /* Add ellipsis (...) for overflow */
+  display: -webkit-box;
+  /* Use flexbox for layout */
+  -webkit-line-clamp: 3;
+  /* Number of lines to show */
+  -webkit-box-orient: vertical;
+  /* Set orientation to vertical */
+  overflow: hidden;
+  /* Hide overflowing text */
+  text-overflow: ellipsis;
+  /* Add ellipsis (...) for overflow */
 }
 
 .scrollable-div {
@@ -49,4 +54,15 @@
 .scrollable-div::-webkit-scrollbar-thumb:hover {
   background: $scrollbar-hover-bg;
   display: block;
+}
+
+input[type="text"] {
+  background-color: $gray-1000;
+  padding: 5px;
+  border-radius: 5px;
+  width: 100%;
+
+  &:focus {
+    box-shadow: 0 0 3px $teal;
+  }
 }

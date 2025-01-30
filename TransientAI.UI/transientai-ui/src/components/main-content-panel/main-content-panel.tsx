@@ -10,6 +10,7 @@ import { TradingActivity } from '../trading-activity';
 import { MarketDataTable } from '../market-data/market-data-table';
 import { Traces } from '../market-data/traces';
 import { BreakingNews } from '../breaking-news';
+import { ResearchReports } from '../research-reports';
 
 export function MainContentPanel() {
   const defaultTab = 'Daily Insights';
@@ -118,6 +119,13 @@ export function MainContentPanel() {
             activeMenuData?.selectedMenu?.description === `Breaking News` ?
               <div className='height-100p tab-content'>
                 <BreakingNews></BreakingNews>
+              </div> : <></>
+          }
+
+          {
+            activeMenuData?.selectedMenu?.description === `Research Reports` ?
+              <div className='height-100p tab-content'>
+                <ResearchReports></ResearchReports>
               </div> : <></>
           }
         </Box>

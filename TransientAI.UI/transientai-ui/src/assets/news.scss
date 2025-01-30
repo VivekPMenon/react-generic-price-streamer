@@ -19,7 +19,7 @@
     display: flex;
     cursor: pointer;
 
-    &:hover {
+    &:hover, &.active {
       box-shadow: 0 0 3px $green;
     }
 
@@ -32,9 +32,12 @@
   }
 
   .news-title {
+    display: flex;
     font-size: 14px;
     color: $white;
     text-transform: capitalize;
+    gap: 10px;
+    align-items: baseline;
   }
 
   .news-description {
