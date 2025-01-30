@@ -91,8 +91,8 @@ export const SearchableMarkdown = ({ markdownContent, className, title }: Search
             onChange={(e) => setSearchTerm(e.target.value)}
             style={{ width: "150px" }}
           />
-          <i className='fa-solid fa-chevron-left' onClick={() => navigateMatches("prev")}></i>
-          <i className='fa-solid fa-chevron-right' onClick={() => navigateMatches("next")}></i>
+          <i className={`fa-solid fa-chevron-left ${ matches?.length ? 'active': ''}`} onClick={() => navigateMatches("prev")}></i>
+          <i className={`fa-solid fa-chevron-right ${ matches?.length ? 'active': ''}`} onClick={() => navigateMatches("next")}></i>
           {/* <button onClick={() => navigateMatches("next")} disabled={!matches.length}>Next</button> */}
           {/* <button onClick={() => navigateMatches("next")} disabled={!matches.length}>Next</button> */}
           {/* <button onClick={() => setShowSearchBar(false)}>Close</button> */}

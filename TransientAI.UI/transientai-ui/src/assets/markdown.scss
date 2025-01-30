@@ -23,7 +23,12 @@
     }
 
     i {
-      cursor: pointer;
+      opacity: .5;
+
+      &.active {
+        opacity: 1;
+        cursor: pointer;
+      }
     }
   }
 
