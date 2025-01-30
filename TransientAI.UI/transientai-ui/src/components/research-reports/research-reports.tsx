@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import styles from './research-reports.module.scss';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
@@ -12,13 +12,24 @@ export interface ResearchReportsProps {
 export function ResearchReports({ isExpanded }: ResearchReportsProps) {
 
   const [isSummaryVisible, setIsSummaryVisible] = useState<boolean>(false);
+  const [searchQuery, setSearchQuery] = useState<string>('');
   const [selectedReport, setSelectedReport] = useState<ResearchReport>({});
   const [reports, setReports] = useState<ResearchReport[]>([]);
+
+  const visibleReports = useMemo<ResearchReport[]>(() => applyFilter(), [searchQuery, reports]);
 
   useEffect(() => {
     const results = reportsDataService.getReports();
     setReports(results);
-  },[]);
+  }, []);
+
+  function applyFilter(): ResearchReport[] {
+    if(!searchQuery) {
+      return reports;
+    }
+
+    return reports.filter(report => report.name?.toLowerCase().includes(searchQuery.toLowerCase()));
+  }
 
   return (
     <div className={styles['research-reports']}>
@@ -27,13 +38,13 @@ export function ResearchReports({ isExpanded }: ResearchReportsProps) {
 
         <div className={styles['filter-panel']}>
           Search:
-          <input type='text'></input>
+          <input type='text' value={searchQuery} onChange={event => setSearchQuery(event.target.value)}></input>
           {/* <i className='fa-solid fa-filter'></i> */}
         </div>
 
         <div className='news'>
           {
-            reports.map(report =>
+            visibleReports.map(report =>
               <div className={report.name === selectedReport.name ? 'news-item active' : 'news-item'}
                 onClick={() => { setIsSummaryVisible(true); setSelectedReport(report) }}>
                 <div className='news-content'>

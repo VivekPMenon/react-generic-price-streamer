@@ -18,7 +18,13 @@ class ReportsDataService {
         name: 'BNP Paribas Exane Research - 2025 - The Pricey Paradise',
         aiSummary: this.getAiContentMock(),
         emailContent: this.getEmailContentMock()
-      }
+      },
+      {
+        name: 'BNP Paribas Exane Auto Div - Q424 Results Preview',
+        aiSummary: this.getAiContentMock(),
+        emailContent: this.getEmailContentMock()
+      },
+      
     ];
   }
 
