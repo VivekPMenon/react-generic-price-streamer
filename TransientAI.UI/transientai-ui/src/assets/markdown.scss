@@ -1,16 +1,49 @@
+@import './variables.scss';
 
 .markdown {
-  ol, ul, menu {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
+  .search-bar {
+    display: flex;
+    background-color: $body-bg;
+    align-items: center;
+    padding: 10px;
+
+    .title {
+      flex: 1 1 40%;
+      font-size: 14px;
+    }
+
+    .search-toolbar {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    i {
+      cursor: pointer;
+    }
+  }
+
+  .react-markdown {
+    padding: 10px;
+  }
+
+  ol,
+  ul,
+  menu {
     list-style-type: disc;
     margin-block-start: 10px;
-    margin-block-end: 10px ;
+    margin-block-end: 10px;
     margin-inline-start: 0px;
     margin-inline-end: 0px;
     padding-inline-start: 30px;
     unicode-bidi: isolate;
 
     li {
-      padding: 5px 0 ;
+      padding: 5px 0;
     }
   }
 
@@ -18,11 +51,11 @@
     color: $font-color-100;
   }
 
-  ol ul  {
+  ol ul {
     list-style-type: disc;
     margin-block-start: .5em;
     margin-block-end: .5em;
-    
+
     li {
       padding: 5px;
     }

@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import styles from './research-reports.module.scss';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import { DropdownMenu } from '@radix-ui/themes';
+import { SearchableMarkdown } from '@/components/markdown';
 import { reportsDataService, ResearchReport } from '@/services/reports-data';
 
 export interface ResearchReportsProps {
@@ -24,7 +24,7 @@ export function ResearchReports({ isExpanded }: ResearchReportsProps) {
   }, []);
 
   function applyFilter(): ResearchReport[] {
-    if(!searchQuery) {
+    if (!searchQuery) {
       return reports;
     }
 
@@ -63,15 +63,23 @@ export function ResearchReports({ isExpanded }: ResearchReportsProps) {
       {
         isSummaryVisible ?
           <>
-            <div className={`${styles['email-content']} scrollable-div ${isExpanded ? styles['expanded'] : ''}`}>
-              <ReactMarkdown className='markdown' remarkPlugins={[remarkGfm]}>{selectedReport.emailContent}</ReactMarkdown>
+            <div className={`${styles['email-content']} ${isExpanded ? styles['expanded'] : ''}`}>
+              <div className={styles['summary-title']}>
+                Original Email
+              </div>
+
+              <SearchableMarkdown markdownContent={selectedReport.emailContent} className='height-vh-36' />
             </div>
 
-            <div className={`${styles['ai-summary']} scrollable-div ${isExpanded ? styles['expanded'] : ''}`}>
-              <div className={styles['key-words']}>
-                Keywords: <span>VC Landscape, Systematic Quant Strategies, Geo Political and Headline Risk</span>
+            <div className={`${styles['ai-summary']} ${isExpanded ? styles['expanded'] : ''}`}>
+              <div className={styles['summary-title']}>
+                AI Summary
               </div>
-              <ReactMarkdown className='markdown' remarkPlugins={[remarkGfm]}>{selectedReport.aiSummary}</ReactMarkdown>
+
+              <div className={styles['key-words']}>
+                {/* Keywords: <span>VC Landscape, Systematic Quant Strategies, Geo Political and Headline Risk</span> */}
+              </div>
+              <SearchableMarkdown markdownContent={selectedReport.aiSummary} className='height-vh-36' />
             </div>
           </> : <></>
       }
@@ -80,3 +88,4 @@ export function ResearchReports({ isExpanded }: ResearchReportsProps) {
     </div>
   );
 }
+
