@@ -6,19 +6,29 @@
   padding: 5px 10px;
   font-size: 14px;
   color: $font-color-100;
+
+  &.expanded {
+    position: fixed;
+    background-color: $body-bg;
+    z-index: 100;
+    left: 0;
+    height: 100%;
+    width: 100%;
+  }
 }
 
 .widget-title {
   display: flex;
   align-items: center;
 
-  .toggler {
-    margin-left: auto;
-    cursor: pointer;
-    color: $font-color-200;
+}
 
-    &:hover {
-      color: $white;
-    }
+.toggler {
+  margin-left: auto;
+  cursor: pointer;
+  color: $font-color-200;
+
+  &:hover {
+    color: $white;
   }
 }

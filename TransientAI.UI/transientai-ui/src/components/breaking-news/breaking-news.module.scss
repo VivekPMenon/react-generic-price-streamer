@@ -13,3 +13,7 @@
     box-sizing: border-box; /* Include padding and border in width calculation */
   }
 }
+
+.expanded {
+  max-height: 88vh;
+}

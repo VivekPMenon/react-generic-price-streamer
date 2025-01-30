@@ -4,7 +4,11 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { DropdownMenu } from '@radix-ui/themes';
 
-export function ResearchReports() {
+export interface ResearchReportsProps {
+  isExpanded: boolean;
+}
+
+export function ResearchReports({ isExpanded }: ResearchReportsProps) {
   const reports = [
     'GS: Ruminations - Macro, Micro',
     'GS Spec Sales: Feedback, Flows and Catalysts',
@@ -231,7 +235,7 @@ The **US market reversal last week** highlights the view that *"where Nvidia goe
                 onClick={() => { setIsSummaryVisible(true); setSelectedNews(report) }}>
                 <div className='news-content'>
                   <div className='news-title'>
-                    <i className='fa-solid fa-book'></i>
+                    <i className='fa-regular fa-file-lines'></i>
                     {report}
                   </div>
                 </div>
@@ -245,12 +249,11 @@ The **US market reversal last week** highlights the view that *"where Nvidia goe
       {
         isSummaryVisible ?
           <>
-            <div className={`${styles['email-content']} scrollable-div`}>
+            <div className={`${styles['email-content']} scrollable-div ${isExpanded ? styles['expanded'] : ''}`}>
               <ReactMarkdown className='markdown' remarkPlugins={[remarkGfm]}>{emailContent}</ReactMarkdown>
             </div>
 
-            <div className={`${styles['ai-summary']} scrollable-div`}>
-
+            <div className={`${styles['ai-summary']} scrollable-div ${isExpanded ? styles['expanded'] : ''}`}>
               <div className={styles['key-words']}>
                 Keywords: <span>VC Landscape, Systematic Quant Strategies, Geo Political and Headline Risk</span>
               </div>

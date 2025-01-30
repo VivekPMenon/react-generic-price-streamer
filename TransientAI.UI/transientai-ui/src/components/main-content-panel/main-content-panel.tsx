@@ -3,7 +3,7 @@
 import styles from './main-content-panel.module.scss';
 import { Box, Tabs } from "@radix-ui/themes";
 import { TabInfo } from './model';
-import { useContext, useMemo } from 'react';
+import { useContext, useMemo, useState } from 'react';
 import { ActiveMenuData, MenuContextData, MenuInfo } from '@/services/menu-data';
 import { TodaysAxes } from '../axes/todays-axes';
 import { TradingActivity } from '../trading-activity';
@@ -17,7 +17,10 @@ export function MainContentPanel() {
 
   const { activeMenuData, setActiveMenuData } = useContext(MenuContextData);
 
+  const [isExpanded, setIsExpanded] = useState<boolean>(false);
+
   const tabs = useMemo<TabInfo[]>(() => calculateTabs(activeMenuData!), [activeMenuData?.activeMenuList]);
+
 
   function calculateTabs(activeMenuData: ActiveMenuData) {
     const tabs: TabInfo[] = [
@@ -63,7 +66,7 @@ export function MainContentPanel() {
   }
 
   return (
-    <div className={`${styles['main-content']} widget`}>
+    <div className={`${styles['main-content']} widget ${isExpanded ? 'expanded': ''}`}>
       <Tabs.Root defaultValue={defaultTab}
         value={activeMenuData?.selectedMenu?.description}
         className='height-100p'
@@ -80,6 +83,10 @@ export function MainContentPanel() {
               </Tabs.Trigger>
             ))
           }
+
+          <div className={styles['expand-collapse-toggler']} onClick={() => setIsExpanded(!isExpanded)}>
+            <i className='fa-solid fa-expand toggler'></i>
+          </div>
         </Tabs.List>
 
         {/* TODO... Use Router here so that dynamical loading of components can be done */}
@@ -118,14 +125,14 @@ export function MainContentPanel() {
           {
             activeMenuData?.selectedMenu?.description === `Breaking News` ?
               <div className='height-100p tab-content'>
-                <BreakingNews></BreakingNews>
+                <BreakingNews isExpanded={isExpanded}></BreakingNews>
               </div> : <></>
           }
 
           {
             activeMenuData?.selectedMenu?.description === `Research Reports` ?
               <div className='height-100p tab-content'>
-                <ResearchReports></ResearchReports>
+                <ResearchReports isExpanded={isExpanded}></ResearchReports>
               </div> : <></>
           }
         </Box>
