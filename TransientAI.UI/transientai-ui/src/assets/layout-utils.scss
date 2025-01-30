@@ -1,11 +1,5 @@
-.height-vh-42 {
-  max-height: 42vh;
-}
-
-.height-vh-40 {
-  max-height: 40vh;
-}
-
-.height-vh-36 {
-  max-height: 36vh;
+@for $i from 1 through 100 {
+  .height-vh-#{$i} {
+    max-height: #{$i}vh;
+  }
 }
