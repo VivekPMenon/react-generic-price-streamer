@@ -48,4 +48,9 @@ export const menuInfoList: MenuInfo[] = [
     badgeCount: 1,
     icon: 'fa-solid fa-book'
   },
+  {
+    description: 'Corporate Actions',
+    badgeCount: 1,
+    icon: 'fa-solid fa-microphone-lines'
+  },
 ];

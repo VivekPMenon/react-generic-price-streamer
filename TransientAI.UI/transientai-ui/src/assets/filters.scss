@@ -34,6 +34,7 @@
   text-transform: uppercase;
   align-items: center;
   gap: 5px;
+  white-space: nowrap;
 
   &.blue {
     background-color: $blue;
