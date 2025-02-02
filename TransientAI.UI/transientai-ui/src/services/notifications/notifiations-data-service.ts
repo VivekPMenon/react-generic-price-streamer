@@ -67,6 +67,15 @@ class NotificationsDataService {
         highlights: [
           `Bought $5MM worth of California municipal bonds with a 3.5% tax-exempt yield for tax efficiency`
         ]
+      },
+      {
+        title:`Mandatory Event Information Update: Name Change: CONSOL ENERGY INC, CMS ISIN: US2086DFT67`,
+        subTitle: 'Account No: 087654-98, Holding Capacity: -10',
+        type: NotificationType.CorpAct,
+        highlights: [
+          `Term Details Term ISECURITIES DISTRIBUTION Entitled Product ID: 21896547 (CUS)`,
+          `Pay Date: Jan 15 2025`
+        ]
       }
     ];
   }

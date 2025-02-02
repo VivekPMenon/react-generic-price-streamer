@@ -11,6 +11,7 @@ import { MarketDataTable } from '../market-data/market-data-table';
 import { Traces } from '../market-data/traces';
 import { BreakingNews } from '../breaking-news';
 import { ResearchReports } from '../research-reports';
+import { CorporateAction } from '../corporate-actions/corporate-actions';
 
 export function MainContentPanel() {
   const defaultTab = 'Daily Insights';
@@ -66,7 +67,7 @@ export function MainContentPanel() {
   }
 
   return (
-    <div className={`${styles['main-content']} widget ${isExpanded ? 'expanded': ''}`}>
+    <div className={`${styles['main-content']} widget ${isExpanded ? 'expanded' : ''}`}>
       <Tabs.Root defaultValue={defaultTab}
         value={activeMenuData?.selectedMenu?.description}
         className='height-100p'
@@ -133,6 +134,13 @@ export function MainContentPanel() {
             activeMenuData?.selectedMenu?.description === `Research Reports` ?
               <div className='height-100p tab-content'>
                 <ResearchReports isExpanded={isExpanded}></ResearchReports>
+              </div> : <></>
+          }
+
+          {
+            activeMenuData?.selectedMenu?.description === `Corporate Actions` ?
+              <div className='height-100p tab-content'>
+                <CorporateAction></CorporateAction>
               </div> : <></>
           }
         </Box>

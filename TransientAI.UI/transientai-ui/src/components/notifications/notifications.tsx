@@ -14,7 +14,8 @@ export function Notifications(props: NotificationsProps) {
     'All',
     NotificationType.Axes,
     NotificationType.Clients,
-    NotificationType.Trades
+    NotificationType.Trades,
+    NotificationType.CorpAct
   ];
 
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
@@ -36,9 +37,11 @@ export function Notifications(props: NotificationsProps) {
       case NotificationType.Clients:
         return 'fa-solid fa-user';
 
-
       case NotificationType.Trades:
         return 'fa-solid fa-newspaper';
+
+      case NotificationType.CorpAct:
+        return 'fa-solid fa-microphone-lines';
     }
   }
 
@@ -52,6 +55,9 @@ export function Notifications(props: NotificationsProps) {
 
       case NotificationType.Trades:
         return 'pill pink';
+
+      case NotificationType.CorpAct:
+        return 'pill teal';
     }
   }
 
