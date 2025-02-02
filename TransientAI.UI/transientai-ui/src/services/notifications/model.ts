@@ -9,5 +9,6 @@ export interface Notification {
 export enum NotificationType {
   Axes ='Axes',
   Clients = 'Client',
-  Trades = 'Trades'
+  Trades = 'Trades',
+  CorpAct = 'Corp Act'
 }
