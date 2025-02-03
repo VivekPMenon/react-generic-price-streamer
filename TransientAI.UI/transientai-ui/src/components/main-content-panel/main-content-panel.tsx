@@ -11,7 +11,7 @@ import { MarketDataTable } from '../market-data/market-data-table';
 import { Traces } from '../market-data/traces';
 import { BreakingNews } from '../breaking-news';
 import { ResearchReports } from '../research-reports';
-import { CorporateAction } from '../corporate-actions/corporate-actions';
+import { CorporateActions } from '../corporate-actions/corporate-actions';
 
 export function MainContentPanel() {
   const defaultTab = 'Daily Insights';
@@ -140,7 +140,7 @@ export function MainContentPanel() {
           {
             activeMenuData?.selectedMenu?.description === `Corporate Actions` ?
               <div className='height-100p tab-content'>
-                <CorporateAction></CorporateAction>
+                <CorporateActions isExpanded={isExpanded}></CorporateActions>
               </div> : <></>
           }
         </Box>
