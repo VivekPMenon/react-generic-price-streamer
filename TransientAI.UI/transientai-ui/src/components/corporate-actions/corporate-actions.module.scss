@@ -20,6 +20,7 @@
   flex-direction: column;
   flex: 1 1 100%;
   gap: 10px;
+  padding: 0 5px;
 
   .corporate-action {
     background-color: $gray-1000;
@@ -61,17 +62,21 @@
 }
 
 
-.email-content {}
+.email-content {
+  padding: 0 10px;
+}
 
 .search-bar {
   margin: 0px 0;
+  padding: 5px;
 }
 
 .search-bar input {
-  width: 96%;
+  width: 100%;
   padding: 10px;
   font-size: 14px;
   border: none;
   border-radius: 5px;
   background-color: $gray-1000;
+  box-sizing: border-box;
 }

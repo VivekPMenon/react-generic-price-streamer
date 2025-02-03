@@ -1,8 +1,15 @@
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import styles from './corporate-actions.module.scss';
+import { reportsDataService } from '@/services/reports-data';
+import { SearchableMarkdown } from '../markdown';
 
-export function CorporateAction() {
+
+export interface CorporateActionsProps {
+  isExpanded: boolean;
+}
+
+export function CorporateActions({ isExpanded }: CorporateActionsProps) {
   const markdown = `## Account Details
 
 **Account:** 065492233-07  
@@ -13,7 +20,7 @@ export function CorporateAction() {
 
 
 
-| **Type**     | **Date & Time**        | Y/N | Y/N |
+| **Type**     | **Date & Time**        | EMAIL | ALERT |
 |-------------|----------------------|---|---|
 | **Original**  | Jan 07, 2025 - 00:46  | Y | Y |
 | **Update 1**  | Jan 07, 2025 - 18:46  | Y | Y |
@@ -29,7 +36,7 @@ export function CorporateAction() {
           <input type="text" placeholder="Ask TransientAI anything - use '@' to find files, folders and other trading data" />
         </div>
 
-        <div className={styles['corporate-actions-response']}>
+        <div className={`${styles['corporate-actions-response']} scrollable-div ${isExpanded ? 'height-vh-82' : 'height-vh-40'}`}>
 
           <div className={styles['corporate-action']}>
             <div className={styles['header']}>
@@ -41,9 +48,6 @@ export function CorporateAction() {
                   <i className='fa-regular fa-envelope'></i>
                 </div>
 
-                <div className={styles['button-container']}>
-                  <i className='fa-regular fa-bell'></i>
-                </div>
               </div>
             </div>
 
@@ -53,11 +57,35 @@ export function CorporateAction() {
               </ReactMarkdown>
             </div>
           </div>
+
+          <div className={styles['corporate-action']}>
+            <div className={styles['header']}>
+              <i className='fa-solid fa-microphone-lines'></i>
+              Mandatory Event Information Update: Name Change: CONSOL ENERGY INC, CMS ISIN: US2086DFT67
+
+              <div className={styles['action-buttons']}>
+                <div className={styles['button-container']}>
+                  <i className='fa-regular fa-envelope'></i>
+                </div>
+
+              </div>
+            </div>
+
+            <div className='p-2'>
+              <ReactMarkdown className='markdown' remarkPlugins={[remarkGfm]}>
+                {markdown}
+              </ReactMarkdown>
+            </div>
+          </div>
+
         </div>
       </div>
 
       <div className={styles['email-content']}>
-        email
+        <SearchableMarkdown 
+          markdownContent={reportsDataService.getEmailContentMock()} 
+          className={isExpanded ? 'height-vh-82' : 'height-vh-40'} 
+          title='Original Email'/>
       </div>
     </div>
   );
