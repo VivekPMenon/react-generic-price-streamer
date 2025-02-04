@@ -14,7 +14,7 @@ import { ResearchReports } from '../research-reports';
 import { CorporateActions } from '../corporate-actions/corporate-actions';
 
 export function MainContentPanel() {
-  const defaultTab = 'Daily Insights';
+  const defaultTab = 'Research Reports';
 
   const { activeMenuData, setActiveMenuData } = useContext(MenuContextData);
 
@@ -22,12 +22,8 @@ export function MainContentPanel() {
 
   const tabs = useMemo<TabInfo[]>(() => calculateTabs(activeMenuData!), [activeMenuData?.activeMenuList]);
 
-
   function calculateTabs(activeMenuData: ActiveMenuData) {
     const tabs: TabInfo[] = [
-      {
-        description: defaultTab
-      }
     ];
 
     if (!activeMenuData?.activeMenuList) {
@@ -93,13 +89,13 @@ export function MainContentPanel() {
         {/* TODO... Use Router here so that dynamical loading of components can be done */}
         {/* Use constants for the menu names */}
         <Box pt="3" className='height-100p pb-15px'>
-
+{/* 
           {
             activeMenuData?.selectedMenu?.description === defaultTab ?
               <div className='height-100p tab-content'>
                 <TodaysAxes></TodaysAxes>
               </div> : <></>
-          }
+          } */}
 
           {
             activeMenuData?.selectedMenu?.description === `Today's Axes` ?
