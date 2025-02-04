@@ -13,7 +13,7 @@
   flex-direction: column;
   gap: 10px;
   padding: 10px 5px 10px 0px;
-  max-height: 50vh;
+  max-height: 60vh;
 
 
   &.expanded {
@@ -31,7 +31,7 @@
 
   .notification-title {
     display: flex;
-    gap: 5px;
+    gap: 10px;
     align-items: baseline;
     text-transform: uppercase;
 

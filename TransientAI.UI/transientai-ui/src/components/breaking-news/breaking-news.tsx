@@ -27,8 +27,10 @@ export function BreakingNews({ isExpanded }: BreakingNewsProps) {
     loadAsync();
   }, []);
 
+  
+
   return (
-    <div className={`${styles['breaking-news']} scrollable-div ${isExpanded ? styles['expanded'] : ''}`}>
+    <div className={`${styles['breaking-news']} scrollable-div height-vh-82`}>
       <div className=''>
         {
           // articles.market_news?.map(article => (

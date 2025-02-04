@@ -10,12 +10,12 @@ export const MenuContextData = createContext<MenuContextDataType>({
 
 export function MenuContextDataProvider({children}: any) {
 
-  const todaysAxes = menuInfoList.find(menuInfo => menuInfo.description === `Today's Axes`);
+  const defaultTab = menuInfoList.find(menuInfo => menuInfo.description === `Research Reports`);
 
   const [activeMenuData, setActiveMenuData] = useState<ActiveMenuData>({
-    activeMenuList: [todaysAxes!],
+    activeMenuList: [defaultTab!],
     fullMenuLIst: menuInfoList,
-    selectedMenu: todaysAxes
+    selectedMenu: defaultTab
   });
 
   return <MenuContextData.Provider value={{activeMenuData, setActiveMenuData}}>

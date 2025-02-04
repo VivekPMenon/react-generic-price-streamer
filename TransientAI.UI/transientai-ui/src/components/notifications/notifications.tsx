@@ -12,14 +12,15 @@ export function Notifications(props: NotificationsProps) {
 
   const filterTypes = [
     'All',
-    NotificationType.Axes,
-    NotificationType.Clients,
-    NotificationType.Trades,
+    // NotificationType.Axes,
+    // NotificationType.Clients,
+    // NotificationType.Trades,
+    NotificationType.Research,
     NotificationType.CorpAct
   ];
 
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
-  const [selectedType, setSelectedType] = useState<string>(NotificationType.Axes);
+  const [selectedType, setSelectedType] = useState<string>(NotificationType.Research);
 
   const visibleNotifications = useMemo<Notification[]>(() => notifications
     .filter(notification => selectedType === 'All' || notification.type === selectedType), [selectedType]);
@@ -42,12 +43,16 @@ export function Notifications(props: NotificationsProps) {
 
       case NotificationType.CorpAct:
         return 'fa-solid fa-microphone-lines';
+
+      case NotificationType.Research:
+        return 'fa-solid fa-book';
     }
   }
 
   function getPillClass(type: NotificationType) {
     switch (type) {
       case NotificationType.Axes:
+      case NotificationType.Research:
         return 'pill blue';
 
       case NotificationType.Clients:

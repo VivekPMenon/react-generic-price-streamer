@@ -36,7 +36,7 @@ export function CorporateActions({ isExpanded }: CorporateActionsProps) {
           <input type="text" placeholder="Ask TransientAI anything - use '@' to find files, folders and other trading data" />
         </div>
 
-        <div className={`${styles['corporate-actions-response']} scrollable-div ${isExpanded ? 'height-vh-82' : 'height-vh-40'}`}>
+        <div className={`${styles['corporate-actions-response']} scrollable-div height-vh-82`}>
 
           <div className={styles['corporate-action']}>
             <div className={styles['header']}>
@@ -82,10 +82,14 @@ export function CorporateActions({ isExpanded }: CorporateActionsProps) {
       </div>
 
       <div className={styles['email-content']}>
-        <SearchableMarkdown 
+        {/* <SearchableMarkdown 
           markdownContent={reportsDataService.getEmailContentMock()} 
           className={isExpanded ? 'height-vh-82' : 'height-vh-40'} 
-          title='Original Email'/>
+          title='Original Email'/> */}
+        <SearchableMarkdown
+          markdownContent={reportsDataService.getEmailContentMock()}
+          className='height-vh-82'
+          title='Original Email' />
       </div>
     </div>
   );

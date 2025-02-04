@@ -48,6 +48,15 @@ export default function Home() {
 
         <div className={styles['middle-panel']}>
           <MainContentPanel></MainContentPanel>
+
+          <div className={styles['middle-panel-bottom-widgets']}>
+            <PriceGraph onExpandCollapse={isExpanded => onExpandCollapse('price-graph', isExpanded)}></PriceGraph>
+            <News onExpandCollapse={isExpanded => onExpandCollapse('news', isExpanded)}></News>
+          </div>
+        </div>
+
+        <div className={styles['right-panel']}>
+          <Chatbot></Chatbot>
         </div>
       </main>
     </div>

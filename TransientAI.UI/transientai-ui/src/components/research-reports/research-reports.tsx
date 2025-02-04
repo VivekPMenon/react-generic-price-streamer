@@ -68,7 +68,8 @@ export function ResearchReports({ isExpanded }: ResearchReportsProps) {
                 Original Email
               </div>
 
-              <SearchableMarkdown markdownContent={selectedReport.emailContent} className={isExpanded ? 'height-vh-82': 'height-vh-36'} />
+              {/* <SearchableMarkdown markdownContent={selectedReport.emailContent} className={isExpanded ? 'height-vh-82': 'height-vh-36'} /> */}
+              <SearchableMarkdown markdownContent={selectedReport.emailContent} className='height-vh-80' />
             </div>
 
             <div className={`${styles['ai-summary']} ${isExpanded ? styles['expanded'] : ''}`}>
@@ -79,7 +80,8 @@ export function ResearchReports({ isExpanded }: ResearchReportsProps) {
               <div className={styles['key-words']}>
                 {/* Keywords: <span>VC Landscape, Systematic Quant Strategies, Geo Political and Headline Risk</span> */}
               </div>
-              <SearchableMarkdown markdownContent={selectedReport.aiSummary} className={isExpanded ? 'height-vh-82': 'height-vh-36'} />
+              {/* <SearchableMarkdown markdownContent={selectedReport.aiSummary} className={isExpanded ? 'height-vh-82': 'height-vh-36'} /> */}
+              <SearchableMarkdown markdownContent={selectedReport.aiSummary} className={'height-vh-80'} />
             </div>
           </> : <></>
       }
