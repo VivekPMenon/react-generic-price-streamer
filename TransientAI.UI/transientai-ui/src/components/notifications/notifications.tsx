@@ -1,7 +1,9 @@
+import * as Dialog from "@radix-ui/react-dialog";
 import { useMemo, useState } from 'react';
 import styles from './notifications.module.scss';
 import { Notification, NotificationType } from '@/services/notifications';
 import { notificationsDataService } from '@/services/notifications/notifiations-data-service';
+import { corpActionsDataService, CorporateAction } from "@/services/corporate-actions";
 
 export interface NotificationsProps {
   onExpandCollapse: (state: boolean) => void;
@@ -21,6 +23,7 @@ export function Notifications(props: NotificationsProps) {
 
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
   const [selectedType, setSelectedType] = useState<string>(NotificationType.Research);
+  const [selectedCorpAction, setSelectedCorpAction] = useState<CorporateAction>({});
 
   const visibleNotifications = useMemo<Notification[]>(() => notifications
     .filter(notification => selectedType === 'All' || notification.type === selectedType), [selectedType]);
@@ -66,6 +69,12 @@ export function Notifications(props: NotificationsProps) {
     }
   }
 
+  function openNotification(id: string) {
+    const corpActions = corpActionsDataService.getCorpActions();
+    const selectedAction = corpActions.find(action => action.eventId === id);
+    setSelectedCorpAction(selectedAction!);
+  }
+
   return (
     //TODO .. create a common component for WIdget with transclusion so that widget tiel etc. can be reused
     <div className={`${styles.notifications} widget`}>
@@ -101,7 +110,64 @@ export function Notifications(props: NotificationsProps) {
                     {notification.type}
                   </div>
 
-                  <i className='fa-solid fa-ellipsis ml-3'></i>
+                  <Dialog.Root>
+                    <Dialog.Trigger asChild>
+                      <div className={styles['notification-menu-icon']} onClick={() => openNotification(notification.id!)}>
+                        <i className='fa-solid fa-ellipsis ml-3'></i>
+                      </div>
+                    </Dialog.Trigger>
+                    <Dialog.Portal>
+                      <Dialog.Overlay className="DialogOverlay" />
+                      <Dialog.Content className="DialogContentSmall">
+                        <Dialog.Title className="DialogTitle">
+                          <i className="fa-solid fa-circle-exclamation red-color"></i>
+                          {selectedCorpAction.eventDescription}
+                        </Dialog.Title>
+                        <Dialog.Description className="DialogDescription">
+
+                        </Dialog.Description>
+                        <div className={styles['alert-content']}>
+                          <span className={styles['highlight']}>ACTION Required: Deadline Approaching - Response Required</span>
+
+                          <div style={{ padding: '20px 50px' }}>
+
+                            <div className="grid grid-cols-[40%_60%] gap-3 fs-14 p-1">
+                              <div className='font-bold text-right'>Announcement Id:</div>
+                              <div className='text-left'>{selectedCorpAction.eventId}</div>
+                            </div>
+                            <div className="grid grid-cols-[40%_60%] gap-3 fs-14  p-1">
+                              <div className='font-bold text-right'>Account:</div>
+                              <div className="text-left">{selectedCorpAction.accountId}</div>
+                            </div>
+                            <div className="grid grid-cols-[40%_60%] gap-3 fs-14 p-1">
+                              <div className='font-bold text-right'>Holding Quantity:</div>
+                              <div className="text-left">{selectedCorpAction.holdingQuantity}</div>
+                            </div>
+                            <div className="grid grid-cols-[40%_60%] gap-3 fs-14 p-1">
+                              <div className='font-bold text-right'>Term Details:</div>
+                              <div className="text-left">{selectedCorpAction.termDetails}</div>
+                            </div>
+                            <div className="grid grid-cols-[40%_60%] gap-3 fs-14 p-1">
+                              <div className='font-bold text-right'>Entitled Product Id:</div>
+                              <div className="text-left">{selectedCorpAction.entitledProductId}</div>
+                            </div>
+                            <div className="grid grid-cols-[40%_60%] gap-3 fs-14 p-1">
+                              <div className='font-bold text-right'>Pay Date:</div>
+                              <div className="text-left">{selectedCorpAction.paydate}</div>
+                            </div>
+                          </div>
+
+                          <div>
+                            <Dialog.DialogClose>
+                              <button className="button me-2">Read More</button>
+                              <button className="secondary-button">Close</button>
+                            </Dialog.DialogClose>
+                          </div>
+                        </div>
+
+                      </Dialog.Content>
+                    </Dialog.Portal>
+                  </Dialog.Root>
                 </div>
               </div>
 

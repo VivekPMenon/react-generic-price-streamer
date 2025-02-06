@@ -4,6 +4,7 @@ export interface Notification {
   subTitle?: string;
   type?: NotificationType;
   highlights?: string[];
+  id?: string;
 } 
 
 export enum NotificationType {

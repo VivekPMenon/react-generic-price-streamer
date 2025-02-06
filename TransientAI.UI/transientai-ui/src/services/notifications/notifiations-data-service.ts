@@ -93,6 +93,7 @@ class NotificationsDataService {
         title: corpActionsDataService.getCorpActions()[0].eventDescription,
         subTitle: `Account No: ${corpActionsDataService.getCorpActions()[0].accountId}, Holding Capacity: ${corpActionsDataService.getCorpActions()[0].holdingQuantity}`,
         type: NotificationType.CorpAct,
+        id: corpActionsDataService.getCorpActions()[0].eventId,
         highlights: [
           `Term Details: ${corpActionsDataService.getCorpActions()[0].termDetails}`,
           `Entitled Product ID: ${corpActionsDataService.getCorpActions()[0].entitledProductId}`,
@@ -103,6 +104,7 @@ class NotificationsDataService {
         title: corpActionsDataService.getCorpActions()[1].eventDescription,
         subTitle: `Account No: ${corpActionsDataService.getCorpActions()[1].accountId}, Holding Capacity: ${corpActionsDataService.getCorpActions()[1].holdingQuantity}`,
         type: NotificationType.CorpAct,
+        id: corpActionsDataService.getCorpActions()[1].eventId,
         highlights: [
           `Term Details: ${corpActionsDataService.getCorpActions()[1].termDetails}`,
           `Entitled Product ID: ${corpActionsDataService.getCorpActions()[1].entitledProductId}`,

@@ -17,3 +17,54 @@
     text-decoration: underline;
   }
 }
+
+.button {
+  background-color: $teal-100; /* Primary color */
+  color: white;
+  padding: 10px;
+  font-size: 14px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+}
+
+.button:hover {
+  background-color: #008f89; /* Darker shade on hover */
+}
+
+.button:active {
+  background-color: #007673; /* Even darker when clicked */
+}
+
+.button:focus {
+  outline: none;
+  // box-shadow: 0 0 8px rgba(0, 178, 172, 0.6); /* Focus glow */
+}
+
+.secondary-button {
+  background-color: transparent;
+  
+  padding: 10px;
+  font-size: 14px;
+  border: 2px solid $teal-100; /* Primary color as border */
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.secondary-button:hover {
+  background-color: $gray-150;
+  color: white;
+}
+
+.secondary-button:active {
+  background-color: #008f89;
+  border-color: #007673;
+  color: white;
+}
+
+.secondary-button:focus {
+  outline: none;
+  // box-shadow: 0 0 8px rgba(0, 178, 172, 0.6); /* Focus glow */
+}
+
