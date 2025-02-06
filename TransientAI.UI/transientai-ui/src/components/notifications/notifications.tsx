@@ -1,9 +1,10 @@
 import * as Dialog from "@radix-ui/react-dialog";
-import { useMemo, useState } from 'react';
+import { useContext, useMemo, useState } from 'react';
 import styles from './notifications.module.scss';
 import { Notification, NotificationType } from '@/services/notifications';
 import { notificationsDataService } from '@/services/notifications/notifiations-data-service';
-import { corpActionsDataService, CorporateAction } from "@/services/corporate-actions";
+import { CorpActionsDataContext, corpActionsDataService, CorporateAction } from "@/services/corporate-actions";
+import { MenuContextData } from "@/services/menu-data";
 
 export interface NotificationsProps {
   onExpandCollapse: (state: boolean) => void;
@@ -17,12 +18,15 @@ export function Notifications(props: NotificationsProps) {
     // NotificationType.Axes,
     // NotificationType.Clients,
     // NotificationType.Trades,
+    NotificationType.CorpAct,
     NotificationType.Research,
-    NotificationType.CorpAct
   ];
 
+  const { corpActionsData, setCorpActionsData } = useContext(CorpActionsDataContext);
+  const { activeMenuData, setActiveMenuData } = useContext(MenuContextData);
+
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
-  const [selectedType, setSelectedType] = useState<string>(NotificationType.Research);
+  const [selectedType, setSelectedType] = useState<string>(NotificationType.CorpAct);
   const [selectedCorpAction, setSelectedCorpAction] = useState<CorporateAction>({});
 
   const visibleNotifications = useMemo<Notification[]>(() => notifications
@@ -73,6 +77,17 @@ export function Notifications(props: NotificationsProps) {
     const corpActions = corpActionsDataService.getCorpActions();
     const selectedAction = corpActions.find(action => action.eventId === id);
     setSelectedCorpAction(selectedAction!);
+  }
+
+  function onReadMoreClick() {
+    setCorpActionsData({
+      corpActions: [selectedCorpAction]
+    });
+
+    setActiveMenuData!({
+      ...activeMenuData,
+      selectedMenu: activeMenuData?.activeMenuList?.length ? activeMenuData?.activeMenuList[0]: {}
+    });
   }
 
   return (
@@ -159,12 +174,11 @@ export function Notifications(props: NotificationsProps) {
 
                           <div>
                             <Dialog.DialogClose>
-                              <button className="button me-2">Read More</button>
+                              <button className="button me-2" onClick={onReadMoreClick}>Read More</button>
                               <button className="secondary-button">Close</button>
                             </Dialog.DialogClose>
                           </div>
                         </div>
-
                       </Dialog.Content>
                     </Dialog.Portal>
                   </Dialog.Root>

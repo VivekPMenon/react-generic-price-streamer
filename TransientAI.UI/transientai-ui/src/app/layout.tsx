@@ -5,6 +5,7 @@ import "./globals.scss";
 import { MenuContextDataProvider } from "@/services/menu-data";
 import { ChatbotDataContextProvider } from "@/services/chatbot-data";
 import { SearchDataContextProvider } from "@/services/search-data";
+import { CorpActionsDataContextProvider } from "@/services/corporate-actions";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -34,7 +35,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <script src="https://kit.fontawesome.com/9a71b0f99c.js" crossOrigin="anonymous" async></script> 
+        <script src="https://kit.fontawesome.com/9a71b0f99c.js" crossOrigin="anonymous" async></script>
         <link rel="icon" href="/images/HurricaneLogo.jpg" />
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased font-sans dark`}>
@@ -42,7 +43,9 @@ export default function RootLayout({
           <MenuContextDataProvider>
             <ChatbotDataContextProvider>
               <SearchDataContextProvider>
-                {children}
+                <CorpActionsDataContextProvider>
+                  {children}
+                </CorpActionsDataContextProvider>
               </SearchDataContextProvider>
             </ChatbotDataContextProvider>
           </MenuContextDataProvider>

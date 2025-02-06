@@ -18,3 +18,12 @@ export interface UpdateHistory {
   email?: string;
   alert?: string;
 }
+
+export interface CorpActionsData {
+  corpActions?: CorporateAction[];
+}
+
+export interface CorpActionsDataContextType {
+  corpActionsData: CorpActionsData;
+  setCorpActionsData: (data: CorpActionsData) => void;
+}

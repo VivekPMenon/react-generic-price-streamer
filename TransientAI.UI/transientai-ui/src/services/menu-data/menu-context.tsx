@@ -10,7 +10,7 @@ export const MenuContextData = createContext<MenuContextDataType>({
 
 export function MenuContextDataProvider({children}: any) {
 
-  const defaultTab = menuInfoList.find(menuInfo => menuInfo.description === `Research Reports`);
+  const defaultTab = menuInfoList.find(menuInfo => menuInfo.description === `Corporate Actions`);
 
   const [activeMenuData, setActiveMenuData] = useState<ActiveMenuData>({
     activeMenuList: [defaultTab!],
