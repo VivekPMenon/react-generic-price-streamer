@@ -61,6 +61,19 @@
   }
 }
 
+.corporate-action-body {
+  display: flex;
+  margin-top: 10px;
+  
+  & > div {
+    flex: 1 1 50%;
+    padding: 10px;
+  }
+
+  .basic-info {
+    border-right: 1px solid #2f2f2f;
+  }
+}
 
 .email-content {
   padding: 0 10px;
