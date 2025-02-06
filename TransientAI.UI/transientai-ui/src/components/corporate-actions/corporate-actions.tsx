@@ -18,6 +18,10 @@ export function CorporateActions({ isExpanded }: CorporateActionsProps) {
   const [emailContent, setEmailContent] = useState<string>('');
 
   useEffect(() => {
+    if(!corpActionsData!.corpActions?.length || corpActionsData!.corpActions?.length > 1) {
+      return;
+    }
+
     const newContent = (corpActionsDataService.getEmailMarkdown() as any)[`${corpActionsData!.corpActions![0].eventId + '_2'}`]
     setEmailContent(newContent);
   }, [corpActionsData?.corpActions]); // hack.. we should not useeffect on state pbjects
