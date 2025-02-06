@@ -3,8 +3,8 @@ import remarkGfm from 'remark-gfm';
 import styles from './corporate-actions.module.scss';
 import { reportsDataService } from '@/services/reports-data';
 import { SearchableMarkdown } from '../markdown';
-import { useState } from 'react';
-import { corpActionsDataService, CorporateAction } from '@/services/corporate-actions';
+import { useContext, useEffect, useState } from 'react';
+import { CorpActionsDataContext, corpActionsDataService, CorporateAction } from '@/services/corporate-actions';
 
 export interface CorporateActionsProps {
   isExpanded: boolean;
@@ -12,11 +12,15 @@ export interface CorporateActionsProps {
 
 export function CorporateActions({ isExpanded }: CorporateActionsProps) {
 
+  const { corpActionsData, setCorpActionsData } = useContext(CorpActionsDataContext);
+
   const [searchQuery, setSearchQuery] = useState<string>('');
-  const [isActionsShown, setIsActionsShown] = useState<boolean>(false);
   const [emailContent, setEmailContent] = useState<string>('');
 
-  const corpActions = corpActionsDataService.getCorpActions();
+  useEffect(() => {
+    const newContent = (corpActionsDataService.getEmailMarkdown() as any)[`${corpActionsData!.corpActions![0].eventId + '_2'}`]
+    setEmailContent(newContent);
+  }, [corpActionsData?.corpActions]); // hack.. we should not useeffect on state pbjects
 
   function onSearchQueryChange(event: any) {
     setSearchQuery(event.target.value);
@@ -27,7 +31,9 @@ export function CorporateActions({ isExpanded }: CorporateActionsProps) {
       return;
     }
 
-    setIsActionsShown(true);
+    setCorpActionsData({
+      corpActions: corpActionsDataService.getCorpActions()
+    });
   }
 
   function getEmailContent(id: string, version: string) {
@@ -47,10 +53,10 @@ export function CorporateActions({ isExpanded }: CorporateActionsProps) {
         </div>
 
         {
-          isActionsShown ?
+          corpActionsData?.corpActions?.length ?
             <div className={`${styles['corporate-actions-response']} scrollable-div height-vh-82`}>
               {
-                corpActions.map(corpAction =>
+                corpActionsData.corpActions?.map(corpAction =>
                   <div className={styles['corporate-action']}>
                     <div className={styles['header']}>
                       <i className='fa-solid fa-microphone-lines'></i>

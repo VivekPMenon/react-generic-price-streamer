@@ -14,7 +14,7 @@ import { ResearchReports } from '../research-reports';
 import { CorporateActions } from '../corporate-actions/corporate-actions';
 
 export function MainContentPanel() {
-  const defaultTab = 'Research Reports';
+  const defaultTab = 'Corporate Actions';
 
   const { activeMenuData, setActiveMenuData } = useContext(MenuContextData);
 
