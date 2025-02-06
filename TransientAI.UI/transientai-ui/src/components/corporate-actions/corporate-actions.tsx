@@ -4,7 +4,7 @@ import styles from './corporate-actions.module.scss';
 import { reportsDataService } from '@/services/reports-data';
 import { SearchableMarkdown } from '../markdown';
 import { useState } from 'react';
-import { corpActionsDataService } from '@/services/corporate-actions';
+import { corpActionsDataService, CorporateAction } from '@/services/corporate-actions';
 
 export interface CorporateActionsProps {
   isExpanded: boolean;
@@ -28,6 +28,10 @@ export function CorporateActions({ isExpanded }: CorporateActionsProps) {
     }
 
     setIsActionsShown(true);
+  }
+
+  function getEmailContent(id: string, version: string) {
+    return (corpActionsDataService.getEmailMarkdown() as any)[`${id}_${version}`];
   }
 
   return (
@@ -54,7 +58,7 @@ export function CorporateActions({ isExpanded }: CorporateActionsProps) {
 
                       <div className={styles['action-buttons']}>
                         <div className={styles['button-container']}>
-                          <i className='fa-regular fa-envelope' onClick={() => setEmailContent(corpActionsDataService.getEmailMarkdown())}></i>
+                          <i className='fa-regular fa-envelope' onClick={() => setEmailContent(getEmailContent(corpAction.eventId!, '2'))}></i>
                         </div>
 
                       </div>
@@ -104,7 +108,7 @@ export function CorporateActions({ isExpanded }: CorporateActionsProps) {
                             <div className="grid grid-cols-[1fr_3fr_1fr_1fr] gap-3 fs-13 p-1 text-center">
                               <div>{history.type}</div>
                               <div >{history.date}</div>
-                              <div className="blue-color cursor-pointer"  onClick={() => setEmailContent(corpActionsDataService.getEmailMarkdown())}>Y</div>
+                              <div className="blue-color cursor-pointer" onClick={() => setEmailContent(getEmailContent(corpAction.eventId!, history.type))}>Y</div>
                               <div className="blue-color">Y</div>
                             </div>
                           )

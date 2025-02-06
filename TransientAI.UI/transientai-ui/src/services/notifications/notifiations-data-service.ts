@@ -1,3 +1,4 @@
+import { corpActionsDataService } from "../corporate-actions";
 import { Notification, NotificationType } from "./model";
 
 class NotificationsDataService {
@@ -89,21 +90,25 @@ class NotificationsDataService {
         ]
       },
       {
-        title:`Mandatory Event Information Update: Name Change: CONSOL ENERGY INC, CMS ISIN: US2086DFT67`,
-        subTitle: 'Account No: 087654-98, Holding Capacity: -10',
+        title: corpActionsDataService.getCorpActions()[0].eventDescription,
+        subTitle: `Account No: ${corpActionsDataService.getCorpActions()[0].accountId}, Holding Capacity: ${corpActionsDataService.getCorpActions()[0].holdingQuantity}`,
         type: NotificationType.CorpAct,
+        id: corpActionsDataService.getCorpActions()[0].eventId,
         highlights: [
-          `Term Details Term ISECURITIES DISTRIBUTION Entitled Product ID: 21896547 (CUS)`,
-          `Pay Date: Jan 15 2025`
+          `Term Details: ${corpActionsDataService.getCorpActions()[0].termDetails}`,
+          `Entitled Product ID: ${corpActionsDataService.getCorpActions()[0].entitledProductId}`,
+          `Pay Date: ${corpActionsDataService.getCorpActions()[0].paydate}`
         ]
       },
       {
-        title:`Mandatory Event Information Update: Name Change: CONSOL ENERGY INC, CMS ISIN: US2086DFT67`,
-        subTitle: 'Account No: 087654-98, Holding Capacity: -10',
+        title: corpActionsDataService.getCorpActions()[1].eventDescription,
+        subTitle: `Account No: ${corpActionsDataService.getCorpActions()[1].accountId}, Holding Capacity: ${corpActionsDataService.getCorpActions()[1].holdingQuantity}`,
         type: NotificationType.CorpAct,
+        id: corpActionsDataService.getCorpActions()[1].eventId,
         highlights: [
-          `Term Details Term ISECURITIES DISTRIBUTION Entitled Product ID: 21896547 (CUS)`,
-          `Pay Date: Jan 15 2025`
+          `Term Details: ${corpActionsDataService.getCorpActions()[1].termDetails}`,
+          `Entitled Product ID: ${corpActionsDataService.getCorpActions()[1].entitledProductId}`,
+          `Pay Date: ${corpActionsDataService.getCorpActions()[1].paydate}`
         ]
       },
     ];
