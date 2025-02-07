@@ -5,26 +5,468 @@ class ReportsDataService {
   getReports(): ResearchReport[] {
     return [
       {
-        name: 'GS: Ruminations - Macro, Micro',
-        aiSummary: this.getAiContentMock(),
-        emailContent: this.getEmailContentMock()
+        name: 'Ruminations - Macro, Micro, Markets',
+        aiSummary: `# Market Overview
+
+## Choppy Start to 2025
+US markets, driven by major tech stocks (e.g., Nvidia), are reversing gains from early January. Global equities have seen selling pressure for three of the past four weeks, largely driven by increased short positioning.
+
+## Inflation and Yields as Core Drivers 
+Non-farm payrolls (+265k) surprised on the upside, driving U.S. 10-year Treasury yields near the psychological 5% level, pressuring equities. UK 10-year bonds reached levels unseen since 2008, alongside notable GBP volatility.
+
+# Asset Classes
+
+## Bonds
+Rising yields in the U.S. and UK are creating significant pressures across asset classes. A material breach of 5% on U.S. 10-year yields could spark further equity sell-offs.
+
+## Commodities
+Oil remains a strong performer YTD, with inflationary concerns linked to rebuilding efforts from natural disasters like the LA fires.
+
+## Private Equity (PE)
+PE AUM has ballooned from $1 trillion to $12 trillion, but IPO markets remain constrained. PE activity may grow in M&A, spinoffs, and consolidations if macro stability persists.
+
+## Venture Capital (VC)
+The VC landscape is facing pressure from prolonged holding periods and valuation declines. Capital calls in 2023 exceeded distributions by 80%, with fundraising times peaking at over 20 months.
+
+## Equities
+U.S. exceptionalism continues to dominate, with narrow market breadth (5 stocks representing ~20% of global equity cap). However, concentration increases momentum risks and vulnerability to corrections.
+
+# Regional Focus
+
+## MENA Region
+Expected to see increased capital allocation, talent inflows, and issuance activity, further solidifying its role as a growing financial ecosystem.
+
+## UK
+Facing structural challenges, including stagnation in growth, capital flight, and poor investor sentiment due to regulatory and political missteps.
+
+## Europe
+Struggling with intra-EU consolidation due to excessive regulation and limited GDP growth. Cross-border M&A and spin-offs are likely themes.
+
+# Behavioral Trends
+Increasing reliance on passive investing and systematic quant strategies has amplified momentum-driven markets. Retail investors favor high-performing stocks, such as Nvidia and MAG7 names, over value-driven plays.
+
+Sentiment is shaped more by technical factors than fundamentals, with concentrated bets increasing market volatility and dislocations.
+
+# Key Risks and Opportunities
+
+## Risks
+- Rising yields in U.S. and global bond markets
+- Potential geopolitical and headline risks from a Trump 2.0 presidency
+- Natural disasters and climate-related insurance liabilities (e.g., Florida's $500 billion property debt risk)
+
+## Opportunities
+- Increased M&A, driven by stable FX, corporate simplification, and AI-related investments
+- Growth in private credit and infrastructure plays, leveraging longer durations and scale advantages
+- Equity buybacks remain a significant driver of stock performance, particularly for concentrated market leaders
+
+# Trade Ideas
+
+## U.S. Treasuries (10-year)
+- **Type**: Buy
+- **Rationale**: If CPI shows signs of weakening inflation, bond yields could retrace below the critical 5% level
+- **Trigger**: A softer-than-expected CPI reading or dovish Fed commentary
+
+## Oil Futures
+- **Type**: Buy
+- **Rationale**: YTD strength in oil, coupled with inflation from natural disasters, supports further price appreciation
+- **Trigger**: Sustained geopolitical tensions or disruptions in supply chains
+
+## European Midcap Equities
+- **Type**: Buy
+- **Rationale**: Valuation gaps and cross-border M&A catalysts could provide upside
+- **Trigger**: EU regulatory reforms or announced corporate consolidations
+
+## U.S. Technology (Nvidia)
+- **Type**: Sell
+- **Rationale**: Nvidia's 10% decline highlights profit-taking risks in overbought growth stocks with high valuations
+- **Trigger**: Breach of technical levels or additional short book growth
+
+# Forward-Looking Commentary
+
+## Macro Themes
+Inflation/re-inflation, de-globalization, and deregulation will dominate 2025. Trump's policies could increase volatility and create headline risks for specific sectors.
+
+## Asset Trends
+De-equitization (private over public markets) and rising duration arbitrages in private credit/PE are structural shifts to monitor.
+
+## Market Structure
+Continued momentum and narrow index concentration pose risks if market sentiment shifts. Increasing participation from retail and systematic strategies could exacerbate volatility.
+`,
+        emailContent: `# **Fwd: Ruminations - Macro, Micro, Markets**
+
+**From:** Chris Napoli Research <chrisnapoli.research@hurricanecap.com>  
+**To:** David K <davidk@thetransient.ai>  
+**CC:** Hurricane PFS Portfolio Services <pfs@hurricanecap.com>  
+**Date:** Wed, 22 Jan 2025 13:42:01 +0000  
+**Subject:** Fwd: Ruminations - Macro, Micro, Markets  
+
+---
+
+## **Forwarded Message from Bobby Molavi (Goldman Sachs)**
+**From:** Bobby Molavi <Bobby.Molavi@gs.com>
+**Date:** January 15, 2025, at 6:22:52 AM EST  
+**To:** Chris Napoli Research <chrisnapoli.research@hurricanecap.com>  
+**Subject:** Ruminations - Macro, Micro, Markets  
+
+---
+
+### **📌 Key Takeaways from the Market**
+- The **first two days of January** were bullish, but the following week brought back a **reality check**.
+- Markets are **adjusting expectations** as we move deeper into 2025.
+- **Investor sentiment** has shifted from speculative enthusiasm to **risk management and efficiency**.
+- **AI & US economic policy** are now focal points for market movement.
+
+---
+
+## **📰 Market Summary**
+### **Global Market Insights**
+- **US Market**: Volatility increasing, with major stocks showing mixed growth.
+- **Europe**: Facing regulatory risks but still attracting capital inflows.
+- **Emerging Markets**: A shift towards **more structured investments**.
+
+### **Inflation & Interest Rates**
+- **Inflation & yields** remain a **top concern**.
+- US **10-year Treasury** has moved unpredictably, showing investor caution.
+- The **Federal Reserve’s stance** remains crucial for capital markets.
+
+### **Private Equity & Asset Growth**
+- Private capital **continues to grow** despite short-term uncertainties.
+- **Institutional investors** are shifting allocations toward **alternative assets**.
+
+---
+
+## **🔍 Macro Themes for 2025**
+- The **continued shift from speculative trading** to structured risk.
+- **AI investments** and their long-term impact on traditional sectors.
+- **Central Bank strategies** amid inflation and regulatory pressures.
+
+🔗 **Read More Market Insights Here:** [_Insert Link_]  
+
+---
+
+## **🔴 Conclusion & Next Steps**
+- Markets are evolving toward **more balanced risk management**.
+- Expect **fluctuations in liquidity and investor positioning**.
+- The key driver for **H1 2025** will be **corporate earnings and Fed policy**.
+
+📩 _For further details, feel free to reach out!_
+
+---
+
+### **🔒 Confidentiality Notice**
+This message contains confidential information intended only for the recipient.  
+If you have received this email in error, please delete it immediately.
+`
       },
       {
-        name: 'GS Spec Sales: Feedback, Flows and Catalysts',
-        aiSummary: this.getAiContentMock(),
-        emailContent: this.getEmailContentMock()
+        name: 'INDIA STRATEGY - 2025 - the pricey paradise; cloudy skies',
+        aiSummary: `# Summary of Research Report: BNP Paribas Exane Research – India Strategy 2025
+
+## Market Overview
+
+### Key Themes
+- Indian equities remain expensive, with limited upside for broader markets due to less favorable global and local macroeconomic conditions
+- Nifty 50 is projected to reach 25,500 by the end of 2025, indicating a potential 10% upside from current levels
+- Mid and small caps appear overpriced, driven by strong domestic institutional flows despite economic headwinds
+- Rising U.S. bond yields and USD strength are pressuring Indian equities through Foreign Institutional Investor (FII) outflows
+- Local challenges include slowing GDP and earnings growth, constrained government stimulus capacity, and declining tax collections
+
+## Asset Classes
+
+### Equities
+- Preference for large caps over mid and small caps due to better valuation metrics
+- **Favorable sectors:**
+  - Banks: Strong FY26 earnings growth outlook, minimal credit-cost risks, and below-median valuations
+  - IT Services: Improved macro environment compared to the previous two years
+  - Telecoms: Free cash flow (FCF) generation remains robust, supporting growth
+  - Consumer Discretionary: Affluent consumption is favored over staples and mass-market segments like two-wheelers
+- **Unfavorable sectors:**
+  - Pharma: High valuations not supported by earnings growth potential
+  - Metals: Weak steel demand and prices weigh on the outlook
+
+### Bonds
+- Rising U.S. yields negatively impact FII flows into emerging markets, including India
+
+## Regional Focus
+
+### India
+- **Slowing domestic economic indicators:**
+  - Earnings growth decline across sectors
+  - Heat map of 50+ indicators signals bottoming out in Q3 2024, with recovery contingent on GDP and earnings growth
+
+## Key Risks and Opportunities
+
+### Risks
+- Sustained FII outflows due to high U.S. yields and a strong dollar
+- Limited fiscal flexibility for the government to support growth amid declining corporate tax and GST revenues
+- Persistent high valuations in mid and small caps pose downside risks
+
+### Opportunities
+- Recovery in GDP and earnings growth could support market sentiment and valuations
+- Large-cap sectors like Banks, IT, and Telecoms offer favorable risk-reward profiles
+
+## Trade Ideas
+
+### Equities
+- **Banks**: Buy; Below-median valuations and robust FY26 earnings outlook. Monitor credit-cost trends and valuation metrics
+- **IT Services**: Buy; Favorable macro conditions compared to the past two years. Initiate positions during market corrections
+- **Telecoms**: Buy; Strong free cash flow and industry dynamics. Entry around dips driven by broader market weakness
+- **Pharma**: Sell; High valuations relative to earnings growth prospects
+- **Metals**: Sell; Weak steel demand and pricing remain headwinds
+
+### Indices
+- **Nifty 50**: Hold; Upside limited to 10% by end-2025. Reassess if economic growth surprises positively or global conditions improve
+
+## Forward-Looking Commentary
+- Global economic developments, including U.S. monetary policy and bond yield trends, are likely to dictate FII flows and market sentiment
+- Local recovery in earnings and GDP growth, coupled with fiscal discipline, will be crucial for sustained market performance
+- Continued sectoral divergence expected, with large caps outperforming broader markets`,
+        emailContent: `# **INDIA STRATEGY - 2025 - The Pricey Paradise; Cloudy Skies**
+
+### BNP PARIBAS EXANE RESEARCH  
+**View (73p)**  
+[Research Link](https://urldefense.proofpoint.com/v2/url?u=https-3A__cube.cib.bnpparibas_slink_pKqGSvO1WlDfiS14)
+
+## India Strategy  
+[2025 - The Pricey Paradise; Cloudy Skies](https://urldefense.proofpoint.com/v2/url?u=https-3A__cube.cib.bnpparibas_slink_pKqGSvO1WlDfiS14)
+
+---
+
+### **Key Insights:**
+In our **2024 outlook** *'The Pricey Paradise'*, we highlighted our cautious view on Indian equities.  
+
+- **Nifty 50 returns** were in line with expectations, but mid and small caps outperformed.  
+- Markets overcame **GDP slowdown, capital gains tax hikes, FII outflows**, and a **large supply of equities**.  
+- **Broader markets still look expensive**, and **global/local macros are less favorable**.  
+
+Our **end-2025 Nifty 50 target**: **25,500**  
+🔹 *Implies **10% upside** from current levels (8% for CY25)*  
+
+**Preferred Sectors:**  
+✔️ Private sector **Banks**, **IT**, **Telecoms**, **Consumer Discretionary**  
+❌ Avoid: **Staples, Pharma, Insurance, Metals**
+
+---
+
+## **Spike in US Yields – A Negative for FII Flows**
+📉 **Global markets** reacting to potential **US policy changes**  
+📈 **Rising US bond yields → USD strengthening → FIIs selling in EMs**  
+
+Though **DII holdings** are increasing, India is still exposed to FII outflows:  
+- **FII holdings = 1.6x DIIs**  
+- **Corporate earnings growth slowing across sectors**  
+- **Fiscal constraints due to lower tax revenues**
+
+Our **heat map (50+ indicators)** signals:  
+🔸 **Slowdown in 2024**  
+🔸 **Bottoming out in 3QCY24**
+
+---
+
+## **Prefer Large Caps – Banks, IT, Telecoms**
+💰 **Banks**: Strong **FY26 earnings growth**, no **major credit-cost spikes**  
+📊 **IT Services**: Macro **far more favorable** than last 2 years  
+📡 **Telecoms**: **FCF improvements continue**  
+
+🚫 *Avoid* **mass consumption sectors** (staples, 2Ws)  
+🚫 **Pharma** = Expensive relative to earnings growth  
+🚫 **Metals** = **Weak steel demand and prices**
+
+---
+
+### **Contact:**
+**Kunal Vora, CFA**  
+📞 **+91 22 6196 4384**  
+✉️ [kunal.d.vora@asia.bnpparibas.com](mailto:kunal.d.vora@asia.bnpparibas.com)
+
+---
+
+#### **Research Access & Unsubscribe**
+🔗 **[Access CUBE Research](https://urldefense.proofpoint.com/v2/url?u=https-3A__cube.cib.bnpparibas)**  
+❌ **[Unsubscribe](https://urldefense.proofpoint.com/v2/url?u=https-3A__cube.cib.bnpparibas_unsubscribe_info)**  
+
+---
+
+⚠️ **Disclaimer:**  
+This email may contain **confidential and privileged information**.  
+If received in error, please **delete immediately** and **notify the sender**.
+
+---
+`
       },
       {
-        name: 'BNP Paribas Exane Research - 2025 - The Pricey Paradise',
-        aiSummary: this.getAiContentMock(),
-        emailContent: this.getEmailContentMock()
-      },
-      {
-        name: 'BNP Paribas Exane Auto Div - Q424 Results Preview',
-        aiSummary: this.getAiContentMock(),
-        emailContent: this.getEmailContentMock()
-      },
-      
+        name: 'Feedback, Flows and Catalysts',
+        aiSummary: `# Market Overview
+
+## Macro Themes
+- Nervousness surrounding UK retail persists due to employment concerns, higher cost-of-living impacts (notably food inflation), and operational cost pressures (e.g., wages)
+- Chinese luxury demand shows early signs of stabilization, particularly in the jewellery segment, supported by Chinese New Year timing and strong US holiday season luxury spending
+
+## Asset Classes
+
+### Equities
+- Mixed sentiment in UK retail:
+  - Positive on Tesco for potential market share gains from UK food inflation
+  - Cautious on other UK names like B&M
+- Defensive interest in Chemicals: Selective names like DSFIR and BASF gaining traction due to tightening capacity utilization
+- Renewed enthusiasm for aerospace (e.g., GSXECIVA) and electrification (GSXEACDC)
+
+### Luxury
+- Buying interest in Richemont (CFR) into Q3 trading update due to:
+  - Improved Q4 sales outlook
+  - US holiday demand
+  - Resilient Chinese consumer spending
+  - Favorable FX trends (weaker Yen aiding Japanese tourist spending)
+- Short-selling activity in staples like IMB and CARLB, contrasting with positive flows in DGE and AD
+
+### Healthcare
+- **ArgenX (ARGX)**: Anticipated upside in Q4 Vyvgart sales due to early CIDP launch. Confidence in 2025 guidance driven by expected prescriber overlap with MG (70%)
+- **AstraZeneca (AZN)**: Viewed as the top pick for its clinical catalysts and strong fundamentals, although Chinese policy risks are noted
+
+### Commodities
+- Positive outlook for Sunrise (SUNN) post-Q4 results with benefits from FX tailwinds, tariff resolution, and a seasonal activity bump post-Chinese New Year
+
+### Telcos
+- Sunrise vs. Swisscom: Sunrise offers high dividend yields and better market positioning (e.g., stable domestic business vs. Swisscom's declining local performance)
+
+## Regional Focus
+- **UK**: Increasing headwinds in retail due to food inflation and consumer sentiment, with a focus on Tesco as a market share winner
+- **China**: Stabilization of high-frequency data, jewelry emerging as a resilient luxury category
+- **Europe**: Renewed interest in defensive Chemicals and Aerospace, while Autos await clarity on tariffs
+
+## Behavioral Trends
+- High-frequency selling in luxury and mixed sentiment in semi-conductors (debate around ASML and BESI performance)
+- Investors revisiting old themes like European defense and electrification due to positive early-year performance
+
+## Key Risks and Opportunities
+
+### Risks
+- Heat pump competition pressures for NIBE, especially with German elections affecting incentives
+- Regulatory concerns in gambling (e.g., Flutter) and healthcare (e.g., Novartis patent litigation)
+- Autos exposed to potential tariff impacts
+
+### Opportunities
+- Chemicals sector tightening capacity signals selective upside in names like DSFIR and BASF
+- Stabilization in Chinese luxury demand
+
+## Trade Ideas
+
+### Richemont (CFR)
+- **Trade**: Buy CFR SE 21Feb25 148 Call for 3 CHF (32% delta, 140 CHF spot ref)
+- **Rationale**: Positive Q3 trading update expected, supported by FX tailwinds and strong jewelry sales
+- **Trigger**: Q3 trading update on January 16th
+
+### NIBE
+- **Trade**: Short NIBEB SS 21Mar25 37/28 Put Spread for 1.8 SEK (23% delta, 40.3 SEK spot ref)
+- **Rationale**: Risks from heat pump competition and German policy changes
+- **Trigger**: FY results on February 14th and German elections on February 23rd
+
+### Sunrise (SUNN)
+- **Trade**: Long SUNN into Q4 results, paired vs. Swisscom and VOD
+- **Rationale**: Benefits from FX tailwinds, market share growth, and superior dividend yields
+- **Trigger**: Q4 results on February 13th
+
+### ArgenX (ARGX)
+- **Trade**: Buy ARGX BB 21Feb25 680/760 Call Spread for 16 EUR (27% delta, 644 EUR spot ref)
+- **Rationale**: Early phase success of CIDP launch with significant upside potential in Vyvgart sales
+- **Trigger**: JPMorgan Healthcare Conference (January 13-16)
+
+## Forward-Looking Commentary
+- **Luxury**: Chinese jewelry demand remains a resilient category, likely to sustain momentum into Q1 despite tough comps
+- **Chemicals**: Capacity utilization tightening signals medium-term opportunities in defensive segments
+- **Healthcare**: AstraZeneca's strong catalyst profile positions it well for sustained interest, although Chinese risks need monitoring`,
+        emailContent: `***********************
+
+***PFS can help!***
+
+📧 PFS@hurricanecap.com  
+📞 NY: +1 212 702 7111  
+📞 London: +44 203 81 86400  
+
+**Asset management, evolved.**
+
+***********************
+
+## **Feedback, Flows and Catalysts**  
+📅 **Date:** January 10, 2025  
+📩 **From:** GS Sector Specialists (gs-specsales@ny.email.gs.com)  
+📩 **To:** Chris Napoli Research (chrisnapoli.research@hurricanecap.com)  
+📩 **Reply-To:** GS Sector Specialists  
+
+---
+
+### **Key Market Strategies**
+✅ **Long CFR** into Q3 trading update on **16th January**  
+❌ **Short NIBEB** into FY results on **14th Feb** and **German elections on 23rd Feb**  
+✅ **Long SUNN** into Q4 results on **13th Feb**  
+✅ **Long ARGX** into **JPM Healthcare Conference (13th-16th Jan)**  
+✅ **Long RYA** into Q3 results on **27th Jan**  
+✅ **Long SXPP** for FX tailwind, tariff resolution, and post-China New Year activity bump  
+✅ **Long GLEN** for **$3bn buyback**, announcement expected at **FY results on 19th Feb**  
+
+---
+
+## **Consumer Sector Insights**
+### **Feedback**
+- Investors are increasingly **nervous about the 2025 outlook** for **UK retail** despite in-line Xmas trading.
+- Concerns around **employment growth, higher living costs, food inflation, and rising rates**.
+- **Apparel companies** face **stronger USD headwinds** and **higher wage inflation**.
+
+**Single Stock Highlights:**
+- **M&S**: Strong turnaround but lack of FY upgrade is a concern.
+- **Tesco**: Some investors see **market share opportunities** due to food inflation.
+- **B&M**: Weak Q4 LFL sales led to **short covering** post-earnings.
+- **Luxury Sector**: Q4 expected to be stable, but Q1 visibility remains low.
+- **Staples**: Investors maintaining positions in **IMB, DGE, and BN**.
+
+---
+
+## **Flow Insights**
+📉 **Luxury Sector:** HF selling in **RMS, CFR, MC, Pandora**.  
+📈 **Staples Sector:** LO selling of **IMB and CARLB**, while buying in **DGE and AD**.  
+📉 **Retail Sector:** Selling of **B&M post-earnings**, shorting of **SBRY** due to weaker toy sales in Q4.  
+
+---
+
+## **Catalysts**
+### **Buy Richemont (CFR) into Q3 Trading Update - 16th Jan**
+📊 **Key reasons:**  
+1️⃣ **US luxury spending strong** through the holiday season.  
+2️⃣ **China luxury demand stabilizing** with potential for better-than-expected Q1.  
+3️⃣ **Weaker Yen benefits tourist spending** in Japan.  
+4️⃣ **Stronger USD fuels American tourist spending** in Europe.  
+
+**Jewelry Maisons Q4 Outlook:**
+- Expected **+5% cFX growth** (Consensus: 4%).
+- Strong demand for **Cartier and Van Cleef**.
+- **Secondhand watch market**: Cartier **resale prices increased** in Nov-Dec.  
+- **Vogue survey**: Jewelry is the most preferred luxury category in China.  
+
+💡 **Options Strategy**:  
+- **Buy CFR SE 21Feb25 148 Call** for **3 CHF** (32% delta, 140 CHF spot ref).  
+- **Max loss = Premium spent**.  
+- **Implied volatility suggests a 6% move over earnings**.  
+
+---
+
+## **Chart of the Week**
+📈 **Luxury purchase intent rising in China**  
+💎 **Jewelry remains the highest-priority category for high-income consumers.**  
+
+🖼️ *(Chart image placeholder)*
+
+---
+
+## **Industrials Sector Insights**
+🛠️ **Key industrial trends & company positioning** *(Additional details in the full report)*  
+
+🖼️ *(Chart image placeholder)*
+
+---
+
+This Markdown format keeps the structure clean and easy to render in your **React Markdown component**. Let me know if you need any tweaks! 🚀
+`
+      }
     ];
   }
 
