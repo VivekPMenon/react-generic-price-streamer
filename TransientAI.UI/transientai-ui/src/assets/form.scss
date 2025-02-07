@@ -74,3 +74,20 @@ input[type="text"] {
 .cursor-pointer {
   cursor: pointer;
 }
+
+.rc-segmented-item {
+  background-color: $gray-1000;
+  color: $font-color-100;
+  border: 1px solid $teal-100;
+  // margin: 5px auto;
+
+  &:hover {
+    background-color: $gray-1000;
+    color: $white;
+  }
+}
+
+.rc-segmented-item-selected  {
+  background-color: $teal-100 !important;
+  
+}
