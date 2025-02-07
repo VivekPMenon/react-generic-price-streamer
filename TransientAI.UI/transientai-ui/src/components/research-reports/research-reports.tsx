@@ -2,8 +2,10 @@ import { useEffect, useMemo, useState } from 'react';
 import styles from './research-reports.module.scss';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import Segmented from 'rc-segmented';
 import { SearchableMarkdown } from '@/components/markdown';
 import { reportsDataService, ResearchReport } from '@/services/reports-data';
+
 
 export interface ResearchReportsProps {
   isExpanded: boolean;
@@ -38,8 +40,15 @@ export function ResearchReports({ isExpanded }: ResearchReportsProps) {
 
         <div className={styles['filter-panel']}>
           Search:
-          <input type='text' value={searchQuery} onChange={event => setSearchQuery(event.target.value)}></input>
+          <input type='text' className='mb-2' value={searchQuery} onChange={event => setSearchQuery(event.target.value)}></input>
           {/* <i className='fa-solid fa-filter'></i> */}
+          Summary Type:
+          <Segmented
+            className={styles['format-type']}
+            selected={true}
+            options={['Short', 'Medium', 'Verbose']}
+            onChange={(value) => {}}
+          />
         </div>
 
         <div className='news'>
