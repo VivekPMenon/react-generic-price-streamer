@@ -6,3 +6,15 @@
     color: white !important;
   }
 }
+
+
+.highlighted {
+  background-color: yellow;
+  color: black !important;
+  font-weight: bold;
+  padding: 2px;
+}
+
+.active-match {
+  background-color: orange !important;
+}
