@@ -5,33 +5,6 @@
   flex-direction: column;
   height: 100%;
 
-  .search-bar {
-    display: flex;
-    background-color: $body-bg;
-    align-items: center;
-    padding: 10px;
-
-    .title {
-      flex: 1 1 40%;
-      font-size: 15px;
-    }
-
-    .search-toolbar {
-      display: flex;
-      gap: 10px;
-      align-items: center;
-    }
-
-    i {
-      opacity: .5;
-
-      &.active {
-        opacity: 1;
-        cursor: pointer;
-      }
-    }
-  }
-
   .react-markdown {
     padding: 10px;
   }

@@ -22,6 +22,7 @@
 @import '../assets/markdown.scss';
 @import '../assets/cards.scss';
 @import '../assets/layout-utils.scss';
+@import '../assets/email-viewer.scss';
 
 :root {
   --background: #{$body-bg};
@@ -65,4 +66,16 @@ body {
   margin-left: auto;
   display: flex;
   justify-content: flex-end;
+}
+
+
+.highlighted {
+  background-color: yellow;
+  color: black;
+  font-weight: bold;
+  padding: 2px;
+}
+
+.active-match {
+  background-color: orange !important;
 }
