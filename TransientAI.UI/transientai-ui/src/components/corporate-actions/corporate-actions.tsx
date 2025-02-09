@@ -5,6 +5,7 @@ import { reportsDataService } from '@/services/reports-data';
 import { SearchableMarkdown } from '../markdown';
 import { useContext, useEffect, useState } from 'react';
 import { CorpActionsDataContext, corpActionsDataService, CorporateAction } from '@/services/corporate-actions';
+import EmailViewer from '../email-parser/email-viewer';
 
 export interface CorporateActionsProps {
   isExpanded: boolean;
@@ -22,7 +23,7 @@ export function CorporateActions({ isExpanded }: CorporateActionsProps) {
       return;
     }
 
-    const newContent = (corpActionsDataService.getEmailMarkdown() as any)[`${corpActionsData!.corpActions![0].eventId + '_2'}`]
+    const newContent = (corpActionsDataService.getEmailSource() as any)[`${corpActionsData!.corpActions![0].eventId + '_2'}`]
     setEmailContent(newContent);
   }, [corpActionsData?.corpActions]); // hack.. we should not useeffect on state pbjects
 
@@ -41,7 +42,7 @@ export function CorporateActions({ isExpanded }: CorporateActionsProps) {
   }
 
   function getEmailContent(id: string, version: string) {
-    return (corpActionsDataService.getEmailMarkdown() as any)[`${id}_${version}`];
+    return (corpActionsDataService.getEmailSource() as any)[`${id}_${version}`];
   }
 
   return (
@@ -141,10 +142,7 @@ export function CorporateActions({ isExpanded }: CorporateActionsProps) {
           className={isExpanded ? 'height-vh-82' : 'height-vh-40'} 
           title='Original Email'/> */}
         {emailContent ?
-          <SearchableMarkdown
-            markdownContent={emailContent}
-            className='height-vh-82'
-            title='Original Email' /> : <></>}
+          <EmailViewer className='height-vh-82' htmlSource={emailContent} /> : <></>}
 
       </div>
     </div>

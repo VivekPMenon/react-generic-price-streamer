@@ -5,6 +5,7 @@ import remarkGfm from 'remark-gfm';
 import Segmented from 'rc-segmented';
 import { SearchableMarkdown } from '@/components/markdown';
 import { reportsDataService, ResearchReport } from '@/services/reports-data';
+import EmailViewer from '../email-parser/email-viewer';
 
 
 export interface ResearchReportsProps {
@@ -47,7 +48,7 @@ export function ResearchReports({ isExpanded }: ResearchReportsProps) {
             className={styles['format-type']}
             selected={true}
             options={['Short', 'Medium', 'Verbose']}
-            onChange={(value) => {}}
+            onChange={(value) => { }}
           />
         </div>
 
@@ -77,8 +78,9 @@ export function ResearchReports({ isExpanded }: ResearchReportsProps) {
                 Original Email
               </div>
 
-              {/* <SearchableMarkdown markdownContent={selectedReport.emailContent} className={isExpanded ? 'height-vh-82': 'height-vh-36'} /> */}
-              <SearchableMarkdown markdownContent={selectedReport.emailContent} className='height-vh-80' />
+              <div>
+                <EmailViewer className='height-vh-80' htmlSource={selectedReport?.emailSource} />
+              </div>
             </div>
 
             <div className={`${styles['ai-summary']} ${isExpanded ? styles['expanded'] : ''}`}>
