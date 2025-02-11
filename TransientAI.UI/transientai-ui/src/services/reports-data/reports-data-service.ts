@@ -5,7 +5,7 @@ class ReportsDataService {
   getReports(): ResearchReport[] {
     return [
       {
-        name: 'Ruminations - Macro, Micro, Markets',
+        name: 'GS: Ruminations - Macro, Micro, Markets',
         aiSummary: `# Market Overview
 
 ## Choppy Start to 2025
@@ -95,7 +95,7 @@ Continued momentum and narrow index concentration pose risks if market sentiment
         emailSource: `emails/Ruminations.html`
       },
       {
-        name: 'INDIA STRATEGY - 2025 - the pricey paradise; cloudy skies',
+        name: 'BNP Paribas Exane Research: INDIA STRATEGY - 2025 - the pricey paradise; cloudy skies',
         aiSummary: `# Summary of Research Report: BNP Paribas Exane Research – India Strategy 2025
 
 ## Market Overview
@@ -160,7 +160,7 @@ Continued momentum and narrow index concentration pose risks if market sentiment
         emailSource: `emails/India.html`
       },
       {
-        name: 'Feedback, Flows and Catalysts',
+        name: 'GS Spec Sales: Feedback, Flows and Catalysts',
         aiSummary: `# Market Overview
 
 ## Macro Themes
