@@ -1,0 +1,18 @@
+@import './variables.scss';
+
+.profile-pic {
+  border-radius: 50%;
+  height: 35px;
+  width: 37px;
+  // background-color: white;
+  color: black;
+  align-items: center;
+  justify-content: center;
+  display: flex;
+
+  img {
+    border-radius: 50%;
+    height: 35px;
+  }
+
+}

@@ -1,0 +1,70 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import "@radix-ui/themes/styles.css";
+@import 'ag-grid-community/styles/ag-grid.css';
+@import 'ag-grid-community/styles/ag-theme-balham.css';
+@import 'rc-segmented/assets/index.css'; 
+@import '../assets/ag-grid-custom.scss';
+@import '../assets/variables.scss';
+@import '../assets/menu.scss';
+@import '../assets/filters.scss';
+@import '../assets/buttons.scss';
+@import '../assets/profile.scss';
+@import '../assets/radix-overrides.scss';
+@import '../assets/color-utils.scss';
+@import '../assets/form.scss';
+@import '../assets/news.scss';
+@import '../assets/font-utils.scss';
+@import '../assets/widget.scss';
+@import '../assets/modal.scss';
+@import '../assets/markdown.scss';
+@import '../assets/cards.scss';
+@import '../assets/layout-utils.scss';
+@import '../assets/email-viewer.scss';
+
+:root {
+  --background: #{$body-bg};
+  --foreground: #{$body-color};
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #{$body-bg};
+    --foreground: #{$font-color-100};
+    --accent-indicator: red;
+  }
+}
+
+.dark {
+  --sage-1: #0C101B;
+}
+
+html {
+  height: 100%;
+  width: 100%;
+}
+
+body {
+  color: var(--foreground);
+  background: $body-bg;
+  font-family: Arial, Helvetica, sans-serif;
+  height: 100%;
+  width: 100%;
+  font-size: 14px;
+}
+
+.height-100p {
+  display: flex;
+  flex: 1 1 100%;
+  flex-direction: column;
+  height: 100%;
+}
+
+.highcharts-range-selector-buttons {
+  margin-left: auto;
+  display: flex;
+  justify-content: flex-end;
+}
+

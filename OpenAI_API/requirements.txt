@@ -1,0 +1,7 @@
+Flask
+flask-cors
+openai
+yfinance
+phidata
+python-dotenv
+flask-caching

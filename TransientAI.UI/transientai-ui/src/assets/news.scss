@@ -1,0 +1,46 @@
+// todo move it to a common component called "news"
+@import './variables.scss';
+
+.news {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  flex: 1 1 100%;
+  gap: 10px;
+  padding: 5px 10px;
+
+  .news-item {
+    border-radius: 5px;
+    color: $font-color-200;
+    font-size: 12px;
+    padding: 10px;
+    background-color: $gray-1000;
+    align-content: baseline;
+    display: flex;
+    cursor: pointer;
+
+    &:hover, &.active {
+      box-shadow: 0 0 3px $green;
+    }
+
+    .news-menu {
+       margin-left: auto; 
+       display: flex;
+       align-items: center;
+       cursor: pointer;
+    }
+  }
+
+  .news-title {
+    display: flex;
+    font-size: 14px;
+    color: $white;
+    text-transform: capitalize;
+    gap: 10px;
+    align-items: baseline;
+  }
+
+  .news-description {
+
+  }
+}

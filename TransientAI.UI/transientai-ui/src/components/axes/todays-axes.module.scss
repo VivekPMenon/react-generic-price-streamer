@@ -1,0 +1,30 @@
+.todays-axes {
+  display: flex;
+  height: 100%;
+  gap: 10px;
+
+  & > div {
+    display: flex;
+    flex-direction: column;
+    flex: 100%;
+  }
+
+  .axes {
+    flex: 1 1 55%;
+  }
+
+  .clients-and-holdings {
+    display: flex;
+    flex: 1 1 45%;
+    flex-direction: column;
+    height: 100%;
+    gap: 10px;
+
+    & > div {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      flex: 1 1 100%;
+    }
+  }
+}

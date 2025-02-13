@@ -5,6 +5,16 @@ The **React Generic Price Streamer** is a <b>generic</b> web-based application b
 
 <i>**This is currently a work in progress, we are building it iteratively and we would publish it as a Product once all the configurations and customizations are built in.<i>
 
+## TODO - For Devs
+- Implement router for Main content panel - tabbed components
+- Server side rendering on components that are applicable. Now all comps are rendered on client
+- Convert Email preview in to EML based, instead of Markup based. 
+- Implement Search/FInd functionality for EML Email Viewer
+- Reevaluate the UI component library 
+- Implement Paging for AG Grid
+- Auto scrollbar component
+- Break all large components in to smaller components
+
 ## Key Features
 
 - **Real-Time Data Updates**: Track and visualize market prices and trade data with real-time updates using web socket streaming.

@@ -1,0 +1,49 @@
+@import './variables.scss';
+
+.cards {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 10px;
+
+  .card {
+    display: flex;
+    border-radius: 5px;
+    background-color: $gray-1000;
+    color: $font-color-200;
+    padding: 10px;
+
+    .card-image {
+      height: 100%;
+      flex: 1 1 20%;
+
+      img {
+        width: 100px;
+        height: 75px;
+      }
+    }
+
+    .card-content {
+      display: flex;
+      flex-direction: column;
+      flex: 1 1 auto;
+
+      .card-title {
+        color: $font-color-100;
+        padding-bottom: 3px;
+
+        a {
+          // max-width: 300px;
+          color: $blue-alt;
+          &:hover {
+            text-decoration: underline;
+          }
+        }
+      }
+
+      .card-description {
+        // max-width: 300px;
+      }
+    }
+  }
+}

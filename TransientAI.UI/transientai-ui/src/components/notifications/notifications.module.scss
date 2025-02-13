@@ -1,0 +1,86 @@
+@import '../../assets/variables.scss';
+
+.notifications {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 60%;
+  // padding: 0 10px;
+  font-size: 14px;
+}
+
+.notification-items {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 10px 5px 10px 0px;
+  max-height: 60vh;
+
+
+  &.expanded {
+    max-height: 87vh;
+  }
+
+  .notification-item {
+    border-radius: 5px;
+    color: $font-color-200;
+    font-size: 12px;
+    padding: 10px;
+    background-color: $gray-1000;
+    align-content: baseline;
+  }
+
+  .notification-menu-icon {
+    cursor: pointer;
+    margin: 3px;
+  }
+
+  .notification-title {
+    display: flex;
+    gap: 10px;
+    align-items: baseline;
+    text-transform: uppercase;
+
+    .name {
+      font-size: 14px;
+      color: $white;
+    }
+
+    i {
+      font-size: 14px;
+    }
+  }
+
+  .notification-count {
+  }
+
+  .notification-menu {
+    margin-left: auto;
+    display: flex;
+    align-items: baseline;
+  }
+
+  .notification-content {
+    display: flex;
+    flex-direction: column;
+    padding: 5px 0;
+    
+    li {
+      padding: 3px;
+    }
+  }
+}
+
+.alert-content {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  text-align: center; 
+  font-size: 20px;
+
+  .highlight {
+    font-size: 16px;
+    color: $pink;
+    text-transform: uppercase;
+    text-align: center;
+  }
+}

@@ -1,0 +1,71 @@
+@import '../../assets/variables.scss';
+
+.chatbot-container {
+  flex: 1 1 50%;
+}
+
+.chatbot-header {
+  display: flex;
+  gap: 5px;
+  flex-direction: column;
+  align-items: baseline;
+}
+
+.chatbot-header h1 {
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.chatbot-header p {
+  font-size: 14px;
+}
+
+.search-bar {
+  margin: 20px 0;
+}
+
+.search-bar input {
+  width: 98%;
+  padding: 10px;
+  font-size: 14px;
+  border: none;
+  border-radius: 5px;
+  background-color: $gray-1000;
+}
+
+.workflow-list {
+  padding-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.workflow-list {
+  max-height: 78vh;
+  overflow-y: auto;
+}
+
+.workflow-list h2 {
+  font-size: 16px;
+}
+
+.workflow-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  border-radius: 5px;
+  background-color: $gray-1000;
+  cursor: pointer;
+}
+
+.workflow-item p {
+  margin: 0;
+  font-size: 14px;
+  color: $font-color-100;
+}
+
+.workflow-item span {
+  font-size: 12px;
+  color: $font-color-200;
+}

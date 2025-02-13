@@ -1,0 +1,88 @@
+@import '../../assets/variables.scss';
+
+.research-reports {
+  display: flex;
+  color: $font-color-100;
+  gap: 15px;
+}
+
+.format-type {
+  margin-bottom: 10px;
+}
+
+.report-list {
+  flex: 1 1 20%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  font-size: 15px;
+  max-width: 350px;
+  min-width: 350px;
+  position: relative;
+
+  .report {
+    display: flex;
+    align-items: center;
+    padding: 0;
+    gap: 10px
+  }
+
+  .filter-panel {
+    display: flex;
+    padding: 10px 20px 0px 10px;
+    flex-direction: column;
+    gap: 3px;
+  }
+
+  // &::after {
+  //   height: 100%;
+  //   width: 2px;
+  //   position: absolute;
+  //   background-color: $border-color;
+  //   content: ' ';
+  //   right: -3px;
+  // }
+}
+
+.email-content {
+  flex: 1 1 40%;
+  // padding: 10px;
+  
+  border-radius: 5px;
+  background-color: $gray-1000;
+}
+
+.ai-summary {
+  flex: 1 1 40%;
+  background-color: $gray-1000; 
+  border-radius: 5px;
+  height: 100%;
+  margin-left: 10px;
+
+  .key-words {
+    // padding-bottom: 5px;
+
+    span {
+      color: $white;
+      font-style: italic;
+      
+      color: $blue-alt;
+
+      &:hover {
+        color: $blue-alt;
+      }
+    }
+  }
+}
+
+.summary-title {
+  padding: 5px;
+  text-align: center;
+  background-color: $body-bg;
+  font-size: 14px;
+  color: $white;
+}
+
+.expanded {
+  max-height: 88vh;
+}

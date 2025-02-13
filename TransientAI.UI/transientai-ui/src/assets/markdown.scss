@@ -1,0 +1,78 @@
+@import './variables.scss';
+
+.markdown {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
+  .react-markdown {
+    padding: 10px;
+  }
+
+  ol,
+  ul,
+  menu {
+    list-style-type: disc;
+    margin-block-start: 10px;
+    margin-block-end: 10px;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+    padding-inline-start: 30px;
+    unicode-bidi: isolate;
+
+    li {
+      padding: 5px 0;
+    }
+  }
+
+  table {
+    padding-top: 10px;
+  }
+
+  th {
+    text-align: left;
+  }
+
+  strong {
+    color: $font-color-100;
+  }
+
+  ol ul {
+    list-style-type: disc;
+    margin-block-start: .5em;
+    margin-block-end: .5em;
+
+    li {
+      padding: 5px;
+    }
+  }
+
+  h3 {
+    font-size: 1em;
+    font-weight: bold;
+    color: $font-color-100;
+  }
+  
+  h2 {
+    font-size: 1.1em;
+    font-weight: bold;
+    color: $font-color-100;
+    padding: 10px 0px;
+  }
+
+  h1 {
+    font-size: 1.3em;
+    font-weight: bold;
+    color: $font-color-100;
+    padding: 10px 0px;
+  }
+
+  p {
+    // margin: 2px 0;
+
+    a {
+      display: block;
+      color: $blue-alt;
+    }
+  }
+}
