@@ -14,6 +14,10 @@ The **React Generic Price Streamer** is a <b>generic</b> web-based application b
 - Implement Paging for AG Grid
 - Auto scrollbar component
 - Break all large components in to smaller components
+- apply linting
+- add Paging logic/component for AG Grid common componnet
+- move highchart CSS customizations to SCSS file from the JS file
+- Replace online access of Font awesome bundle, instead self host it 
 
 ## Key Features
 

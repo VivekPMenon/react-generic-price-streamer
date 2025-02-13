@@ -1,0 +1,51 @@
+.home {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  
+  // move this to the header class
+  header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex: 0 0 40px;
+    align-content: center;
+    padding: 10px 10px 0px 10px;
+  }
+  
+  main {
+    flex: 1 1 90%;
+    display: flex;
+    padding: 10px;
+    gap: 10px;
+  }
+
+  .left-panel {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 10%;
+    gap: 10px;
+    max-width: 400px;
+    min-width: 400px;
+  }
+  
+  .middle-panel {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 60%;
+    gap: 10px;
+  }
+
+  .middle-panel-bottom-widgets {
+    display: flex;
+    gap: 10px;
+    flex: 1 1 40%;
+  }
+
+  .right-panel {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 30%;
+    gap: 10px;
+  }
+}

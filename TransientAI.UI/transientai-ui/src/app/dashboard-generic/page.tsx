@@ -1,6 +1,6 @@
 'use client';
 import { Explorer } from '@/components/explorer/explorer';
-import { Header } from './header'
+import { Header } from '../../components/header/header'
 import styles from './page.module.scss';
 import { MainContentPanel } from '@/components/main-content-panel/main-content-panel';
 import { Chatbot } from '@/components/chatbot/chatbot';
@@ -48,6 +48,15 @@ export default function Home() {
 
         <div className={styles['middle-panel']}>
           <MainContentPanel></MainContentPanel>
+
+          <div className={styles['middle-panel-bottom-widgets']}>
+            <PriceGraph onExpandCollapse={isExpanded => onExpandCollapse('price-graph', isExpanded)}></PriceGraph>
+            <News onExpandCollapse={isExpanded => onExpandCollapse('news', isExpanded)}></News>
+          </div>
+        </div>
+
+        <div className={styles['right-panel']}>
+          <Chatbot></Chatbot>
         </div>
       </main>
     </div>
