@@ -1,7 +1,6 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
   experimental: {
     serverActions: {}
   },
@@ -10,13 +9,19 @@ const nextConfig: NextConfig = {
     ignoreDuringBuilds: true,
   },
   async redirects() {
-    return [
+    
+    return Promise.resolve([
       {
         source: '/',
-        destination: '/dashboard/corporate-actions',
-        permanent: true, // Set to false if this is temporary
+        destination: '/dashboard',
+        permanent: true, // Set to false if temporary
       },
-    ]
+      {
+        source: '/dashboard',
+        destination: '/dashboard/corporate-actions',
+        permanent: true, // Set to false if temporary
+      },
+    ]);
   }
 };
 

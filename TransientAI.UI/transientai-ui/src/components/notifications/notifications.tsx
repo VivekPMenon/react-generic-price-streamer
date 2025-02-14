@@ -7,6 +7,7 @@ import { getNotifications } from '@/services/notifications/notifiations-data-ser
 import { CorpActionsDataContext, CorporateAction, getCorpActions } from "@/services/corporate-actions";
 import { MenuContextData } from "@/services/menu-data";
 import { NotificationPopup } from './notification-popup';
+import { useRouter } from 'next/navigation';
 
 export interface NotificationsProps {
   onExpandCollapse?: (state: boolean) => void;
@@ -23,6 +24,7 @@ export function Notifications(props: NotificationsProps) {
     NotificationType.Research,
   ];
 
+  const router = useRouter();
   const { corpActionsData, setCorpActionsData } = useContext(CorpActionsDataContext);
   const { activeMenuData, setActiveMenuData } = useContext(MenuContextData);
 
@@ -100,6 +102,8 @@ export function Notifications(props: NotificationsProps) {
       ...activeMenuData,
       selectedMenu: activeMenuData?.activeMenuList?.length ? activeMenuData?.activeMenuList[0] : {}
     });
+
+    router.push('/dashboard/corporate-actions'); // todo.. remove the route hardcoding 
   }
 
   return (
