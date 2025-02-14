@@ -36,7 +36,6 @@ export default function RootLayout({
     <html lang="en">
       <head>
         <script src="https://kit.fontawesome.com/9a71b0f99c.js" crossOrigin="anonymous" async></script>
-        <link rel="icon" href="/images/HurricaneLogo.jpg" />
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased font-sans dark`}>
         <Theme accentColor="teal" className="height-100p">

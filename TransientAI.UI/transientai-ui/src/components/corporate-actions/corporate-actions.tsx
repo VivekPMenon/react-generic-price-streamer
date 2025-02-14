@@ -1,3 +1,5 @@
+'use client'
+
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import styles from './corporate-actions.module.scss';
@@ -8,7 +10,7 @@ import { CorpActionsDataContext, corpActionsDataService, CorporateAction } from 
 import EmailViewer from '../email-parser/email-viewer';
 
 export interface CorporateActionsProps {
-  isExpanded: boolean;
+  isExpanded?: boolean;
 }
 
 export function CorporateActions({ isExpanded }: CorporateActionsProps) {

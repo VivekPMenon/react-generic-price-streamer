@@ -45,13 +45,13 @@ class CorporateActionsDataService {
 
   getEmailSource() {
     return {
-      '83778079_2': `emails/ConsoleEnergy.html`,
-      '83778079_3': `emails/ConsoleEnergy.html`,
-      '83778079_4': `emails/ConsoleEnergy.html`,
-      '83526858_2': `emails/GSDeadline.html`,
-      '83526858_3': `emails/GSDeadline.html`,
-      '83526858_4': `emails/GSDeadline.html`,
-      '83526858_5': `emails/GSDeadline.html`
+      '83778079_2': `../emails/ConsoleEnergy.html`,
+      '83778079_3': `../emails/ConsoleEnergy.html`,
+      '83778079_4': `../emails/ConsoleEnergy.html`,
+      '83526858_2': `../emails/GSDeadline.html`,
+      '83526858_3': `../emails/GSDeadline.html`,
+      '83526858_4': `../emails/GSDeadline.html`,
+      '83526858_5': `../emails/GSDeadline.html`
 
     };
     

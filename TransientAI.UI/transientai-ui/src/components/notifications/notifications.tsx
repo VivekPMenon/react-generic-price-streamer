@@ -1,3 +1,5 @@
+'use client'
+
 import * as Dialog from "@radix-ui/react-dialog";
 import { useContext, useMemo, useState } from 'react';
 import styles from './notifications.module.scss';
@@ -7,7 +9,7 @@ import { CorpActionsDataContext, corpActionsDataService, CorporateAction } from 
 import { MenuContextData } from "@/services/menu-data";
 
 export interface NotificationsProps {
-  onExpandCollapse: (state: boolean) => void;
+  onExpandCollapse?: (state: boolean) => void;
 }
 
 export function Notifications(props: NotificationsProps) {
@@ -34,7 +36,7 @@ export function Notifications(props: NotificationsProps) {
 
   function expandOrCollapsePanel() {
     setIsExpanded(!isExpanded);
-    props.onExpandCollapse(!isExpanded);
+    props.onExpandCollapse!(!isExpanded);
   }
 
   function getIconClass(type: NotificationType) {

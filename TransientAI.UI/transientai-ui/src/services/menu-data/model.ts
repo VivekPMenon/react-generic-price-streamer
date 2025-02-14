@@ -5,6 +5,7 @@ export interface MenuInfo {
   icon?: string;
   subDescription?: string;
   children?: MenuInfo[];
+  route?: string;
 }
 
 export interface ActiveMenuData {
