@@ -3,6 +3,7 @@
 import { useContext } from 'react';
 import styles from './header.module.scss';
 import { SearchDataContext } from '@/services/search-data';
+import { Ribbon } from './ribbon';
 
 export function Header() {
 
@@ -13,6 +14,8 @@ export function Header() {
       <div className={styles.title}>
         <img src="/images/TRANS_H_white-on-transparent.png" />
         {/* TransientAI */}
+
+        <Ribbon></Ribbon>
       </div>
 
       <div className={styles['global-search']}>
@@ -47,14 +50,14 @@ export function Header() {
       <div className='flex'>
 
         <div className={styles['client-logo']}>
-          <img src="/images/HurricaneLogo_Brightened.png"/>
+          <img src="/images/HurricaneLogo_Brightened.png" />
           <span>HURRICANE CAPITAL</span>
         </div>
 
         <div className='profile-pic'>
           <img src="/images/ProfilePic.jpeg"></img>
         </div>
-{/* 
+        {/* 
         <div className='profile-pic'>
           <img src="/images/ProfilePicAI.png"></img>
         </div> */}

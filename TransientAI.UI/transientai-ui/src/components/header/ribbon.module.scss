@@ -1,0 +1,25 @@
+@import '../../assets/variables.scss';
+
+.ribbon {
+  display: flex;
+  gap: 10px;
+  max-width: 80vw;
+  overflow-x: hidden;
+  align-items: center;
+  color: $font-color-100;
+  font-size: 13px;
+
+  .tile {
+    background-color: $gray-1000;
+    border-radius: 5px;
+    align-items: center;
+    justify-content: center;
+    padding: 5px;
+    width: 125px;
+    min-width: 150px;
+
+    div {
+      text-align: center;
+    }
+  }
+}
