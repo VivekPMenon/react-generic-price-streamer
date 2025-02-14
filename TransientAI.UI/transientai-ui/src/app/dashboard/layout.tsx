@@ -1,19 +1,17 @@
 'use client';
+
 import { Explorer } from '@/components/explorer/explorer';
-import { Header } from './header'
-import styles from './page.module.scss';
-import { MainContentPanel } from '@/components/main-content-panel/main-content-panel';
-import { Chatbot } from '@/components/chatbot/chatbot';
+import { Header } from '../../components/header/header'
+import styles from './layout.module.scss';
 import { Notifications } from '@/components/notifications';
-import dynamic from 'next/dynamic';
-import { useState } from 'react';
-import { News } from '@/components/news';
+import { Suspense, useState } from 'react';
+import { DashboardTabs } from '@/components/dashboard-tabs/dashboard-tabs';
 
-// dynamic loading to addres build issue when importing highcharts
-const PriceGraph = dynamic(() => import("@/components/market-data").then(module => module.PriceGraph), { ssr: false, });
-
-export default function Home() {
-
+export default function DashboardLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
   const [expandedPanels, setExpandedPanels] = useState<string[]>([]);
 
   function onExpandCollapse(panelName: string, isExpanded: boolean) {
@@ -47,7 +45,9 @@ export default function Home() {
         </div>
 
         <div className={styles['middle-panel']}>
-          <MainContentPanel></MainContentPanel>
+          <DashboardTabs>
+            {children}
+          </DashboardTabs>
         </div>
       </main>
     </div>

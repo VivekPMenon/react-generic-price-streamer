@@ -1,3 +1,5 @@
+'use client'
+
 import { useContext } from 'react';
 import styles from './header.module.scss';
 import { SearchDataContext } from '@/services/search-data';

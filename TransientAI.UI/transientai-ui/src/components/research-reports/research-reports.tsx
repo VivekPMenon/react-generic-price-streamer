@@ -1,3 +1,5 @@
+'use client';
+
 import { useEffect, useMemo, useState } from 'react';
 import styles from './research-reports.module.scss';
 import ReactMarkdown from 'react-markdown';
@@ -9,7 +11,7 @@ import EmailViewer from '../email-parser/email-viewer';
 
 
 export interface ResearchReportsProps {
-  isExpanded: boolean;
+  isExpanded?: boolean;
 }
 
 export function ResearchReports({ isExpanded }: ResearchReportsProps) {

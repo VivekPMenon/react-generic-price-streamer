@@ -40,11 +40,13 @@ export const menuInfoList: MenuInfo[] = [
   // },
   
   {
+    route: '/dashboard/corporate-actions',
     description: 'Corporate Actions',
     badgeCount: 1,
     icon: 'fa-solid fa-microphone-lines'
   },
   {
+    route: '/dashboard/research-reports',
     description: 'Research Reports',
     badgeCount: 1,
     icon: 'fa-solid fa-book'

@@ -3,19 +3,22 @@
 import { ActiveMenuData, MenuContextData, MenuInfo } from '@/services/menu-data';
 import styles from './explorer.module.scss';
 import { useContext, useMemo, useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 export interface NotificationsProps {
-  onExpandCollapse: (state: boolean) => void;
+  onExpandCollapse?: (state: boolean) => void;
 }
 
 export function Explorer(props: NotificationsProps) {
 
+  const router = useRouter();
+
   const { activeMenuData, setActiveMenuData } = useContext(MenuContextData);
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
-
+  
   function expandOrCollapsePanel() {
     setIsExpanded(!isExpanded);
-    props.onExpandCollapse(!isExpanded);
+    props.onExpandCollapse!(!isExpanded);
   }
 
   function onParentMenuClick(selectedMenuInfo: MenuInfo) {
@@ -30,6 +33,8 @@ export function Explorer(props: NotificationsProps) {
       activeMenuList: newMenuList,
       selectedMenu: selectedMenuInfo
     });
+
+    router.push(selectedMenuInfo.route!);
   }
 
   function onChildMenuClick(menuInfo: MenuInfo) {

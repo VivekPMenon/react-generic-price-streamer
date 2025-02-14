@@ -9,11 +9,15 @@ The **React Generic Price Streamer** is a <b>generic</b> web-based application b
 - Implement router for Main content panel - tabbed components
 - Server side rendering on components that are applicable. Now all comps are rendered on client
 - Convert Email preview in to EML based, instead of Markup based. 
-- Implement Search/FInd functionality for EML Email Viewer
+- Implement Search/FInd functionality for EML Email Viewer 
 - Reevaluate the UI component library 
 - Implement Paging for AG Grid
 - Auto scrollbar component
 - Break all large components in to smaller components
+- apply linting
+- add Paging logic/component for AG Grid common componnet
+- move highchart CSS customizations to SCSS file from the JS file
+- Replace online access of Font awesome bundle, instead self host it 
 
 ## Key Features
 
