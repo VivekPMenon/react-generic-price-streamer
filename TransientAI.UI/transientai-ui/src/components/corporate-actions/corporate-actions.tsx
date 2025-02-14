@@ -6,7 +6,8 @@ import styles from './corporate-actions.module.scss';
 import { reportsDataService } from '@/services/reports-data';
 import { SearchableMarkdown } from '../markdown';
 import { useContext, useEffect, useState } from 'react';
-import { CorpActionsDataContext, corpActionsDataService, CorporateAction } from '@/services/corporate-actions';
+import { CorpActionsDataContext, CorporateAction } from '@/services/corporate-actions';
+import { getEmailSource, getCorpActions } from '@/services/corporate-actions/corporate-actions-data-service';
 import EmailViewer from '../email-parser/email-viewer';
 
 export interface CorporateActionsProps {
@@ -18,33 +19,42 @@ export function CorporateActions({ isExpanded }: CorporateActionsProps) {
   const { corpActionsData, setCorpActionsData } = useContext(CorpActionsDataContext);
 
   const [searchQuery, setSearchQuery] = useState<string>('');
-  const [emailContent, setEmailContent] = useState<string>('');
+  const [selectedEmailContent, setSelectedEmailContent] = useState<string>('');
+  const [emailContents, setEmailContents] = useState<any>({});
 
-  useEffect(() => {
-    if(!corpActionsData!.corpActions?.length || corpActionsData!.corpActions?.length > 1) {
+  useEffect(() => { loadEmailContents(); }, []);
+  useEffect(() => { calculateSelectedEmailContent() }, [corpActionsData?.corpActions]); // hack.. we should not useeffect on state pbjects
+
+  async function loadEmailContents() {
+    const emailContents: any = await getEmailSource();
+    setEmailContents(emailContents);
+  }
+
+  async function calculateSelectedEmailContent() {
+    if(corpActionsData.corpActions?.length! < 1) {
       return;
     }
 
-    const newContent = (corpActionsDataService.getEmailSource() as any)[`${corpActionsData!.corpActions![0].eventId + '_2'}`]
-    setEmailContent(newContent);
-  }, [corpActionsData?.corpActions]); // hack.. we should not useeffect on state pbjects
+    const newContent = emailContents[`${corpActionsData!.corpActions![0].eventId + '_2'}`]
+    setSelectedEmailContent(newContent);
+  }
 
   function onSearchQueryChange(event: any) {
     setSearchQuery(event.target.value);
   }
 
-  function onKeyDown(event: any) {
+  async function onKeyDown(event: any) {
     if (event.key !== "Enter") {
       return;
     }
 
-    setCorpActionsData({
-      corpActions: corpActionsDataService.getCorpActions()
-    });
+    const corpActions = await getCorpActions();
+    setCorpActionsData({ corpActions });
   }
 
-  function getEmailContent(id: string, version: string) {
-    return (corpActionsDataService.getEmailSource() as any)[`${id}_${version}`];
+  function onSelectEmail(corpAction: CorporateAction, version: string) {
+    const newEmailContent = emailContents[corpAction.eventId + '_' + version]
+    setSelectedEmailContent(newEmailContent);
   }
 
   return (
@@ -71,7 +81,7 @@ export function CorporateActions({ isExpanded }: CorporateActionsProps) {
 
                       <div className={styles['action-buttons']}>
                         <div className={styles['button-container']}>
-                          <i className='fa-regular fa-envelope' onClick={() => setEmailContent(getEmailContent(corpAction.eventId!, '2'))}></i>
+                          <i className='fa-regular fa-envelope' onClick={() => onSelectEmail(corpAction, '2')}></i>
                         </div>
 
                       </div>
@@ -121,7 +131,7 @@ export function CorporateActions({ isExpanded }: CorporateActionsProps) {
                             <div className="grid grid-cols-[1fr_3fr_1fr_1fr] gap-3 fs-13 p-1 text-center">
                               <div>{history.type}</div>
                               <div >{history.date}</div>
-                              <div className="blue-color cursor-pointer" onClick={() => setEmailContent(getEmailContent(corpAction.eventId!, history.type))}>Y</div>
+                              <div className="blue-color cursor-pointer" onClick={() => onSelectEmail(corpAction, history.type)}>Y</div>
                               <div className="blue-color">Y</div>
                             </div>
                           )
@@ -143,8 +153,8 @@ export function CorporateActions({ isExpanded }: CorporateActionsProps) {
           markdownContent={reportsDataService.getEmailContentMock()} 
           className={isExpanded ? 'height-vh-82' : 'height-vh-40'} 
           title='Original Email'/> */}
-        {emailContent ?
-          <EmailViewer className='height-vh-82' htmlSource={emailContent} /> : <></>}
+        {selectedEmailContent ?
+          <EmailViewer className='height-vh-82' htmlSource={selectedEmailContent} /> : <></>}
 
       </div>
     </div>

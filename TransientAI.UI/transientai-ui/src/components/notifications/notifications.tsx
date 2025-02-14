@@ -1,19 +1,18 @@
 'use client'
 
-import * as Dialog from "@radix-ui/react-dialog";
-import { useContext, useMemo, useState } from 'react';
+import { useContext, useEffect, useMemo, useState } from 'react';
 import styles from './notifications.module.scss';
 import { Notification, NotificationType } from '@/services/notifications';
-import { notificationsDataService } from '@/services/notifications/notifiations-data-service';
-import { CorpActionsDataContext, corpActionsDataService, CorporateAction } from "@/services/corporate-actions";
+import { getNotifications } from '@/services/notifications/notifiations-data-service';
+import { CorpActionsDataContext, CorporateAction, getCorpActions } from "@/services/corporate-actions";
 import { MenuContextData } from "@/services/menu-data";
+import { NotificationPopup } from './notification-popup';
 
 export interface NotificationsProps {
   onExpandCollapse?: (state: boolean) => void;
 }
 
 export function Notifications(props: NotificationsProps) {
-  const notifications: Notification[] = notificationsDataService.getNotifications();
 
   const filterTypes = [
     'All',
@@ -27,12 +26,23 @@ export function Notifications(props: NotificationsProps) {
   const { corpActionsData, setCorpActionsData } = useContext(CorpActionsDataContext);
   const { activeMenuData, setActiveMenuData } = useContext(MenuContextData);
 
+  const [notifications, setNotifications] = useState<Notification[]>([]);
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
   const [selectedType, setSelectedType] = useState<string>(NotificationType.CorpAct);
-  const [selectedCorpAction, setSelectedCorpAction] = useState<CorporateAction>({});
+  const [selectedCorpAction, setSelectedCorpAction] = useState<CorporateAction>({}); // todo..
 
   const visibleNotifications = useMemo<Notification[]>(() => notifications
-    .filter(notification => selectedType === 'All' || notification.type === selectedType), [selectedType]);
+    .filter(notification => selectedType === 'All' || notification.type === selectedType), [
+    selectedType,
+    notifications
+  ]);
+
+  useEffect(() => { loadNotifications() }, []);
+
+  async function loadNotifications() {
+    const notifications = await getNotifications();
+    setNotifications(notifications);
+  }
 
   function expandOrCollapsePanel() {
     setIsExpanded(!isExpanded);
@@ -75,8 +85,8 @@ export function Notifications(props: NotificationsProps) {
     }
   }
 
-  function openNotification(id: string) {
-    const corpActions = corpActionsDataService.getCorpActions();
+  async function onNotificationPopupTrigger(id: string) {
+    const corpActions = await getCorpActions();
     const selectedAction = corpActions.find(action => action.eventId === id);
     setSelectedCorpAction(selectedAction!);
   }
@@ -88,7 +98,7 @@ export function Notifications(props: NotificationsProps) {
 
     setActiveMenuData!({
       ...activeMenuData,
-      selectedMenu: activeMenuData?.activeMenuList?.length ? activeMenuData?.activeMenuList[0]: {}
+      selectedMenu: activeMenuData?.activeMenuList?.length ? activeMenuData?.activeMenuList[0] : {}
     });
   }
 
@@ -127,63 +137,15 @@ export function Notifications(props: NotificationsProps) {
                     {notification.type}
                   </div>
 
-                  <Dialog.Root>
-                    <Dialog.Trigger asChild>
-                      <div className={styles['notification-menu-icon']} onClick={() => openNotification(notification.id!)}>
-                        <i className='fa-solid fa-ellipsis ml-3'></i>
-                      </div>
-                    </Dialog.Trigger>
-                    <Dialog.Portal>
-                      <Dialog.Overlay className="DialogOverlay" />
-                      <Dialog.Content className="DialogContentSmall">
-                        <Dialog.Title className="DialogTitle">
-                          <i className="fa-solid fa-circle-exclamation red-color"></i>
-                          {selectedCorpAction.eventDescription}
-                        </Dialog.Title>
-                        <Dialog.Description className="DialogDescription">
-
-                        </Dialog.Description>
-                        <div className={styles['alert-content']}>
-                          <span className={styles['highlight']}>ACTION Required: Deadline Approaching - Response Required</span>
-
-                          <div style={{ padding: '20px 50px' }}>
-
-                            <div className="grid grid-cols-[40%_60%] gap-3 fs-14 p-1">
-                              <div className='font-bold text-right'>Announcement Id:</div>
-                              <div className='text-left'>{selectedCorpAction.eventId}</div>
-                            </div>
-                            <div className="grid grid-cols-[40%_60%] gap-3 fs-14  p-1">
-                              <div className='font-bold text-right'>Account:</div>
-                              <div className="text-left">{selectedCorpAction.accountId}</div>
-                            </div>
-                            <div className="grid grid-cols-[40%_60%] gap-3 fs-14 p-1">
-                              <div className='font-bold text-right'>Holding Quantity:</div>
-                              <div className="text-left">{selectedCorpAction.holdingQuantity}</div>
-                            </div>
-                            <div className="grid grid-cols-[40%_60%] gap-3 fs-14 p-1">
-                              <div className='font-bold text-right'>Term Details:</div>
-                              <div className="text-left">{selectedCorpAction.termDetails}</div>
-                            </div>
-                            <div className="grid grid-cols-[40%_60%] gap-3 fs-14 p-1">
-                              <div className='font-bold text-right'>Entitled Product Id:</div>
-                              <div className="text-left">{selectedCorpAction.entitledProductId}</div>
-                            </div>
-                            <div className="grid grid-cols-[40%_60%] gap-3 fs-14 p-1">
-                              <div className='font-bold text-right'>Pay Date:</div>
-                              <div className="text-left">{selectedCorpAction.paydate}</div>
-                            </div>
-                          </div>
-
-                          <div>
-                            <Dialog.DialogClose>
-                              <button className="button me-2" onClick={onReadMoreClick}>Read More</button>
-                              <button className="secondary-button">Close</button>
-                            </Dialog.DialogClose>
-                          </div>
-                        </div>
-                      </Dialog.Content>
-                    </Dialog.Portal>
-                  </Dialog.Root>
+                  <NotificationPopup
+                    onTrigger={onNotificationPopupTrigger}
+                    notification={selectedCorpAction}
+                    onOk={onReadMoreClick}
+                    notificationId={notification.id}>
+                    <div>
+                      <i className='fa-solid fa-ellipsis ml-3'></i>
+                    </div>
+                  </NotificationPopup>
                 </div>
               </div>
 

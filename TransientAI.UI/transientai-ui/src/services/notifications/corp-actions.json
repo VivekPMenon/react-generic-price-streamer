@@ -1,0 +1,885 @@
+{
+  "83778079": {
+    "event_id": "83778079",
+    "backup_id": "US20854L1089_20854L108",
+    "original_state": {
+      "event_id": "83778079",
+      "event_type": "Name Change",
+      "event_classification": "Mandatory",
+      "event_status": "Partially Confirmed",
+      "security": {
+        "name": "CONSOL ENERGY INC. CMN",
+        "identifiers": {
+          "isin": "US20854L1089",
+          "cusip": "20854L108",
+          "sedol": "BF4L070",
+          "ticker": "CEIX",
+          "ric": null
+        },
+        "country_of_issue": "US",
+        "country_of_issuer": "US"
+      },
+      "dates": {
+        "notification_date": "Mon, 13 Jan 2025 16:49:09 +0000",
+        "pay_date": "To be confirmed",
+        "record_date": null,
+        "ex_date": null,
+        "effective_date": "Jan 15 2025",
+        "deadline": null
+      },
+      "accounts": [
+        {
+          "account_number": "065492233-07",
+          "account_reference": null,
+          "holding_quantity": "-10",
+          "gross_amount": null,
+          "tax_withheld": null,
+          "net_amount": null,
+          "deadline": null
+        }
+      ],
+      "requirements": {
+        "action_required": false,
+        "market_deadline_event_summary": null,
+        "deposit_date_event_summary": null,
+        "pay_date_event_summary": null,
+        "pay_date_response_summary": null,
+        "response_options": [],
+        "default_action": null,
+        "instructions": []
+      },
+      "gs_commentary": {
+        "full_text": "TERMS OF THE ANNOUNCEMENT OLD NAME: CONSOL ENERGY INC NEW NAME: CORE NATURAL RESOURCES INC OLD TICKER: CEIX NEW TICKER: CNR\nNYSE JANUARY 6, 2025 SUBJECT TO EFFECTIVENESS OF THE MERGER TRADING SCHEDULE: TRADING UNDER THE NEW NAME, SYMBOL & CUSIP TO BEGIN AT THE MARKET OPEN ON JANUARY 15, 2025.",
+        "updates": [],
+        "offer_details": {
+          "description": null,
+          "conditions": [],
+          "availability": null
+        },
+        "options": [],
+        "disclaimers": {
+          "legal": [],
+          "tax": [],
+          "fees": [],
+          "general": []
+        }
+      },
+      "terms": [
+        {
+          "term_number": "1",
+          "type": "SECURITIES DISTRIBUTION",
+          "pay_date": "Unknown",
+          "distribution_details": {
+            "rate": "1 shares (distrib. only) per 1 of holding",
+            "currency": null,
+            "minimum_quantity": null,
+            "calculation": {
+              "gross_amount": null,
+              "tax_withheld": null,
+              "net_amount": null
+            }
+          },
+          "security_details": {
+            "action": "REMOVE SECURITY",
+            "product_id": "US20854L1089 (ISN)"
+          },
+          "default": false,
+          "liability": null,
+          "response": null
+        }
+      ],
+      "response_summary": {
+        "terms": [
+          {
+            "term_number": "1",
+            "description": "SECURITIES DISTRIBUTION\n* Pay Date: Unknown\n* Gross Rate: 1 shares (distrib. only) per 1 of holding\nREMOVE SECURITY\n* Entitled Product ID: US20854L1089 (ISN)\n* Pay Date: Unknown",
+            "response": null,
+            "liability": null,
+            "minimum_quantity": null,
+            "rates": [
+              {
+                "amount": "1",
+                "currency": null,
+                "basis": "per 1 of holding"
+              }
+            ],
+            "security_actions": [
+              {
+                "action": "REMOVE SECURITY",
+                "details": null,
+                "product_id": "US20854L1089 (ISN)",
+                "pay_date": "Unknown"
+              }
+            ],
+            "is_default": false
+          }
+        ]
+      },
+      "distribution": {
+        "rate": "1 shares (distrib. only) per 1 of holding",
+        "currency": null,
+        "calculation_details": null
+      }
+    },
+    "current_state": {
+      "event_id": "83778079",
+      "event_type": "Name Change",
+      "event_classification": "Mandatory",
+      "event_status": "Confirmed",
+      "security": {
+        "name": "CONSOL ENERGY INC. CMN",
+        "identifiers": {
+          "isin": "US20854L1089",
+          "cusip": "20854L108",
+          "sedol": "BF4L070",
+          "ticker": "CEIX",
+          "ric": null
+        },
+        "country_of_issue": "US",
+        "country_of_issuer": "US"
+      },
+      "dates": {
+        "notification_date": "Jan 14 2025",
+        "pay_date": "Jan 15 2025",
+        "record_date": null,
+        "ex_date": null,
+        "effective_date": "Jan 15 2025",
+        "deadline": null
+      },
+      "accounts": [
+        {
+          "account_number": "065492233-07",
+          "account_reference": null,
+          "holding_quantity": "-10",
+          "gross_amount": null,
+          "tax_withheld": null,
+          "net_amount": null,
+          "deadline": null
+        }
+      ],
+      "requirements": {
+        "action_required": false,
+        "market_deadline_event_summary": null,
+        "deposit_date_event_summary": null,
+        "pay_date_event_summary": null,
+        "pay_date_response_summary": null,
+        "response_options": [],
+        "default_action": null,
+        "instructions": []
+      },
+      "gs_commentary": {
+        "full_text": "TERMS OF THE ANNOUNCEMENT OLD NAME: CONSOL ENERGY INC NEW NAME: CORE NATURAL RESOURCES INC OLD TICKER: CEIX NEW TICKER: CNR\nNYSE UPDATE JANUARY 14, 2025 MERGER EFFECTIVE THE COMMON STOCK OF CONSOL ENERGY INC. WILL BEGIN TRADING UNDER THE NEW NAME AND SYMBOL TOMORROW, JANUARY 15, 2025.\nNYSE JANUARY 6, 2025 SUBJECT TO EFFECTIVENESS OF THE MERGER TRADING SCHEDULE: TRADING UNDER THE NEW NAME, SYMBOL & CUSIP TO BEGIN AT THE MARKET OPEN ON JANUARY 15, 2025.",
+        "updates": [
+          {
+            "date": "January 14, 2025",
+            "content": "MERGER EFFECTIVE THE COMMON STOCK OF CONSOL ENERGY INC. WILL BEGIN TRADING UNDER THE NEW NAME AND SYMBOL TOMORROW, JANUARY 15, 2025.",
+            "restrictions": []
+          }
+        ],
+        "offer_details": {
+          "description": null,
+          "conditions": [],
+          "availability": null
+        },
+        "options": [],
+        "disclaimers": {
+          "legal": [],
+          "tax": [],
+          "fees": [],
+          "general": []
+        }
+      },
+      "terms": [
+        {
+          "term_number": "1",
+          "type": "SECURITIES DISTRIBUTION",
+          "pay_date": "Jan 15 2025",
+          "distribution_details": {
+            "rate": "1 shares (distrib. only) per 1 of holding",
+            "currency": null,
+            "minimum_quantity": null,
+            "calculation": {
+              "gross_amount": null,
+              "tax_withheld": null,
+              "net_amount": null
+            }
+          },
+          "security_details": {
+            "action": "REMOVE SECURITY",
+            "product_id": "US20854L1089 (ISN)"
+          },
+          "default": false,
+          "liability": null,
+          "response": null
+        }
+      ],
+      "response_summary": {
+        "terms": [
+          {
+            "term_number": "1",
+            "description": "SECURITIES DISTRIBUTION\n*       Entitled Product ID: 218937100 (CUS)\n*       Pay Date: Jan 15 2025\n*       Gross Rate: 1 shares (distrib. only) per 1 of holding\nREMOVE SECURITY\n*       Entitled Product ID: US20854L1089 (ISN)\n*       Pay Date: Jan 15 2025",
+            "response": null,
+            "liability": null,
+            "minimum_quantity": null,
+            "rates": [
+              {
+                "amount": "1 shares",
+                "currency": null,
+                "basis": "per 1 of holding"
+              }
+            ],
+            "security_actions": [
+              {
+                "action": "REMOVE SECURITY",
+                "details": null,
+                "product_id": "US20854L1089 (ISN)",
+                "pay_date": "Jan 15 2025"
+              }
+            ],
+            "is_default": false
+          }
+        ]
+      },
+      "distribution": {
+        "rate": "1 shares (distrib. only) per 1 of holding",
+        "currency": null,
+        "calculation_details": null
+      }
+    },
+    "update_history": [
+      {
+        "timestamp": "Mon, 13 Jan 2025 21:46:48 +0000",
+        "email_key": "Mandatory Preliminary Information Update_ Name Change_ CONSOL ENERGY INC.eml",
+        "changes": {
+          "deadline_changes": {
+            "pay_date": {
+              "field": "pay_date_date",
+              "from": null,
+              "to": "2025-01-15T00:00:00",
+              "timestamp": "2025-02-03T14:53:00.303632"
+            }
+          },
+          "terms_changes": {
+            "added": [],
+            "modified": [
+              {
+                "term_number": "1",
+                "old": {
+                  "term_number": "1",
+                  "type": "SECURITIES DISTRIBUTION",
+                  "pay_date": "Unknown",
+                  "distribution_details": {
+                    "rate": "1 shares (distrib. only) per 1 of holding",
+                    "currency": null,
+                    "minimum_quantity": null,
+                    "calculation": {
+                      "gross_amount": null,
+                      "tax_withheld": null,
+                      "net_amount": null
+                    }
+                  },
+                  "security_details": {
+                    "action": "REMOVE SECURITY",
+                    "product_id": "US20854L1089 (ISN)"
+                  },
+                  "default": false,
+                  "liability": null,
+                  "response": null
+                },
+                "new": {
+                  "term_number": "1",
+                  "type": "SECURITIES DISTRIBUTION",
+                  "pay_date": "Jan 15 2025",
+                  "distribution_details": {
+                    "rate": "1 shares (distrib. only) per 1 of holding",
+                    "currency": null,
+                    "minimum_quantity": null,
+                    "calculation": {
+                      "gross_amount": null,
+                      "tax_withheld": null,
+                      "net_amount": null
+                    }
+                  },
+                  "security_details": {
+                    "action": "REMOVE SECURITY",
+                    "product_id": "US20854L1089 (ISN)"
+                  },
+                  "default": false,
+                  "liability": null,
+                  "response": null
+                }
+              }
+            ],
+            "removed": []
+          }
+        },
+        "event_status": "Partially Confirmed",
+        "version": 2
+      },
+      {
+        "timestamp": "Tue, 14 Jan 2025 12:48:19 +0000",
+        "email_key": "Mandatory Event Information Update_ Name Change_ CONSOL ENERGY INC[2].eml",
+        "changes": {
+          "status_changes": {
+            "field": "event_status",
+            "from": "PARTIAL",
+            "to": "CONFIRMED",
+            "timestamp": "2025-02-03T14:53:00.303632"
+          }
+        },
+        "event_status": "Confirmed",
+        "version": 3
+      },
+      {
+        "timestamp": "Tue, 14 Jan 2025 18:47:12 +0000",
+        "email_key": "Mandatory Event Information Update_ Name Change_ CONSOL ENERGY INC.eml",
+        "changes": {
+          "commentary_updates": {
+            "new_updates": [
+              {
+                "date": "January 14, 2025",
+                "content": "MERGER EFFECTIVE THE COMMON STOCK OF CONSOL ENERGY INC. WILL BEGIN TRADING UNDER THE NEW NAME AND SYMBOL TOMORROW, JANUARY 15, 2025.",
+                "restrictions": []
+              }
+            ]
+          }
+        },
+        "event_status": "Confirmed",
+        "version": 4
+      }
+    ],
+    "email_references": [
+      "Mandatory Preliminary Information Update_ Name Change_ CONSOL ENERGY INC[1].eml",
+      "Mandatory Preliminary Information Update_ Name Change_ CONSOL ENERGY INC.eml",
+      "Mandatory Event Information Update_ Name Change_ CONSOL ENERGY INC[2].eml",
+      "Mandatory Event Information Update_ Name Change_ CONSOL ENERGY INC[1].eml",
+      "Mandatory Event Information Update_ Name Change_ CONSOL ENERGY INC.eml"
+    ],
+    "version": 4
+  },
+  "83526858": {
+    "event_id": "83526858",
+    "backup_id": "FR0014005HJ9_9EQ75MMG6",
+    "original_state": {
+      "event_id": "83526858",
+      "event_type": "Tender Offer",
+      "event_classification": "Voluntary",
+      "event_status": "Active",
+      "security": {
+        "name": "OVH GROUPE SAS CMN",
+        "identifiers": {
+          "isin": "FR0014005HJ9",
+          "cusip": "9EQ75MMG6",
+          "sedol": null,
+          "ticker": null,
+          "ric": null
+        },
+        "country_of_issue": null,
+        "country_of_issuer": null
+      },
+      "dates": {
+        "notification_date": "Thu, 2 Jan 2025",
+        "pay_date": null,
+        "record_date": null,
+        "ex_date": null,
+        "effective_date": null,
+        "deadline": "Jan 03 2025 11:00 LD"
+      },
+      "accounts": [
+        {
+          "account_number": "064546831-06",
+          "account_reference": "SDB2838117495",
+          "holding_quantity": "1",
+          "gross_amount": null,
+          "tax_withheld": null,
+          "net_amount": null,
+          "deadline": "Jan 03 2025 11:00 LD"
+        },
+        {
+          "account_number": "066164591-06",
+          "account_reference": "SDB2838685925",
+          "holding_quantity": "-1",
+          "gross_amount": null,
+          "tax_withheld": null,
+          "net_amount": null,
+          "deadline": "Jan 03 2025 11:00 LD"
+        }
+      ],
+      "requirements": {
+        "action_required": true,
+        "market_deadline_event_summary": "Jan 03 2025 11:00 LD",
+        "deposit_date_event_summary": null,
+        "pay_date_event_summary": null,
+        "pay_date_response_summary": null,
+        "response_options": [],
+        "default_action": "Default option will be applied if no response from long holders.",
+        "instructions": []
+      },
+      "gs_commentary": {
+        "full_text": "Note: The deadline for providing the response(s) for the below event(s) is approaching. If you are a long holder and you do not respond by the stated deadline, the default option will be applied. If you are a short holder, you must respond by the stated deadline if you intend to cover your short position.\nPlease do not reply to this email. Contact your GS representative if you have any questions.",
+        "updates": [],
+        "offer_details": {
+          "description": null,
+          "conditions": [],
+          "availability": null
+        },
+        "options": [],
+        "disclaimers": {
+          "legal": [],
+          "tax": [],
+          "fees": [],
+          "general": []
+        }
+      },
+      "terms": [],
+      "response_summary": {
+        "terms": []
+      },
+      "distribution": {
+        "rate": null,
+        "currency": null,
+        "calculation_details": null
+      }
+    },
+    "current_state": {
+      "event_id": "83526858",
+      "event_type": "TENDER OFFER",
+      "event_classification": "Voluntary Event",
+      "event_status": "Confirmed",
+      "security": {
+        "name": "OVH GROUPE SAS CMN",
+        "identifiers": {
+          "isin": "FR0014005HJ9",
+          "cusip": "9EQ75MMG6",
+          "sedol": "BLPLBD4",
+          "ticker": "*OVHFP",
+          "ric": "OVHp.ED"
+        },
+        "country_of_issue": "FR",
+        "country_of_issuer": "FR"
+      },
+      "dates": {
+        "notification_date": "Mon, 6 Jan 2025",
+        "pay_date": "To be confirmed",
+        "record_date": null,
+        "ex_date": null,
+        "effective_date": null,
+        "deadline": "Jan 06 2025 16:00 LD"
+      },
+      "accounts": [
+        {
+          "account_number": "066164591-06",
+          "account_reference": "SDB2838685925",
+          "holding_quantity": "-1",
+          "gross_amount": null,
+          "tax_withheld": null,
+          "net_amount": null,
+          "deadline": null
+        }
+      ],
+      "requirements": {
+        "action_required": true,
+        "market_deadline_event_summary": "Jan 06 2025 16:00 LD",
+        "deposit_date_event_summary": "Jan 06 2025",
+        "pay_date_event_summary": "To be confirmed",
+        "pay_date_response_summary": "Jan 17 2025",
+        "response_options": [
+          "TENDER FOR CASH",
+          "TAKE NO ACTION - (default)"
+        ],
+        "default_action": "No action taken if no response",
+        "instructions": [
+          "Follow the instructions in this communication to notify Goldman Sachs of your preferred elections."
+        ]
+      },
+      "gs_commentary": {
+        "full_text": "UPDATE 30.12.2024 . THE OFFER IS MADE EXCLUSIVELY IN FRANCE. . QIBS ARE NOT ALLOWED TO PARTICIPATE END OF UPDATE ON DECEMBER 17TH, 2024, THE AUTORITE DES MARCHES FINANCIERS (THE AMF ) ANNOUNCED THAT THE BUY-BACK OFFER ON OVH GROUPE SHARES (THE OFFER) WILL BE OPENED FROM DECEMBER 18TH, 2024 UNTIL JANUARY 6TH, 2025 INCLUSIVE. . THE COMPANY OVH GROUPE IRREVOCABLY UNDERTAKES TO ACQUIRE A MAXIMUM OF 38,888,889 OF ITS OWN SHARES, OR 20.41 PCT OF ITS CAPITAL, AT THE UNIT PRICE OF EUR 9, IN ORDER TO CANCEL THEM AND REDUCE THE CAPITAL TO THE NOMINAL VALUE OF THE PURCHASED SHARES. . OFFER DETAILS . OFFER MEMORANDUM AVAILABLE: NOT YET AVAILABLE . OPTION DETAILS . OPTION 1: TAKE NO ACTION (DEFAULT OPTION) OPTION 2: CASH (TENDER) . THE OFFER PRICE PER SHARE IS EUR 9 . PRORATION: APPLICABLE . FURTHER INFORMATION WILL FOLLOW WHEN ANNOUNCED.",
+        "updates": [
+          {
+            "date": "30.12.2024",
+            "content": "The offer is made exclusively in France. QIBs are not allowed to participate.",
+            "restrictions": [
+              "The offer is made exclusively in France.",
+              "QIBs are not allowed to participate."
+            ]
+          }
+        ],
+        "offer_details": {
+          "description": "The buy-back offer on OVH Groupe shares will be open from December 18th, 2024 until January 6th, 2025. OVH Groupe undertakes to acquire a maximum of 38,888,889 of its own shares at EUR 9 per share.",
+          "conditions": [
+            "The offer price per share is EUR 9.",
+            "Proration is applicable."
+          ],
+          "availability": "Not yet available"
+        },
+        "options": [
+          {
+            "option_number": "1",
+            "description": "TAKE NO ACTION (DEFAULT OPTION)",
+            "is_default": true,
+            "price": null,
+            "currency": null
+          },
+          {
+            "option_number": "2",
+            "description": "CASH (TENDER)",
+            "is_default": false,
+            "price": "9",
+            "currency": "EUR"
+          }
+        ],
+        "disclaimers": {
+          "legal": [],
+          "tax": [],
+          "fees": [],
+          "general": []
+        }
+      },
+      "terms": [
+        {
+          "term_number": "1",
+          "type": "TENDER FOR CASH",
+          "pay_date": "Jan 17 2025",
+          "distribution_details": {
+            "rate": "9 EUR per 1 of holding",
+            "currency": "EUR",
+            "minimum_quantity": "1.0",
+            "calculation": {
+              "gross_amount": null,
+              "tax_withheld": null,
+              "net_amount": null
+            }
+          },
+          "security_details": {
+            "action": "REMOVE SECURITIES",
+            "product_id": "BLPLBD4 (SED)"
+          },
+          "default": false,
+          "liability": null,
+          "response": "TENDER FOR CASH"
+        },
+        {
+          "term_number": "2",
+          "type": "TAKE NO ACTION",
+          "pay_date": null,
+          "distribution_details": {
+            "rate": null,
+            "currency": null,
+            "minimum_quantity": null,
+            "calculation": {
+              "gross_amount": null,
+              "tax_withheld": null,
+              "net_amount": null
+            }
+          },
+          "security_details": {
+            "action": null,
+            "product_id": null
+          },
+          "default": true,
+          "liability": "NA",
+          "response": "TAKE NO ACTION - (default)"
+        }
+      ],
+      "response_summary": {
+        "terms": [
+          {
+            "term_number": "1",
+            "description": "TENDER FOR CASH\n* Pay Date: Jan 17 2025\n* Minimum Multiple Quantity to Instruct (MILT): 1.0\n* 9 EUR per 1 of holding",
+            "response": "TENDER FOR CASH",
+            "liability": null,
+            "minimum_quantity": "1.0",
+            "rates": [
+              {
+                "amount": "9",
+                "currency": "EUR",
+                "basis": "per 1 of holding"
+              }
+            ],
+            "security_actions": [
+              {
+                "action": "REMOVE SECURITIES",
+                "details": "Entitled Product ID: BLPLBD4 (SED)",
+                "product_id": "BLPLBD4 (SED)",
+                "pay_date": "Jan 17 2025"
+              }
+            ],
+            "is_default": false
+          },
+          {
+            "term_number": "2",
+            "description": "TAKE NO ACTION - (default)",
+            "response": "TAKE NO ACTION - (default)",
+            "liability": "NA",
+            "minimum_quantity": null,
+            "rates": [],
+            "security_actions": [],
+            "is_default": true
+          }
+        ]
+      },
+      "distribution": {
+        "rate": "9 EUR per 1 of holding",
+        "currency": "EUR",
+        "calculation_details": "Proration: Applicable"
+      }
+    },
+    "update_history": [
+      {
+        "timestamp": "Thu, 2 Jan 2025 17:01:31 +0000",
+        "email_key": "ACTION REQUIRED_ GS DEADLINE APPROACHING Response Required[1].eml",
+        "changes": {
+          "status_changes": {
+            "field": "event_status",
+            "from": "ACTIVE",
+            "to": "PENDING",
+            "timestamp": "2025-02-03T14:53:00.300640"
+          }
+        },
+        "event_status": "Pending",
+        "version": 2
+      },
+      {
+        "timestamp": "Fri, 3 Jan 2025 04:15:58 +0000",
+        "email_key": "ACTION REQUIRED_ GS DEADLINE APPROACHING Response Required.eml",
+        "changes": {
+          "status_changes": {
+            "field": "event_status",
+            "from": "PENDING",
+            "to": "DEADLINE_NEAR",
+            "timestamp": "2025-02-03T14:53:00.302670"
+          }
+        },
+        "event_status": "Deadline Approaching",
+        "version": 3
+      },
+      {
+        "timestamp": "Fri, 3 Jan 2025 11:12:33 +0000",
+        "email_key": "Default Election_ TENDER OFFER _ OVH GROUPE SAS CMN  ISIN_ FR0014005HJ9.eml",
+        "changes": {
+          "status_changes": {
+            "field": "event_status",
+            "from": "DEADLINE_NEAR",
+            "to": "CONFIRMED",
+            "timestamp": "2025-02-03T14:53:00.302670"
+          },
+          "deadline_changes": {
+            "deadline": {
+              "field": "deadline_date",
+              "from": "2025-01-03T11:00:00",
+              "to": "2025-01-06T16:00:00",
+              "timestamp": "2025-02-03T14:53:00.302670"
+            }
+          },
+          "terms_changes": {
+            "added": [
+              {
+                "term_number": "1",
+                "type": "TENDER FOR CASH",
+                "pay_date": "Jan 17 2025",
+                "distribution_details": {
+                  "rate": "9 EUR per 1 of holding",
+                  "currency": "EUR",
+                  "minimum_quantity": "1.0",
+                  "calculation": {
+                    "gross_amount": null,
+                    "tax_withheld": null,
+                    "net_amount": null
+                  }
+                },
+                "security_details": {
+                  "action": "REMOVE SECURITIES",
+                  "product_id": "BLPLBD4 (SED)"
+                },
+                "default": false,
+                "liability": null,
+                "response": "TENDER FOR CASH"
+              },
+              {
+                "term_number": "2",
+                "type": "TAKE NO ACTION",
+                "pay_date": null,
+                "distribution_details": {
+                  "rate": null,
+                  "currency": null,
+                  "minimum_quantity": null,
+                  "calculation": {
+                    "gross_amount": null,
+                    "tax_withheld": null,
+                    "net_amount": null
+                  }
+                },
+                "security_details": {
+                  "action": null,
+                  "product_id": null
+                },
+                "default": true,
+                "liability": null,
+                "response": "TAKE NO ACTION"
+              }
+            ],
+            "modified": [],
+            "removed": []
+          },
+          "commentary_updates": {
+            "new_updates": [
+              {
+                "date": "30.12.2024",
+                "content": "THE OFFER IS MADE EXCLUSIVELY IN FRANCE. . QIBS ARE NOT ALLOWED TO PARTICIPATE",
+                "restrictions": [
+                  "Offer is made exclusively in France.",
+                  "QIBs are not allowed to participate."
+                ]
+              }
+            ]
+          }
+        },
+        "event_status": "Confirmed",
+        "version": 4
+      },
+      {
+        "timestamp": "Mon, 6 Jan 2025 17:50:07 +0000",
+        "email_key": "Short Charges_  Important Please Read_ TENDER OFFER _ OVH GROUPE SAS CMN   ISIN_ FR0014005HJ9.eml",
+        "changes": {
+          "terms_changes": {
+            "added": [],
+            "modified": [
+              {
+                "term_number": "2",
+                "old": {
+                  "term_number": "2",
+                  "type": "TAKE NO ACTION",
+                  "pay_date": null,
+                  "distribution_details": {
+                    "rate": null,
+                    "currency": null,
+                    "minimum_quantity": null,
+                    "calculation": {
+                      "gross_amount": null,
+                      "tax_withheld": null,
+                      "net_amount": null
+                    }
+                  },
+                  "security_details": {
+                    "action": null,
+                    "product_id": null
+                  },
+                  "default": true,
+                  "liability": null,
+                  "response": "TAKE NO ACTION"
+                },
+                "new": {
+                  "term_number": "2",
+                  "type": "TAKE NO ACTION",
+                  "pay_date": null,
+                  "distribution_details": {
+                    "rate": null,
+                    "currency": null,
+                    "minimum_quantity": null,
+                    "calculation": {
+                      "gross_amount": null,
+                      "tax_withheld": null,
+                      "net_amount": null
+                    }
+                  },
+                  "security_details": {
+                    "action": null,
+                    "product_id": null
+                  },
+                  "default": true,
+                  "liability": "-1",
+                  "response": "TAKE NO ACTION"
+                }
+              }
+            ],
+            "removed": []
+          },
+          "commentary_updates": {
+            "new_updates": [
+              {
+                "date": "30.12.2024",
+                "content": "The offer is made exclusively in France. QIBs are not allowed to participate.",
+                "restrictions": [
+                  "The offer is made exclusively in France.",
+                  "QIBs are not allowed to participate."
+                ]
+              }
+            ]
+          }
+        },
+        "event_status": "Confirmed",
+        "version": 5
+      },
+      {
+        "timestamp": "Mon, 6 Jan 2025 17:50:07 +0000",
+        "email_key": "Short Charges_  Important Please Read_ TENDER OFFER _ OVH GROUPE SAS CMN   ISIN_ FR0014005HJ9[1].eml",
+        "changes": {
+          "terms_changes": {
+            "added": [],
+            "modified": [
+              {
+                "term_number": "2",
+                "old": {
+                  "term_number": "2",
+                  "type": "TAKE NO ACTION",
+                  "pay_date": null,
+                  "distribution_details": {
+                    "rate": null,
+                    "currency": null,
+                    "minimum_quantity": null,
+                    "calculation": {
+                      "gross_amount": null,
+                      "tax_withheld": null,
+                      "net_amount": null
+                    }
+                  },
+                  "security_details": {
+                    "action": null,
+                    "product_id": null
+                  },
+                  "default": true,
+                  "liability": "-1",
+                  "response": "TAKE NO ACTION"
+                },
+                "new": {
+                  "term_number": "2",
+                  "type": "TAKE NO ACTION",
+                  "pay_date": null,
+                  "distribution_details": {
+                    "rate": null,
+                    "currency": null,
+                    "minimum_quantity": null,
+                    "calculation": {
+                      "gross_amount": null,
+                      "tax_withheld": null,
+                      "net_amount": null
+                    }
+                  },
+                  "security_details": {
+                    "action": null,
+                    "product_id": null
+                  },
+                  "default": true,
+                  "liability": "NA",
+                  "response": "TAKE NO ACTION - (default)"
+                }
+              }
+            ],
+            "removed": []
+          }
+        },
+        "event_status": "Confirmed",
+        "version": 6
+      }
+    ],
+    "email_references": [
+      "ACTION REQUIRED_ GS DEADLINE APPROACHING Response Required[2].eml",
+      "ACTION REQUIRED_ GS DEADLINE APPROACHING Response Required[1].eml",
+      "ACTION REQUIRED_ GS DEADLINE APPROACHING Response Required.eml",
+      "Default Election_ TENDER OFFER _ OVH GROUPE SAS CMN  ISIN_ FR0014005HJ9.eml",
+      "Short Charges_  Important Please Read_ TENDER OFFER _ OVH GROUPE SAS CMN   ISIN_ FR0014005HJ9.eml",
+      "Short Charges_  Important Please Read_ TENDER OFFER _ OVH GROUPE SAS CMN   ISIN_ FR0014005HJ9[1].eml"
+    ],
+    "version": 6
+  }
+}

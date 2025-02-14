@@ -37,6 +37,7 @@ export default function RootLayout({
       <head>
         <script src="https://kit.fontawesome.com/9a71b0f99c.js" crossOrigin="anonymous" async></script>
       </head>
+      
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased font-sans dark`}>
         <Theme accentColor="teal" className="height-100p">
           <MenuContextDataProvider>

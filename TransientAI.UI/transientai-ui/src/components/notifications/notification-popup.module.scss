@@ -1,0 +1,21 @@
+@import '../../assets/variables.scss';
+
+.notification-menu-icon {
+  cursor: pointer;
+  margin: 3px;
+}
+
+.alert-content {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  text-align: center; 
+  font-size: 20px;
+
+  .highlight {
+    font-size: 16px;
+    color: $pink;
+    text-transform: uppercase;
+    text-align: center;
+  }
+}
