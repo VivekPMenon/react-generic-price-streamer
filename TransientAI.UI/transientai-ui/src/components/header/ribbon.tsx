@@ -30,7 +30,7 @@ export function Ribbon() {
     <div className={styles['ribbon']}>
       <i className='fa-solid fa-chevron-left' onClick={() => scroll('left')}></i>
 
-      <div className={styles['ribbon']} ref={carouselRef}>
+      <div className={styles['tiles']} ref={carouselRef}>
         {items.map((item, index) => (
           <div key={index} className={styles['tile']}>
             <div>{item.title}</div>

@@ -3,8 +3,6 @@
 .ribbon {
   display: flex;
   gap: 15px;
-  max-width: 70vw;
-  overflow-x: hidden;
   align-items: center;
   color: $font-color-100;
   font-size: 13px;
@@ -19,6 +17,13 @@
     &:hover {
       color: white;
     }
+  }
+
+  .tiles {
+    display: flex;
+    max-width: 70vw;
+    overflow-x: hidden;
+    gap: 15px;
   }
 
   .tile {
