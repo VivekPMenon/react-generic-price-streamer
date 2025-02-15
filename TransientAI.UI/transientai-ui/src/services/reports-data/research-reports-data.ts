@@ -1,12 +1,12 @@
+'use server';
+
 import { ResearchReport } from './model';
 
-class ReportsDataService {
-
-  getReports(): ResearchReport[] {
-    return [
-      {
-        name: 'GS: Ruminations - Macro, Micro, Markets',
-        aiSummary: `# Market Overview
+export async function getReports(): Promise<ResearchReport[]> {
+  return [
+    {
+      name: 'GS: Ruminations - Macro, Micro, Markets',
+      aiSummary: `# Market Overview
 
 ## Choppy Start to 2025
 US markets, driven by major tech stocks (e.g., Nvidia), are reversing gains from early January. Global equities have seen selling pressure for three of the past four weeks, largely driven by increased short positioning.
@@ -92,11 +92,11 @@ De-equitization (private over public markets) and rising duration arbitrages in 
 ## Market Structure
 Continued momentum and narrow index concentration pose risks if market sentiment shifts. Increasing participation from retail and systematic strategies could exacerbate volatility.
 `,
-        emailSource: `../emails/Ruminations.html`
-      },
-      {
-        name: 'BNP Paribas Exane Research: INDIA STRATEGY - 2025 - the pricey paradise; cloudy skies',
-        aiSummary: `# Summary of Research Report: BNP Paribas Exane Research – India Strategy 2025
+      emailSource: `../emails/Ruminations.html`
+    },
+    {
+      name: 'BNP Paribas Exane Research: INDIA STRATEGY - 2025 - the pricey paradise; cloudy skies',
+      aiSummary: `# Summary of Research Report: BNP Paribas Exane Research – India Strategy 2025
 
 ## Market Overview
 
@@ -157,11 +157,11 @@ Continued momentum and narrow index concentration pose risks if market sentiment
 - Global economic developments, including U.S. monetary policy and bond yield trends, are likely to dictate FII flows and market sentiment
 - Local recovery in earnings and GDP growth, coupled with fiscal discipline, will be crucial for sustained market performance
 - Continued sectoral divergence expected, with large caps outperforming broader markets`,
-        emailSource: `../emails/India.html`
-      },
-      {
-        name: 'GS Spec Sales: Feedback, Flows and Catalysts',
-        aiSummary: `# Market Overview
+      emailSource: `../emails/India.html`
+    },
+    {
+      name: 'GS Spec Sales: Feedback, Flows and Catalysts',
+      aiSummary: `# Market Overview
 
 ## Macro Themes
 - Nervousness surrounding UK retail persists due to employment concerns, higher cost-of-living impacts (notably food inflation), and operational cost pressures (e.g., wages)
@@ -240,13 +240,13 @@ Continued momentum and narrow index concentration pose risks if market sentiment
 - **Luxury**: Chinese jewelry demand remains a resilient category, likely to sustain momentum into Q1 despite tough comps
 - **Chemicals**: Capacity utilization tightening signals medium-term opportunities in defensive segments
 - **Healthcare**: AstraZeneca's strong catalyst profile positions it well for sustained interest, although Chinese risks need monitoring`,
-        emailSource: `../emails/Feedback.html`
-      }
-    ];
-  }
+      emailSource: `../emails/Feedback.html`
+    }
+  ];
+}
 
-  getEmailContentMock() {
-    return `# Ruminations - Macro, Micro, Markets
+export async function getEmailContentMock() {
+  return `# Ruminations - Macro, Micro, Markets
 
 **From:** "Molavi, Bobby" <Bobby.Molavi@gs.com>  
 **Date:** January 15, 2025 at 6:22:56 AM EST  
@@ -397,10 +397,10 @@ The **US market reversal last week** highlights the view that *"where Nvidia goe
 **Goldman Sachs International**  
 **Published: January 15, 2025, 6:04 AM EST**
 `;
-  }
+}
 
-  getAiContentMock() {
-    return `# Market Overview
+export async function getAiContentMock() {
+  return `# Market Overview
 
 - **Choppy Start to 2025**:  
   US markets, driven by major tech stocks (e.g., Nvidia), are **reversing gains** from early January.  
@@ -446,7 +446,4 @@ The **US market reversal last week** highlights the view that *"where Nvidia goe
   - Facing **structural challenges**, including **stagnation in growth**, **capital flight**, and **poor investor sentiment**.  
   - These issues are driven by **regulatory and political missteps**.
 `;
-  }
 }
-
-export const reportsDataService = new ReportsDataService();

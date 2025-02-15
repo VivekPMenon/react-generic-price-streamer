@@ -6,7 +6,8 @@
 @import 'ag-grid-community/styles/ag-grid.css';
 @import 'ag-grid-community/styles/ag-theme-balham.css';
 @import 'rc-segmented/assets/index.css'; 
-@import "react-alice-carousel/lib/scss/alice-carousel.scss";
+@import '@react-pdf-viewer/core/lib/styles/index.css';
+@import '@react-pdf-viewer/default-layout/lib/styles/index.css';
 
 @import '../assets/ag-grid-custom.scss';
 @import '../assets/variables.scss';
@@ -25,6 +26,7 @@
 @import '../assets/cards.scss';
 @import '../assets/layout-utils.scss';
 @import '../assets/email-viewer.scss';
+@import '../assets/pdf-viewer.scss';
 
 :root {
   --background: #{$body-bg};

@@ -1,0 +1,27 @@
+[
+  {
+    "portfolio": "MSCI Balanced Core",
+    "reportType": "MSCI Factor Performance",
+    "date": "02/14/2025"
+  },
+  {
+    "portfolio": "MSCI USA 80 Concentrated",
+    "reportType": "MAC Factor Risk",
+    "date": "02/13/2025"
+  },
+  {
+    "portfolio": "MSCI Summary",
+    "reportType": "Portfolio Summary",
+    "date": "02/13/2025"
+  },
+  {
+    "portfolio": "MSCI FI EQ Summary",
+    "reportType": "MAC Factor Risk",
+    "date": "02/12/2025"
+  },
+  {
+    "portfolio": "MSCI Balanced Core",
+    "reportType": "MSCI Factor Performance",
+    "date": "02/11/2025"
+  }
+]

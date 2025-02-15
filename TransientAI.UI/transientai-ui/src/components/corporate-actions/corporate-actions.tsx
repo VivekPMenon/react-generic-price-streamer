@@ -1,13 +1,9 @@
 'use client'
 
-import ReactMarkdown from 'react-markdown';
-import remarkGfm from 'remark-gfm';
 import styles from './corporate-actions.module.scss';
-import { reportsDataService } from '@/services/reports-data';
-import { SearchableMarkdown } from '../markdown';
 import { useContext, useEffect, useState } from 'react';
 import { CorpActionsDataContext, CorporateAction } from '@/services/corporate-actions';
-import { getEmailSource, getCorpActions } from '@/services/corporate-actions/corporate-actions-data-service';
+import { getEmailSource, getCorpActions } from '@/services/corporate-actions/corporate-actions-data';
 import EmailViewer from '../email-parser/email-viewer';
 
 export interface CorporateActionsProps {

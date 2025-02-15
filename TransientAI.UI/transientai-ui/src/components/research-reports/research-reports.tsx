@@ -6,7 +6,7 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import Segmented from 'rc-segmented';
 import { SearchableMarkdown } from '@/components/markdown';
-import { reportsDataService, ResearchReport } from '@/services/reports-data';
+import { getReports, ResearchReport } from '@/services/reports-data';
 import EmailViewer from '../email-parser/email-viewer';
 
 
@@ -23,10 +23,12 @@ export function ResearchReports({ isExpanded }: ResearchReportsProps) {
 
   const visibleReports = useMemo<ResearchReport[]>(() => applyFilter(), [searchQuery, reports]);
 
-  useEffect(() => {
-    const results = reportsDataService.getReports();
+  useEffect(() => { loadReports() }, []);
+
+  async function loadReports() {
+    const results = await getReports();
     setReports(results);
-  }, []);
+  }
 
   function applyFilter(): ResearchReport[] {
     if (!searchQuery) {

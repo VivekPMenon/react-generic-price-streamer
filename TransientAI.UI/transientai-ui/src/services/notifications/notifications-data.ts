@@ -2,9 +2,10 @@
 
 import { Notification, NotificationType } from "./model";
 import corpActionsRaw from './corp-actions.json';
+import riskReportsJson from './risk-reports.json';
 
 export async function getNotifications(): Promise<Notification[]> {
-  return [
+  const notifications: Notification[] = [
     // {
     //   title:'BA 2.8 03/01/2027',
     //   type: NotificationType.Axes,
@@ -116,4 +117,17 @@ export async function getNotifications(): Promise<Notification[]> {
       ]
     },
   ];
+
+  const riskNotifications: Notification[] = riskReportsJson.map(riskReportJson => {
+    return {
+      type: NotificationType.RiskReport,
+      title: riskReportJson.portfolio,
+      highlights: [
+        riskReportJson.reportType,
+        riskReportJson.date
+      ]
+    };
+  });
+
+  return notifications.concat(riskNotifications);
 }

@@ -1,0 +1,36 @@
+@import 'variables.scss';
+
+.rpv-default-layout__body {
+  background-color: $gray-1000;
+}
+
+.rpv-core__inner-page, .rpv-default-layout__toolbar, .rpv-default-layout__sidebar-headers {
+  background-color: $gray-1000;
+}
+
+.rpv-default-layout__container {
+  border: unset;
+  border-radius: 5px;
+}
+
+.rpv-core__inner-pages--vertical::-webkit-scrollbar {
+  width: 7px;
+}
+
+.rpv-core__inner-pages--vertical:hover::-webkit-scrollbar {
+  width: 7px;
+}
+
+.rpv-core__inner-pages--vertical::-webkit-scrollbar-track {
+  background: $gray-1000;
+}
+
+.rpv-core__inner-pages--vertical::-webkit-scrollbar-thumb {
+  background: $scrollbar-thumb-bg;
+  border-radius: 5px;
+}
+
+.rpv-core__inner-pages--vertical::-webkit-scrollbar-thumb:hover {
+  background: $scrollbar-hover-bg;
+  display: block;
+}

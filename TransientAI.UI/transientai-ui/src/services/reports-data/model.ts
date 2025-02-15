@@ -5,3 +5,9 @@ export interface ResearchReport {
   emailSource?: string;
   aiSummary?: string;
 }
+
+export interface RiskReport {
+  portfolio?: string;
+  reportType?: string;
+  date?: string;
+}

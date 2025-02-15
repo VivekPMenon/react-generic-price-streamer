@@ -3,7 +3,7 @@
 import { useContext, useEffect, useMemo, useState } from 'react';
 import styles from './notifications.module.scss';
 import { Notification, NotificationType } from '@/services/notifications';
-import { getNotifications } from '@/services/notifications/notifiations-data-service';
+import { getNotifications } from '@/services/notifications/notifications-data';
 import { CorpActionsDataContext, CorporateAction, getCorpActions } from "@/services/corporate-actions";
 import { MenuContextData } from "@/services/menu-data";
 import { NotificationPopup } from './notification-popup';
@@ -22,6 +22,7 @@ export function Notifications(props: NotificationsProps) {
     // NotificationType.Trades,
     NotificationType.CorpAct,
     NotificationType.Research,
+    NotificationType.RiskReport
   ];
 
   const router = useRouter();
@@ -67,6 +68,9 @@ export function Notifications(props: NotificationsProps) {
 
       case NotificationType.Research:
         return 'fa-solid fa-book';
+
+      case NotificationType.RiskReport:
+        return 'fa-solid fa-bolt';
     }
   }
 
@@ -77,6 +81,8 @@ export function Notifications(props: NotificationsProps) {
         return 'pill blue';
 
       case NotificationType.Clients:
+        
+      case NotificationType.RiskReport:
         return 'pill orange';
 
       case NotificationType.Trades:
@@ -156,7 +162,7 @@ export function Notifications(props: NotificationsProps) {
               <div className={styles['notification-content']}>
                 <div className='blue-color'>{notification.subTitle}</div>
                 <div className={styles['messages']}>
-                  <ul className="list-disc pl-5 off-white-color">
+                  <ul className="list-disc pl-8 off-white-color-alt">
                     {
                       notification.highlights?.map(item => <li>{item}</li>)
                     }

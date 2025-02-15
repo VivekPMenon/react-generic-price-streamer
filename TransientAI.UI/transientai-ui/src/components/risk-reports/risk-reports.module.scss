@@ -1,0 +1,26 @@
+.risk-reports {
+  display: flex;
+  padding: 5px;
+  height: 100%;
+  gap: 20px;
+
+  & > div {
+    flex: 1 1 50%;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    gap: 10px;
+  }
+
+  .reports-grid {
+    flex: 1 1 20%;
+    max-width: 550px;
+  }
+
+  .pdf-viewer {
+    padding: 0 50px;
+    height: 85vh;
+    border-radius: 10px;
+    
+  }
+}
