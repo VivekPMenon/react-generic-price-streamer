@@ -6,6 +6,7 @@ import styles from './layout.module.scss';
 import { Notifications } from '@/components/notifications';
 import { Suspense, useState } from 'react';
 import { DashboardTabs } from '@/components/dashboard-tabs/dashboard-tabs';
+import { PnlMetrics } from '@/components/pnl-metrics/pnl-metrics';
 
 export default function DashboardLayout({
   children,
@@ -45,6 +46,8 @@ export default function DashboardLayout({
         </div>
 
         <div className={styles['middle-panel']}>
+          <PnlMetrics></PnlMetrics>
+          
           <DashboardTabs>
             {children}
           </DashboardTabs>
