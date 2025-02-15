@@ -150,7 +150,7 @@ export function CorporateActions({ isExpanded }: CorporateActionsProps) {
           className={isExpanded ? 'height-vh-82' : 'height-vh-40'} 
           title='Original Email'/> */}
         {selectedEmailContent ?
-          <EmailViewer className='height-vh-82' htmlSource={selectedEmailContent} /> : <></>}
+          <EmailViewer className={styles['email-viewer']} htmlSource={selectedEmailContent} /> : <></>}
 
       </div>
     </div>

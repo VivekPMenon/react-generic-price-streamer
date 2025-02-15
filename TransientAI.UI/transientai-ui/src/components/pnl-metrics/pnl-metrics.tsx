@@ -1,4 +1,4 @@
-import styles from './ribbon.module.scss';
+import styles from './pnl-metrics.module.scss';
 import React, { useRef, useState, useEffect } from 'react';
 
 const items = [
@@ -22,7 +22,7 @@ const items = [
   { title: 'Exposure%', amount: '-1.88' }
 ];
 
-export function Ribbon() {
+export function PnlMetrics() {
 
   const carouselRef = useRef<HTMLDivElement | null>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
@@ -72,25 +72,29 @@ export function Ribbon() {
   }
 
   return (
-    <div className={styles['ribbon']}>
-      <i
-        className={`fa-solid fa-chevron-left ${!canScrollLeft ? styles['disabled'] : ''}`}
-        onClick={() => canScrollLeft && scroll('left')}
-      ></i>
+    <div className={styles['pnl-metrics']}>
+      PnL And Financial Resource Metrics
+      
+      <div className={styles['ribbon']}>
+        <i
+          className={`fa-solid fa-chevron-left ${!canScrollLeft ? styles['disabled'] : ''}`}
+          onClick={() => canScrollLeft && scroll('left')}
+        ></i>
 
-      <div className={styles['tiles']} ref={carouselRef}>
-        {items.map((item, index) => (
-          <div key={index} className={styles['tile']}>
-            <div>{item.title}</div>
-            <div className='orange-color fs-14'>{item.amount}</div>
-          </div>
-        ))}
+        <div className={styles['tiles']} ref={carouselRef}>
+          {items.map((item, index) => (
+            <div key={index} className={styles['tile']}>
+              <div>{item.title}</div>
+              <div className='orange-color fs-14'>{item.amount}</div>
+            </div>
+          ))}
+        </div>
+
+        <i
+          className={`fa-solid fa-chevron-right ${!canScrollRight ? styles['disabled'] : ''}`}
+          onClick={() => canScrollRight && scroll('right')}>
+        </i>
       </div>
-
-      <i
-        className={`fa-solid fa-chevron-right ${!canScrollRight ? styles['disabled'] : ''}`}
-        onClick={() => canScrollRight && scroll('right')}>
-      </i>
     </div>
   );
 }

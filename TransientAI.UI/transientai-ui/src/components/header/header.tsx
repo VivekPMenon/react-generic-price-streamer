@@ -3,7 +3,6 @@
 import { useContext } from 'react';
 import styles from './header.module.scss';
 import { SearchDataContext } from '@/services/search-data';
-import { Ribbon } from './ribbon';
 
 export function Header() {
 
@@ -15,7 +14,6 @@ export function Header() {
         <img src="/images/TRANS_H_white-on-transparent.png" />
         {/* TransientAI */}
 
-        <Ribbon></Ribbon>
       </div>
 
       <div className={styles['global-search']}>

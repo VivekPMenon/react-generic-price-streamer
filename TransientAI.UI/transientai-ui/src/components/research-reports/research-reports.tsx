@@ -83,7 +83,7 @@ export function ResearchReports({ isExpanded }: ResearchReportsProps) {
               </div>
 
               <div>
-                <EmailViewer className='height-vh-80' htmlSource={selectedReport?.emailSource} />
+                <EmailViewer className='height-vh-68' htmlSource={selectedReport?.emailSource} />
               </div>
             </div>
 
@@ -96,7 +96,7 @@ export function ResearchReports({ isExpanded }: ResearchReportsProps) {
                 {/* Keywords: <span>VC Landscape, Systematic Quant Strategies, Geo Political and Headline Risk</span> */}
               </div>
               {/* <SearchableMarkdown markdownContent={selectedReport.aiSummary} className={isExpanded ? 'height-vh-82': 'height-vh-36'} /> */}
-              <SearchableMarkdown markdownContent={selectedReport.aiSummary} className={'height-vh-80'} />
+              <SearchableMarkdown markdownContent={selectedReport.aiSummary} className={'height-vh-68'} />
             </div>
           </> : <></>
       }

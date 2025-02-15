@@ -19,8 +19,7 @@
 
   .pdf-viewer {
     padding: 0 50px;
-    height: 85vh;
+    height: calc(100vh - 300px);
     border-radius: 10px;
-    
   }
 }

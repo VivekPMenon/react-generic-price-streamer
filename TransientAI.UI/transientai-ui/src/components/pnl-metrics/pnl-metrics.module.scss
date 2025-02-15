@@ -1,5 +1,13 @@
 @import '../../assets/variables.scss';
 
+.pnl-metrics {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  font-size: 14px;
+  padding: 10px 10px ;
+}
+
 .ribbon {
   display: flex;
   gap: 15px;
@@ -21,17 +29,16 @@
 
   .tiles {
     display: flex;
-    max-width: 50vw;
+    max-width: calc(100vw - 520px);
     overflow-x: hidden;
     gap: 15px;
-
   }
 
   .tile {
     background-color: $gray-1000;
     border-radius: 5px;
     
-    padding: 5px;
+    padding: 10px;
     width: 128px;
     min-width: 128px;
     

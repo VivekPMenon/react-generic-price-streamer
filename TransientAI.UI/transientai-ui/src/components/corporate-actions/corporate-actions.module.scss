@@ -77,6 +77,10 @@
 
 .email-content {
   padding: 0 10px;
+
+  .email-viewer {
+    height: calc(100vh - 350px);
+  }
 }
 
 .search-bar {
