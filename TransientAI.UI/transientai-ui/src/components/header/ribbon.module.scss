@@ -21,9 +21,10 @@
 
   .tiles {
     display: flex;
-    max-width: 70vw;
+    max-width: 50vw;
     overflow-x: hidden;
     gap: 15px;
+
   }
 
   .tile {
@@ -31,8 +32,8 @@
     border-radius: 5px;
     
     padding: 5px;
-    width: 125px;
-    min-width: 150px;
+    width: 128px;
+    min-width: 128px;
     
     div {
       text-align: center;

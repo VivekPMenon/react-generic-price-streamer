@@ -7,24 +7,30 @@ import { themePlugin } from '@react-pdf-viewer/theme';
 import { DataGrid } from '../data-grid';
 import styles from './risk-reports.module.scss';
 import { ColDef, RowDoubleClickedEvent } from 'ag-grid-community';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { getRiskReports } from '@/services/reports-data/risk-reports-data';
 
 export function RiskReports() {
 
   const [riskReports, setRiskReports] = useState<RiskReport[]>();
-  const [columnDefs] = useState<ColDef[]>(getColumnDef());
+  const [selectedReport, setSelectedReport] = useState<RiskReport>({});
   const [searchQuery, setSearchQuery] = useState<string>('');
 
-  useEffect(() => { loadRiskReports() }, []);
+  const columnDefs = useMemo<ColDef[]>(() => getColumnDef(), []);
 
-  async function loadRiskReports() {
-    const reports = await getRiskReports();
-    setRiskReports(reports);
+  useEffect(() => loadRiskReports(), []);
+
+  function loadRiskReports() {
+    const loadDataAsync = async () => {
+      const reports = await getRiskReports();
+      setRiskReports(reports);
+    }
+
+    loadDataAsync();
   }
 
-  function onRowDoubleClicked(event: RowDoubleClickedEvent<RiskReport>) {
-
+  function onRowSelection(event: any) {
+    setSelectedReport(event.data!);
   }
 
   function getColumnDef(): ColDef[] {
@@ -44,7 +50,17 @@ export function RiskReports() {
         headerName: 'Date',
         width: 120,
         cellClass: 'date-cell', // Optional: Apply date styling
-      }
+      },
+      // {
+      //   headerName: '',
+      //   width: 100,
+      //   floatingFilter: false,
+      //   cellRenderer: IconCellRenderer,
+      //   cellRendererParams: {
+      //     className: 'fa-solid fa-eye',
+      //     onClickHandler: () => alert('hey') 
+      //   }
+      // }
     ];
   }
 
@@ -59,19 +75,22 @@ export function RiskReports() {
         <DataGrid isSummaryGrid={true}
           rowData={riskReports}
           columnDefs={columnDefs}
-          onRowDoubleClicked={onRowDoubleClicked} >
+          onRowDoubleClicked={onRowSelection}
+          onRowClicked={onRowSelection} 
+          rowSelection={'single'}>
         </DataGrid>
       </div>
 
-      <div className={styles['pdf-viewer']}>
+      {/* display none is used because viewer plugin was causing render issues with conditional rendering */}
+      <div className={styles['pdf-viewer']} style={{ display: selectedReport.pdfSource ? 'flex' : 'none' }}>
         {/* todo...load pdf worker from a local folder, also create a common component for pdf viewer */}
+
         <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.min.js">
-          <Viewer fileUrl="/pdfs/generated_report.pdf"
-            defaultScale={1.25} 
-            
+          <Viewer fileUrl={selectedReport.pdfSource ? selectedReport.pdfSource : '/pdfs/MSIConcentrated.pdf'}
+            defaultScale={1.25}
             plugins={[defaultLayoutPlugin(), themePlugin()]}
             theme={'dark'}
-            />
+          />
         </Worker>
       </div>
 

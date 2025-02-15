@@ -2,12 +2,24 @@ import styles from './ribbon.module.scss';
 import React, { useRef, useState, useEffect } from 'react';
 
 const items = [
-  { title: 'Margin Excess', amount: 'USD 593,809.54' },
-  { title: 'Exposure/Cross', amount: 'USD 1,987,555.45' },
-  { title: 'DeltaAdj', amount: 'USD 865,789' },
-  { title: 'Net P&L', amount: 'USD 1,123,456' },
-  { title: 'Collateral', amount: 'USD 750,000' },
-  { title: 'Leverage', amount: 'USD 2,000,000' },
+  { title: 'PLGMVEPs', amount: '6.86' },
+  { title: 'PL', amount: '5,560' },
+  { title: 'LongPL', amount: '5,968' },
+  { title: 'ShortPL', amount: '408' },
+  { title: 'GMVUsage', amount: '10.65%' },
+  { title: 'PLIDIsAssetsBPs', amount: '8.24' },
+  { title: 'PLIBISTotalGM', amount: '0.91' },
+  { title: 'DeltaAdjGross', amount: '1,063,356' },
+  { title: 'DeltaAdjGrossPct', amount: '11%' },
+  { title: 'ExposureGross', amount: '1,063,356.49' },
+  { title: 'DeltaAdj', amount: '187,989' },
+  { title: 'Exposure', amount: '187,989' },
+  { title: 'Delta%', amount: '1.88' },
+  { title: 'LongDeltaAdj', amount: '437,084' },
+  { title: 'LongDeltaAdj%', amount: '4.38' },
+  { title: 'ShortDeltaAdj', amount: '-625,673' },
+  { title: 'ShortDeltaAdj%', amount: '6.27' },
+  { title: 'Exposure%', amount: '-1.88' }
 ];
 
 export function Ribbon() {
