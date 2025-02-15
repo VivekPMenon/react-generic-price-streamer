@@ -66,7 +66,7 @@ export function RiskReports() {
       <div className={styles['pdf-viewer']}>
         {/* todo...load pdf worker from a local folder, also create a common component for pdf viewer */}
         <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.min.js">
-          <Viewer fileUrl="/pdfs/sample.pdf"
+          <Viewer fileUrl="/pdfs/generated_report.pdf"
             defaultScale={1.25} 
             
             plugins={[defaultLayoutPlugin(), themePlugin()]}
