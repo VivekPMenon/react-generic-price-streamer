@@ -3,7 +3,7 @@
 import { useContext, useEffect, useMemo, useState } from 'react';
 import styles from './notifications.module.scss';
 import { Notification, NotificationType } from '@/services/notifications';
-import { getNotifications } from '@/services/notifications/notifiations-data-service';
+import { getNotifications } from '@/services/notifications/notifiations-data';
 import { CorpActionsDataContext, CorporateAction, getCorpActions } from "@/services/corporate-actions";
 import { MenuContextData } from "@/services/menu-data";
 import { NotificationPopup } from './notification-popup';

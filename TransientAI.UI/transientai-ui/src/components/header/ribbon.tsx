@@ -7,7 +7,7 @@ const items = [
   { title: 'DeltaAdj', amount: 'USD 865,789' },
   { title: 'Net P&L', amount: 'USD 1,123,456' },
   { title: 'Collateral', amount: 'USD 750,000' },
-  { title: 'Leverage', amount: 'USD 2,000,000' }
+  { title: 'Leverage', amount: 'USD 2,000,000' },
 ];
 
 export function Ribbon() {
