@@ -1,5 +1,5 @@
 import styles from './ribbon.module.scss';
-import React, { useRef } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 
 const items = [
   { title: 'Margin Excess', amount: 'USD 593,809.54' },
@@ -10,25 +10,61 @@ const items = [
   { title: 'Leverage', amount: 'USD 2,000,000' }
 ];
 
-// todo. create a common carousel component
 export function Ribbon() {
+
   const carouselRef = useRef<HTMLDivElement | null>(null);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(true);
+
+  useEffect(() => {
+    checkScroll();
+
+    const ref = carouselRef.current;
+    if (ref) {
+      ref.addEventListener('scroll', checkScroll);
+    }
+
+    const handleResize = () => {
+      checkScroll();
+    };
+
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      if (ref) {
+        ref.removeEventListener('scroll', checkScroll);
+      }
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+
+  function checkScroll() {
+    if (!carouselRef.current) {
+      return;
+    }
+
+    setCanScrollLeft(carouselRef.current.scrollLeft > 0);
+    setCanScrollRight(carouselRef.current.scrollLeft + carouselRef.current.clientWidth < carouselRef.current.scrollWidth);
+  }
 
   function scroll(direction: 'left' | 'right') {
     if (!carouselRef.current) {
       return;
     }
 
-    const scrollAmount = 300; 
+    const scrollAmount = 300;
     carouselRef.current.scrollBy({
       left: direction === 'right' ? scrollAmount : -scrollAmount,
       behavior: 'smooth'
     });
-  };
+  }
 
   return (
     <div className={styles['ribbon']}>
-      <i className='fa-solid fa-chevron-left' onClick={() => scroll('left')}></i>
+      <i
+        className={`fa-solid fa-chevron-left ${!canScrollLeft ? styles['disabled'] : ''}`}
+        onClick={() => canScrollLeft && scroll('left')}
+      ></i>
 
       <div className={styles['tiles']} ref={carouselRef}>
         {items.map((item, index) => (
@@ -39,7 +75,10 @@ export function Ribbon() {
         ))}
       </div>
 
-      <i className='fa-solid fa-chevron-right' onClick={() => scroll('right')}></i>
+      <i
+        className={`fa-solid fa-chevron-right ${!canScrollRight ? styles['disabled'] : ''}`}
+        onClick={() => canScrollRight && scroll('right')}>
+      </i>
     </div>
   );
 }
