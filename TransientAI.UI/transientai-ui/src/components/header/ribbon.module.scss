@@ -2,24 +2,41 @@
 
 .ribbon {
   display: flex;
-  gap: 10px;
-  max-width: 80vw;
+  gap: 15px;
+  max-width: 70vw;
   overflow-x: hidden;
   align-items: center;
   color: $font-color-100;
   font-size: 13px;
 
+
+  i {
+    // color: $teal;
+    cursor: pointer;
+    padding: 5px;
+    color: $font-color-200;
+
+    &:hover {
+      color: white;
+    }
+  }
+
   .tile {
     background-color: $gray-1000;
     border-radius: 5px;
-    align-items: center;
-    justify-content: center;
+    
     padding: 5px;
     width: 125px;
     min-width: 150px;
-
+    
     div {
       text-align: center;
     }
   }
+
+  .disabled {
+    opacity: .4;
+    cursor: auto;
+  }
 }
+
