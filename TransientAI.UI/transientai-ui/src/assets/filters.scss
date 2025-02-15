@@ -25,6 +25,12 @@
   }
 }
 
+.filter-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
 .pill {
   border-radius: 3px;
   padding: 0px 7px;

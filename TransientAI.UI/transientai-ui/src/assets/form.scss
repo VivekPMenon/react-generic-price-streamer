@@ -61,6 +61,7 @@ input[type="text"] {
   padding: 5px;
   border-radius: 5px;
   width: 100%;
+  box-sizing: border-box;
 
   &:focus {
     box-shadow: 0 0 3px $teal;

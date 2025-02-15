@@ -19,7 +19,7 @@ export function DataGrid(props: IDataGridProps) {
 
   const finalProps: AgGridReactProps = {
     defaultColDef: {
-      floatingFilter: props.isSummaryGrid ? false: true,
+      floatingFilter: true,
       filter: 'agTextColumnFilter',
       sortable: true,
       resizable: true,
@@ -61,7 +61,8 @@ export function DataGrid(props: IDataGridProps) {
           statusBar={props.isSummaryGrid ? undefined : statusBar}
           onGridReady={onGridReady}
           rowHeight={props.isSummaryGrid ? 45 : 35}
-          headerHeight={props.isSummaryGrid ? 45 : 35}>
+          headerHeight={props.isSummaryGrid ? 45 : 35}
+          floatingFiltersHeight={props.isSummaryGrid ? 25 : 20}>
         </AgGridReact>
       </div>
     </>

@@ -81,10 +81,11 @@ export function Notifications(props: NotificationsProps) {
         return 'pill blue';
 
       case NotificationType.Clients:
+        
+      case NotificationType.RiskReport:
         return 'pill orange';
 
       case NotificationType.Trades:
-      case NotificationType.RiskReport:
         return 'pill pink';
 
       case NotificationType.CorpAct:
