@@ -10,4 +10,5 @@ export interface RiskReport {
   portfolio?: string;
   reportType?: string;
   date?: string;
+  pdfSource?: string;
 }
