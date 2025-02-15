@@ -1,6 +1,9 @@
 'use client';
 
+import { Viewer, Worker } from '@react-pdf-viewer/core';
+import { defaultLayoutPlugin } from '@react-pdf-viewer/default-layout';
 import { RiskReport } from '@/services/reports-data';
+import { themePlugin } from '@react-pdf-viewer/theme';
 import { DataGrid } from '../data-grid';
 import styles from './risk-reports.module.scss';
 import { ColDef, RowDoubleClickedEvent } from 'ag-grid-community';
@@ -59,8 +62,17 @@ export function RiskReports() {
           onRowDoubleClicked={onRowDoubleClicked} >
         </DataGrid>
       </div>
+
       <div className={styles['pdf-viewer']}>
-        PDF viewer
+        {/* todo...load pdf worker from a local folder, also create a common component for pdf viewer */}
+        <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.min.js">
+          <Viewer fileUrl="/pdfs/sample.pdf"
+            defaultScale={1.25} 
+            
+            plugins={[defaultLayoutPlugin(), themePlugin()]}
+            theme={'dark'}
+            />
+        </Worker>
       </div>
 
     </div>
