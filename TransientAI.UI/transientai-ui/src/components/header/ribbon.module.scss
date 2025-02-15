@@ -1,0 +1,47 @@
+@import '../../assets/variables.scss';
+
+.ribbon {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+  color: $font-color-100;
+  font-size: 13px;
+
+
+  i {
+    // color: $teal;
+    cursor: pointer;
+    padding: 5px;
+    color: $font-color-200;
+
+    &:hover {
+      color: white;
+    }
+  }
+
+  .tiles {
+    display: flex;
+    max-width: 70vw;
+    overflow-x: hidden;
+    gap: 15px;
+  }
+
+  .tile {
+    background-color: $gray-1000;
+    border-radius: 5px;
+    
+    padding: 5px;
+    width: 125px;
+    min-width: 150px;
+    
+    div {
+      text-align: center;
+    }
+  }
+
+  .disabled {
+    opacity: .4;
+    cursor: auto;
+  }
+}
+
