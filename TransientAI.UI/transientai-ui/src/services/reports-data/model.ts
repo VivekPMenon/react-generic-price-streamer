@@ -1,5 +1,6 @@
 export interface ChartSummary {
   image: string,
+  title?: string,
   description?: string;
 }
 

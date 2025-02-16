@@ -6,10 +6,11 @@ import { Cross1Icon } from "@radix-ui/react-icons";
 export interface ImagePopupProps {
     image: string;
     description?: string;
+    title?: string;
     children: ReactNode;
 }
 
-export function ImagePopup({children, image, description}: ImagePopupProps) {
+export function ImagePopup({children, image, title, description}: ImagePopupProps) {
     return (
         <Dialog.Root>
             <Dialog.Trigger asChild>
@@ -21,6 +22,9 @@ export function ImagePopup({children, image, description}: ImagePopupProps) {
                     <Dialog.DialogClose>
                         <Cross1Icon />
                     </Dialog.DialogClose>
+                    <Dialog.Title>
+                        {title}
+                    </Dialog.Title>
                     <div className={styles['content']}>
                         <div style={{ padding: '20px 50px' }}>
                             <img src={image} style={{height: '350px', width: '650px'}}/>

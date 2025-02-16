@@ -94,13 +94,17 @@ Continued momentum and narrow index concentration pose risks if market sentiment
 `,
       emailSource: `../emails/Ruminations.html`,
       charts: [
-          {image: '../charts/divergence.png', description: 'CEO confidence vs Bull/Bear sentiment'},
-          {image: '../charts/rates_to_cuts.png'},
-          {image: '../charts/productivity.png', description: 'Regional differentials'},
-          {image: '../charts/capital_flows.png', description: 'Capital flows where it is welcome and rewarded'},
-          {image: '../charts/active_passive.png'}, {image: '../charts/concentration.png'},
-          {image: '../charts/past_v_future.png'}, {image: '../charts/valuations.png'},
-          {image: '../charts/value_creation.png'}, {image: '../charts/equity_owners.png'}
+          {image: '../charts/cpi.png', title: 'CPI'},
+          {image: '../charts/divergence.png', description: 'CEO confidence vs Bull/Bear sentiment', title: 'Divergence'},
+          {image: '../charts/rates_to_cuts.png', title: 'Rates reaction to rate cuts'},
+          {image: '../charts/productivity.png', description: 'Regional differentials', title: 'Productivity'},
+          {image: '../charts/capital_flows.png', description: 'Capital flows where it is welcome and rewarded', title: 'Capital flows'},
+          {image: '../charts/active_passive.png', title: 'Active v Passive'},
+          {image: '../charts/concentration.png', title: 'Concentration'},
+          {image: '../charts/past_v_future.png', title: 'Returns - past vs future'},
+          {image: '../charts/valuations.png', title: 'Valuations'},
+          {image: '../charts/value_creation.png', title: 'Value creation'},
+          {image: '../charts/equity_owners.png', title: 'Equity owners and length'}
         ],
         keywords: ['VC Landscape', 'Systematic Quant Strategies', 'Geo Political and Headline Risk']
     },
@@ -250,7 +254,22 @@ Continued momentum and narrow index concentration pose risks if market sentiment
 - **Luxury**: Chinese jewelry demand remains a resilient category, likely to sustain momentum into Q1 despite tough comps
 - **Chemicals**: Capacity utilization tightening signals medium-term opportunities in defensive segments
 - **Healthcare**: AstraZeneca's strong catalyst profile positions it well for sustained interest, although Chinese risks need monitoring`,
-      emailSource: `../emails/Feedback.html`
+      emailSource: `../emails/Feedback.html`,
+      charts: [
+            {image: '../charts/buy_cfr.png', title: 'Buy CFR'},
+            {image: '../charts/chart_of_week.png', description: 'Purchase intent is picking up across Luxury in China', title: 'Chart of the Week'},
+            {image: '../charts/buy_nibeb.png', title: 'Buy NIBEB'},
+            {image: '../charts/chart_of_week_2.png', title: 'Chart of the Week'},
+            {image: '../charts/chart_of_week_3.png', title: 'Chart of the Week'},
+            {image: '../charts/launches.png', title: 'MG Launch vs CIDP Launch'},
+            {image: '../charts/buy_argx.png', title: 'Buy ARGX'},
+            {image: '../charts/chart_of_week_pharma.png', title: 'Chart of the Week'},
+            {image: '../charts/buy_rya.png', title: 'Buy RYA'},
+            {image: '../charts/chart_of_week_5.png', title: 'Chart of the Week'},
+            {image: '../charts/buy_sxpp.png', title: 'Buy SXPP'},
+            {image: '../charts/buy_glen.png', title: 'Buy GLEN'},
+            {image: '../charts/chart_of_week_6.png', title: 'Chart of the Week'}
+        ],
     }
   ];
 }
