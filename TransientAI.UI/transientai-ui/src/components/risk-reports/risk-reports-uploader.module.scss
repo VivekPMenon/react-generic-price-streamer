@@ -1,0 +1,86 @@
+@import '../../assets/variables.scss';
+
+.risk-reports-uploader {
+  display: flex;
+  padding: 5px;
+  gap: 40px;
+  height: 100%;
+
+  &>div {
+    flex: 1 1 50%;
+  }
+
+  .reports-grid {
+    flex: 1 1 30%;
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+.wizard-step-content {
+  border: 1px solid $border-color;
+  border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 10px;
+}
+
+.file-upload-step {
+  @extend .wizard-step-content;
+  gap: 50px;
+  justify-content: center;
+  align-items: center;
+
+  .upload-area {
+    height: 150px;
+    width: 500px;
+    border: 1px dashed $border-color;
+    display: flex;
+    flex-direction: column;
+    border-radius: 5px;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+  }
+
+  button {
+    width: 130px;
+  }
+}
+
+.file-validation-step {
+  @extend .wizard-step-content;
+  
+  button {
+    width: 130px;
+  }
+}
+
+.file-submission-step {
+  @extend .wizard-step-content;
+  
+  .upload-status {
+    display: flex;
+    flex: 2 1 80%;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    font-size: 16px;
+
+    span {
+      background-color: $green;
+      color: white;
+      height: 35px;
+      width: 35px;
+      border-radius: 50%;
+      align-items: center;
+      justify-content: center;
+      display: flex;
+    }
+  }
+
+  button {
+    width: 130px;
+  }
+}
