@@ -1,0 +1,9 @@
+@import '../../assets/variables.scss';
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  text-align: center;
+  font-size: 20px;
+}

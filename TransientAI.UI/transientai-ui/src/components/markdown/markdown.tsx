@@ -1,6 +1,7 @@
 import ReactMarkdown from 'react-markdown';
 import React, { useEffect, useRef, useState } from "react";
 import rehypeRaw from "rehype-raw";
+import Tags from "@/components/tags/tags";
 
 export interface SearchableMarkdownProps {
   title?: string;
@@ -103,9 +104,10 @@ export const SearchableMarkdown = ({ markdownContent, className, title }: Search
         </span> */}
       </div>
 
-      <div ref={contentRef} className={`react-markdown scrollable-div ${className}`}>
+      <div ref={contentRef} className={`react-markdown ${className}`}>
         <ReactMarkdown rehypePlugins={[rehypeRaw]}>{getMarkdownText()}</ReactMarkdown>
       </div>
+
     </div>
   );
 };

@@ -1,0 +1,29 @@
+@import '../../assets/variables.scss';
+
+.image-container {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 5px 5px 0;
+}
+
+.image-section {
+  display: inline-flex;
+  flex-wrap: wrap;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+}
+
+.image-section li {
+  align-items: center;
+  border-radius: 4px;
+  display: flex;
+  list-style: none;
+  margin-right: 5px;
+  padding: 10px 10px;
+}
+
+.image-section li img {
+  height: 60px;
+  width: 80px
+}
