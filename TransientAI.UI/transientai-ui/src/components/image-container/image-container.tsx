@@ -4,7 +4,7 @@ import styles from './image-container.module.scss';
 import {ImagePopup} from "@/components/image-container/image-popup";
 
 type ImageContainerProps = {
-    images: Array<{image: string, description?: string}>;
+    images: Array<{image: string, title?: string; description?: string}>;
 };
 
 const ImageContainer = (props: ImageContainerProps) => {
@@ -15,8 +15,12 @@ const ImageContainer = (props: ImageContainerProps) => {
             <ul className={styles['image-section']}>
                 { images.map((image) => (
                     <li key={image.image}>
-                        <ImagePopup image={image.image} description={image.description}>
-                            <img src={image.image} />
+                        <ImagePopup {...image}>
+                            <div>
+                                <h2>{image.title}</h2>
+                                <img src={image.image} alt={image.title}/>
+                                <span>{image.description}</span>
+                            </div>
                         </ImagePopup>
                     </li>
                 ))}
