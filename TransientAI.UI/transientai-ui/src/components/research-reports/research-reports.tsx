@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import styles from './research-reports.module.scss';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
@@ -8,6 +8,8 @@ import Segmented from 'rc-segmented';
 import { SearchableMarkdown } from '@/components/markdown';
 import { getReports, ResearchReport } from '@/services/reports-data';
 import EmailViewer from '../email-parser/email-viewer';
+import Tags from "@/components/tags/tags";
+import ImageContainer from "@/components/image-container/image-container";
 
 
 export interface ResearchReportsProps {
@@ -91,12 +93,20 @@ export function ResearchReports({ isExpanded }: ResearchReportsProps) {
               <div className={styles['summary-title']}>
                 AI Summary
               </div>
-
-              <div className={styles['key-words']}>
-                {/* Keywords: <span>VC Landscape, Systematic Quant Strategies, Geo Political and Headline Risk</span> */}
+              <div className={`scrollable-div height-vh-68`}>
+                {/* <SearchableMarkdown markdownContent={selectedReport.aiSummary} className={isExpanded ? 'height-vh-82': 'height-vh-36'} /> */}
+                <SearchableMarkdown markdownContent={selectedReport.aiSummary} />
+                {selectedReport.charts &&
+                    <ImageContainer
+                      images={selectedReport.charts}
+                    />
+                }
+                {selectedReport.keywords &&
+                <Tags
+                    header='Keywords:'
+                    tags={selectedReport.keywords}
+                />}
               </div>
-              {/* <SearchableMarkdown markdownContent={selectedReport.aiSummary} className={isExpanded ? 'height-vh-82': 'height-vh-36'} /> */}
-              <SearchableMarkdown markdownContent={selectedReport.aiSummary} className={'height-vh-68'} />
             </div>
           </> : <></>
       }

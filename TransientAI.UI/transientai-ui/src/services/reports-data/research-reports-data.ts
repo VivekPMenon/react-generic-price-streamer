@@ -92,7 +92,17 @@ De-equitization (private over public markets) and rising duration arbitrages in 
 ## Market Structure
 Continued momentum and narrow index concentration pose risks if market sentiment shifts. Increasing participation from retail and systematic strategies could exacerbate volatility.
 `,
-      emailSource: `../emails/Ruminations.html`
+      emailSource: `../emails/Ruminations.html`,
+      charts: [
+          {image: '../charts/divergence.png', description: 'CEO confidence vs Bull/Bear sentiment'},
+          {image: '../charts/rates_to_cuts.png'},
+          {image: '../charts/productivity.png', description: 'Regional differentials'},
+          {image: '../charts/capital_flows.png', description: 'Capital flows where it is welcome and rewarded'},
+          {image: '../charts/active_passive.png'}, {image: '../charts/concentration.png'},
+          {image: '../charts/past_v_future.png'}, {image: '../charts/valuations.png'},
+          {image: '../charts/value_creation.png'}, {image: '../charts/equity_owners.png'}
+        ],
+        keywords: ['VC Landscape', 'Systematic Quant Strategies', 'Geo Political and Headline Risk']
     },
     {
       name: 'BNP Paribas Exane Research: INDIA STRATEGY - 2025 - the pricey paradise; cloudy skies',
