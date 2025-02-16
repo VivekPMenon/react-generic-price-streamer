@@ -16,6 +16,29 @@
   padding: 10px;
 }
 
+.drop-zone {
+  border: 2px dashed #ccc;
+  padding: 20px;
+  text-align: center;
+  cursor: pointer;
+}
+
+.drop-zone.drag-active {
+  border-color: #666;
+  background-color: #797878;
+}
+
+.error-message {
+  color: red;
+  margin-top: 10px;
+}
+
+.file-input-label {
+  color: blue;
+  textDecoration: underline;
+  cursor: pointer;
+}
+
 .file-upload-step {
   @extend .wizard-step-content;
   gap: 50px;
