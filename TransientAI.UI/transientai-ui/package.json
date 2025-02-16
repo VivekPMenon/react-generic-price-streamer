@@ -21,6 +21,7 @@
     "ag-grid-react": "^32.2.0",
     "axios": "^1.4.0",
     "canvas": "^3.1.0",
+    "csv-import-react": "^1.0.14",
     "dompurify": "^3.2.4",
     "eml-parse-js": "^1.2.0-beta.0",
     "framer-motion": "^12.4.3",

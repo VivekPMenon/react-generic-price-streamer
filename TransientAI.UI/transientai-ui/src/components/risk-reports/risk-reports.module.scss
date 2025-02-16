@@ -14,12 +14,13 @@
 
   .reports-grid {
     flex: 1 1 30%;
-    max-width: 550px;
+    max-width: 650px;
   }
 
   .pdf-viewer {
-    padding: 0 50px;
+    padding: 0 10px 0 50px;
     height: calc(100vh - 300px);
     border-radius: 10px;
   }
 }
+

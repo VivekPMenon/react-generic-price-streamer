@@ -62,4 +62,10 @@ export const menuInfoList: MenuInfo[] = [
     badgeCount: 1,
     icon: 'fa-solid fa-bolt'
   },
+  {
+    route: '/dashboard/risk-report-portal',
+    description: 'Risk Report Portal',
+    badgeCount: 1,
+    icon: 'fa-regular fa-file'
+  },
 ];

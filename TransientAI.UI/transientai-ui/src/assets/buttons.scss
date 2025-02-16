@@ -25,6 +25,7 @@
   font-size: 14px;
   border: none;
   border-radius: 5px;
+  text-align: center;
   cursor: pointer;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
 }
@@ -43,23 +44,22 @@
 }
 
 .secondary-button {
-  background-color: transparent;
-  
+  background-color: $gray-1000;
+  text-align: center;
   padding: 10px;
   font-size: 14px;
-  border: 2px solid $teal-100; /* Primary color as border */
   border-radius: 5px;
   cursor: pointer;
 }
 
 .secondary-button:hover {
-  background-color: $gray-150;
+  background-color: $gray-dark;
   color: white;
 }
 
 .secondary-button:active {
-  background-color: #008f89;
-  border-color: #007673;
+  background-color: $gray-dark;
+  
   color: white;
 }
 
