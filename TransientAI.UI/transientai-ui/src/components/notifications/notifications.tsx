@@ -20,9 +20,10 @@ export function Notifications(props: NotificationsProps) {
     // NotificationType.Axes,
     // NotificationType.Clients,
     // NotificationType.Trades,
-    NotificationType.CorpAct,
+    
     NotificationType.Research,
-    NotificationType.RiskReport
+    NotificationType.RiskReport,
+    NotificationType.CorpAct,
   ];
 
   const router = useRouter();
@@ -31,7 +32,7 @@ export function Notifications(props: NotificationsProps) {
 
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
-  const [selectedType, setSelectedType] = useState<string>(NotificationType.CorpAct);
+  const [selectedType, setSelectedType] = useState<string>(NotificationType.Research);
   const [selectedCorpAction, setSelectedCorpAction] = useState<CorporateAction>({}); // todo..
 
   const visibleNotifications = useMemo<Notification[]>(() => notifications
