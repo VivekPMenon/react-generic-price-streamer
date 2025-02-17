@@ -18,7 +18,7 @@ const nextConfig: NextConfig = {
       },
       {
         source: '/dashboard',
-        destination: '/dashboard/corporate-actions',
+        destination: '/dashboard/research-reports',
         permanent: true, // Set to false if temporary
       },
     ]);

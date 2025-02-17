@@ -17,7 +17,7 @@
 }
 
 .drop-zone {
-  border: 2px dashed #ccc;
+  border: 2px dashed $border-color;
   padding: 20px;
   text-align: center;
   cursor: pointer;
@@ -34,8 +34,11 @@
 }
 
 .file-input-label {
-  color: blue;
-  textDecoration: underline;
+  color: white;
+  background-color: $gray-1000;
+  padding: 10px;
+  border-radius: 5px;
+  width: 150px;
   cursor: pointer;
 }
 

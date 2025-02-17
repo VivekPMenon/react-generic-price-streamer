@@ -93,7 +93,8 @@ export function RiskReportsUploader() {
 
   return (
     <div className={styles['risk-reports-uploader']}>
-      <FileUploadWizard></FileUploadWizard>
+      <FileUploadWizard onUploadSuccess={newFile => setRiskReports([...riskReports!, newFile])}></FileUploadWizard>
+
       <div className={styles['reports-grid']}>
         {/* <div className='filter-panel'>
           Search:
