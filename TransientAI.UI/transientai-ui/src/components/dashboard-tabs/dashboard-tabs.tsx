@@ -12,7 +12,7 @@ export interface DashboardTabsProps {
 }
 
 export function DashboardTabs({children}: DashboardTabsProps) {
-  const defaultTab = 'Corporate Actions';
+  const defaultTab = 'Research Reports';
 
   const router = useRouter();
 

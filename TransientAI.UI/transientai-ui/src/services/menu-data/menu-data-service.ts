@@ -40,21 +40,16 @@ export const menuInfoList: MenuInfo[] = [
   // },
   
   {
-    route: '/dashboard/corporate-actions',
-    description: 'Corporate Actions',
-    badgeCount: 1,
-    icon: 'fa-solid fa-microphone-lines'
+    description: 'Breaking News',
+    badgeCount: 5,
+    icon: 'fa-solid fa-newspaper',
+    route: '/dashboard/breaking-news',
   },
   {
     route: '/dashboard/research-reports',
     description: 'Research Reports',
     badgeCount: 1,
     icon: 'fa-solid fa-book'
-  },
-  {
-    description: 'Breaking News',
-    badgeCount: 5,
-    icon: 'fa-solid fa-newspaper'
   },
   {
     route: '/dashboard/risk-reports',
@@ -67,5 +62,11 @@ export const menuInfoList: MenuInfo[] = [
     description: 'Risk Report Portal',
     badgeCount: 1,
     icon: 'fa-regular fa-file'
+  },
+  {
+    route: '/dashboard/corporate-actions',
+    description: 'Corporate Actions',
+    badgeCount: 1,
+    icon: 'fa-solid fa-microphone-lines'
   },
 ];

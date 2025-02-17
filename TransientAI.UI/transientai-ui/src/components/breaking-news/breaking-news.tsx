@@ -3,6 +3,7 @@ import remarkGfm from 'remark-gfm';
 import { Article, ConsolidatedArticles, FinanceArticle, newsDataService } from '@/services/news-data';
 import styles from './breaking-news.module.scss';
 import { useEffect, useState } from 'react';
+import { Spinner } from '@radix-ui/themes';
 
 export interface BreakingNewsProps {
   isExpanded: boolean;
@@ -17,20 +18,29 @@ export function BreakingNews({ isExpanded }: BreakingNewsProps) {
   //   } as Article;
   // });
   const [articles, setArticles] = useState<ConsolidatedArticles>({});
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const loadAsync = async () => {
+      setIsLoading(true);
+
       const articles = await newsDataService.getBreakingNews();
       setArticles(articles);
+
+      setIsLoading(false);
     };
 
     loadAsync();
   }, []);
 
-  
+  if(!isLoading) {
+    return <div className={`${styles['breaking-news']} scrollable-div height-vh-75`}>
+      <Spinner size='3' className='text-center'></Spinner>
+    </div>;
+  }
 
   return (
-    <div className={`${styles['breaking-news']} scrollable-div height-vh-82`}>
+    <div className={`${styles['breaking-news']} scrollable-div height-vh-75`}>
       <div className=''>
         {
           // articles.market_news?.map(article => (
