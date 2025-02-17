@@ -93,6 +93,7 @@ export function RiskReportsUploader() {
 
   return (
     <div className={styles['risk-reports-uploader']}>
+      <FileUploadWizard></FileUploadWizard>
       <div className={styles['reports-grid']}>
         {/* <div className='filter-panel'>
           Search:
@@ -106,8 +107,6 @@ export function RiskReportsUploader() {
           columnDefs={columnDefs}>
         </DataGrid>
       </div>
-
-      <FileUploadWizard></FileUploadWizard>
     </div>
 
   );
