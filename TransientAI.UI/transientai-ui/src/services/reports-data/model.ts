@@ -18,4 +18,6 @@ export interface RiskReport {
   reportType?: string;
   date?: string;
   pdfSource?: string;
+  uploadedBy?: string;
+  uploadStatus?: string;
 }

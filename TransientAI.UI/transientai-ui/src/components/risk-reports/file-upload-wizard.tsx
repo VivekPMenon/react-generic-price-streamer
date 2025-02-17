@@ -4,12 +4,18 @@ import { DataGrid } from '../data-grid';
 import { ColDef } from 'ag-grid-community';
 import Papa from 'papaparse';
 import CsvTemplateDownloader from '../csv-template-downloader/csv-template-downloader';
+import { RiskReport } from '@/services/reports-data';
+import { getCurrentDate } from '@/lib/utility-functions/date-operations';
 
-export function FileUploadWizard() {
+export interface FileUploaderWizardProps {
+  onUploadSuccess?:(newFile: RiskReport) => void;
+}
+
+export function FileUploadWizard({onUploadSuccess}: FileUploaderWizardProps) {
 
   const [stepId, setStepId] = useState<number>(1);
   const [isDragging, setIsDragging] = useState(false);
-  const [selectedFiles, setSelectedFiles] = useState([]);
+  const [selectedFile, setSelectedFile] = useState<any>({});
   const [jsonData, setJsonData] = useState([]);
   const [errorMessage, setErrorMessage] = useState('');
 
@@ -25,82 +31,65 @@ export function FileUploadWizard() {
     { 'Bond': 'Corporate Bond A', 'ISIN': 'US4592001014', 'Security Name': 'High Yield Corporate Bond A', 'Price': 105.25, 'Bid': 105.00, 'Mid': 105.12, 'Ask': 105.30, 'Currency': 'USD', 'Maturity Date': '2030-06-20', 'Coupon Rate': 4.20, 'Yield': 4.50, 'Sector': 'Corporate' }
   ];
 
-  const handleDragEnter = (e: any) => {
+  function handleDragEnter(e: any) {
     e.preventDefault();
     setIsDragging(true);
-  };
-
-  const handleDragOver = (e: any) => {
+  }
+  
+  function handleDragOver(e: any) {
     e.preventDefault();
-  };
-
-  const handleDragLeave = (e: any) => {
-    e.preventDefault();
-    setIsDragging(false);
-  };
-
-  const handleDrop = (e: any) => {
+  }
+  
+  function handleDragLeave(e: any) {
     e.preventDefault();
     setIsDragging(false);
-
+  }
+  
+  function handleDrop(e: any) {
+    e.preventDefault();
+    setIsDragging(false);
+  
     const files = Array.from(e.dataTransfer.files);
     handleFiles(files);
-  };
-
-  const handleFileSelect = (event: any) => {
+  }
+  
+  function handleFileSelect(event: any) {
     const file = event.target.files[0];
     if (!file) return;
-
-    setSelectedFiles(file);
-
+  
+    setSelectedFile(file);
+  
     Papa.parse(file, {
       header: true,
       skipEmptyLines: true,
-      complete: (result: any) => {
+      complete: function (result: any) {
         setJsonData(result.data);
         setStepId(stepId + 1);
       },
-      error: (error: any) => {
+      error: function (error: any) {
         setErrorMessage(error.message);
       }
     });
-  };
-
-  const handleFiles = (files: any) => {
+  }
+  
+  function handleFiles(files: any) {
     if (files.length > 0) {
-      setSelectedFiles(files);
+      setSelectedFile(files);
       setErrorMessage('');
-
     } else {
       setErrorMessage('No files selected.');
     }
-  };
-
-  const handleUpload = async () => {
-    if (selectedFiles.length === 0) {
-      setErrorMessage('Please select files to upload.');
-      return;
-    }
-    const formData = new FormData();
-    selectedFiles.forEach(file => {
-      formData.append('files', file);
+  }
+  
+  function uploadFile() {
+    setStepId(stepId + 1);
+    onUploadSuccess!({
+      date: getCurrentDate(),
+      uploadedBy: 'John Doe',
+      uploadStatus: 'Submitted to MSCI',
+      portfolio: selectedFile?.name!
     });
-
-    try {
-      const response = await fetch('/upload', {
-        method: 'POST',
-        body: formData
-      });
-
-      if (response.ok) {
-        console.log('Files uploaded successfully');
-      } else {
-        console.error('Error uploading files');
-      }
-    } catch (error) {
-      console.error('Error uploading files:', error);
-    }
-  };
+  }
 
   function getColumnDef(): ColDef[] {
     const columnDefs: ColDef[] = [
@@ -230,7 +219,7 @@ export function FileUploadWizard() {
 
           <div className='flex gap-3 justify-center'>
             <button className="secondary-button" onClick={() => setStepId(stepId - 1)}>Back</button>
-            <button className="button" onClick={() => setStepId(stepId + 1)}>Next</button>
+            <button className="button" onClick={uploadFile}>Next</button>
           </div>
         </div>
       }

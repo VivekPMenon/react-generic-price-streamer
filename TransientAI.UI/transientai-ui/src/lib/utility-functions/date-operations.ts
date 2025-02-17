@@ -18,6 +18,11 @@ export function isSameMinute(date1: Date, date2: Date): boolean {
   return date1.getMinutes() === date2.getMinutes();
 }
 
+export function getCurrentDate() {
+  const date = new Date();
+  return date.toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' });
+}
+
 export function getCurrentTimestamp() {
   const currentTime = new Date().toLocaleTimeString('en-US', {
     hour: 'numeric',
