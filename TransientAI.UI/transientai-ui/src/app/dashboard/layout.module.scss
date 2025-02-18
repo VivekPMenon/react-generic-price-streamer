@@ -30,15 +30,17 @@
     max-width: 400px;
     z-index: 10;
     background-color: $body-bg;
+    transition: transform 0.3s ease-in-out; 
 
     @media screen and (max-width: $mobile-breakpoint-max) { 
       max-width: unset;
       position: fixed;
+      transform: translateX(0);
     }
 
     &.collapsed {
       position: fixed;
-      display: none;
+      transform: translateX(-100%); 
     }
   }
   

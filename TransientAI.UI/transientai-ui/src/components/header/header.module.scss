@@ -51,6 +51,10 @@
   display: flex;
   justify-content: center;
   font-size: 18px;
+
+  &.active {
+    border: 1px solid $font-color-200;
+  }
 }
 
 .selected-security {

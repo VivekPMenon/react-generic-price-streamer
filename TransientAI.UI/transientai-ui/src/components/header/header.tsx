@@ -10,7 +10,7 @@ export interface HeaderProps {
   isMenuVisible?: boolean;
 }
 
-export function Header({ onMenuToggle }: HeaderProps) {
+export function Header({ onMenuToggle, isMenuVisible }: HeaderProps) {
 
   const { searchData, setSearchData } = useContext(SearchDataContext);
   const deviceType = useDeviceType();
@@ -20,13 +20,12 @@ export function Header({ onMenuToggle }: HeaderProps) {
       <div className={styles.title} onClick={onMenuToggle}>
         {
           deviceType === 'mobile' ?
-            <div className={styles['hamburger-menu']}>
+            <div className={`${styles['hamburger-menu']} ${isMenuVisible ? styles.active : ''}`}>
               <i className='fa-solid fa-bars'></i>
             </div>
-            : <img src="/images/TRANS_H_white-on-transparent.png" />
+            :
+            <img src="/images/TRANS_H_white-on-transparent.png" />
         }
-        {/* TransientAI */}
-
       </div>
 
       <div className={styles['global-search']}>
