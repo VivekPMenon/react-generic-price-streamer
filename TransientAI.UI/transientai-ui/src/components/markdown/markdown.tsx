@@ -90,7 +90,7 @@ export const SearchableMarkdown = ({ markdownContent, className, title }: Search
             placeholder="Find..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            style={{ width: "150px" }}
+            
           />
           <i className={`fa-solid fa-chevron-left ${ matches?.length ? 'active': ''}`} onClick={() => navigateMatches("prev")}></i>
           <i className={`fa-solid fa-chevron-right ${ matches?.length ? 'active': ''}`} onClick={() => navigateMatches("next")}></i>

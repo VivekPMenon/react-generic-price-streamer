@@ -1,3 +1,5 @@
+@import '../assets/variables.scss';
+
 .menu {
   padding: 10px;
   // max-width: 350px;
@@ -12,6 +14,10 @@
   padding: 5px;
   cursor: pointer;
   color: $font-color-200;
+
+  @media screen and (max-width: $mobile-breakpoint-max) { 
+    padding: 7px;
+  }
 
   &:hover {
     color: $white;

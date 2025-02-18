@@ -4,6 +4,11 @@
   display: flex;
   color: $font-color-100;
   gap: 15px;
+
+  @media screen and (max-width: $mobile-breakpoint-max) {
+    flex-direction: column;
+    gap: 35px;
+  }
 }
 
 .format-type {
@@ -16,9 +21,15 @@
   flex-direction: column;
   gap: 10px;
   font-size: 15px;
-  max-width: 350px;
-  min-width: 350px;
+  max-width: 400px;
+  min-width: 400px;
   position: relative;
+
+  @media screen and (max-width: $mobile-breakpoint-max) {
+    flex: 1 1 100%;
+    max-width: unset;
+    min-width: unset;
+  }
 
   .report {
     display: flex;
@@ -47,14 +58,14 @@
 .email-content {
   flex: 1 1 40%;
   // padding: 10px;
-  
+
   border-radius: 5px;
   background-color: $gray-1000;
 }
 
 .ai-summary {
   flex: 1 1 40%;
-  background-color: $gray-1000; 
+  background-color: $gray-1000;
   border-radius: 5px;
   height: 100%;
   margin-left: 10px;
@@ -65,7 +76,7 @@
     span {
       color: $white;
       font-style: italic;
-      
+
       color: $blue-alt;
 
       &:hover {

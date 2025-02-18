@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import styles from './research-reports.module.scss';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
@@ -10,6 +10,7 @@ import { getReports, ResearchReport } from '@/services/reports-data';
 import EmailViewer from '../email-parser/email-viewer';
 import Tags from "@/components/tags/tags";
 import ImageContainer from "@/components/image-container/image-container";
+import { useScrollTo } from '@/lib/hooks';
 
 
 export interface ResearchReportsProps {
@@ -17,6 +18,8 @@ export interface ResearchReportsProps {
 }
 
 export function ResearchReports({ isExpanded }: ResearchReportsProps) {
+
+  const { scrollTargetRef, scrollToTarget } = useScrollTo<HTMLDivElement>();
 
   const [isSummaryVisible, setIsSummaryVisible] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState<string>('');
@@ -38,6 +41,12 @@ export function ResearchReports({ isExpanded }: ResearchReportsProps) {
     }
 
     return reports.filter(report => report.name?.toLowerCase().includes(searchQuery.toLowerCase()));
+  }
+
+  function onReportSelection(report: ResearchReport) {
+    setIsSummaryVisible(true);
+    setSelectedReport(report);
+    scrollToTarget();
   }
 
   return (
@@ -62,7 +71,7 @@ export function ResearchReports({ isExpanded }: ResearchReportsProps) {
           {
             visibleReports.map(report =>
               <div className={report.name === selectedReport.name ? 'news-item active' : 'news-item'}
-                onClick={() => { setIsSummaryVisible(true); setSelectedReport(report) }}>
+                onClick={() => { onReportSelection(report) }}>
                 <div className='news-content'>
                   <div className='news-title'>
                     <i className='fa-regular fa-file-lines'></i>
@@ -73,7 +82,6 @@ export function ResearchReports({ isExpanded }: ResearchReportsProps) {
             )
           }
         </div>
-
       </div>
 
       {
@@ -89,7 +97,7 @@ export function ResearchReports({ isExpanded }: ResearchReportsProps) {
               </div>
             </div>
 
-            <div className={`${styles['ai-summary']} ${isExpanded ? styles['expanded'] : ''}`}>
+            <div className={`${styles['ai-summary']} ${isExpanded ? styles['expanded'] : ''}`} ref={scrollTargetRef}>
               <div className={styles['summary-title']}>
                 AI Summary
               </div>
@@ -97,15 +105,15 @@ export function ResearchReports({ isExpanded }: ResearchReportsProps) {
                 {/* <SearchableMarkdown markdownContent={selectedReport.aiSummary} className={isExpanded ? 'height-vh-82': 'height-vh-36'} /> */}
                 <SearchableMarkdown markdownContent={selectedReport.aiSummary} />
                 {selectedReport.charts &&
-                    <ImageContainer
-                      images={selectedReport.charts}
-                    />
+                  <ImageContainer
+                    images={selectedReport.charts}
+                  />
                 }
                 {selectedReport.keywords &&
-                <Tags
+                  <Tags
                     header='Keywords:'
                     tags={selectedReport.keywords}
-                />}
+                  />}
               </div>
             </div>
           </> : <></>

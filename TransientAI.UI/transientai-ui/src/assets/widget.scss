@@ -39,15 +39,37 @@
   align-items: center;
   padding: 10px;
 
+  @media screen and (max-width: $mobile-breakpoint-max) {
+    padding: 10px 0px;
+  }
+
   .title {
     flex: 1 1 40%;
     font-size: 15px;
+
+    @media screen and (max-width: $mobile-breakpoint-max) {
+      display: none;
+    }
   }
 
   .search-toolbar {
     display: flex;
     gap: 10px;
     align-items: center;
+
+    input {
+      width: 150px;
+    }
+
+    @media screen and (max-width: $mobile-breakpoint-max) {
+      flex: 1 1 100%;
+      padding: 10px 0px;
+      
+      input {
+        width: 100%;
+        padding: 10px;
+      }
+    }
   }
 
   i {
@@ -58,4 +80,12 @@
       opacity: 1;
     }
   }
+}
+
+.summary-title {
+  padding: 5px;
+  text-align: center;
+  background-color: $body-bg;
+  font-size: 14px;
+  color: $white;
 }

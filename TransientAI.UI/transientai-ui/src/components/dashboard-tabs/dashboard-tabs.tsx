@@ -6,6 +6,7 @@ import { TabInfo } from './model';
 import { ReactNode, useContext, useMemo, useState } from 'react';
 import { ActiveMenuData, MenuContextData, MenuInfo } from '@/services/menu-data';
 import { useRouter } from 'next/navigation';
+import { useDeviceType } from '@/lib/hooks';
 
 export interface DashboardTabsProps {
   children?: ReactNode;
@@ -17,6 +18,7 @@ export function DashboardTabs({children}: DashboardTabsProps) {
   const router = useRouter();
 
   const { activeMenuData, setActiveMenuData } = useContext(MenuContextData);
+  const deviceType = useDeviceType();
 
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
 
@@ -28,6 +30,15 @@ export function DashboardTabs({children}: DashboardTabsProps) {
 
     if (!activeMenuData?.activeMenuList) {
       return tabs;
+    }
+
+    if(deviceType === 'mobile') {
+      return [
+        {
+          description: activeMenuData?.selectedMenu?.description,
+          route: activeMenuData?.selectedMenu?.route
+        }
+      ];
     }
 
     activeMenuData?.activeMenuList.forEach(menu => {
@@ -84,9 +95,9 @@ export function DashboardTabs({children}: DashboardTabsProps) {
             ))
           }
 
-          <div className={styles['expand-collapse-toggler']} onClick={() => setIsExpanded(!isExpanded)}>
+          {/* <div className={styles['expand-collapse-toggler']} onClick={() => setIsExpanded(!isExpanded)}>
             <i className='fa-solid fa-expand toggler'></i>
-          </div>
+          </div> */}
         </Tabs.List>
 
         

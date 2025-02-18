@@ -164,7 +164,7 @@ const EmailViewer = ({ emailHtml, htmlSource, className }: EmailViewerProps) => 
             placeholder="Find..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            style={{ width: "150px" }}
+            
           />
           <i className={`fa-solid fa-chevron-left ${matchIndices?.length > 0 ? 'active': ''}`} onClick={() => navigateMatches(-1)}></i>
           <i className={`fa-solid fa-chevron-right ${matchIndices?.length > 0 ? 'active': ''}`} onClick={() => navigateMatches(1)}></i>
