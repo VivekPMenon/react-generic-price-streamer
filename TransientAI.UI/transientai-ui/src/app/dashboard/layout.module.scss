@@ -4,7 +4,7 @@
   display: flex;
   flex-direction: column;
   height: 100%;
-  
+
   // move this to the header class
   header {
     display: flex;
@@ -13,13 +13,28 @@
     flex: 0 0 40px;
     align-content: center;
     padding: 10px 10px 0px 10px;
+    background-color: $body-bg;
+    z-index: 99;
+    width: 100%;
+
+    // fixed header for phones
+    @media screen and (max-width: $mobile-breakpoint-max) {
+      position: fixed;
+      padding: 10px 10px 10px 10px;
+    }
   }
-  
+
   main {
     flex: 1 1 90%;
     display: flex;
     padding: 10px;
     gap: 10px;
+
+    // fixed header for phones
+    @media screen and (max-width: $mobile-breakpoint-max) {
+
+      margin-top: 60px;
+    }
   }
 
   .left-panel {
@@ -30,26 +45,30 @@
     max-width: 400px;
     z-index: 10;
     background-color: $body-bg;
-    transition: transform 0.3s ease-in-out; 
+    transition: transform 0.3s ease-in-out;
 
-    @media screen and (max-width: $mobile-breakpoint-max) { 
+    @media screen and (max-width: $mobile-breakpoint-max) {
       max-width: unset;
       position: fixed;
       transform: translateX(0);
+      right: 5px;
+      left: 5px;
     }
 
     &.collapsed {
       position: fixed;
-      transform: translateX(-100%); 
+      transform: translateX(-100%);
+      right: 5px;
+      left: 5px;
     }
   }
-  
+
   .middle-panel {
     display: flex;
     flex-direction: column;
     flex: 1 1 60%;
     gap: 10px;
-    
+
     &.collapsed {
       display: none;
     }

@@ -20,7 +20,7 @@
   max-height: 60vh;
 
   @media screen and (max-width: $mobile-breakpoint-max) { 
-    max-height: calc(100vh - 480px);
+    max-height: calc(100vh - 430px);
   }
 
   &.expanded {
