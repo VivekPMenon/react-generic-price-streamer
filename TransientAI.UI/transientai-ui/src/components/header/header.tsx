@@ -6,7 +6,7 @@ import { SearchDataContext } from '@/services/search-data';
 import { useDeviceType } from '@/lib/hooks';
 
 export interface HeaderProps {
-  onMenuToggle: () => void;
+  onMenuToggle?: () => void;
   isMenuVisible?: boolean;
 }
 
