@@ -5,7 +5,7 @@
   flex-direction: column;
   gap: 20px;
   font-size: 14px;
-  padding: 10px 10px ;
+  padding: 10px 10px;
 }
 
 .ribbon {
@@ -32,16 +32,23 @@
     max-width: calc(100vw - 520px);
     overflow-x: hidden;
     gap: 15px;
+
+    @media screen and (max-width: $mobile-breakpoint-max) {
+      max-width: calc(100vw - 100px);
+      overflow-x: auto; // Allow horizontal scrolling
+      white-space: nowrap; // Prevent wrapping
+      gap: 15px;
+      -webkit-overflow-scrolling: touch; // Enable smooth scrolling on iOS
+    }
   }
 
   .tile {
     background-color: $gray-1000;
     border-radius: 5px;
-    
     padding: 10px;
     width: 128px;
     min-width: 128px;
-    
+
     div {
       text-align: center;
     }
@@ -52,4 +59,3 @@
     cursor: auto;
   }
 }
-

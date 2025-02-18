@@ -3,15 +3,24 @@
 import { useContext } from 'react';
 import styles from './header.module.scss';
 import { SearchDataContext } from '@/services/search-data';
+import { useDeviceType } from '@/lib/hooks';
 
-export function Header() {
+export interface HeaderProps {
+  onMenuToggle: () => void;
+  isMenuVisible?: boolean;
+}
+
+export function Header({ onMenuToggle }: HeaderProps) {
 
   const { searchData, setSearchData } = useContext(SearchDataContext);
+  const deviceType = useDeviceType();
 
   return (
     <header>
-      <div className={styles.title}>
-        <img src="/images/TRANS_H_white-on-transparent.png" />
+      <div className={styles.title} onClick={onMenuToggle}>
+        {
+          deviceType === 'mobile' ? <i className='fa-solid fa-bars'></i> : <img src="/images/TRANS_H_white-on-transparent.png" />
+        }
         {/* TransientAI */}
 
       </div>

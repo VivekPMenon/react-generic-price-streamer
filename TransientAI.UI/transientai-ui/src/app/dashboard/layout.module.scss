@@ -1,3 +1,5 @@
+@import '../../assets/variables.scss';
+
 .home {
   display: flex;
   flex-direction: column;
@@ -26,7 +28,18 @@
     flex: 1 1 10%;
     gap: 10px;
     max-width: 400px;
-    min-width: 400px;
+    z-index: 10;
+    background-color: $body-bg;
+
+    @media screen and (max-width: $mobile-breakpoint-max) { 
+      max-width: unset;
+      position: fixed;
+    }
+
+    &.collapsed {
+      position: fixed;
+      display: none;
+    }
   }
   
   .middle-panel {
@@ -34,6 +47,10 @@
     flex-direction: column;
     flex: 1 1 60%;
     gap: 10px;
+    
+    &.collapsed {
+      display: none;
+    }
   }
 
   .middle-panel-bottom-widgets {

@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation';
 
 export interface NotificationsProps {
   onExpandCollapse?: (state: boolean) => void;
+  onNavigate?: () => void;
 }
 
 export function Explorer(props: NotificationsProps) {
@@ -35,6 +36,7 @@ export function Explorer(props: NotificationsProps) {
     });
 
     router.push(selectedMenuInfo.route!);
+    props.onNavigate!();
   }
 
   function onChildMenuClick(menuInfo: MenuInfo) {
