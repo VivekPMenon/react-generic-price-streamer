@@ -54,7 +54,7 @@ export function Explorer(props: NotificationsProps) {
     <div className={`${styles.explorer} widget`}>
       <div className='widget-title'>
         Explorer
-        <i className='fa-solid fa-expand toggler' onClick={() => expandOrCollapsePanel()}></i>
+        {/* <i className='fa-solid fa-expand toggler' onClick={() => expandOrCollapsePanel()}></i> */}
       </div>
 
       <div className="menu">

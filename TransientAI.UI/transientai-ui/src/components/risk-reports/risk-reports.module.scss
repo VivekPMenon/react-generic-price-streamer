@@ -1,10 +1,16 @@
+@import '../../assets/variables.scss';
+
 .risk-reports {
   display: flex;
   padding: 5px;
   height: 100%;
   gap: 20px;
 
-  & > div {
+  @media screen and (max-width: $mobile-breakpoint-max) {
+    flex-direction: column;
+  }
+
+  &>div {
     flex: 1 1 50%;
     display: flex;
     flex-direction: column;
@@ -21,6 +27,10 @@
     padding: 0 10px 0 50px;
     height: calc(100vh - 300px);
     border-radius: 10px;
+
+    @media screen and (max-width: $mobile-breakpoint-max) {
+      padding: 0px;
+      height: calc(100vh - 800px);
+    }
   }
 }
-
