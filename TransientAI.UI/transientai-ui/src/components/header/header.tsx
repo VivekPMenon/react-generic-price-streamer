@@ -19,7 +19,11 @@ export function Header({ onMenuToggle }: HeaderProps) {
     <header>
       <div className={styles.title} onClick={onMenuToggle}>
         {
-          deviceType === 'mobile' ? <i className='fa-solid fa-bars'></i> : <img src="/images/TRANS_H_white-on-transparent.png" />
+          deviceType === 'mobile' ?
+            <div className={styles['hamburger-menu']}>
+              <i className='fa-solid fa-bars'></i>
+            </div>
+            : <img src="/images/TRANS_H_white-on-transparent.png" />
         }
         {/* TransientAI */}
 
