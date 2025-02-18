@@ -24,15 +24,16 @@
     height: 60px;
     align-items: center;
 
-    &:hover, &.active {
+    &:hover,
+    &.active {
       box-shadow: 0 0 3px $green;
     }
 
     .news-menu {
-       margin-left: auto; 
-       display: flex;
-       align-items: center;
-       cursor: pointer;
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      cursor: pointer;
     }
   }
 
@@ -43,9 +44,11 @@
     text-transform: capitalize;
     gap: 10px;
     align-items: baseline;
+
+    @media screen and (max-width: $mobile-breakpoint-max) {
+      font-size: 13px;
+    }
   }
 
-  .news-description {
-
-  }
+  .news-description {}
 }

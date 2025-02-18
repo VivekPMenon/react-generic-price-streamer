@@ -5,6 +5,7 @@ import { useContext, useEffect, useState } from 'react';
 import { CorpActionsDataContext, CorporateAction } from '@/services/corporate-actions';
 import { getEmailSource, getCorpActions } from '@/services/corporate-actions/corporate-actions-data';
 import EmailViewer from '../email-parser/email-viewer';
+import { useScrollTo } from '@/lib/hooks';
 
 export interface CorporateActionsProps {
   isExpanded?: boolean;
@@ -13,6 +14,7 @@ export interface CorporateActionsProps {
 export function CorporateActions({ isExpanded }: CorporateActionsProps) {
 
   const { corpActionsData, setCorpActionsData } = useContext(CorpActionsDataContext);
+  const { scrollTargetRef, scrollToTarget } = useScrollTo<HTMLDivElement>();
 
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [selectedEmailContent, setSelectedEmailContent] = useState<string>('');
@@ -51,6 +53,7 @@ export function CorporateActions({ isExpanded }: CorporateActionsProps) {
   function onSelectEmail(corpAction: CorporateAction, version: string) {
     const newEmailContent = emailContents[corpAction.eventId + '_' + version]
     setSelectedEmailContent(newEmailContent);
+    scrollToTarget();
   }
 
   return (
@@ -67,7 +70,7 @@ export function CorporateActions({ isExpanded }: CorporateActionsProps) {
 
         {
           corpActionsData?.corpActions?.length ?
-            <div className={`${styles['corporate-actions-response']} scrollable-div height-vh-82`}>
+            <div className={`${styles['corporate-actions-response']}`}>
               {
                 corpActionsData.corpActions?.map(corpAction =>
                   <div className={styles['corporate-action']}>
@@ -89,34 +92,34 @@ export function CorporateActions({ isExpanded }: CorporateActionsProps) {
                     </ReactMarkdown> */}
 
                       <div className={styles['basic-info']}>
-                        <div className="grid grid-cols-[40%_60%] gap-2 fs-13">
+                        <div className="grid grid-cols-[40%_60%] gap-3 fs-13">
                           <div className='font-bold'>Announcement Id</div>
-                          <div className='orange-color mb-2'>{corpAction.eventId}</div>
+                          <div className='orange-color'>{corpAction.eventId}</div>
                         </div>
-                        <div className="grid grid-cols-[40%_60%] gap-2 fs-13">
+                        <div className="grid grid-cols-[40%_60%] gap-3 fs-13">
                           <div className='font-bold'>Account</div>
                           <div>{corpAction.accountId}</div>
                         </div>
-                        <div className="grid grid-cols-[40%_60%] gap-2 fs-13">
+                        <div className="grid grid-cols-[40%_60%] gap-3 fs-13">
                           <div className='font-bold'>Holding Quantity</div>
                           <div>{corpAction.holdingQuantity}</div>
                         </div>
-                        <div className="grid grid-cols-[40%_60%] gap-2 fs-13">
+                        <div className="grid grid-cols-[40%_60%] gap-3 fs-13">
                           <div className='font-bold'>Term Details</div>
                           <div>{corpAction.termDetails}</div>
                         </div>
-                        <div className="grid grid-cols-[40%_60%] gap-2 fs-13">
+                        <div className="grid grid-cols-[40%_60%] gap-3 fs-13">
                           <div className='font-bold'>Entitled Product Id</div>
                           <div>{corpAction.entitledProductId}</div>
                         </div>
-                        <div className="grid grid-cols-[40%_60%] gap-2 fs-13">
+                        <div className="grid grid-cols-[40%_60%] gap-3 fs-13">
                           <div className='font-bold'>Pay Date</div>
                           <div>{corpAction.paydate}</div>
                         </div>
                       </div>
 
                       <div>
-                        <div className="grid grid-cols-[1fr_3fr_1fr_1fr] gap-2 fs-13 table-header text-center">
+                        <div className="grid grid-cols-[1fr_3fr_1fr_1fr] gap-3 fs-12 table-header text-center">
                           <div>Version</div>
                           <div>Date & Time</div>
                           <div>Email</div>
@@ -144,7 +147,7 @@ export function CorporateActions({ isExpanded }: CorporateActionsProps) {
         }
       </div>
 
-      <div className={styles['email-content']}>
+      <div className={styles['email-content']} ref={scrollTargetRef}>
         {/* <SearchableMarkdown 
           markdownContent={reportsDataService.getEmailContentMock()} 
           className={isExpanded ? 'height-vh-82' : 'height-vh-40'} 

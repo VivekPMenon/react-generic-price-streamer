@@ -5,7 +5,11 @@
   border-radius: $border-radius;
   padding: 5px 10px;
   font-size: 14px;
-  color: $font-color-100;
+  color: $font-color-100; 
+
+  @media screen and (max-width: $mobile-breakpoint-max) {
+    font-size: 13px;
+  }
 
   &.expanded {
     position: fixed;
