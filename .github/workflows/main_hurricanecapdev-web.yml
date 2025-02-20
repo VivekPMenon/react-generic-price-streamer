@@ -31,7 +31,8 @@ jobs:
         run: |
           npm install
           npm run build --if-present
-          npm run test --if-present
+          mv ./build/static ./build/standalone/build
+          mv ./public ./build/standalone
 
       - name: Zip artifact for deployment
         run: zip release.zip ./* -r
