@@ -3,6 +3,10 @@
 
 name: Build and deploy Node.js app to Azure Web App - hurricanecapdev-web
 
+defaults:
+  run:
+    working-directory: TransientAI.UI/transientai-ui
+
 on:
   push:
     branches:
