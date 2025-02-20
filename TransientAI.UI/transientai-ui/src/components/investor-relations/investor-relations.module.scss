@@ -1,0 +1,35 @@
+@import '../../assets/variables.scss';
+
+.investor-relations {
+  display: flex;
+  padding: 5px;
+  height: 100%;
+  gap: 20px;
+
+  @media screen and (max-width: $mobile-breakpoint-max) {
+    flex-direction: column;
+  }
+}
+
+.inquiries-grid {
+  display: flex;
+  flex: 1 1 100%;
+  flex-direction: row;
+  max-width: 100%;
+}
+
+.action-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 100%
+}
+
+.status-icons {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}

@@ -8,6 +8,7 @@ const nextConfig: NextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
+  distDir: "build",
   output: "standalone",
   async redirects() {
     

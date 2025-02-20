@@ -69,4 +69,10 @@ export const menuInfoList: MenuInfo[] = [
     badgeCount: 1,
     icon: 'fa-solid fa-microphone-lines'
   },
+  {
+    route: '/dashboard/investor-relations',
+    description: 'Investor Relations',
+    badgeCount: 1,
+    icon: 'fa-solid fa-handshake'
+  },
 ];
