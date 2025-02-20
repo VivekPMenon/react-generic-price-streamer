@@ -35,7 +35,7 @@ jobs:
           mv ./public ./build/standalone
 
       - name: Zip artifact for deployment
-        run: zip release.zip ./* -r
+        run: zip release.zip ./* build -r
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
@@ -65,5 +65,5 @@ jobs:
         with:
           app-name: 'hurricanecapdev-web'
           slot-name: 'Production'
-          package: ./build/standalone
+          package: release.zip
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_2FD9681FD7114BA2BB4725964DE223C3 }}
