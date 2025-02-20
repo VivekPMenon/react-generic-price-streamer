@@ -65,5 +65,5 @@ jobs:
         with:
           app-name: 'hurricanecapdev-web'
           slot-name: 'Production'
-          package: .
+          package: ./build/standalone
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_2FD9681FD7114BA2BB4725964DE223C3 }}
