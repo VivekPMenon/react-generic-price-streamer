@@ -29,7 +29,48 @@
 
 .status-icons {
   display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
+  flex-direction: column;
+  justify-content: left;
+}
+
+/* Mobile and Tablet Friendly Updates */
+@media (max-width: 768px) {
+  .investor-relations {
+    width: 95%;
+    padding: 10px;
+  }
+
+  .inquiries-grid {
+    overflow-x: auto;
+    font-size: 0.9rem;
+  }
+
+  .date-cell {
+    font-size: 0.85rem;
+  }
+
+  .ag-cell {
+    font-size: 0.85rem;
+    padding: 6px;
+  }
+}
+
+@media (max-width: 480px) {
+  .investor-relations {
+    width: 100%;
+    padding: 8px;
+  }
+
+  .inquiries-grid {
+    font-size: 0.8rem;
+  }
+
+  .date-cell {
+    font-size: 0.75rem;
+  }
+
+  .ag-cell {
+    font-size: 0.75rem;
+    padding: 4px;
+  }
 }

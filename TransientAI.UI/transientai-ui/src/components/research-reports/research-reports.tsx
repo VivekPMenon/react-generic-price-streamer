@@ -101,19 +101,19 @@ export function ResearchReports({ isExpanded }: ResearchReportsProps) {
               <div className={styles['summary-title']}>
                 AI Summary
               </div>
-              <div className={`scrollable-div height-vh-68`}>
+              <div className={`height-vh-68 scrollable-div `}>
                 {/* <SearchableMarkdown markdownContent={selectedReport.aiSummary} className={isExpanded ? 'height-vh-82': 'height-vh-36'} /> */}
                 <SearchableMarkdown markdownContent={selectedReport.aiSummary} />
                 {selectedReport.charts &&
-                  <ImageContainer
-                    images={selectedReport.charts}
-                  />
+                    <ImageContainer
+                        images={selectedReport.charts}
+                    />
                 }
                 {selectedReport.keywords &&
-                  <Tags
-                    header='Keywords:'
-                    tags={selectedReport.keywords}
-                  />}
+                    <Tags
+                        header='Keywords:'
+                        tags={selectedReport.keywords}
+                    />}
               </div>
             </div>
           </> : <></>

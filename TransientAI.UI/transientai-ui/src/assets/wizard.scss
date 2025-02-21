@@ -6,6 +6,10 @@
   align-items: center;
   justify-content: center;
 
+  @media screen and (max-width: $mobile-breakpoint-max) {
+    gap: 5px;
+  }
+
   .step-title {
 
   }
@@ -30,5 +34,9 @@
     height: 1px;
     margin: 0 10px;
     background-color: $border-color;
+
+    @media screen and (max-width: $mobile-breakpoint-max) {
+      width: 30px;
+    }
   }
 }

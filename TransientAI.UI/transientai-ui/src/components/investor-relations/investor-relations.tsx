@@ -7,7 +7,6 @@ import {getInquiries, InquiryRequest} from "@/services/investor-relations-data";
 import {ColDef} from "ag-grid-community";
 
 export interface InvestorRelationsProps {
-    isExpanded?: boolean;
 }
 
 function getColumnDef(): ColDef[] {
@@ -57,9 +56,7 @@ function getColumnDef(): ColDef[] {
             width: 150,
             cellRenderer:(params:any) => {
                 return (
-                    <div style={{ display: 'flex', alignItems: 'center',
-                        flexDirection: 'column', justifyContent: 'center',
-                        height: '100%', width: '100%' }}>
+                    <div className={styles['action-cell']}>
                         <i className='fa-regular fa-3x fa-file' style={{ marginRight: '4px' }}></i>
                     </div>
                 );
@@ -76,8 +73,7 @@ function getColumnDef(): ColDef[] {
             autoHeight: true,
             cellRenderer:(params:any) => {
                 return (
-                    <div style={{ display: 'flex',
-                        flexDirection: 'column', justifyContent: 'left' }}>
+                    <div className={styles['status-icons']}>
                         <span><i className='fa-regular fa-check-circle'></i> Completed</span>
                         <span><i className='fa-regular fa-check-circle'></i> Attached 2 items</span>
                         <span><i className='fa-regular fa-check-circle'></i> Response</span>
@@ -102,9 +98,23 @@ function getColumnDef(): ColDef[] {
     ];
 }
 
-export function InvestorRelations({ isExpanded }: InvestorRelationsProps) {
+export function InvestorRelations(props: InvestorRelationsProps) {
+    const isMobile = window.innerWidth <= 480;
+    const isTablet = window.innerWidth > 480 && window.innerWidth <= 768;
+
+    const columnDefs = useMemo<ColDef[]>(() => {
+        const baseDefs = getColumnDef();
+        return baseDefs.map((col) => {
+            if (isMobile) {
+                return { ...col, width: col.width ? col.width * 0.7 : undefined };
+            } else if (isTablet) {
+                return { ...col, width: col.width ? col.width * 0.85 : undefined };
+            }
+            return col;
+        });
+    }, [isMobile, isTablet]);
+
     const [investorInquiries, setInvestorInquiries] = useState<InquiryRequest[]>();
-    const columnDefs = useMemo<ColDef[]>(() => getColumnDef(), []);
 
     function loadInquiries() {
         const loadDataAsync = async () => {

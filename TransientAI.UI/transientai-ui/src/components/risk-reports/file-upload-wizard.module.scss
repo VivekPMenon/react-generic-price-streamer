@@ -58,6 +58,7 @@
     align-items: center;
     justify-content: center;
     gap: 10px;
+
   }
 
   button {
@@ -98,5 +99,62 @@
 
   button {
     width: 130px;
+  }
+}
+
+/* Mobile and Tablet Friendly Updates */
+@media (max-width: 768px) {
+  .file-uploader-container {
+    width: 95%;
+    padding: 10px;
+  }
+
+  .upload-area {
+    font-size: 0.9rem;
+    padding: 12px;
+  }
+
+  .file-input-label {
+    font-size: 0.9rem;
+    padding: 8px;
+  }
+
+  .wizard-steps {
+    font-size: 0.9rem;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .secondary-button, .button {
+    font-size: 0.9rem;
+    padding: 8px 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .file-uploader-container {
+    width: 100%;
+    padding: 8px;
+  }
+
+  .upload-area {
+    font-size: 0.8rem;
+    padding: 10px;
+  }
+
+  .file-input-label {
+    font-size: 0.8rem;
+    padding: 6px;
+  }
+
+  .wizard-steps {
+    font-size: 0.8rem;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .secondary-button, .button {
+    font-size: 0.8rem;
+    padding: 6px 10px;
   }
 }

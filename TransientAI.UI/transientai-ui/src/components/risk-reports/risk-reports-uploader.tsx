@@ -96,16 +96,13 @@ export function RiskReportsUploader() {
       <FileUploadWizard onUploadSuccess={newFile => setRiskReports([...riskReports!, newFile])}></FileUploadWizard>
 
       <div className={styles['reports-grid']}>
-        {/* <div className='filter-panel'>
-          Search:
-          <input type='text' className='mb-2'></input>
-        </div> */}
+        <div>My Documents</div>
 
-        My Documents
-
-        <DataGrid isSummaryGrid={true}
-          rowData={riskReports}
-          columnDefs={columnDefs}>
+        <DataGrid
+            isSummaryGrid={true}
+            rowData={riskReports}
+            columnDefs={columnDefs}
+        >
         </DataGrid>
       </div>
     </div>
