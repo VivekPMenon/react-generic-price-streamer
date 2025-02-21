@@ -200,11 +200,11 @@ export function FileUploadWizard({onUploadSuccess}: FileUploaderWizardProps) {
                 ))}
               </ul>
             </div>
-          )} */}
+          )}
 
           <div className='flex gap-3 justify-center'>
             <CsvTemplateDownloader columns={csvColumns} sampleData={sampleRows}></CsvTemplateDownloader>
-          </div>
+          </div>*/}
         </div>
       }
 

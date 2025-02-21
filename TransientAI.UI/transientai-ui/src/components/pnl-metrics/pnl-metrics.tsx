@@ -2,7 +2,7 @@ import styles from './pnl-metrics.module.scss';
 import React, { useRef, useState, useEffect } from 'react';
 
 const items = [
-  { title: 'Margin Excess', amount: '34,886' },
+  { title: 'Margin Excess', amount: '36,733.82' },
   // { title: 'PLGMVEPs', amount: '6.86' },
   // { title: 'PL', amount: '5,560' },
   // { title: 'LongPL', amount: '5,968' },

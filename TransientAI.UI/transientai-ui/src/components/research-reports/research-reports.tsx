@@ -67,7 +67,7 @@ export function ResearchReports({ isExpanded }: ResearchReportsProps) {
           />
         </div>
 
-        <div className='news'>
+        <div className='news scrollable-div height-vh-61'>
           {
             visibleReports.map(report =>
               <div className={report.name === selectedReport.name ? 'news-item active' : 'news-item'}
