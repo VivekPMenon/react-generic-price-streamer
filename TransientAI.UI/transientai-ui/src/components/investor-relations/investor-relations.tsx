@@ -99,21 +99,21 @@ function getColumnDef(): ColDef[] {
 }
 
 export function InvestorRelations(props: InvestorRelationsProps) {
-    const isMobile = window.innerWidth <= 480;
-    const isTablet = window.innerWidth > 480 && window.innerWidth <= 768;
-
-    const columnDefs = useMemo<ColDef[]>(() => {
-        const baseDefs = getColumnDef();
-        return baseDefs.map((col) => {
-            if (isMobile) {
-                return { ...col, width: col.width ? col.width * 0.7 : undefined };
-            } else if (isTablet) {
-                return { ...col, width: col.width ? col.width * 0.85 : undefined };
-            }
-            return col;
-        });
-    }, [isMobile, isTablet]);
-
+    // const isMobile = window.innerWidth <= 480;
+    // const isTablet = window.innerWidth > 480 && window.innerWidth <= 768;
+    //
+    // const columnDefs = useMemo<ColDef[]>(() => {
+    //     const baseDefs = getColumnDef();
+    //     return baseDefs.map((col) => {
+    //         if (isMobile) {
+    //             return { ...col, width: col.width ? col.width * 0.7 : undefined };
+    //         } else if (isTablet) {
+    //             return { ...col, width: col.width ? col.width * 0.85 : undefined };
+    //         }
+    //         return col;
+    //     });
+    // }, [isMobile, isTablet]);
+    const columnDefs = useMemo<ColDef[]>(() => getColumnDef(), []);
     const [investorInquiries, setInvestorInquiries] = useState<InquiryRequest[]>();
 
     function loadInquiries() {
