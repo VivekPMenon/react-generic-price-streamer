@@ -1,0 +1,8 @@
+{
+    "appService.zipIgnorePattern": [
+        "node_modules{,/**}",
+        ".vscode{,/**}"
+    ],
+    "appService.defaultWebAppToDeploy": "/subscriptions/c2a72abc-de83-4958-8e0b-2285ddd8d4b8/resourceGroups/HurricaneCaptial-AIDashboard/providers/Microsoft.Web/sites/hurricanecapdev-web",
+    "appService.deploySubpath": "TransientAI.UI/transientai-ui/.next/standalone"
+}

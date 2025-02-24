@@ -94,7 +94,7 @@ export function RiskReports() {
             defaultScale={1.25}
             plugins={[defaultLayoutPlugin(), themePlugin()]}
             theme={'dark'}
-            onDocumentLoad={() => {scrollToTarget();}}
+            onDocumentLoad={() => scrollToTarget()}
           />
         </Worker>
       </div>

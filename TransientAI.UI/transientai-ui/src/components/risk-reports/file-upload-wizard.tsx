@@ -172,7 +172,7 @@ export function FileUploadWizard({onUploadSuccess}: FileUploaderWizardProps) {
             onDragLeave={handleDragLeave}
             onDrop={handleDrop}
           >
-            Drag and drop files here
+            <span>Drag and drop files here</span>
             <span>Or</span>
             <input type='file' onChange={handleFileSelect} style={{ display: 'none' }} id='fileInput' />
             <label htmlFor='fileInput' className={styles['file-input-label']}>Browse Your File</label>
@@ -200,11 +200,11 @@ export function FileUploadWizard({onUploadSuccess}: FileUploaderWizardProps) {
                 ))}
               </ul>
             </div>
-          )} */}
+          )}
 
           <div className='flex gap-3 justify-center'>
             <CsvTemplateDownloader columns={csvColumns} sampleData={sampleRows}></CsvTemplateDownloader>
-          </div>
+          </div>*/}
         </div>
       }
 

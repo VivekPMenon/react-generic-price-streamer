@@ -36,7 +36,7 @@ input {
 }
 
 .DialogContentSmall {
-	@extend .DialogContent;
+	@extend .DialogContent !optional;
 	width: 600px;
 	max-width: 60vw;
 	max-height: 85vh;

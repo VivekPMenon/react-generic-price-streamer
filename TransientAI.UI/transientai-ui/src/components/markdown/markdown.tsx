@@ -78,7 +78,7 @@ export const SearchableMarkdown = ({ markdownContent, className, title }: Search
   }, [currentIndex, matches]);
 
   return (
-    <div className='markdown'>
+    <div className='markdown '>
       <div className='search-bar'>
         <div className='title'>
           {title}

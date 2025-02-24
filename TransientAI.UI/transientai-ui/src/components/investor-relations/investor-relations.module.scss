@@ -1,0 +1,76 @@
+@import '../../assets/variables.scss';
+
+.investor-relations {
+  display: flex;
+  padding: 5px;
+  height: 100%;
+  gap: 20px;
+
+  @media screen and (max-width: $mobile-breakpoint-max) {
+    flex-direction: column;
+  }
+}
+
+.inquiries-grid {
+  display: flex;
+  flex: 1 1 100%;
+  flex-direction: row;
+  max-width: 100%;
+}
+
+.action-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 100%
+}
+
+.status-icons {
+  display: flex;
+  flex-direction: column;
+  justify-content: left;
+}
+
+/* Mobile and Tablet Friendly Updates */
+@media (max-width: 768px) {
+  .investor-relations {
+    width: 95%;
+    padding: 10px;
+  }
+
+  .inquiries-grid {
+    overflow-x: auto;
+    font-size: 0.9rem;
+  }
+
+  .date-cell {
+    font-size: 0.85rem;
+  }
+
+  .ag-cell {
+    font-size: 0.85rem;
+    padding: 6px;
+  }
+}
+
+@media (max-width: 480px) {
+  .investor-relations {
+    width: 100%;
+    padding: 8px;
+  }
+
+  .inquiries-grid {
+    font-size: 0.8rem;
+  }
+
+  .date-cell {
+    font-size: 0.75rem;
+  }
+
+  .ag-cell {
+    font-size: 0.75rem;
+    padding: 4px;
+  }
+}

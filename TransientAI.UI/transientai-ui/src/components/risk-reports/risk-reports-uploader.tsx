@@ -1,27 +1,38 @@
-import React, { useEffect, useMemo, useState } from 'react';
+'use client';
+
+import React, { useRef, useEffect, useMemo, useState } from 'react';
 import styles from './risk-reports-uploader.module.scss';
 import { DataGrid } from '../data-grid';
 import { ColDef } from 'ag-grid-community';
 import { RiskReport } from '@/services/reports-data';
-import { getRiskReports } from '@/services/reports-data/risk-reports-data';
+import {getUploadedReports} from '@/services/reports-data/risk-reports-data';
 import { FileUploadWizard } from './file-upload-wizard';
+import {Viewer, Worker} from "@react-pdf-viewer/core";
+import {defaultLayoutPlugin} from "@react-pdf-viewer/default-layout";
+import {themePlugin} from "@react-pdf-viewer/theme";
+// import {useScrollTo} from "@/lib/hooks";
 
 export function RiskReportsUploader() {
-
   const [riskReports, setRiskReports] = useState<RiskReport[]>();
   const [fileName, setFileName] = useState('');
-
+  // const { scrollTargetRef, scrollToTarget } = useScrollTo<HTMLDivElement>(-200);
+  const [selectedReport, setSelectedReport] = useState<RiskReport>({});
   const columnDefs = useMemo<ColDef[]>(() => getColumnDef(), []);
 
   useEffect(() => loadRiskReports(), []);
 
   function loadRiskReports() {
     const loadDataAsync = async () => {
-      const reports = await getRiskReports();
+      const reports = await getUploadedReports();
       setRiskReports(reports);
+      return reports;
     }
 
     loadDataAsync();
+  }
+
+  function handleRowSelection(event: any) {
+    setSelectedReport(event.data!);
   }
 
   const handleFileUpload = (event: any) => {
@@ -48,16 +59,22 @@ export function RiskReportsUploader() {
         field: 'portfolio',
         headerName: 'Report Name',
         width: 150,
+        autoHeight: true,
+        wrapText: true
       },
       {
         field: 'uploadedBy',
         headerName: 'Uploaded By',
         width: 130,
+        autoHeight: true,
+        wrapText: true
       },
       {
         field: 'uploadStatus',
         headerName: 'Upload Status',
         width: 150,
+        autoHeight: true,
+        wrapText: true
       },
       {
         field: 'date',
@@ -65,11 +82,13 @@ export function RiskReportsUploader() {
         width: 120,
         sort: 'desc',
         cellClass: 'date-cell', // Optional: Apply date styling
+        autoHeight: true
       },
       {
         field: '',
         headerName: '',
         width: 200,
+        autoHeight: true,
         cellRenderer:(params:any) => (<div className='gap-5 flex fs-14 '>
           <i className='fa-regular fa-envelope cursor-pointer'></i>
           <i className='fa-regular fa-circle-down cursor-pointer'></i>
@@ -90,25 +109,37 @@ export function RiskReportsUploader() {
     ];
   }
 
-
   return (
-    <div className={styles['risk-reports-uploader']}>
-      <FileUploadWizard onUploadSuccess={newFile => setRiskReports([...riskReports!, newFile])}></FileUploadWizard>
-
-      <div className={styles['reports-grid']}>
-        {/* <div className='filter-panel'>
-          Search:
-          <input type='text' className='mb-2'></input>
-        </div> */}
-
-        My Documents
-
-        <DataGrid isSummaryGrid={true}
-          rowData={riskReports}
-          columnDefs={columnDefs}>
-        </DataGrid>
+      <div className={styles['risk-reports-container']}>
+        <div className={styles['risk-reports-documents']}>
+          <div className={styles['risk-reports-uploader']}>
+            <FileUploadWizard onUploadSuccess={newFile => setRiskReports([...riskReports!, newFile])}></FileUploadWizard>
+          </div>
+          <div className={styles['reports-grid']}>
+            <div>My Documents</div>
+            <DataGrid
+                isSummaryGrid={true}
+                rowData={riskReports}
+                columnDefs={columnDefs}
+                onRowClicked={handleRowSelection}
+                onRowDoubleClicked={handleRowSelection}
+            >
+            </DataGrid>
+          </div>
+        </div>
+        <div
+            className={styles['risk-reports-preview']}
+            style={{ display: selectedReport.pdfSource ? 'flex' : 'none' }}
+            >
+          <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.min.js">
+            <Viewer
+                fileUrl={selectedReport.pdfSource ? selectedReport.pdfSource : '/pdfs/RiskDecomp.pdf'}
+                defaultScale={1.25}
+                plugins={[defaultLayoutPlugin(), themePlugin()]}
+                theme={'dark'}
+            />
+          </Worker>
+        </div>
       </div>
-    </div>
-
   );
 }

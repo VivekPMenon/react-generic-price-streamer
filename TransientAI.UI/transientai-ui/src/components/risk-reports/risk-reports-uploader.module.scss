@@ -1,19 +1,71 @@
 @import '../../assets/variables.scss';
 
+.risk-reports-documents {
+  display: flex;
+  padding: 5px;
+  gap: 20px;
+  height: available;
+  flex-direction: column;
+
+}
+
+.risk-reports-container {
+  display: flex;
+  flex-direction: row;
+  flex: 1 1 60%;
+  padding: 5px;
+  gap: 20px;
+
+  @media screen and (max-width: $mobile-breakpoint-max) {
+    flex-direction: column;
+    flex: 1 1 100%;
+  }
+}
+
 .risk-reports-uploader {
   display: flex;
   padding: 5px;
   gap: 20px;
-  height: 100%;
+  flex-direction: column;
+  height: 30%;
 
   &>div {
     flex: 1 1 50%;
+
+    @media screen and (max-width: $mobile-breakpoint-max) {
+      flex: 1 1 100%;
+      width: 60%;
+    }
   }
 
-  .reports-grid {
-    flex: 1 1 30%;
-    display: flex;
+  @media screen and (max-width: $mobile-breakpoint-max) {
     flex-direction: column;
+    width: 100%;
+  }
+}
+
+.reports-grid {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 70%;
+
+  @media screen and (max-width: $mobile-breakpoint-max) {
+    flex: 1 1 100%;
+    max-width: 100%;
+    height: calc(100vh - 800px);
+  }
+}
+
+.risk-reports-preview {
+  padding: 0 10px 0 50px;
+  height: calc(100vh - 300px);
+  border-radius: 10px;
+  width: 100%;
+
+  @media screen and (max-width: $mobile-breakpoint-max) {
+    padding: 0;
+    height: calc(100vh - 800px);
   }
 }
 

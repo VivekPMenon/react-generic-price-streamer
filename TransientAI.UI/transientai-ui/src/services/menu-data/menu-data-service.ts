@@ -38,13 +38,7 @@ export const menuInfoList: MenuInfo[] = [
   //   badgeCount: 3,
   //   icon: 'fa-solid fa-user'
   // },
-  
-  {
-    description: 'Breaking News',
-    badgeCount: 5,
-    icon: 'fa-solid fa-newspaper',
-    route: '/dashboard/breaking-news',
-  },
+
   {
     route: '/dashboard/research-reports',
     description: 'Research Reports',
@@ -68,5 +62,17 @@ export const menuInfoList: MenuInfo[] = [
     description: 'Corporate Actions',
     badgeCount: 1,
     icon: 'fa-solid fa-microphone-lines'
+  },
+  {
+    route: '/dashboard/investor-relations',
+    description: 'Investor Relations',
+    badgeCount: 1,
+    icon: 'fa-solid fa-handshake'
+  },
+  {
+    description: 'Breaking News',
+    badgeCount: 5,
+    icon: 'fa-solid fa-newspaper',
+    route: '/dashboard/breaking-news',
   },
 ];

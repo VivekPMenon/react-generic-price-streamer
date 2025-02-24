@@ -18,7 +18,7 @@ export function ImagePopup({children, image, title, description}: ImagePopupProp
             </Dialog.Trigger>
             <Dialog.Portal>
                 <Dialog.Overlay className="DialogOverlay" />
-                <Dialog.Content className="DialogContentSmall">
+                <Dialog.Content className={styles['dialog-content']}>
                     <Dialog.DialogClose>
                         <Cross1Icon />
                     </Dialog.DialogClose>
@@ -26,8 +26,8 @@ export function ImagePopup({children, image, title, description}: ImagePopupProp
                         {title}
                     </Dialog.Title>
                     <div className={styles['content']}>
-                        <div style={{ padding: '20px 50px' }}>
-                            <img src={image} style={{height: '350px', width: '650px'}}/>
+                        <div className={styles['img-root']}>
+                            <img src={image} className={styles['img-content']}/>
                         </div>
                     </div>
                     <Dialog.Description className="DialogDescription">
