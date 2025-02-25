@@ -1,6 +1,18 @@
-[
-  {
-    "catiName": "CSFBconnect dot com VMO Infrastructure and DR",
+
+import { ColDef } from 'ag-grid-community';
+
+const colDefs: ColDef[] = [
+  { headerName: 'CATI Name', field: 'catiName', sortable: true, filter: true, resizable: true },
+  { headerName: 'IT Owner', field: 'itOwner', sortable: true, filter: true, resizable: true },
+  { headerName: 'Business Owner', field: 'businessOwner', sortable: true, filter: true, resizable: true },
+  { headerName: 'Uploaded By', field: 'uploadedBy', sortable: true, filter: true, resizable: true },
+  { headerName: 'Date', field: 'date', sortable: true, filter: 'agDateColumnFilter', resizable: true }
+];
+
+export default colDefs;
+
+
+catiName": "CSFBconnect dot com VMO Infrastructure and DR",
     "itOwner": "Ashok Sethumadhavan",
     "businessOwner": "Amit Bhat",
     "uploadedBy": "Mark Mendoza",
