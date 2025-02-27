@@ -6,7 +6,7 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import Segmented from 'rc-segmented';
 import { SearchableMarkdown } from '@/components/markdown';
-import { getReports, ResearchReport } from '@/services/reports-data';
+import { getReports, getReportsMock, ResearchReport } from '@/services/reports-data';
 import EmailViewer from '../email-parser/email-viewer';
 import Tags from "@/components/tags/tags";
 import ImageContainer from "@/components/image-container/image-container";

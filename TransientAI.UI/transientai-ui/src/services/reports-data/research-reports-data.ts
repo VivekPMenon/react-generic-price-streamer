@@ -1,12 +1,21 @@
 'use server';
 
+import { webApihandler } from '../web-api-handler';
 import { ResearchReport } from './model';
 
 export async function getReports(): Promise<ResearchReport[]> {
-    return [
-        {
-            name: 'AZELIS GROUP (+): Chicken cyclical  (Postview - 14p)',
-            aiSummary: `# AZELIS GROUP (+): Chicken cyclical  (Postview - 14p)
+  const results = await webApihandler.get('latest-emails', {}, { serviceName: 'hurricane-api' });
+  return results?.map((result: any) => ({
+    id: result.id,
+    name: result.subject
+  } as ResearchReport));
+}
+
+export async function getReportsMock(): Promise<ResearchReport[]> {
+  return [
+    {
+      name: 'AZELIS GROUP (+): Chicken cyclical  (Postview - 14p)',
+      aiSummary: `# AZELIS GROUP (+): Chicken cyclical  (Postview - 14p)
 
 Date: Thu, 20 Feb 2025 20:57:50 +0100
 
@@ -86,13 +95,13 @@ As we move into 2024, the global economy is showing signs of gradual recovery fo
 
 ### Conclusion
 The market outlook for 2024 presents a mix of challenges and opportunities. Investors should remain vigilant of macroeconomic indicators while strategically positioning their portfolios to capitalize on growth sectors and resilient asset classes. The focus on sustainability and technological innovation will likely drive long-term value creation in the evolving market landscape.`,
-            emailSource: `../emails/AzelisGroup.html`,
-            charts: [],
-            keywords: []
-        },
-        {
-            name: 'BESI (+): The last cut for mainstream?  (Postview - 13p)',
-            aiSummary: `# BESI (+): The last cut for mainstream?  (Postview - 13p)
+      emailSource: `../emails/AzelisGroup.html`,
+      charts: [],
+      keywords: []
+    },
+    {
+      name: 'BESI (+): The last cut for mainstream?  (Postview - 13p)',
+      aiSummary: `# BESI (+): The last cut for mainstream?  (Postview - 13p)
 
 Date: Thu, 20 Feb 2025 22:02:16 +0100
 
@@ -163,11 +172,11 @@ The current macroeconomic landscape is characterized by a mix of cautious optimi
 
 ### Conclusion
 The market landscape is complex, with a mix of challenges and opportunities across various sectors and regions. Investors should remain vigilant, focusing on technological advancements and sustainable practices while being mindful of the potential risks that could impact their portfolios.`,
-            emailSource: `../emails/Besi.html`
-        },
-        {
-            name: 'DANA (+): Staying on Target  (Postview - 31p)',
-            aiSummary: `# DANA (+): Staying on Target  (Postview - 31p)
+      emailSource: `../emails/Besi.html`
+    },
+    {
+      name: 'DANA (+): Staying on Target  (Postview - 31p)',
+      aiSummary: `# DANA (+): Staying on Target  (Postview - 31p)
 
 Date: Fri, 21 Feb 2025 07:41:15 +0100
 
@@ -237,13 +246,13 @@ The current macroeconomic environment is characterized by a gradual stabilizatio
 
 ### Conclusion
 The market is navigating a complex landscape with both risks and opportunities. Companies like DAN are well-positioned to capitalize on strategic changes, while broader economic trends suggest a favorable environment for equities, particularly in sectors poised for recovery. Investors should remain vigilant, balancing their portfolios to mitigate risks while seizing opportunities in a dynamic market.`,
-            emailSource: `../emails/Dana.html`,
-            charts: [],
-            keywords: []
-        },
-        {
-            name: 'NUTRIEN (=): Retail momentum improving into 2025  (Postview - 11p)',
-            aiSummary: `# NUTRIEN (=): Retail momentum improving into 2025  (Postview - 11p)
+      emailSource: `../emails/Dana.html`,
+      charts: [],
+      keywords: []
+    },
+    {
+      name: 'NUTRIEN (=): Retail momentum improving into 2025  (Postview - 11p)',
+      aiSummary: `# NUTRIEN (=): Retail momentum improving into 2025  (Postview - 11p)
 
 Date: Thu, 20 Feb 2025 23:23:50 +0100
 
@@ -312,13 +321,13 @@ The macroeconomic landscape is characterized by a gradual recovery from the pand
 ### Conclusion
 
 The agricultural sector is poised for a recovery, driven by improving crop prices and operational efficiencies. However, geopolitical risks and economic uncertainties remain prevalent. Investors should consider both the risks and opportunities in this dynamic environment, focusing on strategic positions that capitalize on the expected growth in the agricultural market while remaining vigilant of external factors that could impact performance.`,
-            emailSource: `../emails/Nutrien.html`,
-            charts: [],
-            keywords: []
-        },
-        {
-            name: 'NVIDIA (+): Strong results/guide expected and kickstart a Rubin rally  (News - 13p)',
-            aiSummary: `# NVIDIA (+): Strong results/guide expected and kickstart a Rubin rally  (News - 13p)
+      emailSource: `../emails/Nutrien.html`,
+      charts: [],
+      keywords: []
+    },
+    {
+      name: 'NVIDIA (+): Strong results/guide expected and kickstart a Rubin rally  (News - 13p)',
+      aiSummary: `# NVIDIA (+): Strong results/guide expected and kickstart a Rubin rally  (News - 13p)
 
 Date: Fri, 21 Feb 2025 07:18:35 +0100
 
@@ -381,13 +390,13 @@ The current macroeconomic environment is characterized by heightened volatility 
 
 ### Conclusion
 The market landscape is complex, with both risks and opportunities present across various asset classes and regions. Investors should remain vigilant and adaptable, focusing on sectors poised for growth, such as technology and renewable energy, while managing risks associated with inflation and geopolitical instability. The upcoming earnings reports, particularly from key players like NVIDIA, will be crucial in shaping market sentiment moving forward.`,
-            emailSource: `../emails/NVIDIA.html`,
-            charts: [],
-            keywords: []
-        },
-        {
-            name: 'RENAULT (+): 2H24: Over to EU  (Update - 15p)',
-            aiSummary: `# RENAULT (+): 2H24: Over to EU  (Update - 15p)
+      emailSource: `../emails/NVIDIA.html`,
+      charts: [],
+      keywords: []
+    },
+    {
+      name: 'RENAULT (+): 2H24: Over to EU  (Update - 15p)',
+      aiSummary: `# RENAULT (+): 2H24: Over to EU  (Update - 15p)
 
 Date: Thu, 20 Feb 2025 17:50:37 +0100
 
@@ -449,13 +458,13 @@ Overall, while EBIT estimates for 2025 and 2026 have been reduced by 5-8%, the f
 
 ### Conclusion
 The automotive sector is at a critical juncture, influenced by macroeconomic factors, regulatory changes, and the ongoing transition to electrification. While companies like Renault face challenges, there are also significant opportunities for growth, particularly with potential EU support. Investors should remain vigilant about market dynamics and consider strategic positions that align with these evolving themes.`,
-            emailSource: `../emails/Renault.html`,
-            charts: [],
-            keywords: []
-        },
-        {
-            name: '⚡ AIR LIQUIDE (+): Call feedback: nothing to dislike  (Flash Note)',
-            aiSummary: `# ⚡ AIR LIQUIDE (+): Call feedback: nothing to dislike  (Flash Note)
+      emailSource: `../emails/Renault.html`,
+      charts: [],
+      keywords: []
+    },
+    {
+      name: '⚡ AIR LIQUIDE (+): Call feedback: nothing to dislike  (Flash Note)',
+      aiSummary: `# ⚡ AIR LIQUIDE (+): Call feedback: nothing to dislike  (Flash Note)
 
 Date: Fri, 21 Feb 2025 12:37:53 +0100
 
@@ -533,13 +542,13 @@ In summary, Air Liquide's strategic focus on margin improvement, operational eff
 ### Conclusion
 
 The industrial gases sector is poised for growth, driven by macro themes such as decarbonization, inflationary pressures, and geopolitical considerations. Companies like Air Liquide are well-positioned to capitalize on these trends, making them attractive investment opportunities. However, investors should remain vigilant of potential risks, particularly related to investment delays and geopolitical instability, while exploring diverse asset classes and trade ideas to optimize their portfolios.`,
-            emailSource: `../emails/AirLiquideFeedback.html`,
-            charts: [],
-            keywords: []
-        },
-        {
-            name: '⚡ AIR LIQUIDE (+): Margin target raised again + big divi = high confidence  (Flash Note)',
-            aiSummary: `# ⚡ AIR LIQUIDE (+): Margin target raised again + big divi = high confidence  (Flash Note)
+      emailSource: `../emails/AirLiquideFeedback.html`,
+      charts: [],
+      keywords: []
+    },
+    {
+      name: '⚡ AIR LIQUIDE (+): Margin target raised again + big divi = high confidence  (Flash Note)',
+      aiSummary: `# ⚡ AIR LIQUIDE (+): Margin target raised again + big divi = high confidence  (Flash Note)
 
 Date: Fri, 21 Feb 2025 08:37:05 +0100
 
@@ -603,13 +612,13 @@ The current macroeconomic environment is characterized by a mix of resilience an
 
 ### Conclusion
 The current market landscape presents a mix of challenges and opportunities. Companies like Air Liquide are well-positioned to capitalize on the ongoing shift towards sustainability, while broader macroeconomic trends suggest a cautious but optimistic outlook for equities and fixed income. Investors should remain vigilant to geopolitical risks and market volatility while exploring opportunities in emerging sectors and technologies.`,
-            emailSource: `../emails/AirLiquide.html`,
-            charts: [],
-            keywords: []
-        },
-        {
-            name: '⚡ CF INDUSTRIES HDG (=): Q4\'24 call feedback: Management bullish, gas spreads in focus  (Flash Note)',
-            aiSummary: `# ⚡ CF INDUSTRIES HDG (=): Q4'24 call feedback: Management bullish, gas spreads in focus  (Flash Note)
+      emailSource: `../emails/AirLiquide.html`,
+      charts: [],
+      keywords: []
+    },
+    {
+      name: '⚡ CF INDUSTRIES HDG (=): Q4\'24 call feedback: Management bullish, gas spreads in focus  (Flash Note)',
+      aiSummary: `# ⚡ CF INDUSTRIES HDG (=): Q4'24 call feedback: Management bullish, gas spreads in focus  (Flash Note)
 
 Date: Thu, 20 Feb 2025 23:38:53 +0100
 
@@ -687,13 +696,13 @@ As we move into 2024, several macroeconomic themes are shaping the landscape for
 ### Conclusion
 
 The agricultural and energy sectors are at a pivotal moment, influenced by macroeconomic themes, geopolitical risks, and the transition towards sustainable energy. Investors should remain vigilant and consider strategic positions in companies and commodities that are well-positioned to benefit from these trends. The upcoming decisions regarding blue ammonia projects and the evolving dynamics of the nitrogen fertilizer market will be critical to watch in the coming months.`,
-            emailSource: `../emails/CFIndustries.html`,
-            charts: [],
-            keywords: []
-        },
-        {
-            name: '⚡ IFF (+): IFF @ CAGNY: Execution is the name of the game  (Flash Note)',
-            aiSummary: `# ⚡ IFF (+): IFF @ CAGNY: Execution is the name of the game  (Flash Note)
+      emailSource: `../emails/CFIndustries.html`,
+      charts: [],
+      keywords: []
+    },
+    {
+      name: '⚡ IFF (+): IFF @ CAGNY: Execution is the name of the game  (Flash Note)',
+      aiSummary: `# ⚡ IFF (+): IFF @ CAGNY: Execution is the name of the game  (Flash Note)
 
 Date: Thu, 20 Feb 2025 20:38:58 +0100
 
@@ -764,13 +773,13 @@ In summary, IFF's strategic pivot towards operational excellence, innovation, an
 
 ### Conclusion
 The market landscape for IFF is characterized by significant growth potential driven by macro trends in sustainability and health, a strong innovation pipeline, and strategic operational improvements. While risks remain, particularly in execution and regulatory environments, the opportunities for growth and value creation position IFF favorably for investors looking for exposure in the food and beverage sector.`,
-            emailSource: `../emails/IffCagny.html`,
-            charts: [],
-            keywords: []
-        },
-        {
-            name: '⚡ IMERYS (=): FY 24 results broadly in line  (Flash Note)',
-            aiSummary: `# ⚡ IMERYS (=): FY 24 results broadly in line  (Flash Note)
+      emailSource: `../emails/IffCagny.html`,
+      charts: [],
+      keywords: []
+    },
+    {
+      name: '⚡ IMERYS (=): FY 24 results broadly in line  (Flash Note)',
+      aiSummary: `# ⚡ IMERYS (=): FY 24 results broadly in line  (Flash Note)
 
 Date: Thu, 20 Feb 2025 19:53:27 +0100
 
@@ -841,13 +850,13 @@ The current macroeconomic environment is characterized by a complex interplay of
 
 ### Conclusion
 The market landscape is evolving, influenced by macroeconomic trends, regional dynamics, and sector-specific developments. Investors should remain vigilant, balancing risks and opportunities while considering strategic positions across various asset classes. The insights from BNP Paribas Exane on companies like Imerys highlight the importance of monitoring financial performance and market conditions to inform investment decisions.`,
-            emailSource: `../emails/IMerys.html`,
-            charts: [],
-            keywords: []
-        },
-        {
-            name: '⚡ NEWMONT (+): 4Q24 first take - strong quarterly beats, costs still rising into 2025  (Flash Note)',
-            aiSummary: `# ⚡ NEWMONT (+): 4Q24 first take - strong quarterly beats, costs still rising into 2025  (Flash Note)
+      emailSource: `../emails/IMerys.html`,
+      charts: [],
+      keywords: []
+    },
+    {
+      name: '⚡ NEWMONT (+): 4Q24 first take - strong quarterly beats, costs still rising into 2025  (Flash Note)',
+      aiSummary: `# ⚡ NEWMONT (+): 4Q24 first take - strong quarterly beats, costs still rising into 2025  (Flash Note)
 
 Date: Fri, 21 Feb 2025 09:59:09 +0100
 
@@ -922,13 +931,13 @@ As we move into 2025, the global economic landscape is characterized by a mix of
 
 ### Conclusion
 The market outlook for gold and mining companies like Newmont remains cautiously optimistic, driven by strong production performance and a favorable macroeconomic backdrop. However, investors should remain aware of the risks associated with rising costs and geopolitical uncertainties. Strategic positioning in gold-related assets could yield significant returns in the coming year.`,
-            emailSource: `../emails/NewMont.html`,
-            charts: [],
-            keywords: []
-        },
-        {
-            name: '⚡ RIVIAN AUTOMOTIVE (+): Gross Profit Shines; 2025 Volume Outlook Embeds Prudent Conservatism  (Flash Note)',
-            aiSummary: `# ⚡ RIVIAN AUTOMOTIVE (+): Gross Profit Shines; 2025 Volume Outlook Embeds Prudent Conservatism  (Flash Note)
+      emailSource: `../emails/NewMont.html`,
+      charts: [],
+      keywords: []
+    },
+    {
+      name: '⚡ RIVIAN AUTOMOTIVE (+): Gross Profit Shines; 2025 Volume Outlook Embeds Prudent Conservatism  (Flash Note)',
+      aiSummary: `# ⚡ RIVIAN AUTOMOTIVE (+): Gross Profit Shines; 2025 Volume Outlook Embeds Prudent Conservatism  (Flash Note)
 
 Date: Fri, 21 Feb 2025 05:55:17 +0100
 
@@ -997,13 +1006,13 @@ The current macroeconomic landscape is characterized by heightened regulatory sc
 ### Conclusion
 
 The automotive sector, particularly the EV market, presents a complex yet promising landscape for investors. Rivian Automotive's recent performance and strategic outlook indicate potential for growth, albeit amidst significant risks. Careful consideration of macroeconomic factors, regional dynamics, and individual company fundamentals will be crucial in navigating this evolving market.`,
-            emailSource: `../emails/Rivian.html`,
-            charts: [],
-            keywords: []
-        },
-        {
-            name: '⚡ SEMICONDUCTORS AND IT HARDWARE: STMicroelectronics PIC100 Readthrough To The Optical Supply Chain  (Flash Note)',
-            aiSummary: `# ⚡ SEMICONDUCTORS AND IT HARDWARE: STMicroelectronics PIC100 Readthrough To The Optical Supply Chain  (Flash Note)
+      emailSource: `../emails/Rivian.html`,
+      charts: [],
+      keywords: []
+    },
+    {
+      name: '⚡ SEMICONDUCTORS AND IT HARDWARE: STMicroelectronics PIC100 Readthrough To The Optical Supply Chain  (Flash Note)',
+      aiSummary: `# ⚡ SEMICONDUCTORS AND IT HARDWARE: STMicroelectronics PIC100 Readthrough To The Optical Supply Chain  (Flash Note)
 
 Date: Fri, 21 Feb 2025 02:27:45 +0100
 
@@ -1052,13 +1061,13 @@ The semiconductor sector, particularly in the realm of silicon photonics (SiPh),
 
 ### Conclusion
 The semiconductor sector, particularly through the lens of silicon photonics, is on the cusp of a significant evolution driven by technological advancements and increasing demand for high-performance data transmission. Stakeholders should remain vigilant about the macroeconomic environment, regional developments, and emerging opportunities while being mindful of potential risks. The strategic positioning of key players in this space suggests a promising outlook for growth and innovation in the coming years.`,
-            emailSource: `../emails/Semiconductors.html`,
-            charts: [],
-            keywords: []
-        },
-        {
-            name: '⚡ STRATEGY - EU Earnings Momentum Is Building Up',
-            aiSummary: `# ⚡ STRATEGY - EU Earnings Momentum Is Building Up
+      emailSource: `../emails/Semiconductors.html`,
+      charts: [],
+      keywords: []
+    },
+    {
+      name: '⚡ STRATEGY - EU Earnings Momentum Is Building Up',
+      aiSummary: `# ⚡ STRATEGY - EU Earnings Momentum Is Building Up
 
 Date: Fri, 21 Feb 2025 07:07:53 +0100
 
@@ -1125,11 +1134,11 @@ The current macroeconomic landscape is characterized by a gradual recovery in Eu
 
 ### Conclusion
 The current market environment presents both challenges and opportunities. Investors should remain vigilant of macroeconomic indicators and geopolitical developments while strategically positioning themselves to capitalize on earnings momentum in European equities. The focus on sectors with strong fundamentals and potential for growth will be key to navigating the complexities of the market in the coming months.`,
-            emailSource: `../emails/StrategyEU.html`,
-            charts: [],
-            keywords: []
-        }
-    ];
+      emailSource: `../emails/StrategyEU.html`,
+      charts: [],
+      keywords: []
+    }
+  ];
 }
 
 export async function getReportsOld(): Promise<ResearchReport[]> {
@@ -1224,19 +1233,19 @@ Continued momentum and narrow index concentration pose risks if market sentiment
 `,
       emailSource: `../emails/Ruminations.html`,
       charts: [
-          {image: '../charts/cpi.png', title: 'CPI'},
-          {image: '../charts/divergence.png', description: 'CEO confidence vs Bull/Bear sentiment', title: 'Divergence'},
-          {image: '../charts/rates_to_cuts.png', title: 'Rates reaction to rate cuts'},
-          {image: '../charts/productivity.png', description: 'Regional differentials', title: 'Productivity'},
-          {image: '../charts/capital_flows.png', description: 'Capital flows where it is welcome and rewarded', title: 'Capital flows'},
-          {image: '../charts/active_passive.png', title: 'Active v Passive'},
-          {image: '../charts/concentration.png', title: 'Concentration'},
-          {image: '../charts/past_v_future.png', title: 'Returns - past vs future'},
-          {image: '../charts/valuations.png', title: 'Valuations'},
-          {image: '../charts/value_creation.png', title: 'Value creation'},
-          {image: '../charts/equity_owners.png', title: 'Equity owners and length'}
-        ],
-        keywords: ['VC Landscape', 'Systematic Quant Strategies', 'Geo Political and Headline Risk']
+        { image: '../charts/cpi.png', title: 'CPI' },
+        { image: '../charts/divergence.png', description: 'CEO confidence vs Bull/Bear sentiment', title: 'Divergence' },
+        { image: '../charts/rates_to_cuts.png', title: 'Rates reaction to rate cuts' },
+        { image: '../charts/productivity.png', description: 'Regional differentials', title: 'Productivity' },
+        { image: '../charts/capital_flows.png', description: 'Capital flows where it is welcome and rewarded', title: 'Capital flows' },
+        { image: '../charts/active_passive.png', title: 'Active v Passive' },
+        { image: '../charts/concentration.png', title: 'Concentration' },
+        { image: '../charts/past_v_future.png', title: 'Returns - past vs future' },
+        { image: '../charts/valuations.png', title: 'Valuations' },
+        { image: '../charts/value_creation.png', title: 'Value creation' },
+        { image: '../charts/equity_owners.png', title: 'Equity owners and length' }
+      ],
+      keywords: ['VC Landscape', 'Systematic Quant Strategies', 'Geo Political and Headline Risk']
     },
     {
       name: 'BNP Paribas Exane Research: INDIA STRATEGY - 2025 - the pricey paradise; cloudy skies',
@@ -1386,20 +1395,20 @@ Continued momentum and narrow index concentration pose risks if market sentiment
 - **Healthcare**: AstraZeneca's strong catalyst profile positions it well for sustained interest, although Chinese risks need monitoring`,
       emailSource: `../emails/Feedback.html`,
       charts: [
-            {image: '../charts/buy_cfr.png', title: 'Buy CFR'},
-            {image: '../charts/chart_of_week.png', description: 'Purchase intent is picking up across Luxury in China', title: 'Chart of the Week'},
-            {image: '../charts/buy_nibeb.png', title: 'Buy NIBEB'},
-            {image: '../charts/chart_of_week_2.png', title: 'Chart of the Week'},
-            {image: '../charts/chart_of_week_3.png', title: 'Chart of the Week'},
-            {image: '../charts/launches.png', title: 'MG Launch vs CIDP Launch'},
-            {image: '../charts/buy_argx.png', title: 'Buy ARGX'},
-            {image: '../charts/chart_of_week_pharma.png', title: 'Chart of the Week'},
-            {image: '../charts/buy_rya.png', title: 'Buy RYA'},
-            {image: '../charts/chart_of_week_5.png', title: 'Chart of the Week'},
-            {image: '../charts/buy_sxpp.png', title: 'Buy SXPP'},
-            {image: '../charts/buy_glen.png', title: 'Buy GLEN'},
-            {image: '../charts/chart_of_week_6.png', title: 'Chart of the Week'}
-        ],
+        { image: '../charts/buy_cfr.png', title: 'Buy CFR' },
+        { image: '../charts/chart_of_week.png', description: 'Purchase intent is picking up across Luxury in China', title: 'Chart of the Week' },
+        { image: '../charts/buy_nibeb.png', title: 'Buy NIBEB' },
+        { image: '../charts/chart_of_week_2.png', title: 'Chart of the Week' },
+        { image: '../charts/chart_of_week_3.png', title: 'Chart of the Week' },
+        { image: '../charts/launches.png', title: 'MG Launch vs CIDP Launch' },
+        { image: '../charts/buy_argx.png', title: 'Buy ARGX' },
+        { image: '../charts/chart_of_week_pharma.png', title: 'Chart of the Week' },
+        { image: '../charts/buy_rya.png', title: 'Buy RYA' },
+        { image: '../charts/chart_of_week_5.png', title: 'Chart of the Week' },
+        { image: '../charts/buy_sxpp.png', title: 'Buy SXPP' },
+        { image: '../charts/buy_glen.png', title: 'Buy GLEN' },
+        { image: '../charts/chart_of_week_6.png', title: 'Chart of the Week' }
+      ],
     }
   ];
 }
