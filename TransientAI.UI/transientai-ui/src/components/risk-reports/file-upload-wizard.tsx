@@ -2,34 +2,37 @@ import { useMemo, useState } from 'react';
 import styles from './file-upload-wizard.module.scss';
 import { DataGrid } from '../data-grid';
 import { ColDef } from 'ag-grid-community';
-import Papa from 'papaparse';
-import CsvTemplateDownloader from '../csv-template-downloader/csv-template-downloader';
-import { RiskReport } from '@/services/reports-data';
-import { getCurrentDate } from '@/lib/utility-functions/date-operations';
+import { File, fileManagerService } from '@/services/file-manager';
 
 export interface FileUploaderWizardProps {
-  onUploadSuccess?:(newFile: RiskReport) => void;
+  onUploadSuccess?:() => void;
+}
+
+function getColumnDef(): ColDef[] {
+  return [
+    {
+      field: "filename",
+      headerName: "Name",
+      width: 400,
+      floatingFilter: false
+    },
+    {
+      field: "size",
+      headerName: "Size",
+      width: 200,
+      floatingFilter: false
+    }
+  ];
 }
 
 export function FileUploadWizard({onUploadSuccess}: FileUploaderWizardProps) {
-
   const [stepId, setStepId] = useState<number>(1);
   const [isDragging, setIsDragging] = useState(false);
-  const [selectedFile, setSelectedFile] = useState<any>({});
-  const [jsonData, setJsonData] = useState([]);
+  const [selectedFile, setSelectedFile] = useState<File|null>(null);
+  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [errorMessage, setErrorMessage] = useState('');
 
   const columnDefs = useMemo<ColDef[]>(() => getColumnDef(), [{}]);
-
-  const csvColumns = ['Bond', 'ISIN', 'Security Name', 'Price', 'Bid', 'Mid', 'Ask', 'Currency', 'Maturity Date', 'Coupon Rate', 'Yield', 'Sector'];
-  const sampleRows = [
-    { 'Bond': 'US Treasury 10Y', 'ISIN': 'US912828YV74', 'Security Name': 'United States Treasury Bond 10 Year', 'Price': 102.45, 'Bid': 102.20, 'Mid': 102.35, 'Ask': 102.50, 'Currency': 'USD', 'Maturity Date': '2033-05-15', 'Coupon Rate': 3.50, 'Yield': 3.75, 'Sector': 'Government' },
-    { 'Bond': 'US Treasury 5Y', 'ISIN': 'US912828ZJ47', 'Security Name': 'United States Treasury Bond 5 Year', 'Price': 98.75, 'Bid': 98.50, 'Mid': 98.63, 'Ask': 98.80, 'Currency': 'USD', 'Maturity Date': '2028-10-15', 'Coupon Rate': 2.75, 'Yield': 3.10, 'Sector': 'Government' },
-    { 'Bond': 'Corporate Bond A', 'ISIN': 'US4592001014', 'Security Name': 'High Yield Corporate Bond A', 'Price': 105.25, 'Bid': 105.00, 'Mid': 105.12, 'Ask': 105.30, 'Currency': 'USD', 'Maturity Date': '2030-06-20', 'Coupon Rate': 4.20, 'Yield': 4.50, 'Sector': 'Corporate' },
-    { 'Bond': 'US Treasury 10Y', 'ISIN': 'US912828YV74', 'Security Name': 'United States Treasury Bond 10 Year', 'Price': 102.45, 'Bid': 102.20, 'Mid': 102.35, 'Ask': 102.50, 'Currency': 'USD', 'Maturity Date': '2033-05-15', 'Coupon Rate': 3.50, 'Yield': 3.75, 'Sector': 'Government' },
-    { 'Bond': 'US Treasury 5Y', 'ISIN': 'US912828ZJ47', 'Security Name': 'United States Treasury Bond 5 Year', 'Price': 98.75, 'Bid': 98.50, 'Mid': 98.63, 'Ask': 98.80, 'Currency': 'USD', 'Maturity Date': '2028-10-15', 'Coupon Rate': 2.75, 'Yield': 3.10, 'Sector': 'Government' },
-    { 'Bond': 'Corporate Bond A', 'ISIN': 'US4592001014', 'Security Name': 'High Yield Corporate Bond A', 'Price': 105.25, 'Bid': 105.00, 'Mid': 105.12, 'Ask': 105.30, 'Currency': 'USD', 'Maturity Date': '2030-06-20', 'Coupon Rate': 4.20, 'Yield': 4.50, 'Sector': 'Corporate' }
-  ];
 
   function handleDragEnter(e: any) {
     e.preventDefault();
@@ -48,101 +51,53 @@ export function FileUploadWizard({onUploadSuccess}: FileUploaderWizardProps) {
   function handleDrop(e: any) {
     e.preventDefault();
     setIsDragging(false);
-  
-    const files = Array.from(e.dataTransfer.files);
-    handleFiles(files);
+
+    const files = Array.from(e.dataTransfer.files) as any[];
+    if (files && files.length === 1 && files.every((file: any) => file.type === 'application/pdf')) {
+      const newFile: File = {
+        filename: files[0].name,
+        size: files[0].size,
+        native_file: files[0]
+      };
+      setSelectedFile(newFile);
+      setSelectedFiles([newFile]);
+      setErrorMessage('');
+      setStepId(stepId + 1);
+    }
   }
   
   function handleFileSelect(event: any) {
     const file = event.target.files[0];
-    if (!file) return;
-  
-    setSelectedFile(file);
-  
-    Papa.parse(file, {
-      header: true,
-      skipEmptyLines: true,
-      complete: function (result: any) {
-        setJsonData(result.data);
-        setStepId(stepId + 1);
-      },
-      error: function (error: any) {
-        setErrorMessage(error.message);
-      }
-    });
-  }
-  
-  function handleFiles(files: any) {
-    if (files.length > 0) {
-      setSelectedFile(files);
-      setErrorMessage('');
-    } else {
-      setErrorMessage('No files selected.');
+    if (!file || file.type !== 'application/pdf') {
+      return;
     }
-  }
-  
-  function uploadFile() {
+
+    const newFile = {
+      filename: file.name,
+      size: file.size,
+      native_file: file
+    };
+    setSelectedFile(newFile);
+    setSelectedFiles([newFile]);
+    setErrorMessage('');
     setStepId(stepId + 1);
-    onUploadSuccess!({
-      date: getCurrentDate(),
-      uploadedBy: 'John Doe',
-      uploadStatus: 'Submitted to MSCI',
-      portfolio: selectedFile?.name!
-    });
   }
 
-  function getColumnDef(): ColDef[] {
-    const columnDefs: ColDef[] = [
-      {
-        field: "Bond",
-        headerName: "Bond",
-        width: 100,
-        floatingFilter: false
-      },
-      {
-        field: "ISIN",
-        headerName: "ISIN",
-        width: 100,
-        floatingFilter: false
-      },
-      {
-        field: "Security Name",
-        headerName: "Security Name",
-        width: 230,
-        floatingFilter: false
-      },
-      {
-        field: "Price",
-        headerName: "Price",
-        width: 100,
-        floatingFilter: false
-      },
-      {
-        field: "Bid",
-        headerName: "Bid",
-        width: 100,
-        floatingFilter: false
-      },
-      {
-        field: "Mid",
-        headerName: "Mid",
-        width: 100,
-        floatingFilter: false
-      },
-      {
-        field: "Ask",
-        headerName: "Ask",
-        width: 100,
-        floatingFilter: false
-      },
-      {
-        field: "Currency",
-        headerName: "Currency",
-        width: 100,
-        floatingFilter: false
-      }
-    ];
-    return columnDefs;
+  function uploadFile() {
+    if (!selectedFile) {
+      return;
+    }
+    setStepId(stepId + 1);
+    fileManagerService
+        .uploadFile(selectedFile)
+        .then(() => {
+          setSelectedFiles([]);
+          setSelectedFile(null);
+          onUploadSuccess!();
+        })
+        .catch(e => {
+          setErrorMessage(e.message);
+        });
   }
 
   return (
@@ -212,7 +167,7 @@ export function FileUploadWizard({onUploadSuccess}: FileUploaderWizardProps) {
         stepId === 2 &&
         <div className={styles['file-validation-step']}>
           <DataGrid isSummaryGrid={true}
-            rowData={jsonData}
+            rowData={selectedFiles}
             columnDefs={columnDefs}
             rowSelection={'single'}>
           </DataGrid>
@@ -228,13 +183,13 @@ export function FileUploadWizard({onUploadSuccess}: FileUploaderWizardProps) {
         stepId === 3 &&
         <div className={styles['file-submission-step']}>
           <div className={styles['upload-status']}>
+
             <span>
               <i className='fa-solid fa-check'></i>
             </span>
             Upload Successful
           </div>
           <div className='flex gap-3 justify-center'>
-            <button className="secondary-button" onClick={() => setStepId(1)}>Upload Another File</button>
             <button className="button" onClick={() => setStepId(1)}>Done</button>
           </div>
         </div>

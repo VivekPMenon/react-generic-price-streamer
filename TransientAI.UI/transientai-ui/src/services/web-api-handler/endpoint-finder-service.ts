@@ -12,7 +12,8 @@ class EndpointFinderService {
       randomStr: '',
       httpsServices: {
         'news-api': 'https://newsapi.org/v2',
-        'openai-api': 'https://news-api-r966.onrender.com'
+        'openai-api': 'https://news-api-r966.onrender.com',
+        'hurricane-api': 'https://hurricanecap-devfastapi.azurewebsites.net'
       }
     }
   }
