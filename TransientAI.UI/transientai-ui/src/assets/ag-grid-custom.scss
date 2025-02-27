@@ -16,6 +16,11 @@
   --ag-balham-active-color: #00b2ac;
   --ag-odd-row-background-color: #{$body-bg};
 
+  
+  @media screen and (max-width: $mobile-breakpoint-max) {
+    min-height: 400px;
+  }
+
   &.summary-grid {
     --ag-font-size: 13px;
     --ag-foreground-color: #{$font-color-200};
