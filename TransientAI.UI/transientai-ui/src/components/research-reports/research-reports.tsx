@@ -6,7 +6,7 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import Segmented from 'rc-segmented';
 import { SearchableMarkdown } from '@/components/markdown';
-import { getReports, getReportsMock, ResearchReport } from '@/services/reports-data';
+import { getEmailContentAsHtml, getReports, getReportsMock, ResearchReport } from '@/services/reports-data';
 import EmailViewer from '../email-parser/email-viewer';
 import Tags from "@/components/tags/tags";
 import ImageContainer from "@/components/image-container/image-container";
@@ -27,6 +27,7 @@ export function ResearchReports({ isExpanded }: ResearchReportsProps) {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [selectedReport, setSelectedReport] = useState<ResearchReport>({});
   const [reports, setReports] = useState<ResearchReport[]>([]);
+  const [emailContent, setEmailContent] = useState<string>('');
 
   const visibleReports = useMemo<ResearchReport[]>(() => applyFilter(), [searchQuery, reports]);
 
@@ -49,9 +50,12 @@ export function ResearchReports({ isExpanded }: ResearchReportsProps) {
     return reports.filter(report => report.name?.toLowerCase().includes(searchQuery.toLowerCase()));
   }
 
-  function onReportSelection(report: ResearchReport) {
+  async function onReportSelection(report: ResearchReport) {
     setIsSummaryVisible(true);
     setSelectedReport(report);
+    
+    const emailContent = await getEmailContentAsHtml(report.id!);
+    setEmailContent(emailContent);  
     scrollToTarget();
   }
 
@@ -107,7 +111,7 @@ export function ResearchReports({ isExpanded }: ResearchReportsProps) {
               </div>
 
               <div>
-                <EmailViewer className='height-vh-68' htmlSource={selectedReport?.emailSource} />
+                <EmailViewer className='height-vh-68' emailHtml={emailContent} />
               </div>
             </div>
 

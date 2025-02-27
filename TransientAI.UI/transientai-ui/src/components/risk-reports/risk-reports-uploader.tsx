@@ -44,12 +44,17 @@ export function RiskReportsUploader() {
     scrollToTarget();
   }
 
+  async function deleteFile(file:File ) {
+    await fileManagerService.deleteFile(file.filename!);
+    loadUploadedFiles();
+  }
+
   function getColumnDef(): ColDef[] {
     return [
       {
         field: 'filename',
         headerName: 'File Name',
-        width: 400,
+        width: 300,
         autoHeight: true,
         wrapText: true
       },
@@ -62,7 +67,7 @@ export function RiskReportsUploader() {
 
       },
       {
-        field: 'uploaded',
+        field: 'upload_date',
         headerName: 'Date',
         width: 120,
         sort: 'desc',
@@ -78,7 +83,7 @@ export function RiskReportsUploader() {
           <i className='fa-regular fa-envelope cursor-pointer'></i>
           <i className='fa-regular fa-circle-down cursor-pointer'></i>
           <i className='fa-regular fa-share-from-square cursor-pointer'></i>
-          <i className='fa-regular fa-trash-can cursor-pointer'></i>
+          <i className='fa-regular fa-trash-can cursor-pointer' onClick={() => deleteFile(params.data)}></i>
         </div>)
       }
     ];
@@ -98,7 +103,7 @@ export function RiskReportsUploader() {
             rowData={uploadedFiles}
             loading={filesLoading}
             columnDefs={columnDefs}
-            onRowClicked={handleRowSelection}
+            onRowDoubleClicked={handleRowSelection}
           >
           </DataGrid>
         </div>

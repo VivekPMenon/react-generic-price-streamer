@@ -29,12 +29,6 @@ class WebApihandler {
     return result.data;
   }
 
-  getUrl(url: string, options?: WebApihandlerOptions) {
-    const currentEnv = endpointFinder.getCurrentEnvInfo();
-    const httpsEndpoint = options?.serviceName ? currentEnv.httpsServices![options.serviceName] : currentEnv.httpsEndpoint;
-    return `${httpsEndpoint}/${url}`;
-  }
-
   async getStream(url: string, params: { [key: string]: any }, options?: WebApihandlerOptions) {
     const currentEnv = endpointFinder.getCurrentEnvInfo();
     const finalParams = { ...params, user_id: this.userId };
@@ -49,10 +43,7 @@ class WebApihandler {
   }
 
   async post(url: string, data: any, params?: { [key: string]: any }, options?: WebApihandlerOptions, headers?: { [key: string]: any }) {
-    // todo.. caching
-    const currentEnv = endpointFinder.getCurrentEnvInfo();
-    const httpsEndpoint = options?.serviceName ? currentEnv.httpsServices![options.serviceName] : currentEnv.httpsEndpoint;
-    const finalUrl = `${httpsEndpoint}/${url}`;
+    const finalUrl = this.getUrl(url, options);
 
     const result = await axios({
       url: finalUrl,
@@ -84,15 +75,22 @@ class WebApihandler {
   }
 
   async delete(url: string, webApiOptions?: WebApihandlerOptions) {
-    // caching if needed
+    const finalUrl = this.getUrl(url, webApiOptions);
 
     const apiResult = await axios({
-      url,
+      url: finalUrl,
       method: 'DELETE',
       ...webApiOptions
     });
 
     return apiResult.data;
+  }
+
+  getUrl(url: string, options?: WebApihandlerOptions): string {
+    const currentEnv = endpointFinder.getCurrentEnvInfo();
+    const httpsEndpoint = options?.serviceName ? currentEnv.httpsServices![options.serviceName] : currentEnv.httpsEndpoint;
+    const finalUrl = `${httpsEndpoint}/${url}`;
+    return finalUrl;
   }
 
 }
