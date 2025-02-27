@@ -6,7 +6,7 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import Segmented from 'rc-segmented';
 import { SearchableMarkdown } from '@/components/markdown';
-import { getEmailContentAsHtml, getReports, getReportsMock, ResearchReport } from '@/services/reports-data';
+import { getAiSummaryAbstract, getAiSummaryDetailed, getEmailContentAsHtml, getReports, getReportsMock, ResearchReport } from '@/services/reports-data';
 import EmailViewer from '../email-parser/email-viewer';
 import Tags from "@/components/tags/tags";
 import ImageContainer from "@/components/image-container/image-container";
@@ -27,7 +27,11 @@ export function ResearchReports({ isExpanded }: ResearchReportsProps) {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [selectedReport, setSelectedReport] = useState<ResearchReport>({});
   const [reports, setReports] = useState<ResearchReport[]>([]);
+
   const [emailContent, setEmailContent] = useState<string>('');
+  const [aiContentAbstract, setAiContentAbstract] = useState<string>('');
+  const [aiContentDetailed, setAiContentDetailed] = useState<string>('');
+  const [summaryType, setSummaryType] = useState<'Abstract' | 'Verbose'>('Abstract');
 
   const visibleReports = useMemo<ResearchReport[]>(() => applyFilter(), [searchQuery, reports]);
 
@@ -53,10 +57,29 @@ export function ResearchReports({ isExpanded }: ResearchReportsProps) {
   async function onReportSelection(report: ResearchReport) {
     setIsSummaryVisible(true);
     setSelectedReport(report);
-    
-    const emailContent = await getEmailContentAsHtml(report.id!);
-    setEmailContent(emailContent);  
+    // setEmailContent('');
+    setAiContentAbstract('');
+    setAiContentDetailed('');
+
+    // purposefully keeping sequential as the AISummary call takes too much time sometimes
+    const emailContent = await getEmailContentAsHtml(report.id!)
+    setEmailContent(emailContent);
     scrollToTarget();
+
+    const aiContentAbstract = await getAiSummaryAbstract(report.id!);
+    setAiContentAbstract(aiContentAbstract);
+
+    // time consuming call, doing it in the background
+    const aiContentDetails = await getAiSummaryDetailed(report.id!);
+    setAiContentDetailed(aiContentDetails);
+  }
+
+  function getFinalAiContent() {
+    if (summaryType === 'Abstract') {
+      return aiContentAbstract;
+    }
+
+    return aiContentDetailed;
   }
 
   return (
@@ -67,13 +90,13 @@ export function ResearchReports({ isExpanded }: ResearchReportsProps) {
         <div className={styles['filter-panel']}>
           Search:
           <input type='text' className='mb-2' value={searchQuery} onChange={event => setSearchQuery(event.target.value)}></input>
-          {/* <i className='fa-solid fa-filter'></i> */}
+
           Summary Type:
           <Segmented
             className={styles['format-type']}
-            selected={true}
-            options={['Short', 'Medium', 'Verbose']}
-            onChange={(value) => { }}
+            value={summaryType}
+            options={['Abstract', 'Verbose']}
+            onChange={(value: any) => { setSummaryType(value) }}
           />
         </div>
 
@@ -111,6 +134,9 @@ export function ResearchReports({ isExpanded }: ResearchReportsProps) {
               </div>
 
               <div>
+                {/* {
+                  emailContent ? <EmailViewer className='height-vh-68' emailHtml={emailContent} /> : <Spinner size="3" className='self-center p-2'></Spinner>
+                } */}
                 <EmailViewer className='height-vh-68' emailHtml={emailContent} />
               </div>
             </div>
@@ -119,14 +145,18 @@ export function ResearchReports({ isExpanded }: ResearchReportsProps) {
               <div className={styles['summary-title']}>
                 AI Summary
               </div>
-              <div className={`height-vh-68 scrollable-div `}>
-                {/* <SearchableMarkdown markdownContent={selectedReport.aiSummary} className={isExpanded ? 'height-vh-82': 'height-vh-36'} /> */}
-                <SearchableMarkdown markdownContent={selectedReport.aiSummary} />
+
+              <div className={`height-vh-68 scrollable-div height-100p justify-center`}>
+                {
+                  getFinalAiContent() ? <SearchableMarkdown markdownContent={getFinalAiContent()} /> : <Spinner size="3" className='self-center'></Spinner>
+                }
+
                 {selectedReport.charts &&
                   <ImageContainer
                     images={selectedReport.charts}
                   />
                 }
+
                 {selectedReport.keywords &&
                   <Tags
                     header='Keywords:'

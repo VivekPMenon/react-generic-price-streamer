@@ -44,6 +44,8 @@ class WebApihandler {
 
   async post(url: string, data: any, params?: { [key: string]: any }, options?: WebApihandlerOptions, headers?: { [key: string]: any }) {
     const finalUrl = this.getUrl(url, options);
+    console.log(finalUrl);
+
 
     const result = await axios({
       url: finalUrl,

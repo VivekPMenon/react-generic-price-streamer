@@ -21,6 +21,7 @@ const useDebounce = (value: string, delay: number) => {
 };
 
 const EmailViewer = ({ emailHtml, htmlSource, className }: EmailViewerProps) => {
+  
   const [sanitizedHtml, setSanitizedHtml] = useState("");
   const [originalHtml, setOriginalHtml] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
