@@ -3,19 +3,19 @@ import { WebApihandlerOptions } from "./model";
 import { endpointFinder } from "./endpoint-finder-service";
 
 class WebApihandler {
-  
+
   private readonly bankId = 123;
   private readonly viewId = 101;
-  readonly userId ='e7e02b68-1234-4c7f-a0db-5fd57d688d4c';
+  readonly userId = 'e7e02b68-1234-4c7f-a0db-5fd57d688d4c';
 
-  constructor() {        
+  constructor() {
   }
 
-  async get(url:string, params: {[key: string]: any}, options?: WebApihandlerOptions)  {
+  async get(url: string, params: { [key: string]: any }, options?: WebApihandlerOptions) {
     // todo.. caching
-      const finalUrl = this.getUrl(url, options);
+    const finalUrl = this.getUrl(url, options);
 
-      const result = await axios({
+    const result = await axios({
       url: finalUrl,
       params: {
         bank_id: this.bankId,
@@ -29,18 +29,18 @@ class WebApihandler {
     return result.data;
   }
 
-    getUrl(url: string, options?: WebApihandlerOptions) {
-        const currentEnv = endpointFinder.getCurrentEnvInfo();
-        const httpsEndpoint = options?.serviceName ? currentEnv.httpsServices![options.serviceName] : currentEnv.httpsEndpoint;
-        return `${httpsEndpoint}/${url}`;
-    }
+  getUrl(url: string, options?: WebApihandlerOptions) {
+    const currentEnv = endpointFinder.getCurrentEnvInfo();
+    const httpsEndpoint = options?.serviceName ? currentEnv.httpsServices![options.serviceName] : currentEnv.httpsEndpoint;
+    return `${httpsEndpoint}/${url}`;
+  }
 
-    async getStream(url:string, params: {[key: string]: any}, options?: WebApihandlerOptions)  {
-     const currentEnv = endpointFinder.getCurrentEnvInfo();
-     const finalParams = {...params, user_id: this.userId};
-     const finalUrl = `${currentEnv.httpsEndpoint}/${url}?${new URLSearchParams(finalParams).toString()}`;
+  async getStream(url: string, params: { [key: string]: any }, options?: WebApihandlerOptions) {
+    const currentEnv = endpointFinder.getCurrentEnvInfo();
+    const finalParams = { ...params, user_id: this.userId };
+    const finalUrl = `${currentEnv.httpsEndpoint}/${url}?${new URLSearchParams(finalParams).toString()}`;
 
-     return await fetch(finalUrl, {
+    return await fetch(finalUrl, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -48,7 +48,7 @@ class WebApihandler {
     });
   }
 
-  async post(url:string, data: any, params?: {[key: string]: any}, options?: WebApihandlerOptions, headers?: {[key: string]: any})  {
+  async post(url: string, data: any, params?: { [key: string]: any }, options?: WebApihandlerOptions, headers?: { [key: string]: any }) {
     // todo.. caching
     const currentEnv = endpointFinder.getCurrentEnvInfo();
     const httpsEndpoint = options?.serviceName ? currentEnv.httpsServices![options.serviceName] : currentEnv.httpsEndpoint;
@@ -74,10 +74,10 @@ class WebApihandler {
     // caching if needed
 
     const apiResult = await axios({
-        url,
-        method: 'PUT',
-        data,
-        ...webApiOptions
+      url,
+      method: 'PUT',
+      data,
+      ...webApiOptions
     });
 
     return apiResult.data;
@@ -87,9 +87,9 @@ class WebApihandler {
     // caching if needed
 
     const apiResult = await axios({
-        url,
-        method: 'DELETE',
-        ...webApiOptions
+      url,
+      method: 'DELETE',
+      ...webApiOptions
     });
 
     return apiResult.data;
