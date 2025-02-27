@@ -12,13 +12,10 @@ class WebApihandler {
   }
 
   async get(url:string, params: {[key: string]: any}, options?: WebApihandlerOptions)  {
-    // todo.. caching 
-     const currentEnv = endpointFinder.getCurrentEnvInfo();
+    // todo.. caching
+      const finalUrl = this.getUrl(url, options);
 
-     const httpsEndpoint = options?.serviceName ? currentEnv.httpsServices![options.serviceName] : currentEnv.httpsEndpoint; 
-     const finalUrl = `${httpsEndpoint}/${url}`;
-
-    const result = await axios({
+      const result = await axios({
       url: finalUrl,
       params: {
         bank_id: this.bankId,
@@ -32,7 +29,13 @@ class WebApihandler {
     return result.data;
   }
 
-  async getStream(url:string, params: {[key: string]: any}, options?: WebApihandlerOptions)  {
+    getUrl(url: string, options?: WebApihandlerOptions) {
+        const currentEnv = endpointFinder.getCurrentEnvInfo();
+        const httpsEndpoint = options?.serviceName ? currentEnv.httpsServices![options.serviceName] : currentEnv.httpsEndpoint;
+        return `${httpsEndpoint}/${url}`;
+    }
+
+    async getStream(url:string, params: {[key: string]: any}, options?: WebApihandlerOptions)  {
      const currentEnv = endpointFinder.getCurrentEnvInfo();
      const finalParams = {...params, user_id: this.userId};
      const finalUrl = `${currentEnv.httpsEndpoint}/${url}?${new URLSearchParams(finalParams).toString()}`;
@@ -45,10 +48,11 @@ class WebApihandler {
     });
   }
 
-  async post(url:string, data: any, params?: {[key: string]: any}, options?: WebApihandlerOptions)  {
-    // todo.. caching 
-     const currentEnv = endpointFinder.getCurrentEnvInfo();
-     const finalUrl = `${currentEnv.httpsEndpoint}/${url}`;
+  async post(url:string, data: any, params?: {[key: string]: any}, options?: WebApihandlerOptions, headers?: {[key: string]: any})  {
+    // todo.. caching
+    const currentEnv = endpointFinder.getCurrentEnvInfo();
+    const httpsEndpoint = options?.serviceName ? currentEnv.httpsServices![options.serviceName] : currentEnv.httpsEndpoint;
+    const finalUrl = `${httpsEndpoint}/${url}`;
 
     const result = await axios({
       url: finalUrl,
@@ -58,6 +62,7 @@ class WebApihandler {
         user_id: this.userId,
         ...params
       },
+      headers,
       data,
       method: 'POST'
     });

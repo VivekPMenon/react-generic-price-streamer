@@ -1,83 +1,58 @@
 'use client';
 
-import React, { useRef, useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import styles from './risk-reports-uploader.module.scss';
 import { DataGrid } from '../data-grid';
 import { ColDef } from 'ag-grid-community';
-import { RiskReport } from '@/services/reports-data';
-import {getUploadedReports} from '@/services/reports-data/risk-reports-data';
+import {File, fileManagerService} from '@/services/file-manager';
 import { FileUploadWizard } from './file-upload-wizard';
 import {Viewer, Worker} from "@react-pdf-viewer/core";
 import {defaultLayoutPlugin} from "@react-pdf-viewer/default-layout";
 import {themePlugin} from "@react-pdf-viewer/theme";
-// import {useScrollTo} from "@/lib/hooks";
 
 export function RiskReportsUploader() {
-  const [riskReports, setRiskReports] = useState<RiskReport[]>();
-  const [fileName, setFileName] = useState('');
-  // const { scrollTargetRef, scrollToTarget } = useScrollTo<HTMLDivElement>(-200);
-  const [selectedReport, setSelectedReport] = useState<RiskReport>({});
+  const [uploadedFiles, setUploadedFiles] = useState<File[]>();
+  const [filesLoading, setFilesLoading] = useState<boolean>(false);
+  const [selectedFile, setSelectedFile] = useState<any>(null);
   const columnDefs = useMemo<ColDef[]>(() => getColumnDef(), []);
 
-  useEffect(() => loadRiskReports(), []);
-
-  function loadRiskReports() {
-    const loadDataAsync = async () => {
-      const reports = await getUploadedReports();
-      setRiskReports(reports);
-      return reports;
-    }
-
-    loadDataAsync();
+  function loadUploadedFiles() {
+    setFilesLoading(true);
+    fileManagerService
+        .getUploadedFiles()
+        .then(files => {
+          setUploadedFiles(files);
+          setFilesLoading(false);
+        });
   }
+
+  useEffect(() => {
+    loadUploadedFiles();
+  }, []);
 
   function handleRowSelection(event: any) {
-    setSelectedReport(event.data!);
+    setSelectedFile(
+        fileManagerService.getUploadedFileUrl(event.data!.filename)
+    );
   }
-
-  const handleFileUpload = (event: any) => {
-    const file = event.target.files[0];
-    if (file) {
-      setFileName(file.name);
-    }
-  };
-
-  const downloadTemplate = () => {
-    const csvContent = 'First Name,Age\n'; // CSV Headers
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const link = document.createElement('a');
-    link.href = URL.createObjectURL(blob);
-    link.download = 'template.csv';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
 
   function getColumnDef(): ColDef[] {
     return [
       {
-        field: 'portfolio',
-        headerName: 'Report Name',
+        field: 'filename',
+        headerName: 'File Name',
         width: 150,
         autoHeight: true,
         wrapText: true
       },
       {
-        field: 'uploadedBy',
-        headerName: 'Uploaded By',
-        width: 130,
-        autoHeight: true,
-        wrapText: true
+        field: 'size',
+        headerName: 'Size',
+        width: 120,
+        autoHeight: true
       },
       {
-        field: 'uploadStatus',
-        headerName: 'Upload Status',
-        width: 150,
-        autoHeight: true,
-        wrapText: true
-      },
-      {
-        field: 'date',
+        field: 'uploaded',
         headerName: 'Date',
         width: 120,
         sort: 'desc',
@@ -95,17 +70,7 @@ export function RiskReportsUploader() {
           <i className='fa-regular fa-share-from-square cursor-pointer'></i>
           <i className='fa-regular fa-trash-can cursor-pointer'></i>
         </div>)
-      },
-      // {
-      //   headerName: '',
-      //   width: 100,
-      //   floatingFilter: false,
-      //   cellRenderer: IconCellRenderer,
-      //   cellRendererParams: {
-      //     className: 'fa-solid fa-eye',
-      //     onClickHandler: () => alert('hey') 
-      //   }
-      // }
+      }
     ];
   }
 
@@ -113,15 +78,15 @@ export function RiskReportsUploader() {
       <div className={styles['risk-reports-container']}>
         <div className={styles['risk-reports-documents']}>
           <div className={styles['risk-reports-uploader']}>
-            <FileUploadWizard onUploadSuccess={newFile => setRiskReports([...riskReports!, newFile])}></FileUploadWizard>
+            <FileUploadWizard onUploadSuccess={() => loadUploadedFiles()} />
           </div>
           <div className={styles['reports-grid']}>
             <div>My Documents</div>
             <DataGrid
                 isSummaryGrid={true}
-                rowData={riskReports}
+                rowData={uploadedFiles}
+                loading={filesLoading}
                 columnDefs={columnDefs}
-                onRowClicked={handleRowSelection}
                 onRowDoubleClicked={handleRowSelection}
             >
             </DataGrid>
@@ -129,11 +94,11 @@ export function RiskReportsUploader() {
         </div>
         <div
             className={styles['risk-reports-preview']}
-            style={{ display: selectedReport.pdfSource ? 'flex' : 'none' }}
+            style={{ display: selectedFile ? 'flex' : 'none' }}
             >
           <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.min.js">
             <Viewer
-                fileUrl={selectedReport.pdfSource ? selectedReport.pdfSource : '/pdfs/RiskDecomp.pdf'}
+                fileUrl={selectedFile ? selectedFile : '/pdfs/RiskDecomp.pdf'}
                 defaultScale={1.25}
                 plugins={[defaultLayoutPlugin(), themePlugin()]}
                 theme={'dark'}
