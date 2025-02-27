@@ -11,6 +11,7 @@ import EmailViewer from '../email-parser/email-viewer';
 import Tags from "@/components/tags/tags";
 import ImageContainer from "@/components/image-container/image-container";
 import { useScrollTo } from '@/lib/hooks';
+import { Spinner } from '@radix-ui/themes';
 
 
 export interface ResearchReportsProps {
@@ -21,6 +22,7 @@ export function ResearchReports({ isExpanded }: ResearchReportsProps) {
 
   const { scrollTargetRef, scrollToTarget } = useScrollTo<HTMLDivElement>();
 
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isSummaryVisible, setIsSummaryVisible] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [selectedReport, setSelectedReport] = useState<ResearchReport>({});
@@ -31,8 +33,12 @@ export function ResearchReports({ isExpanded }: ResearchReportsProps) {
   useEffect(() => { loadReports() }, []);
 
   async function loadReports() {
+    setIsLoading(true);
+
     const results = await getReports();
     setReports(results);
+
+    setIsLoading(false);
   }
 
   function applyFilter(): ResearchReport[] {
@@ -69,18 +75,26 @@ export function ResearchReports({ isExpanded }: ResearchReportsProps) {
 
         <div className='news scrollable-div height-vh-61'>
           {
-            visibleReports.map(report =>
-              <div className={report.name === selectedReport.name ? 'news-item active' : 'news-item'}
-                onClick={() => { onReportSelection(report) }}>
-                <div className='news-content'>
-                  <div className='news-title'>
-                    <i className='fa-regular fa-file-lines'></i>
-                    {report.name}
-                  </div>
-                </div>
-              </div>
-            )
+            isLoading ?
+              <Spinner size="3" className='self-center'></Spinner>
+              :
+              <>
+                {
+                  visibleReports.map(report =>
+                    <div className={report.name === selectedReport.name ? 'news-item active' : 'news-item'}
+                      onClick={() => { onReportSelection(report) }}>
+                      <div className='news-content'>
+                        <div className='news-title'>
+                          <i className='fa-regular fa-file-lines'></i>
+                          {report.name}
+                        </div>
+                      </div>
+                    </div>
+                  )
+                }
+              </>
           }
+
         </div>
       </div>
 
@@ -105,15 +119,15 @@ export function ResearchReports({ isExpanded }: ResearchReportsProps) {
                 {/* <SearchableMarkdown markdownContent={selectedReport.aiSummary} className={isExpanded ? 'height-vh-82': 'height-vh-36'} /> */}
                 <SearchableMarkdown markdownContent={selectedReport.aiSummary} />
                 {selectedReport.charts &&
-                    <ImageContainer
-                        images={selectedReport.charts}
-                    />
+                  <ImageContainer
+                    images={selectedReport.charts}
+                  />
                 }
                 {selectedReport.keywords &&
-                    <Tags
-                        header='Keywords:'
-                        tags={selectedReport.keywords}
-                    />}
+                  <Tags
+                    header='Keywords:'
+                    tags={selectedReport.keywords}
+                  />}
               </div>
             </div>
           </> : <></>
