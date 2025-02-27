@@ -10,6 +10,8 @@ import {Viewer, Worker} from "@react-pdf-viewer/core";
 import {defaultLayoutPlugin} from "@react-pdf-viewer/default-layout";
 import {themePlugin} from "@react-pdf-viewer/theme";
 
+const EMPTY = new Uint8Array(0);
+
 export function RiskReportsUploader() {
   const [uploadedFiles, setUploadedFiles] = useState<File[]>();
   const [filesLoading, setFilesLoading] = useState<boolean>(false);
@@ -98,7 +100,7 @@ export function RiskReportsUploader() {
             >
           <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.min.js">
             <Viewer
-                fileUrl={selectedFile ? selectedFile : '/pdfs/RiskDecomp.pdf'}
+                fileUrl={selectedFile ? selectedFile : EMPTY}
                 defaultScale={1.25}
                 plugins={[defaultLayoutPlugin(), themePlugin()]}
                 theme={'dark'}
