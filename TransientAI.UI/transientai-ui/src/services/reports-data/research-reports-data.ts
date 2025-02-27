@@ -3,8 +3,10 @@
 import { webApihandler } from '../web-api-handler';
 import { ResearchReport } from './model';
 
+const serviceName = 'hurricane-api';
+
 export async function getReports(): Promise<ResearchReport[]> {
-  const results = await webApihandler.get('latest-emails', {}, { serviceName: 'hurricane-api' });
+  const results = await webApihandler.get('latest-emails', {}, { serviceName });
   return results?.map((result: any) => ({
     id: result.id,
     name: result.subject
@@ -12,8 +14,18 @@ export async function getReports(): Promise<ResearchReport[]> {
 }
 
 export async function getEmailContentAsHtml(emailGuid: string): Promise<string> {
-  const result = await webApihandler.get(`email-html/${emailGuid}`, {}, { serviceName: 'hurricane-api' });
+  const result = await webApihandler.get(`email-html/${emailGuid}`, {}, { serviceName });
   return result.html_content;
+}
+
+export async function getAiSummaryAbstract(emailGuid: string): Promise<string> {
+  const result = await webApihandler.post(`summarize-email-abstract/${emailGuid}`, null, {}, { serviceName });
+  return result.abstract_summary;
+}
+
+export async function getAiSummaryDetailed(emailGuid: string): Promise<string> {
+  const result = await webApihandler.post(`summarize-email-structured/${emailGuid}`, null, {}, { serviceName });
+  return result.structured_summary;
 }
 
 export async function getReportsMock(): Promise<ResearchReport[]> {
