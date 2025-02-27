@@ -11,6 +11,11 @@ export async function getReports(): Promise<ResearchReport[]> {
   } as ResearchReport));
 }
 
+export async function getEmailContentAsHtml(emailGuid: string): Promise<string> {
+  const result = await webApihandler.get(`email-html/${emailGuid}`, {}, { serviceName: 'hurricane-api' });
+  return result.html_content;
+}
+
 export async function getReportsMock(): Promise<ResearchReport[]> {
   return [
     {

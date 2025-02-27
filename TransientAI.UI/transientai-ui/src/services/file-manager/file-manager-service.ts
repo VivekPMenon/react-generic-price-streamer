@@ -1,11 +1,13 @@
-import {webApihandler} from "@/services/web-api-handler";
-import {File} from "@/services/file-manager/model";
+import { webApihandler } from "@/services/web-api-handler";
+import { File } from "@/services/file-manager/model";
 
 class FileManagerService {
+    readonly serviceName = 'hurricane-api';
+
     async getUploadedFiles(): Promise<Array<File>> {
         try {
             const result = await webApihandler.get('list-pdfs', {}, {
-                serviceName: 'hurricane-api'
+                serviceName: this.serviceName
             });
 
             return result.map((file: any) => ({
@@ -19,7 +21,7 @@ class FileManagerService {
 
     getUploadedFileUrl(fileName: string): string {
         return webApihandler.getUrl(`get-pdf/${fileName}`, {
-            serviceName: 'hurricane-api'
+            serviceName: this.serviceName
         });
     }
 
@@ -30,13 +32,18 @@ class FileManagerService {
         await webApihandler
             .post(
                 'upload-pdf',
-                data, {},{
-                    serviceName: 'hurricane-api'
-                },
+                data, {}, {
+                serviceName: this.serviceName
+            },
                 {
                     'Content-Type': 'multipart/form-data',
                     'accept': 'application/json'
                 });
+        return true;
+    }
+
+    async deleteFile(id: string): Promise<boolean> {
+        await webApihandler.delete('delete-pdf/' + id, { serviceName: this.serviceName });
         return true;
     }
 }

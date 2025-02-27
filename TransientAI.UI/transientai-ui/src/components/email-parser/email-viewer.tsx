@@ -32,6 +32,13 @@ const EmailViewer = ({ emailHtml, htmlSource, className }: EmailViewerProps) => 
   const deferredSearchTerm = useDeferredValue(debouncedSearchTerm);
 
   useEffect(() => {
+    if (emailHtml) {
+      const cleanHtml = sanitizeHtmlWithBase64Images(emailHtml);
+      setSanitizedHtml(cleanHtml);
+      setOriginalHtml(cleanHtml);
+      return;
+    }
+
     fetch(htmlSource!)
       .then((res) => res.text())
       .then((html) => {
@@ -39,7 +46,7 @@ const EmailViewer = ({ emailHtml, htmlSource, className }: EmailViewerProps) => 
         setSanitizedHtml(cleanHtml);
         setOriginalHtml(cleanHtml);
       });
-  }, [htmlSource]);
+  }, [htmlSource, emailHtml]);
 
   useEffect(() => {
     if (!deferredSearchTerm.trim()) {
@@ -164,10 +171,10 @@ const EmailViewer = ({ emailHtml, htmlSource, className }: EmailViewerProps) => 
             placeholder="Find..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            
+
           />
-          <i className={`fa-solid fa-chevron-left ${matchIndices?.length > 0 ? 'active': ''}`} onClick={() => navigateMatches(-1)}></i>
-          <i className={`fa-solid fa-chevron-right ${matchIndices?.length > 0 ? 'active': ''}`} onClick={() => navigateMatches(1)}></i>
+          <i className={`fa-solid fa-chevron-left ${matchIndices?.length > 0 ? 'active' : ''}`} onClick={() => navigateMatches(-1)}></i>
+          <i className={`fa-solid fa-chevron-right ${matchIndices?.length > 0 ? 'active' : ''}`} onClick={() => navigateMatches(1)}></i>
           {/* <button onClick={() => navigateMatches("next")} disabled={!matches.length}>Next</button> */}
           {/* <button onClick={() => navigateMatches("next")} disabled={!matches.length}>Next</button> */}
           {/* <button onClick={() => setShowSearchBar(false)}>Close</button> */}
