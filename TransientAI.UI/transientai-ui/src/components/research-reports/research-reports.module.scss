@@ -15,7 +15,7 @@
   margin-bottom: 10px;
 }
 
-.report-list {
+.reports-container {
   flex: 1 1 20%;
   display: flex;
   flex-direction: column;
@@ -30,6 +30,10 @@
     max-width: unset;
     min-width: unset;
     font-size: 14px;
+  }
+
+  .reports {
+    max-height: calc(100vh - 500px);
   }
 
   .report {
