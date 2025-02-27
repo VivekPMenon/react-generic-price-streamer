@@ -9,7 +9,7 @@ export function useScrollTo<T extends HTMLElement>(offset = 0) {
         const y = scrollTargetRef.current.getBoundingClientRect().top + window.scrollY - offset;
         window.scrollTo({ top: y, behavior: 'smooth' });
       }
-    }, 0);
+    }, 200);
   };
 
   return { scrollTargetRef, scrollToTarget };

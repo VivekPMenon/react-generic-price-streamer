@@ -25,7 +25,7 @@
 
   .pdf-viewer {
     padding: 0 10px 0 50px;
-    height: calc(100vh - 300px);
+    max-height: calc(100vh - 500px);
     border-radius: 10px;
 
     @media screen and (max-width: $mobile-breakpoint-max) {

@@ -18,7 +18,7 @@ export default function DashboardLayout({
   const deviceType = useDeviceType();
 
   const [expandedPanels, setExpandedPanels] = useState<string[]>([]);
-  const [isMenuVisible, setIsMenuVisible] = useState<boolean>(false);
+  const [isMenuVisible, setIsMenuVisible] = useState<boolean>(true);
 
   // useEffect(() => {
   //   if (deviceType !== 'mobile') {

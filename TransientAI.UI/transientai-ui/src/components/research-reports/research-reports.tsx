@@ -62,7 +62,7 @@ export function ResearchReports({ isExpanded }: ResearchReportsProps) {
   return (
     <div className={styles['research-reports']}>
 
-      <div className={styles['report-list']}>
+      <div className={styles['reports-container']}>
 
         <div className={styles['filter-panel']}>
           Search:
@@ -77,7 +77,7 @@ export function ResearchReports({ isExpanded }: ResearchReportsProps) {
           />
         </div>
 
-        <div className='news scrollable-div height-vh-61'>
+        <div className={`${styles['reports']} news scrollable-div`}>
           {
             isLoading ?
               <Spinner size="3" className='self-center'></Spinner>
