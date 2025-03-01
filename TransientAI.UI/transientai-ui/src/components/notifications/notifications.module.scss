@@ -18,6 +18,7 @@
   gap: 10px;
   padding: 10px 5px 10px 0px;
   max-height: 60vh;
+  align-items: center;
 
   @media screen and (max-width: $mobile-breakpoint-max) { 
     max-height: calc(100vh - 500px);
@@ -35,8 +36,13 @@
     background-color: $gray-1000;
     align-content: baseline;
     cursor: pointer;
-  }
+    width: 100%;
 
+    &.active {
+      border: 1px solid $teal-100;
+    }
+  }
+  
   .notification-title {
     display: flex;
     gap: 10px;

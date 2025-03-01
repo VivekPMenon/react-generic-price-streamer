@@ -9,9 +9,11 @@ import { MenuContextData } from "@/services/menu-data";
 import { NotificationPopup } from './notification-popup';
 import { useRouter } from 'next/navigation';
 import { useResearchReportsStore } from '@/services/reports-data';
+import { Spinner } from '@radix-ui/themes';
 
 export interface NotificationsProps {
   onExpandCollapse?: (state: boolean) => void;
+  notificationClicked?: (notification: Notification) => void;
 }
 
 export function Notifications(props: NotificationsProps) {
@@ -35,6 +37,7 @@ export function Notifications(props: NotificationsProps) {
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
   const [selectedType, setSelectedType] = useState<string>(NotificationType.Research);
   const [selectedCorpAction, setSelectedCorpAction] = useState<CorporateAction>({}); // todo..
+  const [selectedNotification, setSelectedNotification] = useState<Notification>({}); // todo..
 
   const visibleNotifications = useMemo<Notification[]>(() => notifications
     .filter(notification => selectedType === 'All' || notification.type === selectedType), [
@@ -118,16 +121,19 @@ export function Notifications(props: NotificationsProps) {
   function onNotificationClick(notification: Notification) {
     switch (notification.type) {
       case NotificationType.RiskReport:
-        return;
+        break;
 
       case NotificationType.Research:
         setSelectedResearchReport(researchReports.find(report => report.id === notification.id)!);
         router.push('/dashboard/research-reports'); // todo.. remove the route hardcoding
-        return;
+        break;
 
       case NotificationType.CorpAct:
-        return 'pill teal';
+        break;
     }
+
+    setSelectedNotification(notification);
+    props.notificationClicked!(notification);
   }
 
   function onReadMoreClick() {
@@ -165,45 +171,50 @@ export function Notifications(props: NotificationsProps) {
 
       <div className={`${styles['notification-items']} scrollable-div ${isExpanded ? styles['expanded'] : ''}`}>
         {
-          visibleNotifications.map(notification =>
-            <div className={styles['notification-item']} onClick={() => onNotificationClick(notification)}>
+          isLoading ? <Spinner size="3"></Spinner> :
+            <>
+              {
+                visibleNotifications.map(notification =>
+                  <div className={`${styles['notification-item']} ${notification.id === selectedNotification.id ? styles['active'] : ''}`} 
+                    onClick={() => onNotificationClick(notification)}>
 
-              <div className={styles['notification-title']}>
-                <i className={getIconClass(notification.type!)}></i>
-                <span className={styles.name}>{notification.title}</span>
-                {/* <span className={styles['notification-count']}>(6)</span> */}
+                    <div className={styles['notification-title']}>
+                      <i className={getIconClass(notification.type!)}></i>
+                      <span className={styles.name}>{notification.title}</span>
+                      {/* <span className={styles['notification-count']}>(6)</span> */}
 
-                <div className={styles['notification-menu']}>
-                  <div className={getPillClass(notification.type!)}>
-                    {notification.type}
-                  </div>
+                      <div className={styles['notification-menu']}>
+                        <div className={getPillClass(notification.type!)}>
+                          {notification.type}
+                        </div>
 
-                  <NotificationPopup
-                    onTrigger={onNotificationPopupTrigger}
-                    notification={selectedCorpAction}
-                    onOk={onReadMoreClick}
-                    notificationId={notification.id}>
-                    <div>
-                      <i className='fa-solid fa-ellipsis ml-3'></i>
+                        <NotificationPopup
+                          onTrigger={onNotificationPopupTrigger}
+                          notification={selectedCorpAction}
+                          onOk={onReadMoreClick}
+                          notificationId={notification.id}>
+                          <div>
+                            <i className='fa-solid fa-ellipsis ml-3'></i>
+                          </div>
+                        </NotificationPopup>
+                      </div>
                     </div>
-                  </NotificationPopup>
-                </div>
-              </div>
 
-              <div className={styles['notification-content']}>
-                <div className='blue-color'>{notification.subTitle}</div>
-                <div className={styles['messages']}>
-                  <ul className="list-disc pl-8 off-white-color-alt">
-                    {
-                      notification.highlights?.map(item => <li>{item}</li>)
-                    }
-                  </ul>
-                </div>
-              </div>
-            </div>
-          )
+                    <div className={styles['notification-content']}>
+                      <div className='blue-color'>{notification.subTitle}</div>
+                      <div className={styles['messages']}>
+                        <ul className="list-disc pl-8 off-white-color-alt">
+                          {
+                            notification.highlights?.map(item => <li>{item}</li>)
+                          }
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                )
+              }
+            </>
         }
-
       </div>
     </div>
   );

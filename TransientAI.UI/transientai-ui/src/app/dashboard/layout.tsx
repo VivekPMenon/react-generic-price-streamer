@@ -60,7 +60,8 @@ export default function DashboardLayout({
           }
           {
             !expandedPanels.includes('explorer') ?
-              <Notifications onExpandCollapse={isExpanded => onExpandCollapse('notifications', isExpanded)}>
+              <Notifications onExpandCollapse={isExpanded => onExpandCollapse('notifications', isExpanded)}
+                notificationClicked={notification => setIsMenuVisible(false)}>
               </Notifications> : <></>
           }
         </div>
