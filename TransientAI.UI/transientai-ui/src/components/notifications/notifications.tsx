@@ -8,6 +8,7 @@ import { CorpActionsDataContext, CorporateAction, getCorpActions } from "@/servi
 import { MenuContextData } from "@/services/menu-data";
 import { NotificationPopup } from './notification-popup';
 import { useRouter } from 'next/navigation';
+import { useResearchReportsStore } from '@/services/reports-data';
 
 export interface NotificationsProps {
   onExpandCollapse?: (state: boolean) => void;
@@ -20,13 +21,13 @@ export function Notifications(props: NotificationsProps) {
     // NotificationType.Axes,
     // NotificationType.Clients,
     // NotificationType.Trades,
-    
     NotificationType.Research,
     NotificationType.RiskReport,
     NotificationType.CorpAct,
   ];
 
   const router = useRouter();
+  const { isLoading, reports: researchReports, setSelectedReport: setSelectedResearchReport } = useResearchReportsStore();
   const { corpActionsData, setCorpActionsData } = useContext(CorpActionsDataContext);
   const { activeMenuData, setActiveMenuData } = useContext(MenuContextData);
 
@@ -41,10 +42,24 @@ export function Notifications(props: NotificationsProps) {
     notifications
   ]);
 
-  useEffect(() => { loadNotifications() }, []);
+  useEffect(() => { loadNotifications() }, [researchReports]);
 
+  // todo ... we will be fetching the entire notification types from an API instead of UI individually calling each categories and stitching
   async function loadNotifications() {
     const notifications = await getNotifications();
+
+    for (const researchReport of researchReports) {
+      notifications.push({
+        id: researchReport.id,
+        title: researchReport.name,
+        type: NotificationType.Research,
+        highlights: [
+          `Sender: ${researchReport.sender!}`,
+          `Date: ${researchReport.received_date!}`,
+        ]
+      });
+    }
+
     setNotifications(notifications);
   }
 
@@ -82,7 +97,7 @@ export function Notifications(props: NotificationsProps) {
         return 'pill blue';
 
       case NotificationType.Clients:
-        
+
       case NotificationType.RiskReport:
         return 'pill orange';
 
@@ -98,6 +113,21 @@ export function Notifications(props: NotificationsProps) {
     const corpActions = await getCorpActions();
     const selectedAction = corpActions.find(action => action.eventId === id);
     setSelectedCorpAction(selectedAction!);
+  }
+
+  function onNotificationClick(notification: Notification) {
+    switch (notification.type) {
+      case NotificationType.RiskReport:
+        return;
+
+      case NotificationType.Research:
+        setSelectedResearchReport(researchReports.find(report => report.id === notification.id)!);
+        router.push('/dashboard/research-reports'); // todo.. remove the route hardcoding
+        return;
+
+      case NotificationType.CorpAct:
+        return 'pill teal';
+    }
   }
 
   function onReadMoreClick() {
@@ -136,7 +166,7 @@ export function Notifications(props: NotificationsProps) {
       <div className={`${styles['notification-items']} scrollable-div ${isExpanded ? styles['expanded'] : ''}`}>
         {
           visibleNotifications.map(notification =>
-            <div className={styles['notification-item']}>
+            <div className={styles['notification-item']} onClick={() => onNotificationClick(notification)}>
 
               <div className={styles['notification-title']}>
                 <i className={getIconClass(notification.type!)}></i>

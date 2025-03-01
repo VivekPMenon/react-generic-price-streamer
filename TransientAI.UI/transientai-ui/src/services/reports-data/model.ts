@@ -9,6 +9,8 @@ export interface ResearchReport {
   name?: string;
   emailSource?: string;
   aiSummary?: string;
+  sender?: string;
+  received_date?: string;
   charts?: Array<ChartSummary>;
   keywords?: Array<string>;
 }
