@@ -12,6 +12,7 @@ import Tags from "@/components/tags/tags";
 import ImageContainer from "@/components/image-container/image-container";
 import { useScrollTo } from '@/lib/hooks';
 import { Spinner } from '@radix-ui/themes';
+import useAutoHeight from '@/lib/hooks/useAutoHeight';
 
 
 export interface ResearchReportsProps {
@@ -34,6 +35,9 @@ export function ResearchReports({ isExpanded }: ResearchReportsProps) {
   const [summaryType, setSummaryType] = useState<'Abstract' | 'Verbose'>('Abstract');
 
   const visibleReports = useMemo<ResearchReport[]>(() => applyFilter(), [searchQuery, reports]);
+
+  const [reportsRef, reportsMaxHeight] = useAutoHeight();
+  const [aiSummaryRef, aiSummaryMaxHeight] = useAutoHeight([getFinalAiContent()]);
 
   useEffect(() => { loadReports() }, []);
 
@@ -100,7 +104,7 @@ export function ResearchReports({ isExpanded }: ResearchReportsProps) {
           />
         </div>
 
-        <div className={`${styles['reports']} news scrollable-div`}>
+        <div className={`${styles['reports']} news scrollable-div`} ref={reportsRef} style={{ maxHeight: reportsMaxHeight }}>
           {
             isLoading ?
               <Spinner size="3" className='self-center'></Spinner>
@@ -137,7 +141,7 @@ export function ResearchReports({ isExpanded }: ResearchReportsProps) {
                 {/* {
                   emailContent ? <EmailViewer className='height-vh-68' emailHtml={emailContent} /> : <Spinner size="3" className='self-center p-2'></Spinner>
                 } */}
-                <EmailViewer className='height-vh-68' emailHtml={emailContent} />
+                <EmailViewer emailHtml={emailContent} />
               </div>
             </div>
 
@@ -146,7 +150,7 @@ export function ResearchReports({ isExpanded }: ResearchReportsProps) {
                 AI Summary
               </div>
 
-              <div className={`height-vh-68 scrollable-div height-100p justify-center`}>
+              <div className={`scrollable-div height-100p justify-center`} ref={aiSummaryRef} style={{ maxHeight: aiSummaryMaxHeight }}>
                 {
                   getFinalAiContent() ? <SearchableMarkdown markdownContent={getFinalAiContent()} /> : <Spinner size="3" className='self-center'></Spinner>
                 }

@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, useDeferredValue } from "react";
 import DOMPurify from "dompurify";
+import useAutoHeight from "@/lib/hooks/useAutoHeight";
 
 export interface EmailViewerProps {
   emailHtml?: string;
@@ -31,6 +32,7 @@ const EmailViewer = ({ emailHtml, htmlSource, className }: EmailViewerProps) => 
 
   const debouncedSearchTerm = useDebounce(searchTerm, 300);
   const deferredSearchTerm = useDeferredValue(debouncedSearchTerm);
+  const [ref, maxHeight] = useAutoHeight();
 
   useEffect(() => {
     if (emailHtml) {
@@ -187,7 +189,8 @@ const EmailViewer = ({ emailHtml, htmlSource, className }: EmailViewerProps) => 
       </div>
 
       <div
-        ref={contentRef}
+        ref={ref}
+        style={{ maxHeight: maxHeight }}
         className={`email-container scrollable-div ${className}`}
         dangerouslySetInnerHTML={{ __html: sanitizedHtml }}
       />
