@@ -45,6 +45,10 @@ export function ResearchReports({ isExpanded }: ResearchReportsProps) {
   }
 
   async function onReportSelection(report: ResearchReport) {
+    if(!report?.id) {
+      return;
+    }
+
     setIsSummaryVisible(true);
     setSelectedReport(report);
     // setEmailContent('');
