@@ -6,7 +6,7 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import Segmented from 'rc-segmented';
 import { SearchableMarkdown } from '@/components/markdown';
-import { getAiSummaryAbstract, getAiSummaryDetailed, getEmailContentAsHtml, getReports, getReportsMock, ResearchReport } from '@/services/reports-data';
+import { researchReportsDataService, ResearchReport, useResearchReportsStore } from '@/services/reports-data';
 import EmailViewer from '../email-parser/email-viewer';
 import Tags from "@/components/tags/tags";
 import ImageContainer from "@/components/image-container/image-container";
@@ -22,11 +22,10 @@ export function ResearchReports({ isExpanded }: ResearchReportsProps) {
 
   const { scrollTargetRef, scrollToTarget } = useScrollTo<HTMLDivElement>();
 
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const { isLoading, reports, selectedReport, setSelectedReport } = useResearchReportsStore();
+
   const [isSummaryVisible, setIsSummaryVisible] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState<string>('');
-  const [selectedReport, setSelectedReport] = useState<ResearchReport>({});
-  const [reports, setReports] = useState<ResearchReport[]>([]);
 
   const [emailContent, setEmailContent] = useState<string>('');
   const [aiContentAbstract, setAiContentAbstract] = useState<string>('');
@@ -35,16 +34,7 @@ export function ResearchReports({ isExpanded }: ResearchReportsProps) {
 
   const visibleReports = useMemo<ResearchReport[]>(() => applyFilter(), [searchQuery, reports]);
 
-  useEffect(() => { loadReports() }, []);
-
-  async function loadReports() {
-    setIsLoading(true);
-
-    const results = await getReports();
-    setReports(results);
-
-    setIsLoading(false);
-  }
+  useEffect(() => { onReportSelection(selectedReport!) }, [selectedReport]);
 
   function applyFilter(): ResearchReport[] {
     if (!searchQuery) {
@@ -62,15 +52,15 @@ export function ResearchReports({ isExpanded }: ResearchReportsProps) {
     setAiContentDetailed('');
 
     // purposefully keeping sequential as the AISummary call takes too much time sometimes
-    const emailContent = await getEmailContentAsHtml(report.id!)
+    const emailContent = await researchReportsDataService.getEmailContentAsHtml(report.id!)
     setEmailContent(emailContent);
     scrollToTarget();
 
-    const aiContentAbstract = await getAiSummaryAbstract(report.id!);
+    const aiContentAbstract = await researchReportsDataService.getAiSummaryAbstract(report.id!);
     setAiContentAbstract(aiContentAbstract);
 
     // time consuming call, doing it in the background
-    const aiContentDetails = await getAiSummaryDetailed(report.id!);
+    const aiContentDetails = await researchReportsDataService.getAiSummaryDetailed(report.id!);
     setAiContentDetailed(aiContentDetails);
   }
 
@@ -108,7 +98,7 @@ export function ResearchReports({ isExpanded }: ResearchReportsProps) {
               <>
                 {
                   visibleReports.map(report =>
-                    <div className={report.name === selectedReport.name ? 'news-item active' : 'news-item'}
+                    <div className={report.name === selectedReport?.name ? 'news-item active' : 'news-item'}
                       onClick={() => { onReportSelection(report) }}>
                       <div className='news-content'>
                         <div className='news-title'>
@@ -151,13 +141,13 @@ export function ResearchReports({ isExpanded }: ResearchReportsProps) {
                   getFinalAiContent() ? <SearchableMarkdown markdownContent={getFinalAiContent()} /> : <Spinner size="3" className='self-center'></Spinner>
                 }
 
-                {selectedReport.charts &&
+                {selectedReport?.charts &&
                   <ImageContainer
-                    images={selectedReport.charts}
+                    images={selectedReport?.charts}
                   />
                 }
 
-                {selectedReport.keywords &&
+                {selectedReport?.keywords &&
                   <Tags
                     header='Keywords:'
                     tags={selectedReport.keywords}

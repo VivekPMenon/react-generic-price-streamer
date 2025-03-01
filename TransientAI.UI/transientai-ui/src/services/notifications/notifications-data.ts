@@ -70,26 +70,26 @@ export async function getNotifications(): Promise<Notification[]> {
     //     `Bought $5MM worth of California municipal bonds with a 3.5% tax-exempt yield for tax efficiency`
     //   ]
     // },
-    {
-      title: 'GS: Ruminations - Macro, Micro',
-      type: NotificationType.Research,
-      subTitle: '',
-      highlights: [
-        'Corporate funds shun Boeing short dated bonds despite record purchases of short end IG and UST paper',
-        'Orders of Airbus 318 surprisingly grow faster than expected',
-        'Technical support at current levels'
-      ]
-    },
-    {
-      title: 'GS Spec Sales: Feedback, Flows and Catalysts',
-      type: NotificationType.Research,
-      subTitle: '',
-      highlights: [
-        'Corporate funds shun Boeing short dated bonds despite record purchases of short end IG and UST paper',
-        'Orders of Airbus 318 surprisingly grow faster than expected',
-        'Technical support at current levels'
-      ]
-    },
+    // {
+    //   title: 'GS: Ruminations - Macro, Micro',
+    //   type: NotificationType.Research,
+    //   subTitle: '',
+    //   highlights: [
+    //     'Corporate funds shun Boeing short dated bonds despite record purchases of short end IG and UST paper',
+    //     'Orders of Airbus 318 surprisingly grow faster than expected',
+    //     'Technical support at current levels'
+    //   ]
+    // },
+    // {
+    //   title: 'GS Spec Sales: Feedback, Flows and Catalysts',
+    //   type: NotificationType.Research,
+    //   subTitle: '',
+    //   highlights: [
+    //     'Corporate funds shun Boeing short dated bonds despite record purchases of short end IG and UST paper',
+    //     'Orders of Airbus 318 surprisingly grow faster than expected',
+    //     'Technical support at current levels'
+    //   ]
+    // },
     {
       title: `Mandatory Event Information 
         Update: ${corpActionsRaw['83778079'].current_state.event_type}: ${corpActionsRaw['83778079'].current_state.security.name}, 
