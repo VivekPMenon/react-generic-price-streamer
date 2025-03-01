@@ -1,26 +1,37 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { useDeviceType } from './useDeviceType';
+import { getDeviceType, useDeviceType } from './useDeviceType';
 
-const useAutoHeight = (dependencies: any[] = []) => {
+export interface AutoHeightOptions {
+  dependencies?: any[];
+  offsetBottom?: number;
+  offsetInMobile: number;
+}
+
+// todo.. fix the scroll nuances in Mobile so that consumer component dont need to pass heightInMobile prop
+const useAutoHeight = (options?: AutoHeightOptions) => {
+
   const ref = useRef<HTMLDivElement | null>(null);
   const [maxHeight, setMaxHeight] = useState<string>('auto');
-  const deviceType = useDeviceType();
-
-  const updateHeight = useCallback(() => {
+  
+  const updateHeight = () => {
     if (!ref.current) return;
+
+    if (options?.offsetInMobile && getDeviceType() === 'mobile') {
+      return setMaxHeight(`calc(100vh - ${options.offsetInMobile}px)`);
+    }
 
     const rect = ref.current.getBoundingClientRect();
     const viewportHeight = window.innerHeight;
 
     // Calculate available height
-    const offsetBottom = deviceType === 'mobile' ? 100 : 30;
-    let availableHeight = viewportHeight - rect.top - offsetBottom - 1; // Small buffer
+    const offsetBottom = options?.offsetBottom ? options.offsetBottom : 0;
+    let availableHeight = viewportHeight - rect.top - offsetBottom - 35; // Small buffer
 
     // Ensure a minimum height to prevent collapse
-    if (availableHeight < 100) availableHeight = 500;
+    if (availableHeight < 100) availableHeight = 300;
 
     setMaxHeight(`${availableHeight}px`);
-  }, []);
+  };
 
   useEffect(() => {
     updateHeight(); // Set initial height
@@ -29,7 +40,7 @@ const useAutoHeight = (dependencies: any[] = []) => {
     return () => {
       window.removeEventListener('resize', updateHeight);
     };
-  }, [updateHeight]);
+  }, []);
 
   useEffect(() => {
     if (!ref.current) return;
@@ -39,12 +50,12 @@ const useAutoHeight = (dependencies: any[] = []) => {
     resizeObserver.observe(ref.current);
 
     return () => resizeObserver.disconnect();
-  }, [updateHeight]);
+  }, []);
 
   // Force recalculation when dependencies (like API data) change
   useEffect(() => {
     updateHeight();
-  }, [...dependencies]);
+  }, [options?.dependencies ? options?.dependencies : null]);
 
   return [ref, maxHeight] as const; // Tuple return
 };

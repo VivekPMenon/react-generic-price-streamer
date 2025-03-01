@@ -1,3 +1,5 @@
+'use cient';
+
 import { useState, useEffect } from 'react';
 
 type DeviceType = 'mobile' | 'tablet' | 'desktop';
@@ -8,14 +10,7 @@ export function useDeviceType() {
   useEffect(() => {
     function updateDeviceType() {
       const width = window.innerWidth;
-
-      if (width <= 480) {
-        setDevice('mobile');
-      } else if (width <= 1024) {
-        setDevice('tablet');
-      } else {
-        setDevice('desktop');
-      }
+      setDevice(getDeviceType());
     }
 
     updateDeviceType(); // Set initial value
@@ -25,4 +20,16 @@ export function useDeviceType() {
   }, []);
 
   return device;
+}
+
+export function getDeviceType(): DeviceType {
+  const width = window.innerWidth;
+
+  if (width <= 480) {
+    return 'mobile';
+  } else if (width <= 1024) {
+    return 'tablet';
+  } else {
+    return 'desktop';
+  }
 }

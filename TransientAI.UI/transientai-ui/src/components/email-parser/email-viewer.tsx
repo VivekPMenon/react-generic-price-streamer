@@ -32,7 +32,7 @@ const EmailViewer = ({ emailHtml, htmlSource, className }: EmailViewerProps) => 
 
   const debouncedSearchTerm = useDebounce(searchTerm, 300);
   const deferredSearchTerm = useDeferredValue(debouncedSearchTerm);
-  const [ref, maxHeight] = useAutoHeight();
+  const [ref, maxHeight] = useAutoHeight({offsetInMobile: 300});
 
   useEffect(() => {
     if (emailHtml) {

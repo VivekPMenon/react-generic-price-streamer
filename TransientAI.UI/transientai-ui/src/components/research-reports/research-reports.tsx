@@ -36,8 +36,11 @@ export function ResearchReports({ isExpanded }: ResearchReportsProps) {
 
   const visibleReports = useMemo<ResearchReport[]>(() => applyFilter(), [searchQuery, reports]);
 
-  const [reportsRef, reportsMaxHeight] = useAutoHeight();
-  const [aiSummaryRef, aiSummaryMaxHeight] = useAutoHeight([getFinalAiContent()]);
+  const [reportsRef, reportsMaxHeight] = useAutoHeight({ offsetInMobile: 525 });
+  const [aiSummaryRef, aiSummaryMaxHeight] = useAutoHeight({
+    offsetInMobile: 300,
+    dependencies: [getFinalAiContent()]
+  });
 
   useEffect(() => { loadReports() }, []);
 
