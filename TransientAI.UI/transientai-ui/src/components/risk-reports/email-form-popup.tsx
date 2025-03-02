@@ -43,7 +43,6 @@ export function EmailFormPopup({children, file, sendEmail}: EmailPopupProps) {
     };
 
     const handleSubmit = (event) => {
-        // debugger;
         event.preventDefault();
         if (validateEmail()) {
             sendEmail(email, subject, body);
