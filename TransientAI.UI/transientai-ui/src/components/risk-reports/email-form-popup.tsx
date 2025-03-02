@@ -22,7 +22,7 @@ export function EmailFormPopup({children, file, sendEmail}: EmailPopupProps) {
         setEmailError('');
     };
 
-    const handleBodyChange = (event:anyt) => {
+    const handleBodyChange = (event:any) => {
         setBody(event.target.value);
     }
 
