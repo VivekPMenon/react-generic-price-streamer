@@ -8,7 +8,7 @@ import { CorpActionsDataContext, CorporateAction, getCorpActions } from "@/servi
 import { MenuContextData } from "@/services/menu-data";
 import { NotificationPopup } from './notification-popup';
 import { useRouter } from 'next/navigation';
-import { useResearchReportsStore } from '@/services/reports-data';
+import { useResearchReportsStore, useRiskReportsSlice } from '@/services/reports-data';
 import { Spinner } from '@radix-ui/themes';
 
 export interface NotificationsProps {
@@ -30,6 +30,7 @@ export function Notifications(props: NotificationsProps) {
 
   const router = useRouter();
   const { isLoading, reports: researchReports, setSelectedReport: setSelectedResearchReport } = useResearchReportsStore();
+  const { isLoading: isRiskReportLoading, riskReports, setSelectedReport: setSelectedRiskReport } = useRiskReportsSlice();
   const { corpActionsData, setCorpActionsData } = useContext(CorpActionsDataContext);
   const { activeMenuData, setActiveMenuData } = useContext(MenuContextData);
 
@@ -45,25 +46,37 @@ export function Notifications(props: NotificationsProps) {
     notifications
   ]);
 
-  useEffect(() => { loadNotifications() }, [researchReports]);
+  useEffect(() => {
+    loadNotifications();
+  }, [researchReports, riskReports]);
 
   // todo ... we will be fetching the entire notification types from an API instead of UI individually calling each categories and stitching
   async function loadNotifications() {
     const notifications = await getNotifications();
+    const newNotifications = [
+        ...notifications,
+        ...researchReports
+            .map(researchReport => ({
+              id: researchReport.id,
+              title: researchReport.name,
+              type: NotificationType.Research,
+              highlights: [
+                `Sender: ${researchReport.sender!}`,
+                `Date: ${researchReport.received_date!}`,
+              ]
+            })),
+        ...riskReports
+            .map(riskReport => ({
+              id: riskReport.filename,
+              title: riskReport.filename,
+              type: NotificationType.RiskReport,
+              highlights: [
+                `Date: ${riskReport.uploaded!}`
+              ]
+            }))
+    ];
 
-    for (const researchReport of researchReports) {
-      notifications.push({
-        id: researchReport.id,
-        title: researchReport.name,
-        type: NotificationType.Research,
-        highlights: [
-          `Sender: ${researchReport.sender!}`,
-          `Date: ${researchReport.received_date!}`,
-        ]
-      });
-    }
-
-    setNotifications(notifications);
+    setNotifications(newNotifications);
   }
 
   function expandOrCollapsePanel() {
@@ -121,6 +134,8 @@ export function Notifications(props: NotificationsProps) {
   function onNotificationClick(notification: Notification) {
     switch (notification.type) {
       case NotificationType.RiskReport:
+        setSelectedRiskReport(riskReports.find(report => report.id === notification.id)!);
+        router.push('/dashboard/risk-reports'); // todo.. remove the route hardcoding
         break;
 
       case NotificationType.Research:
@@ -171,7 +186,7 @@ export function Notifications(props: NotificationsProps) {
 
       <div className={`${styles['notification-items']} scrollable-div ${isExpanded ? styles['expanded'] : ''}`}>
         {
-          isLoading ? <Spinner size="3"></Spinner> :
+          (isLoading || isRiskReportLoading) ? <Spinner size="3" /> :
             <>
               {
                 visibleNotifications.map(notification =>

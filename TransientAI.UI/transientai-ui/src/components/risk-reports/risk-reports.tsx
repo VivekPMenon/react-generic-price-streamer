@@ -23,7 +23,7 @@ export function RiskReports() {
 
   useEffect(() => loadRiskReports(), []);
 
-  function loadRiskReports() {
+  function  loadRiskReports() {
     const loadDataAsync = async () => {
       const reports = await getRiskReports();
       setRiskReports(reports);

@@ -46,6 +46,24 @@ class FileManagerService {
         await webApihandler.delete('delete-pdf/' + id, { serviceName: this.serviceName });
         return true;
     }
+
+    async emailFile(filename: string, to: string, subject?: string, body?: string): Promise<boolean> {
+        await webApihandler
+            .post(
+                'send-email',
+                null, {
+                    to_email: to,
+                    subject: subject,
+                    body: body,
+                    filename: filename
+                }, {
+                    serviceName: this.serviceName
+                },
+                {
+                    'accept': 'application/json'
+                });
+        return true;
+    }
 }
 
 export const fileManagerService = new FileManagerService();
