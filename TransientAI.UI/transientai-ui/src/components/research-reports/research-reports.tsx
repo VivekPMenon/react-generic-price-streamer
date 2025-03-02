@@ -44,14 +44,14 @@ export function ResearchReports({ isExpanded }: ResearchReportsProps) {
       return;
     }
 
-    if(inputValue === '') {
+    if (inputValue === '') {
       setSearchedReports([]);
       return;
     }
 
     setIsSearchResultsLoading(true);
     const searchedReports = await researchReportsDataService.searchReports(inputValue);
-    
+
     setIsSearchResultsLoading(false);
     setSearchedReports(searchedReports);
   }
@@ -65,7 +65,7 @@ export function ResearchReports({ isExpanded }: ResearchReportsProps) {
   }
 
   async function onReportSelection(report: ResearchReport) {
-    if(!report?.id) {
+    if (!report?.id) {
       return;
     }
 
@@ -103,10 +103,21 @@ export function ResearchReports({ isExpanded }: ResearchReportsProps) {
 
         <div className={styles['filter-panel']}>
           Search:
-          <input type='text' className='mb-2' 
-            value={searchQuery}
-            onChange={event => setSearchQuery(event.target.value)} 
-            onKeyDown={event => searchReports(event)}></input>
+          
+          {/* Todo.. move the seacrch textbox in to common component */}
+          <div className={styles['search-box']}>
+            <input type='text' className='mb-2'
+              autoFocus={true}
+              autoComplete='on'
+              value={searchQuery}
+              onChange={event => setSearchQuery(event.target.value)}
+              onKeyDown={event => searchReports(event)}></input>
+
+              {
+                searchQuery ? <i className='fa-solid fa-remove' onClick={event => {setSearchQuery(''); setSearchedReports([])}}></i> : <i className='fa-solid fa-magnifying-glass'></i>
+              }
+              
+          </div>
 
           Summary Type:
           <Segmented
@@ -119,7 +130,7 @@ export function ResearchReports({ isExpanded }: ResearchReportsProps) {
 
         <div className={`${styles['reports']} news scrollable-div`}>
           {
-            isLoading|| isSearchResultsLoading  ?
+            isLoading || isSearchResultsLoading ?
               <Spinner size="3" className='self-center'></Spinner>
               :
               <>

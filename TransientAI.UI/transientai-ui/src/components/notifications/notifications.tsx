@@ -136,7 +136,7 @@ export function Notifications(props: NotificationsProps) {
     switch (notification.type) {
       case NotificationType.RiskReport:
         setSelectedRiskReport(riskReports.find(report => report.filename === notification.id)?.filename!);
-        router.push(newRoute = '/dashboard/risk-reports'); // todo.. remove the route hardcoding
+        router.push(newRoute = '/dashboard/risk-report-portal'); // todo.. remove the route hardcoding
         break;
 
       case NotificationType.Research:
