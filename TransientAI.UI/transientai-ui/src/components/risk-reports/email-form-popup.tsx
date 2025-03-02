@@ -17,16 +17,16 @@ export function EmailFormPopup({children, file, sendEmail}: EmailPopupProps) {
     const [body, setBody] = useState('');
     const [emailError, setEmailError] = useState('');
 
-    const handleEmailChange = (event) => {
+    const handleEmailChange = (event:any) => {
         setEmail(event.target.value);
         setEmailError('');
     };
 
-    const handleBodyChange = (event) => {
+    const handleBodyChange = (event:anyt) => {
         setBody(event.target.value);
     }
 
-    const handleSubjectChange = (event) => {
+    const handleSubjectChange = (event:any) => {
         setSubject(event.target.value);
     }
 
@@ -42,7 +42,7 @@ export function EmailFormPopup({children, file, sendEmail}: EmailPopupProps) {
         return true;
     };
 
-    const handleSubmit = (event) => {
+    const handleSubmit = (event:any) => {
         event.preventDefault();
         if (validateEmail()) {
             sendEmail(email, subject, body);
@@ -50,7 +50,7 @@ export function EmailFormPopup({children, file, sendEmail}: EmailPopupProps) {
         }
     };
 
-    const handleCancel = (event) => {
+    const handleCancel = (event:any) => {
         resetAndClose();
     }
 
