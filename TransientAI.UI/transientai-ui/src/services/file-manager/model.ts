@@ -3,5 +3,5 @@ export interface File {
     size?: number;
     uploaded?: Date;
     content?: string;
-    native_file: any;
+    native_file?: any;
 }
