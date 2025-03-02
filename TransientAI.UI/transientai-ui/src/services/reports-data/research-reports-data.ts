@@ -10,7 +10,8 @@ class ResearchReportsDataService {
       id: result.id,
       name: result.subject,
       received_date: result.received_date,
-      sender: result.sender
+      sender: result.sender,
+      concise_summary: result.concise_summary
     } as ResearchReport));
   }
 
@@ -20,7 +21,8 @@ class ResearchReportsDataService {
       id: source.email_name,
       name: source.subject,
       received_date: source.date,
-      sender: source.sender
+      sender: source.sender,
+      concise_summary: result.concise_summary
     } as ResearchReport));
   }
 
