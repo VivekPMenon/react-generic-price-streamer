@@ -51,7 +51,11 @@ export const useRiskReportsSlice = create<RiskReportsState>((set, get) => ({
         saveAs(fileUrl, file.filename);
     },
     emailFile: async (file: File, to: string, subject?: string, body?: string) => {
-        await fileManagerService.emailFile(file.filename, to, subject, body);
+        try {
+            await fileManagerService.emailFile(file.filename, to, subject, body);
+        } catch(error) {
+            console.error('Error sending email:', error);
+        }
     }
 }));
 
