@@ -47,11 +47,12 @@
     display: flex;
     gap: 10px;
     align-items: baseline;
-    text-transform: uppercase;
+    // text-transform: uppercase;
 
     .name {
       font-size: 14px;
       color: $white;
+      white-space: pre-line;
     }
 
     i {

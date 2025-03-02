@@ -1,14 +1,14 @@
 'use client'
 
 import styles from './corporate-actions.module.scss';
-import { useContext, useEffect, useMemo, useState } from 'react';
-import { CorpActionsDataContext, CorporateAction } from '@/services/corporate-actions';
-import { getEmailSource, getCorpActions } from '@/services/corporate-actions/corporate-actions-data';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { CorporateAction, useCorpActionsStore } from '@/services/corporate-actions';
 import EmailViewer from '../email-parser/email-viewer';
 import { useScrollTo } from '@/lib/hooks';
 import { RoleType, useUserContextStore } from '@/services/user-context';
 import { DataGrid, getNumberColDefTemplate } from '../data-grid';
-import { ColDef, RowClickedEvent } from 'ag-grid-community';
+import { ColDef, GridApi, RowClickedEvent } from 'ag-grid-community';
+import { corpActionsDataService } from '@/services/corporate-actions/corporate-actions-data';
 
 export interface CorporateActionsProps {
   isExpanded?: boolean;
@@ -17,8 +17,9 @@ export interface CorporateActionsProps {
 export function CorporateActions({ isExpanded }: CorporateActionsProps) {
 
   const { userContext } = useUserContextStore();
-  const { corpActionsData, setCorpActionsData } = useContext(CorpActionsDataContext);
+  const { corpActions, selectedCorpAction } = useCorpActionsStore();
   const { scrollTargetRef, scrollToTarget } = useScrollTo<HTMLDivElement>();
+  const gridApiRef = useRef<GridApi | null>(null);
 
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [selectedEmailContent, setSelectedEmailContent] = useState<string>('');
@@ -27,20 +28,24 @@ export function CorporateActions({ isExpanded }: CorporateActionsProps) {
   const colDefs = useMemo(() => getColumnDefs(), [])
 
   useEffect(() => { loadEmailContents(); }, []);
-  useEffect(() => { calculateSelectedEmailContent() }, [corpActionsData?.corpActions]); // hack.. we should not useeffect on state pbjects
+  useEffect(() => { calculateSelectedEmailContent() }, [emailContents, selectedCorpAction]); // hack.. we should not useeffect on state pbjects
 
   async function loadEmailContents() {
-    const emailContents: any = await getEmailSource();
+    const emailContents: any = await corpActionsDataService.getEmailSource();
     setEmailContents(emailContents);
   }
 
   async function calculateSelectedEmailContent() {
-    if (corpActionsData.corpActions?.length! < 1) {
+    if (corpActions?.length! < 1) {
       return;
     }
 
-    const newContent = emailContents[`${corpActionsData!.corpActions![0].eventId + '_2'}`]
+    const newContent = emailContents[`${corpActions![0].eventId + '_2'}`]
     setSelectedEmailContent(newContent);
+
+    gridApiRef?.current?.forEachNode((node) => 
+      node.setSelected(node.data && node.data?.eventId === selectedCorpAction?.eventId)
+    );
   }
 
   function onSearchQueryChange(event: any) {
@@ -52,8 +57,8 @@ export function CorporateActions({ isExpanded }: CorporateActionsProps) {
       return;
     }
 
-    const corpActions = await getCorpActions();
-    setCorpActionsData({ corpActions });
+    // const corpActions = await corpActionsDataService.getCorpActions();
+    // setCorpActions(corpActions);
   }
 
   function onSelectEmail(corpAction: CorporateAction, version: string) {
@@ -72,6 +77,12 @@ export function CorporateActions({ isExpanded }: CorporateActionsProps) {
         field: 'eventId',
         headerName: 'Announcement ID',
         width: 120,
+        filter: 'agSetColumnFilter'
+      },
+      {
+        field: 'ticker',
+        headerName: 'Ticker',
+        width: 90,
         filter: 'agSetColumnFilter'
       },
       {
@@ -137,17 +148,19 @@ export function CorporateActions({ isExpanded }: CorporateActionsProps) {
 
   const corpActionsListElement = userContext.role === RoleType.Operations ?
     <DataGrid
+      ref={gridApiRef}
       className='p-2'
       columnDefs={colDefs}
-      rowData={corpActionsData?.corpActions}
+      rowData={corpActions}
       isSummaryGrid={true}
       onRowClicked={onRowClicked}
-      rowSelection={'single'}>
+      rowSelection={'single'}
+      >
     </DataGrid>
     :
     <div className={`${styles['corporate-actions-response']}`}>
       {
-        corpActionsData.corpActions?.map(corpAction =>
+        corpActions?.map(corpAction =>
           <div className={styles['corporate-action']}>
             <div className={styles['header']}>
               <i className='fa-solid fa-microphone-lines'></i>
@@ -230,7 +243,7 @@ export function CorporateActions({ isExpanded }: CorporateActionsProps) {
         </div>
 
         {
-          corpActionsData?.corpActions?.length ? corpActionsListElement : <></>
+          corpActions?.length ? corpActionsListElement : <></>
         }
       </div>
 

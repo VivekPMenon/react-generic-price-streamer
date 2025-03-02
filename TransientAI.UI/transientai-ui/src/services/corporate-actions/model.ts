@@ -6,6 +6,7 @@ export interface CorporateAction {
   eventStatus?: string;
   eventDate?: string;
   securityId?: string;
+  ticker?: string;
   securityName?: string;
   eventDescription?: string;
   accountId?: string;
