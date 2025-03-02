@@ -1,11 +1,10 @@
 'use client';
 
-import dynamic from 'next/dynamic';
-import { useCallback, useMemo } from "react";
-import { AgGridReact, AgGridReactProps } from "ag-grid-react";
-import styles from './datagrid.module.scss';
-import { GridApi, GridReadyEvent } from "ag-grid-community";
+import { forwardRef, useCallback, useImperativeHandle, useMemo, useRef } from 'react';
+import { AgGridReact, AgGridReactProps } from 'ag-grid-react';
+import { GridApi, GridReadyEvent } from 'ag-grid-community';
 import 'ag-grid-enterprise';
+import styles from './datagrid.module.scss';
 
 export interface IDataGridProps extends AgGridReactProps {
   showGridTopSummary?: boolean;
@@ -13,9 +12,9 @@ export interface IDataGridProps extends AgGridReactProps {
   isSummaryGrid?: boolean;
 }
 
-export function DataGrid(props: IDataGridProps) {
-
-  let gridApi: GridApi;
+// Expose the Grid API via ref
+export const DataGrid = forwardRef<GridApi | null, IDataGridProps>((props, ref) => {
+  const gridRef = useRef<GridApi | null>(null);
 
   const finalProps: AgGridReactProps = {
     defaultColDef: {
@@ -34,13 +33,18 @@ export function DataGrid(props: IDataGridProps) {
   };
 
   const onGridReady = useCallback((event: GridReadyEvent) => {
-    gridApi = event.api;
+    gridRef.current = event.api;
 
-    const toolpanelid = gridApi.getOpenedToolPanel();
-    if (toolpanelid) {
-      gridApi.closeToolPanel();
+    // Expose the Grid API to parent via ref
+    if (ref && typeof ref === 'object') {
+      ref.current = event.api;
     }
-  }, []);
+
+    const toolpanelid = gridRef.current.getOpenedToolPanel();
+    if (toolpanelid) {
+      gridRef.current.closeToolPanel();
+    }
+  }, [ref]);
 
   const statusBar = useMemo(() => {
     return {
@@ -54,17 +58,18 @@ export function DataGrid(props: IDataGridProps) {
   }, []);
 
   return (
-    <>
-      <div className={`ag-theme-balham-dark height-100p ${props.isSummaryGrid ? 'summary-grid' : ''}`} 
-        style={{ height: props.height }}>
-        <AgGridReact {...finalProps}
-          statusBar={props.isSummaryGrid ? undefined : statusBar}
-          onGridReady={onGridReady}
-          rowHeight={props.isSummaryGrid ? 45 : 35}
-          headerHeight={props.isSummaryGrid ? 45 : 35}
-          floatingFiltersHeight={props.isSummaryGrid ? 25 : 20}>
-        </AgGridReact>
-      </div>
-    </>
+    <div className={`ag-theme-balham-dark height-100p ${props.isSummaryGrid ? 'summary-grid' : ''}`} 
+      style={{ height: props.height }}>
+      <AgGridReact
+        {...finalProps}
+        statusBar={props.isSummaryGrid ? undefined : statusBar}
+        onGridReady={onGridReady}
+        rowHeight={props.isSummaryGrid ? 45 : 35}
+        headerHeight={props.isSummaryGrid ? 45 : 35}
+        floatingFiltersHeight={props.isSummaryGrid ? 25 : 20}
+      />
+    </div>
   );
-}
+});
+
+export default DataGrid;

@@ -50,6 +50,16 @@
     gap: 3px;
   }
 
+  .search-box {
+    display: flex;
+    align-items: center;
+
+    i {
+      padding: 0 10px;
+      cursor: pointer;
+    }
+  }
+
   // &::after {
   //   height: 100%;
   //   width: 2px;

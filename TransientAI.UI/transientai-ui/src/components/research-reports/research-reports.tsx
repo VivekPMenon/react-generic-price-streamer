@@ -24,28 +24,48 @@ export function ResearchReports({ isExpanded }: ResearchReportsProps) {
 
   const { isLoading, reports, selectedReport, setSelectedReport } = useResearchReportsStore();
 
+  const [searchedReports, setSearchedReports] = useState<ResearchReport[]>([]);
   const [isSummaryVisible, setIsSummaryVisible] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState<string>('');
+  const [isSearchResultsLoading, setIsSearchResultsLoading] = useState<boolean>(false);
 
   const [emailContent, setEmailContent] = useState<string>('');
   const [aiContentAbstract, setAiContentAbstract] = useState<string>('');
   const [aiContentDetailed, setAiContentDetailed] = useState<string>('');
   const [summaryType, setSummaryType] = useState<'Abstract' | 'Verbose'>('Abstract');
 
-  const visibleReports = useMemo<ResearchReport[]>(() => applyFilter(), [searchQuery, reports]);
+  const visibleReports = useMemo<ResearchReport[]>(() => calculateVisibleReports(), [searchedReports, reports]);
 
   useEffect(() => { onReportSelection(selectedReport!) }, [selectedReport]);
 
-  function applyFilter(): ResearchReport[] {
-    if (!searchQuery) {
-      return reports;
+  async function searchReports(event: any) {
+    const inputValue = event.target.value;
+    if (event.key !== "Enter") {
+      return;
     }
 
-    return reports.filter(report => report.name?.toLowerCase().includes(searchQuery.toLowerCase()));
+    if (inputValue === '') {
+      setSearchedReports([]);
+      return;
+    }
+
+    setIsSearchResultsLoading(true);
+    const searchedReports = await researchReportsDataService.searchReports(inputValue);
+
+    setIsSearchResultsLoading(false);
+    setSearchedReports(searchedReports);
+  }
+
+  function calculateVisibleReports(): ResearchReport[] {
+    if (searchedReports?.length) {
+      return searchedReports;
+    }
+
+    return reports;
   }
 
   async function onReportSelection(report: ResearchReport) {
-    if(!report?.id) {
+    if (!report?.id) {
       return;
     }
 
@@ -83,7 +103,21 @@ export function ResearchReports({ isExpanded }: ResearchReportsProps) {
 
         <div className={styles['filter-panel']}>
           Search:
-          <input type='text' className='mb-2' value={searchQuery} onChange={event => setSearchQuery(event.target.value)}></input>
+          
+          {/* Todo.. move the seacrch textbox in to common component */}
+          <div className={styles['search-box']}>
+            <input type='text' className='mb-2'
+              autoFocus={true}
+              autoComplete='on'
+              value={searchQuery}
+              onChange={event => setSearchQuery(event.target.value)}
+              onKeyDown={event => searchReports(event)}></input>
+
+              {
+                searchQuery ? <i className='fa-solid fa-remove' onClick={event => {setSearchQuery(''); setSearchedReports([])}}></i> : <i className='fa-solid fa-magnifying-glass'></i>
+              }
+              
+          </div>
 
           Summary Type:
           <Segmented
@@ -96,7 +130,7 @@ export function ResearchReports({ isExpanded }: ResearchReportsProps) {
 
         <div className={`${styles['reports']} news scrollable-div`}>
           {
-            isLoading ?
+            isLoading || isSearchResultsLoading ?
               <Spinner size="3" className='self-center'></Spinner>
               :
               <>

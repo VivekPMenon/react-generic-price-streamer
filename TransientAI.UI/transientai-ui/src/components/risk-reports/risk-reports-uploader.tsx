@@ -1,8 +1,8 @@
 'use client';
 
-import { useMemo } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import { calculateFileSize, DataGrid } from '../data-grid';
-import { ColDef } from 'ag-grid-community';
+import { ColDef, GridApi } from 'ag-grid-community';
 import { FileUploadWizard } from './file-upload-wizard';
 import { Viewer, Worker } from "@react-pdf-viewer/core";
 import { defaultLayoutPlugin } from "@react-pdf-viewer/default-layout";
@@ -16,6 +16,7 @@ const EMPTY = new Uint8Array(0);
 
 export function RiskReportsUploader() {
   const { scrollTargetRef, scrollToTarget } = useScrollTo<HTMLDivElement>();
+  const gridApiRef = useRef<GridApi | null>(null);
 
   const {
     isLoading,
@@ -29,6 +30,16 @@ export function RiskReportsUploader() {
   } = useRiskReportsSlice();
 
   const columnDefs = useMemo<ColDef[]>(() => getColumnDef(), []);
+
+  useEffect(() => {
+    if(!gridApiRef) {
+      return;
+    }
+
+    gridApiRef?.current?.forEachNode((node) => 
+      node.setSelected(node.data && node.data?.filename === selectedReport?.filename)
+    );
+  }, [selectedReport, gridApiRef?.current]);
 
   function handleRowSelection(event: any) {
     setSelectedReport(event.data!.filename);
@@ -86,11 +97,13 @@ export function RiskReportsUploader() {
         <div className={styles['reports-grid']}>
           <div>My Documents</div>
           <DataGrid
+            ref={gridApiRef}
             isSummaryGrid={true}
             rowData={riskReports}
             loading={isLoading}
             columnDefs={columnDefs}
             onRowDoubleClicked={handleRowSelection}
+            rowSelection={'single'}
           >
           </DataGrid>
         </div>
