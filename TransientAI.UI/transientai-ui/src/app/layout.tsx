@@ -5,7 +5,6 @@ import "./globals.scss";
 import { MenuContextDataProvider } from "@/services/menu-data";
 import { ChatbotDataContextProvider } from "@/services/chatbot-data";
 import { SearchDataContextProvider } from "@/services/search-data";
-import { CorpActionsDataContextProvider } from "@/services/corporate-actions";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -43,9 +42,7 @@ export default function RootLayout({
           <MenuContextDataProvider>
             <ChatbotDataContextProvider>
               <SearchDataContextProvider>
-                <CorpActionsDataContextProvider>
                   {children}
-                </CorpActionsDataContextProvider>
               </SearchDataContextProvider>
             </ChatbotDataContextProvider>
           </MenuContextDataProvider>

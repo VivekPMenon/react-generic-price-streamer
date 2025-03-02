@@ -3,8 +3,7 @@
 import { useContext, useEffect, useMemo, useState } from 'react';
 import styles from './notifications.module.scss';
 import { Notification, NotificationType } from '@/services/notifications';
-import { getNotifications } from '@/services/notifications/notifications-data';
-import { CorpActionsDataContext, CorporateAction, getCorpActions } from "@/services/corporate-actions";
+import { useCorpActionsStore } from "@/services/corporate-actions";
 import { MenuContextData } from "@/services/menu-data";
 import { NotificationPopup } from './notification-popup';
 import { useRouter } from 'next/navigation';
@@ -31,13 +30,12 @@ export function Notifications(props: NotificationsProps) {
   const router = useRouter();
   const { isLoading, reports: researchReports, setSelectedReport: setSelectedResearchReport } = useResearchReportsStore();
   const { isLoading: isRiskReportLoading, riskReports, setSelectedReport: setSelectedRiskReport } = useRiskReportsSlice();
-  const { corpActionsData, setCorpActionsData } = useContext(CorpActionsDataContext);
+  const { corpActions, selectedCorpAction, setSelectedCorpAction } = useCorpActionsStore();
   const { activeMenuData, setActiveMenuData } = useContext(MenuContextData);
 
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
   const [selectedType, setSelectedType] = useState<string>(NotificationType.Research);
-  const [selectedCorpAction, setSelectedCorpAction] = useState<CorporateAction>({}); // todo..
   const [selectedNotification, setSelectedNotification] = useState<Notification>({}); // todo..
 
   const visibleNotifications = useMemo<Notification[]>(() => notifications
@@ -52,7 +50,6 @@ export function Notifications(props: NotificationsProps) {
 
   // todo ... we will be fetching the entire notification types from an API instead of UI individually calling each categories and stitching
   async function loadNotifications() {
-    const notifications = await getNotifications();
     const newNotifications = [
       ...researchReports
         .map(researchReport => ({
@@ -74,7 +71,18 @@ export function Notifications(props: NotificationsProps) {
             `Date: ${riskReport.uploaded!}`
           ]
         })),
-      ...notifications
+      ...corpActions
+        .map(corpAction => ({
+          id: corpAction.eventId,
+          title: `TICKER: ${corpAction.ticker} \n ${corpAction.securityName} \n ${corpAction.eventType} \n ${corpAction.eventStatus}`,
+          type: NotificationType.CorpAct,
+          subTitle: `Account No: ${corpAction.accountId}, Holding Capacity: ${corpAction.holdingQuantity}`,
+          highlights: [
+            `ISIN: ${corpAction.securityId!}, ID: ${corpAction.eventId}`,
+            `Key Date: ${corpAction.paydate!}`,
+            `Version: ${corpAction.latestVersion}`,
+          ]
+        })),
     ];
 
     setNotifications(newNotifications);
@@ -127,9 +135,9 @@ export function Notifications(props: NotificationsProps) {
   }
 
   async function onNotificationPopupTrigger(id: string) {
-    const corpActions = await getCorpActions();
-    const selectedAction = corpActions.find(action => action.eventId === id);
-    setSelectedCorpAction(selectedAction!);
+    // const corpActions = await getCorpActions();
+    // const selectedAction = corpActions.find(action => action.eventId === id);
+    // setSelectedCorpAction(selectedAction!);
   }
 
   function onNotificationClick(notification: Notification) {
@@ -146,6 +154,8 @@ export function Notifications(props: NotificationsProps) {
         break;
 
       case NotificationType.CorpAct:
+        setSelectedCorpAction(corpActions.find(corpAction => corpAction.eventId === notification.id)!);
+        router.push(newRoute = '/dashboard/corporate-actions'); // todo.. remove the route hardcoding
         break;
     }
 
@@ -160,9 +170,9 @@ export function Notifications(props: NotificationsProps) {
   }
 
   function onReadMoreClick() {
-    setCorpActionsData({
-      corpActions: [selectedCorpAction]
-    });
+    // setCorpActionsData({
+    //   corpActions: [selectedCorpAction]
+    // });
 
     setActiveMenuData!({
       ...activeMenuData,
@@ -194,7 +204,9 @@ export function Notifications(props: NotificationsProps) {
 
       <div className={`${styles['notification-items']} scrollable-div ${isExpanded ? styles['expanded'] : ''}`}>
         {
-          (isLoading || isRiskReportLoading) ? <Spinner size="3" /> :
+          (isLoading || isRiskReportLoading) ?
+            <Spinner size="3" />
+            :
             <>
               {
                 visibleNotifications.map(notification =>
@@ -213,7 +225,7 @@ export function Notifications(props: NotificationsProps) {
 
                         <NotificationPopup
                           onTrigger={onNotificationPopupTrigger}
-                          notification={selectedCorpAction}
+                          notification={selectedCorpAction!}
                           onOk={onReadMoreClick}
                           notificationId={notification.id}>
                           <div>

@@ -2,7 +2,12 @@
 
 export interface CorporateAction {
   eventId?: string;
+  eventType?: string;
+  eventStatus?: string;
+  eventDate?: string;
   securityId?: string;
+  ticker?: string;
+  securityName?: string;
   eventDescription?: string;
   accountId?: string;
   termDetails?: string;  
@@ -10,6 +15,7 @@ export interface CorporateAction {
   paydate?: string;
   holdingQuantity?: string;
   updateHistory?: UpdateHistory[];
+  latestVersion?: number;
 }
 
 export interface UpdateHistory {
