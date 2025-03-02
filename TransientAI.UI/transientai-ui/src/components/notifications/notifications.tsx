@@ -59,6 +59,7 @@ export function Notifications(props: NotificationsProps) {
           id: researchReport.id,
           title: researchReport.name,
           type: NotificationType.Research,
+          subTitle: researchReport.concise_summary,
           highlights: [
             `Sender: ${researchReport.sender!}`,
             `Date: ${researchReport.received_date!}`,

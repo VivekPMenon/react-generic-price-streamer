@@ -103,7 +103,7 @@ export function ResearchReports({ isExpanded }: ResearchReportsProps) {
 
         <div className={styles['filter-panel']}>
           Search:
-          
+
           {/* Todo.. move the seacrch textbox in to common component */}
           <div className={styles['search-box']}>
             <input type='text' className='mb-2'
@@ -113,10 +113,10 @@ export function ResearchReports({ isExpanded }: ResearchReportsProps) {
               onChange={event => setSearchQuery(event.target.value)}
               onKeyDown={event => searchReports(event)}></input>
 
-              {
-                searchQuery ? <i className='fa-solid fa-remove' onClick={event => {setSearchQuery(''); setSearchedReports([])}}></i> : <i className='fa-solid fa-magnifying-glass'></i>
-              }
-              
+            {
+              searchQuery ? <i className='fa-solid fa-remove' onClick={event => { setSearchQuery(''); setSearchedReports([]) }}></i> : <i className='fa-solid fa-magnifying-glass'></i>
+            }
+
           </div>
 
           Summary Type:
@@ -143,6 +143,13 @@ export function ResearchReports({ isExpanded }: ResearchReportsProps) {
                           <i className='fa-regular fa-file-lines'></i>
                           {report.name}
                         </div>
+
+                        {
+                          report.concise_summary &&
+                          <div className='news-description'>
+                            <div>{report.concise_summary}</div>
+                          </div>
+                        }
                       </div>
                     </div>
                   )
