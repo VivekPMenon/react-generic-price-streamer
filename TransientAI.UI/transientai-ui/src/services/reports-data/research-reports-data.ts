@@ -14,6 +14,16 @@ class ResearchReportsDataService {
     } as ResearchReport));
   }
 
+  async searchReports(query: string): Promise<ResearchReport[]> {
+    const result = await webApihandler.get(`search`, { query }, { serviceName: this.serviceName });
+    return result.sources.map((source: any) => ({
+      id: source.email_name,
+      name: source.subject,
+      received_date: source.date,
+      sender: source.sender
+    } as ResearchReport));
+  }
+
   async getEmailContentAsHtml(emailGuid: string): Promise<string> {
     const result = await webApihandler.get(`email-html/${emailGuid}`, {}, { serviceName: this.serviceName });
     return result.html_content;

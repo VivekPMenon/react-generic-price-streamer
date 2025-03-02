@@ -54,26 +54,26 @@ export function Notifications(props: NotificationsProps) {
   async function loadNotifications() {
     const notifications = await getNotifications();
     const newNotifications = [
-        ...notifications,
-        ...researchReports
-            .map(researchReport => ({
-              id: researchReport.id,
-              title: researchReport.name,
-              type: NotificationType.Research,
-              highlights: [
-                `Sender: ${researchReport.sender!}`,
-                `Date: ${researchReport.received_date!}`,
-              ]
-            })),
-        ...riskReports
-            .map(riskReport => ({
-              id: riskReport.filename,
-              title: riskReport.filename,
-              type: NotificationType.RiskReport,
-              highlights: [
-                `Date: ${riskReport.uploaded!}`
-              ]
-            }))
+      ...researchReports
+        .map(researchReport => ({
+          id: researchReport.id,
+          title: researchReport.name,
+          type: NotificationType.Research,
+          highlights: [
+            `Sender: ${researchReport.sender!}`,
+            `Date: ${researchReport.received_date!}`,
+          ]
+        })),
+      ...riskReports
+        .map(riskReport => ({
+          id: riskReport.filename,
+          title: riskReport.filename,
+          type: NotificationType.RiskReport,
+          highlights: [
+            `Date: ${riskReport.uploaded!}`
+          ]
+        })),
+      ...notifications
     ];
 
     setNotifications(newNotifications);
@@ -132,20 +132,27 @@ export function Notifications(props: NotificationsProps) {
   }
 
   function onNotificationClick(notification: Notification) {
+    let newRoute = '';
     switch (notification.type) {
       case NotificationType.RiskReport:
-        setSelectedRiskReport(riskReports.find(report => report.id === notification.id)!);
-        router.push('/dashboard/risk-reports'); // todo.. remove the route hardcoding
+        setSelectedRiskReport(riskReports.find(report => report.filename === notification.id)?.filename!);
+        router.push(newRoute = '/dashboard/risk-reports'); // todo.. remove the route hardcoding
         break;
 
       case NotificationType.Research:
         setSelectedResearchReport(researchReports.find(report => report.id === notification.id)!);
-        router.push('/dashboard/research-reports'); // todo.. remove the route hardcoding
+        router.push(newRoute = '/dashboard/research-reports'); // todo.. remove the route hardcoding
         break;
 
       case NotificationType.CorpAct:
         break;
     }
+
+    // todo.. refcator, we need to associate route navigation and active menu setting. 
+    setActiveMenuData!({
+      ...activeMenuData,
+      selectedMenu: activeMenuData?.activeMenuList?.find(menu => menu.route === newRoute)
+    });
 
     setSelectedNotification(notification);
     props.notificationClicked!(notification);
@@ -190,7 +197,7 @@ export function Notifications(props: NotificationsProps) {
             <>
               {
                 visibleNotifications.map(notification =>
-                  <div className={`${styles['notification-item']} ${notification.id === selectedNotification.id ? styles['active'] : ''}`} 
+                  <div className={`${styles['notification-item']} ${notification.id === selectedNotification.id ? styles['active'] : ''}`}
                     onClick={() => onNotificationClick(notification)}>
 
                     <div className={styles['notification-title']}>

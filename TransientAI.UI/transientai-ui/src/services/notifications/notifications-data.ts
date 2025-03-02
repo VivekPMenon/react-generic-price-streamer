@@ -118,16 +118,16 @@ export async function getNotifications(): Promise<Notification[]> {
     },
   ];
 
-  const riskNotifications: Notification[] = riskReportsJson.map(riskReportJson => {
-    return {
-      type: NotificationType.RiskReport,
-      title: riskReportJson.portfolio,
-      highlights: [
-        riskReportJson.reportType,
-        riskReportJson.date
-      ]
-    };
-  });
+  // const riskNotifications: Notification[] = riskReportsJson.map(riskReportJson => {
+  //   return {
+  //     type: NotificationType.RiskReport,
+  //     title: riskReportJson.portfolio,
+  //     highlights: [
+  //       riskReportJson.reportType,
+  //       riskReportJson.date
+  //     ]
+  //   };
+  // });
 
-  return notifications.concat(riskNotifications);
+  return notifications.concat([]);
 }
