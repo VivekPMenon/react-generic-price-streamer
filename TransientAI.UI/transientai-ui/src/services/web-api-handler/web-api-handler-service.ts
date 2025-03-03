@@ -11,7 +11,7 @@ class WebApihandler {
   constructor() {
   }
 
-  async get(url: string, params: { [key: string]: any }, options?: WebApihandlerOptions) {
+  async get(url: string, params: { [key: string]: any }, options?: WebApihandlerOptions, headers?: { [key: string]: any }) {
     // todo.. caching
     const finalUrl = this.getUrl(url, options);
 
@@ -23,7 +23,8 @@ class WebApihandler {
         user_id: this.userId,
         ...params
       },
-      method: 'GET'
+      method: 'GET',
+      headers
     });
 
     return result.data;

@@ -117,3 +117,45 @@ export function formatDateToMonthNameAndDay(date: Date, abbreviateMonths: boolea
   }
   return months[date.getMonth()] + " " + date.getDate();
 }
+
+export function isTimeBetween(startTime: string, endTime: string, checkTime?: string): boolean {
+  const now = new Date();
+
+  const [startHours, startMinutes] = startTime.split(":").map(Number);
+  const startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate(), startHours, startMinutes, 0);
+
+  const [endHours, endMinutes] = endTime.split(":").map(Number);
+  const endDate = new Date(now.getFullYear(), now.getMonth(), now.getDate(), endHours, endMinutes, 0);
+
+  let checkDate: Date;
+  if (checkTime) {
+    const [checkHours, checkMinutes] = checkTime.split(":").map(Number);
+    checkDate = new Date(now.getFullYear(), now.getMonth(), now.getDate(), checkHours, checkMinutes, 0);
+  } else {
+    checkDate = new Date();
+  }
+
+  if (endDate < startDate) {
+    endDate.setDate(endDate.getDate() + 1);
+  }
+
+  return checkDate >= startDate && checkDate <= endDate;
+}
+
+export function isTimeBefore(time: string) {
+  const now = new Date();
+
+  const [timeHours, timeMinutes] = time.split(":").map(Number);
+  const date = new Date(now.getFullYear(), now.getMonth(), now.getDate(), timeHours, timeMinutes, 0);
+
+  return date < new Date();
+}
+
+export function getMillisecondsTill(time: string): number {
+  const now = new Date();
+
+  const [timeHours, timeMinutes] = time.split(":").map(Number);
+  const date = new Date(now.getFullYear(), now.getMonth(), now.getDate(), timeHours, timeMinutes, 0);
+
+  return new Date().getTime() - date.getTime();
+}

@@ -2,7 +2,10 @@
 
 import styles from './pnl-metrics.module.scss';
 import {PnlMetric, pnlMetricsService} from "@/services/pnl-metrics";
-import React, { useRef, useState, useEffect } from 'react';
+import React, {useRef, useState, useEffect, useCallback} from 'react';
+import {getMillisecondsTill, isTimeBefore, isTimeBetween} from "@/lib/utility-functions/date-operations";
+
+const POLL_INTERVAL: number = 2 * 60 * 1000;
 
 export function PnlMetrics() {
 
@@ -11,12 +14,32 @@ export function PnlMetrics() {
   const [canScrollRight, setCanScrollRight] = useState(true);
   const [items, setItems] = useState<Array<PnlMetric>>([]);
 
-  useEffect(() => {
-    pnlMetricsService
-        .getMetrics()
-        .then(metrics => setItems(metrics))
-        .catch(_ => setItems([]));
+  const getPnlMetrics = useCallback(() => {
+      pnlMetricsService
+          .getMetrics()
+          .then(metrics => setItems(metrics))
+          .catch(() => setItems([]));
+
+      if (isTimeBetween('09:30', '10:00')) {
+        const intervalId  = setInterval(getPnlMetrics, POLL_INTERVAL);
+        return () => clearInterval(intervalId);
+      }
   }, []);
+
+  useEffect(() => {
+    const poll = getPnlMetrics();
+
+    if (isTimeBefore('09:30')) {
+      const milliSeconds = getMillisecondsTill('09:30');
+      const timeoutId = setTimeout(() => {
+        clearTimeout(timeoutId);
+        getPnlMetrics();
+      }, milliSeconds);
+      return () => clearTimeout(timeoutId);
+    }
+
+    return poll;
+  }, [getPnlMetrics]);
 
   useEffect(() => {
     checkScroll();

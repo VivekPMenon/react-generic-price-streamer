@@ -9,6 +9,7 @@ export interface EndpointConfig {
   env?: string;
   httpsEndpoint?: string;
   newsApiKey?: string;
+  corpActionApiHeaders: {[key: string]: string}[];
   randomStr?: string;
   httpsServices?: { [name: string]: string };
 }

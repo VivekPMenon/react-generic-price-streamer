@@ -86,13 +86,13 @@ export function CorporateActions({ isExpanded }: CorporateActionsProps) {
         filter: 'agSetColumnFilter'
       },
       {
-        field: 'securityId',
+        field: 'isin',
         headerName: 'ISIN',
         width: 120,
         filter: 'agSetColumnFilter'
       },
       {
-        field: 'securityName',
+        field: 'security',
         headerName: 'Security Name',
         width: 120,
         filter: 'agSetColumnFilter'
@@ -125,20 +125,20 @@ export function CorporateActions({ isExpanded }: CorporateActionsProps) {
         filter: 'agNumberColumnFilter'
       },
       {
-        field: 'paydate',
-        headerName: 'Key Date',
+        field: 'keyDates',
+        headerName: 'Key Dates',
         width: 120,
-        filter: 'agDateColumnFilter'
+        // filter: 'agDateColumnFilter'
       },
+      // {
+      //   field: 'eventDate',
+      //   headerName: 'Event Date',
+      //   width: 120,
+      //   sort: 'desc',
+      //   filter: 'agDateColumnFilter'
+      // },
       {
-        field: 'eventDate',
-        headerName: 'Event Date',
-        width: 120,
-        sort: 'desc',
-        filter: 'agDateColumnFilter'
-      },
-      {
-        field: 'latestVersion',
+        field: 'version',
         headerName: 'Version',
         width: 100,
         filter: 'agNumberColumnFilter'
@@ -164,7 +164,7 @@ export function CorporateActions({ isExpanded }: CorporateActionsProps) {
           <div className={styles['corporate-action']}>
             <div className={styles['header']}>
               <i className='fa-solid fa-microphone-lines'></i>
-              {corpAction.eventDescription}
+              {corpAction.action}
 
               <div className={styles['action-buttons']}>
                 <div className={styles['button-container']}>
@@ -186,7 +186,7 @@ export function CorporateActions({ isExpanded }: CorporateActionsProps) {
                 </div>
                 <div className="grid grid-cols-[40%_60%] gap-3 fs-13">
                   <div className='font-bold'>Account</div>
-                  <div>{corpAction.accountId}</div>
+                  <div>{corpAction.accountDetails?.length ? corpAction.accountDetails[0].accountNumber : ''}</div>
                 </div>
                 <div className="grid grid-cols-[40%_60%] gap-3 fs-13">
                   <div className='font-bold'>Holding Quantity</div>
@@ -194,15 +194,17 @@ export function CorporateActions({ isExpanded }: CorporateActionsProps) {
                 </div>
                 <div className="grid grid-cols-[40%_60%] gap-3 fs-13">
                   <div className='font-bold'>Term Details</div>
-                  <div>{corpAction.termDetails}</div>
+                  <div>{corpAction.termsDetails?.length ? (
+                      `Term: ${corpAction.termsDetails[0].termNumber} Rate: ${corpAction.termsDetails[0].type}`
+                  ) : ''}</div>
                 </div>
-                <div className="grid grid-cols-[40%_60%] gap-3 fs-13">
-                  <div className='font-bold'>Entitled Product Id</div>
-                  <div>{corpAction.entitledProductId}</div>
-                </div>
+                {/*<div className="grid grid-cols-[40%_60%] gap-3 fs-13">*/}
+                {/*  <div className='font-bold'>Entitled Product Id</div>*/}
+                {/*  <div>{corpAction.entitledProductId}</div>*/}
+                {/*</div>*/}
                 <div className="grid grid-cols-[40%_60%] gap-3 fs-13">
                   <div className='font-bold'>Pay Date</div>
-                  <div>{corpAction.paydate}</div>
+                  <div>{corpAction.termsDetails?.length ? corpAction.termsDetails[0].payDate : ''}</div>
                 </div>
               </div>
 
@@ -213,16 +215,16 @@ export function CorporateActions({ isExpanded }: CorporateActionsProps) {
                   <div>Email</div>
                   <div>Alert</div>
                 </div>
-                {
-                  corpAction.updateHistory?.map(history =>
-                    <div className="grid grid-cols-[1fr_3fr_1fr_1fr] gap-3 fs-13 p-1 text-center">
-                      <div>{history.type}</div>
-                      <div >{history.date}</div>
-                      <div className="blue-color cursor-pointer" onClick={() => onSelectEmail(corpAction, history.type)}>Y</div>
-                      <div className="blue-color">Y</div>
-                    </div>
-                  )
-                }
+                {/*{*/}
+                {/*  corpAction.updateHistory?.map(history =>*/}
+                {/*    <div className="grid grid-cols-[1fr_3fr_1fr_1fr] gap-3 fs-13 p-1 text-center">*/}
+                {/*      <div>{history.type}</div>*/}
+                {/*      <div >{history.date}</div>*/}
+                {/*      <div className="blue-color cursor-pointer" onClick={() => onSelectEmail(corpAction, history.type)}>Y</div>*/}
+                {/*      <div className="blue-color">Y</div>*/}
+                {/*    </div>*/}
+                {/*  )*/}
+                {/*}*/}
               </div>
             </div>
           </div>

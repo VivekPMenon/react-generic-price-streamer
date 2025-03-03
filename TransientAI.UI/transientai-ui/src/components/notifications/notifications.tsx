@@ -76,14 +76,14 @@ export function Notifications(props: NotificationsProps) {
         ...corpActions
             .map(corpAction => ({
               id: corpAction.eventId,
-              title: `TICKER: ${corpAction.ticker} \n ${corpAction.securityName} \n ${corpAction.eventType} \n ${corpAction.eventStatus}`,
+              title: `TICKER: ${corpAction.ticker} \n ${corpAction.security} \n ${corpAction.eventType} \n ${corpAction.eventStatus}`,
               type: NotificationType.CorpAct,
-              subTitle: `Account No: ${corpAction.accountId}, Holding Capacity: ${corpAction.holdingQuantity}`,
+              subTitle: `Account No: ${corpAction.accountDetails?.length ? corpAction.accountDetails[0].accountNumber : ''}, Holding Capacity: ${corpAction.accountDetails?.length ? corpAction.accountDetails[0].holdingQuantity : ''}`,
               timestamp: new Date().getTime(),
               highlights: [
-                `ISIN: ${corpAction.securityId!}, ID: ${corpAction.eventId}`,
-                `Key Date: ${corpAction.paydate!}`,
-                `Version: ${corpAction.latestVersion}`,
+                `ISIN: ${corpAction.isin!}, ID: ${corpAction.eventId}`,
+                `Key Date: ${corpAction.keyDates!}`,
+                `Version: ${corpAction.version}`,
               ]
             }))
     ];

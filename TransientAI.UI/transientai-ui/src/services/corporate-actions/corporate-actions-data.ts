@@ -1,57 +1,100 @@
-import { CorporateAction } from "./model";
+import {CorporateAction, CorporateActionDetail} from "./model";
 import corpActionsRaw from './corp-actions.json';
+import {webApihandler} from "@/services/web-api-handler";
+import { endpointFinder } from "../web-api-handler/endpoint-finder-service";
+
+export interface CorporateActionFilterOptions {
+  eventStatus?: string;
+  eventType?: string;
+  eventClassification?: string;
+  actionRequired?: boolean;
+  isin?: string;
+  securityName?: string;
+  eventId?: string;
+  fromDate?: string;
+  toDate?: string;
+  deadlineFrom?: string;
+  deadlineTo?: string;
+  accountId?: string;
+  pageNumber?: number;
+  pageSize?: number;
+}
 
 class CorporateActionsDataService {
+  private serviceName = 'corp-actions-api';
+
+  async getCorpActions2(filterOptions?: CorporateActionFilterOptions): Promise<CorporateAction[]> {
+    try {
+      const results = await webApihandler.get(
+          'api/events',
+          filterOptions as { [key: string]: any },
+          {serviceName: this.serviceName},
+          [endpointFinder.getCurrentEnvInfo().corpActionApiHeaders]);
+      return results;
+    } catch (e) {
+      console.log(e);
+      return [];
+    }
+  }
+
+  async getCorpActionDetail(eventId: string): Promise<CorporateActionDetail> {
+    const results = await webApihandler.get(
+        `api/events/${eventId}`,
+        {},
+        { serviceName: this.serviceName },
+        [endpointFinder.getCurrentEnvInfo().corpActionApiHeaders]);
+    return results.data;
+  }
 
   async getCorpActions(): Promise<CorporateAction[]> {
     return [
       {
         eventId: '83778079',
         eventType: `${corpActionsRaw['83778079'].current_state.event_type}`,
-        securityId: corpActionsRaw['83778079'].current_state.security.identifiers.isin,
+        isin: corpActionsRaw['83778079'].current_state.security.identifiers.isin,
         ticker: corpActionsRaw['83778079'].current_state.security.identifiers.ticker,
-        securityName: corpActionsRaw['83778079'].current_state.security.name,
+        security: corpActionsRaw['83778079'].current_state.security.name,
         eventStatus: corpActionsRaw['83778079'].current_state.event_status,
-        eventDate: corpActionsRaw['83778079'].current_state.dates?.notification_date,
-        accountId: corpActionsRaw['83778079'].current_state.accounts[0].account_number,
-        holdingQuantity: corpActionsRaw['83778079'].current_state.accounts[0].holding_quantity,
-        entitledProductId: corpActionsRaw['83778079'].current_state.terms[0].security_details.product_id!,
-        eventDescription: `Mandatory Event Information 
+        // eventDate: corpActionsRaw['83778079'].current_state.dates?.notification_date,
+        // accountId: corpActionsRaw['83778079'].current_state.accounts[0].account_number,
+        holdingQuantity: Number(corpActionsRaw['83778079'].current_state.accounts[0].holding_quantity),
+        // entitledProductId: corpActionsRaw['83778079'].current_state.terms[0].security_details.product_id!,
+        action: `Mandatory Event Information 
         Update: ${corpActionsRaw['83778079'].current_state.event_type}: ${corpActionsRaw['83778079'].current_state.security.name}, 
         ISIN: ${corpActionsRaw['83778079'].current_state.security.identifiers.isin}`,
-        termDetails: `${corpActionsRaw['83778079'].current_state.terms[0].term_number} ${corpActionsRaw['83778079'].current_state.terms[0].type}`,
-        paydate: corpActionsRaw['83778079'].current_state.terms[0].pay_date!,
-        latestVersion: corpActionsRaw['83778079'].update_history?.reduce((max, history) => Math.max(max, history.version), 0),
-        updateHistory: corpActionsRaw['83778079'].update_history?.map(history => ({
-          alert: 'Y',
-          email: 'Y',
-          date: history.timestamp?.replace(' +0000', ''),
-          type: history.version!
-        }))
+        // termDetails: `${corpActionsRaw['83778079'].current_state.terms[0].term_number} ${corpActionsRaw['83778079'].current_state.terms[0].type}`,
+        // paydate: corpActionsRaw['83778079'].current_state.terms[0].pay_date!,
+        // latestVersion: corpActionsRaw['83778079'].update_history?.reduce((max, history) => Math.max(max, history.version), 0),
+        // updateHistory: corpActionsRaw['83778079'].update_history?.map(history => ({
+        //   alert: 'Y',
+        //   email: 'Y',
+        //   date: history.timestamp?.replace(' +0000', ''),
+        //   type: history.version!
+        // }))
       },
       {
         eventId: '83526858',
         eventType: `${corpActionsRaw['83526858'].current_state.event_type}`,
-        securityId: corpActionsRaw['83526858'].current_state.security.identifiers.isin,
+        isin: corpActionsRaw['83526858'].current_state.security.identifiers.isin,
         ticker: corpActionsRaw['83526858'].current_state.security.identifiers.ticker,
-        securityName: corpActionsRaw['83526858'].current_state.security.name,
-        eventDate: corpActionsRaw['83778079'].current_state.dates?.notification_date,
+        security: corpActionsRaw['83526858'].current_state.security.name,
+        // eventDate: corpActionsRaw['83778079'].current_state.dates?.notification_date,
         eventStatus: corpActionsRaw['83526858'].current_state.event_status,
-        accountId: corpActionsRaw['83526858'].current_state.accounts[0].account_number,
-        holdingQuantity: corpActionsRaw['83526858'].current_state.accounts[0].holding_quantity,
-        entitledProductId: corpActionsRaw['83526858'].current_state.terms[0].security_details.product_id!,
-        eventDescription: `Mandatory Event Information 
+        // accountId: corpActionsRaw['83526858'].current_state.accounts[0].account_number,
+        holdingQuantity: Number(corpActionsRaw['83526858'].current_state.accounts[0].holding_quantity),
+        // entitledProductId: corpActionsRaw['83526858'].current_state.terms[0].security_details.product_id!,
+        action: `Mandatory Event Information 
         Update: ${corpActionsRaw['83526858'].current_state.event_type}: ${corpActionsRaw['83526858'].current_state.security.name}, 
         ISIN: ${corpActionsRaw['83526858'].current_state.security.identifiers.isin}`,
-        termDetails: `${corpActionsRaw['83526858'].current_state.terms[0].term_number} ${corpActionsRaw['83526858'].current_state.terms[0].type}`,
-        paydate: corpActionsRaw['83526858'].current_state.terms[0].pay_date!,
-        latestVersion: corpActionsRaw['83526858'].update_history?.reduce((max, history) => Math.max(max, history.version), 0),
-        updateHistory: corpActionsRaw['83526858'].update_history?.map(history => ({
-          alert: 'Y',
-          email: 'Y',
-          date: history.timestamp?.replace(' +0000', ''),
-          type: history.version!
-        }))
+        // termDetails: `${corpActionsRaw['83526858'].current_state.terms[0].term_number} ${corpActionsRaw['83526858'].current_state.terms[0].type}`,
+        // paydate: corpActionsRaw['83526858'].current_state.terms[0].pay_date!,
+        // latestVersion: corpActionsRaw['83526858'].update_history?.reduce((max, history) => Math.max(max, history.version), 0),
+        // updateHistory: corpActionsRaw['83526858'].update_history?.map(history => ({
+        //   alert: 'Y',
+        //   email: 'Y',
+        //   date: history.timestamp?.replace(' +0000', ''),
+        //   type: history.version!
+        // }))
       }
     ];
   }
