@@ -142,3 +142,20 @@ export interface CorpActionsDataContextType {
   corpActionsData: CorpActionsData;
   setCorpActionsData: (data: CorpActionsData) => void;
 }
+
+export interface CorporateActionFilterOptions {
+  eventStatus?: string;
+  eventType?: string;
+  eventClassification?: string;
+  actionRequired?: boolean;
+  isin?: string;
+  securityName?: string;
+  eventId?: string;
+  fromDate?: string;
+  toDate?: string;
+  deadlineFrom?: string;
+  deadlineTo?: string;
+  accountId?: string;
+  pageNumber?: number;
+  pageSize?: number;
+}

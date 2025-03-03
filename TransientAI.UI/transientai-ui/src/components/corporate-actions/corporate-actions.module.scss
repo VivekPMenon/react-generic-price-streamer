@@ -38,14 +38,33 @@
       align-items: center;
       padding: 5px;
       gap: 10px;
+
+      .title{
+        display: flex;
+        flex-direction: column;
+        padding-left: 10px;
+        padding-right: 10px;
+        width: 100%;
+
+        .top {
+          display: flex;
+          justify-content: stretch;
+          gap: 10px;
+        }
+
+        .bottom {
+          display: flex;
+          justify-content: stretch;
+          gap: 10px;
+        }
+      }
     }
 
     .action-buttons {
       margin-left: auto;
       display: flex;
       justify-content: flex-end;
-      gap: 10px;
-      flex: 2 1 50%;
+
       font-size: 16px;
 
       .button-container {
@@ -62,6 +81,16 @@
         &:hover {
           background-color: $teal-100;
         }
+      }
+    }
+
+    .footer {
+      display: flex;
+      padding: 5px;
+      gap: 10px;
+
+      & > span {
+        font-style: italic;
       }
     }
   }

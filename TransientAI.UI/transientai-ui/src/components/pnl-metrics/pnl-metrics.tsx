@@ -21,7 +21,10 @@ export function PnlMetrics() {
           .catch(() => setItems([]));
 
       if (isTimeBetween('09:30', '10:00')) {
-        const intervalId  = setInterval(getPnlMetrics, POLL_INTERVAL);
+        const intervalId  = setInterval(() => {
+          clearInterval(intervalId);
+          getPnlMetrics();
+        }, POLL_INTERVAL);
         return () => clearInterval(intervalId);
       }
   }, []);
