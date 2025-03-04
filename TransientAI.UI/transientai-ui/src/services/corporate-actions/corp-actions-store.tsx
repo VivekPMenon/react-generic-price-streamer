@@ -18,6 +18,19 @@ export const useCorpActionsStore = create<CorpActionsDataState>((set) => ({
   setSelectedCorpAction: (corpAction) => set({ selectedCorpAction: corpAction }),
   loadCorpActions: async () => {
     const corpActions = await corpActionsDataService.getCorpActions();
+    corpActions.sort(
+        (a: CorporateAction, b: CorporateAction) => {
+          const aDate = a?.dates?.notification_date
+              ? new Date(a.dates.notification_date).getTime()
+              : -1;
+          const bDate = b?.dates?.notification_date
+              ? new Date(b.dates.notification_date).getTime()
+              : -1;
+
+          return bDate - aDate;
+        }
+
+    )
     set({ corpActions });
   },
   loadCorpActionDetail: async(eventId: string)=> {
