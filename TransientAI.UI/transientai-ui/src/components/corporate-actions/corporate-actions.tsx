@@ -24,7 +24,7 @@ export function CorporateActions() {
   const colDefs = useMemo(() => getColumnDefs(), [])
 
   useEffect(() => { loadEmailContents(); }, []);
-  useEffect(() => { calculateSelectedEmailContent() }, [emailContents, selectedCorpAction]); // hack.. we should not useeffect on state pbjects
+  useEffect(() => { calculateSelectedEmailContent() }, [emailContents, selectedCorpAction]);
 
   async function loadEmailContents() {
     const emailContents: any = await corpActionsDataService.getEmailSource();
@@ -32,11 +32,11 @@ export function CorporateActions() {
   }
 
   async function calculateSelectedEmailContent() {
-    if (corpActions?.length! < 1) {
+    if (!selectedCorpAction?.eventId) {
       return;
     }
 
-    const newContent = emailContents[`${corpActions![0].eventId}`]
+    const newContent = emailContents[`${selectedCorpAction.eventId}`]
     setSelectedEmailContent(newContent);
 
     gridApiRef?.current?.forEachNode((node) => 
@@ -153,23 +153,24 @@ export function CorporateActions() {
       rowSelection={'single'}
       >
     </DataGrid>
+    
     :
-    <div className={`${styles['corporate-actions-response']} scrollable-div height-vh-71`}>
+    <div className={`${styles['corporate-actions-response']} scrollable-div`}>
       {
         corpActions?.map(corpAction =>
             (
-             <div key={corpAction.eventId} className={styles['corporate-action']}>
+             <div key={corpAction.eventId} className={`${styles['corporate-action']} ${selectedCorpAction?.eventId === corpAction.eventId ? styles['active'] : ''}`}>
               <div className={styles['header']}>
                 <i className='fa-solid fa-microphone-lines'></i>
                 <div className={styles['title']}>
                   <div className={styles['top']}>
                     <span>Ticker: {corpAction?.security?.identifiers?.ticker}</span>
-                    <span>{corpAction.eventType}</span>
-                    <span>{corpAction.eventStatus}</span>
+                    <span className='margin-left-auto'>ISIN: {corpAction?.security?.identifiers?.isin}</span>
                   </div>
                   <div className={styles['bottom']}>
                     <span>{corpAction?.security?.name}</span>
-                    <span>ISIN: {corpAction?.security?.identifiers?.isin}</span>
+                    <span className='margin-left-auto'>{corpAction.eventType}</span>
+                    <span>{corpAction.eventStatus}</span>
                   </div>
                 </div>
                 <div className={styles['action-buttons']}>
@@ -225,9 +226,9 @@ export function CorporateActions() {
                     corpAction.versionHistory?.map(history =>
                       <div className="grid grid-cols-[1fr_3fr_1fr_1fr] gap-3 fs-13 p-1 text-center">
                         <div>{history.version}</div>
-                        <div >{history.update_date}</div>
+                        <div >{history.changedDate}</div>
                         <div className="blue-color cursor-pointer" onClick={() => onSelectEmail(corpAction, corpAction.id!)}>Y</div>
-                        <div className="blue-color">{(history?.isCurrent ?? false) ? 'Y' : 'N"'}</div>
+                        <div className="blue-color">{(history?.isCurrent ?? false) ? 'Y' : 'N'}</div>
                       </div>
                     )
                   }
