@@ -73,6 +73,7 @@ export function DashboardTabs({children}: DashboardTabsProps) {
       selectedMenu: newSelectedMenu
     });
 
+    router.push(newSelectedMenu?.route!);
     event.stopPropagation();
   }
 

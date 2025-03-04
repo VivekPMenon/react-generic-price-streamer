@@ -51,41 +51,41 @@ export function Notifications(props: NotificationsProps) {
   // todo ... we will be fetching the entire notification types from an API instead of UI individually calling each categories and stitching
   async function loadNotifications() {
     const newNotifications = [
-        // ...notifications,
-        ...researchReports
-              .map(researchReport => ({
-                id: researchReport.id,
-                title: researchReport.name,
-                type: NotificationType.Research,
-                timestamp: researchReport.received_date ? new Date(researchReport.received_date).getTime() : new Date().getTime(),
-                highlights: [
-                  `Sender: ${researchReport.sender!}`,
-                  `Date: ${researchReport.received_date!}`,
-                ]
-              })),
-        ...riskReports
-              .map(riskReport => ({
-                id: riskReport.filename,
-                title: riskReport.filename,
-                type: NotificationType.RiskReport,
-                timestamp: riskReport.uploaded ? riskReport.uploaded.getTime() : new Date().getTime(),
-                highlights: [
-                  `Date: ${riskReport.uploaded!}`
-                ]
-              })),
-        ...corpActions
-            .map(corpAction => ({
-              id: corpAction.eventId,
-              title: `TICKER: ${corpAction.ticker} \n ${corpAction.security?.name} \n ${corpAction.eventType} \n ${corpAction.eventStatus}`,
-              type: NotificationType.CorpAct,
-              subTitle: `${corpAction.accounts?.length ? ('Account No: ' + corpAction.accounts[0].accountNumber + ', Holding Capacity: ' + corpAction.accounts[0].holdingQuantity) : ''}`,
-              timestamp: new Date().getTime(),
-              highlights: [
-                `ISIN: ${corpAction.isin!}, ID: ${corpAction.eventId}`,
-                `Key Date: ${corpAction.keyDates!}`,
-                `Version: ${corpAction.version}`,
-              ]
-            }))
+      // ...notifications,
+      ...researchReports
+        .map(researchReport => ({
+          id: researchReport.id,
+          title: researchReport.name,
+          type: NotificationType.Research,
+          timestamp: researchReport.received_date ? new Date(researchReport.received_date).getTime() : new Date().getTime(),
+          highlights: [
+            `Sender: ${researchReport.sender!}`,
+            `Date: ${researchReport.received_date!}`,
+          ]
+        })),
+      ...riskReports
+        .map(riskReport => ({
+          id: riskReport.filename,
+          title: riskReport.filename,
+          type: NotificationType.RiskReport,
+          timestamp: riskReport.uploaded ? riskReport.uploaded.getTime() : new Date().getTime(),
+          highlights: [
+            `Date: ${riskReport.uploaded!}`
+          ]
+        })),
+      ...corpActions
+        .map(corpAction => ({
+          id: corpAction.eventId,
+          title: `TICKER: ${corpAction.ticker} \n ${corpAction.security?.name} \n ${corpAction.eventType} \n ${corpAction.eventStatus}`,
+          type: NotificationType.CorpAct,
+          subTitle: `${corpAction.accounts?.length ? ('Account No: ' + corpAction.accounts[0].accountNumber + ', Holding Capacity: ' + corpAction.accounts[0].holdingQuantity) : ''}`,
+          timestamp: new Date().getTime(),
+          highlights: [
+            `ISIN: ${corpAction.isin!}, ID: ${corpAction.eventId}`,
+            `Key Date: ${corpAction.keyDates!}`,
+            `Version: ${corpAction.version}`,
+          ]
+        }))
     ];
 
     newNotifications.sort((x, y) => (y.timestamp ?? -1) - (x.timestamp ?? -1));
@@ -165,7 +165,12 @@ export function Notifications(props: NotificationsProps) {
         break;
     }
 
-    // todo.. refcator, we need to associate route navigation and active menu setting. 
+    // todo.. refcator, we need to associate route navigation and active menu setting using a zustand store
+    const selectedMenu = activeMenuData?.fullMenuLIst?.find(menu => menu.route === newRoute)
+    if (activeMenuData && !activeMenuData?.activeMenuList?.find(menu => menu.route === newRoute)) {
+      activeMenuData.activeMenuList = [...activeMenuData?.activeMenuList!, selectedMenu!];
+    }
+
     setActiveMenuData!({
       ...activeMenuData,
       selectedMenu: activeMenuData?.activeMenuList?.find(menu => menu.route === newRoute)
@@ -249,7 +254,7 @@ export function Notifications(props: NotificationsProps) {
                       <div className={styles['messages']}>
                         <ul className="list-disc pl-8 off-white-color-alt">
                           {
-                            notification.highlights?.map(item => <li key={notification.id+item}>{item}</li>)
+                            notification.highlights?.map(item => <li key={notification.id + item}>{item}</li>)
                           }
                         </ul>
                       </div>

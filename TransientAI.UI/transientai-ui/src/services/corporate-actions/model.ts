@@ -124,10 +124,10 @@ export interface Commentary {
 
 export interface VersionDetails {
   version?: number;
-  update_date?: string;
-  email_ref?: string;
-  changed_fields: string[];
-  change_summary?: string;
+  changedDate?: string;
+  emailRef?: string;
+  changedFields: string[];
+  changeSummary?: string;
   isCurrent?: boolean;
 }
 

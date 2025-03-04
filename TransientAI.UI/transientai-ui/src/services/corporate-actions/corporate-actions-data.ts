@@ -1,17 +1,20 @@
-import {CorporateAction, CorporateActionFilterOptions} from "./model";
-import {webApihandler} from "@/services/web-api-handler";
+import { CorporateAction, CorporateActionFilterOptions } from "./model";
+import { webApihandler } from "@/services/web-api-handler";
 import { endpointFinder } from "../web-api-handler/endpoint-finder-service";
 
 class CorporateActionsDataService {
   private serviceName = 'corp-actions-api';
+  private headers = endpointFinder.getCurrentEnvInfo().corpActionApiHeaders;
 
   async getCorpActions(filterOptions?: CorporateActionFilterOptions): Promise<CorporateAction[]> {
     try {
       const result = await webApihandler.get(
-          'events',
-          filterOptions as { [key: string]: any },
-          {serviceName: this.serviceName},
-          endpointFinder.getCurrentEnvInfo().corpActionApiHeaders);
+        'events',
+        filterOptions as { [key: string]: any },
+        {
+          serviceName: this.serviceName,
+          headers: this.headers
+        });
       return result.data;
     } catch (e) {
       return [];
@@ -20,10 +23,12 @@ class CorporateActionsDataService {
 
   async getCorpActionDetail(eventId: string): Promise<CorporateAction> {
     return await webApihandler.get(
-        `events/${eventId}`,
-        {},
-        { serviceName: this.serviceName },
-        endpointFinder.getCurrentEnvInfo().corpActionApiHeaders);
+      `events/${eventId}`,
+      {},
+      {
+        serviceName: this.serviceName,
+        headers: this.headers
+      });
   }
 
   // async getCorpActions(): Promise<CorporateAction[]> {

@@ -12,4 +12,5 @@ export interface EndpointConfig {
   corpActionApiHeaders: {[key: string]: string};
   randomStr?: string;
   httpsServices?: { [name: string]: string };
+  headers?: { [name: string]: string };
 }
