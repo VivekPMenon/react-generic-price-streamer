@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import {CorporateAction, CorporateActionDetail} from "./model";
+import {CorporateAction} from "./model";
 import { corpActionsDataService } from './corporate-actions-data';
 
 export interface CorpActionsDataState {
@@ -8,16 +8,16 @@ export interface CorpActionsDataState {
   setSelectedCorpAction: (corpAction: CorporateAction | null) => void;
   setCorpActions: (corpActionsData: CorporateAction[]) => void;
   loadCorpActions: () => Promise<void>;
-  loadCorpActionDetail: (eventId: string) => Promise<CorporateActionDetail>;
+  loadCorpActionDetail: (eventId: string) => Promise<CorporateAction>;
 }
 
-export const useCorpActionsStore = create<CorpActionsDataState>((set, get) => ({
+export const useCorpActionsStore = create<CorpActionsDataState>((set) => ({
   corpActions: [],
   setCorpActions: (corpActions) => set({ corpActions }),
   selectedCorpAction: null,
   setSelectedCorpAction: (corpAction) => set({ selectedCorpAction: corpAction }),
   loadCorpActions: async () => {
-    const corpActions = await corpActionsDataService.getCorpActions2();
+    const corpActions = await corpActionsDataService.getCorpActions();
     set({ corpActions });
   },
   loadCorpActionDetail: async(eventId: string)=> {

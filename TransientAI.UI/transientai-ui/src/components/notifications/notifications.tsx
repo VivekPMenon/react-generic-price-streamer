@@ -76,9 +76,9 @@ export function Notifications(props: NotificationsProps) {
         ...corpActions
             .map(corpAction => ({
               id: corpAction.eventId,
-              title: `TICKER: ${corpAction.ticker} \n ${corpAction.security} \n ${corpAction.eventType} \n ${corpAction.eventStatus}`,
+              title: `TICKER: ${corpAction.ticker} \n ${corpAction.security?.name} \n ${corpAction.eventType} \n ${corpAction.eventStatus}`,
               type: NotificationType.CorpAct,
-              subTitle: `Account No: ${corpAction.accountDetails?.length ? corpAction.accountDetails[0].accountNumber : ''}, Holding Capacity: ${corpAction.accountDetails?.length ? corpAction.accountDetails[0].holdingQuantity : ''}`,
+              subTitle: `${corpAction.accounts?.length ? ('Account No: ' + corpAction.accounts[0].accountNumber + ', Holding Capacity: ' + corpAction.accounts[0].holdingQuantity) : ''}`,
               timestamp: new Date().getTime(),
               highlights: [
                 `ISIN: ${corpAction.isin!}, ID: ${corpAction.eventId}`,
@@ -218,7 +218,7 @@ export function Notifications(props: NotificationsProps) {
               {
                 visibleNotifications.map(notification =>
                   <div
-                    key={notification.id}
+                    key={notification.id!}
                     className={`${styles['notification-item']} ${notification.id === selectedNotification.id ? styles['active'] : ''}`}
                     onClick={() => onNotificationClick(notification)}>
 

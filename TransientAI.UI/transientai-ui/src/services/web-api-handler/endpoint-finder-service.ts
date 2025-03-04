@@ -2,7 +2,7 @@ import { EndpointConfig } from "./model";
 
 
 class EndpointFinderService {
-  // todo.. add code to resolve url based on enviroinment
+  // todo.. add code to resolve url based on environment
 
   getCurrentEnvInfo(): EndpointConfig {
     return {
@@ -17,7 +17,7 @@ class EndpointFinderService {
         'news-api': 'https://newsapi.org/v2',
         'openai-api': 'https://news-api-r966.onrender.com',
         'hurricane-api': 'https://hurricanecap-devfastapi.azurewebsites.net',
-        'corp-actions-api': 'https://hcapcorpactionsapi.azure-api.net/CorporateActionsAPIExecutor'
+        'corp-actions-api': 'https://hcapcorpactionsapi.azure-api.net/CorporateActionsAPIExecutor/api'
       }
     }
   }
