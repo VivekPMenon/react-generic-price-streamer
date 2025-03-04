@@ -187,15 +187,15 @@ export function CorporateActions() {
             </ReactMarkdown> */}
 
                 <div className={styles['basic-info']}>
-                  <div className="grid grid-cols-[40%_60%] gap-3 fs-13">
+                  <div className="grid grid-cols-[45%_55%] gap-3 fs-13">
                     <div className='font-bold'>Announcement Id</div>
                     <div className='orange-color'>{corpAction.eventId}</div>
                   </div>
-                  <div className="grid grid-cols-[40%_60%] gap-3 fs-13">
+                  <div className="grid grid-cols-[45%_55%] gap-3 fs-13">
                     <div className='font-bold'>Account</div>
                     <div>{corpAction.accounts?.length ? corpAction.accounts[0].accountNumber : ''}</div>
                   </div>
-                  <div className="grid grid-cols-[40%_60%] gap-3 fs-13">
+                  <div className="grid grid-cols-[45%_55%] gap-3 fs-13">
                     <div className='font-bold'>Position</div>
                     <div>{corpAction.accounts?.length ? corpAction.accounts[0].holdingQuantity : ''}</div>
                   </div>
@@ -205,18 +205,18 @@ export function CorporateActions() {
                   {/*      `Term: ${corpAction.termsDetails[0].termNumber} Rate: ${corpAction.termsDetails[0].type}`*/}
                   {/*  ) : ''}</div>*/}
                   {/*</div>*/}
-                  <div className="grid grid-cols-[40%_60%] gap-3 fs-13">
+                  <div className="grid grid-cols-[45%_55%] gap-3 fs-13">
                     <div className='font-bold'>Entitled Product Id</div>
                     <div>{corpAction.terms?.length ? corpAction.terms[0].security_details?.product_id : ''}</div>
                   </div>
-                  <div className="grid grid-cols-[40%_60%] gap-3 fs-13">
+                  <div className="grid grid-cols-[45%_55%] gap-3 fs-13">
                     <div className='font-bold'>Event Date</div>
-                    <div>{corpAction.dates ? corpAction.dates.notification_date : ''}</div>
+                    <div>{corpAction.dates ? new Date(corpAction.dates.notification_date!).toDateString() : ''}</div>
                   </div>
                 </div>
 
-                <div>
-                  <div className="grid grid-cols-[1fr_3fr_1fr_1fr] gap-3 fs-12 table-header text-center">
+                <div className='scrollable-div height-vh-15'>
+                  <div className="grid grid-cols-[1fr_3fr] gap-3 fs-12 table-header text-center">
                     <div>Version</div>
                     <div>Date & Time</div>
                     {/*<div>Email</div>*/}
@@ -224,11 +224,11 @@ export function CorporateActions() {
                   </div>
                   {
                     corpAction.versionHistory?.map(history =>
-                      <div className="grid grid-cols-[1fr_3fr_1fr_1fr] gap-3 fs-13 p-1 text-center">
+                      <div className="grid grid-cols-[1fr_3fr] gap-3 fs-13 p-1 text-center">
                         <div>{history.version}</div>
-                        <div >{history.changedDate}</div>
-                        <div className="blue-color cursor-pointer" onClick={() => onSelectEmail(corpAction, corpAction.id!)}>Y</div>
-                        <div className="blue-color">{(history?.isCurrent ?? false) ? 'Y' : 'N'}</div>
+                        <div >{new Date(history.changedDate!).toLocaleString()}</div>
+                        {/*<div className="blue-color cursor-pointer" onClick={() => onSelectEmail(corpAction, corpAction.id!)}>Y</div>*/}
+                        {/*<div className="blue-color">{(history?.isCurrent ?? false) ? 'Y' : 'N'}</div>*/}
                       </div>
                     )
                   }
