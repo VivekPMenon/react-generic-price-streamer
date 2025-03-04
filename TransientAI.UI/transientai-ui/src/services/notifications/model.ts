@@ -5,6 +5,7 @@ export interface Notification {
   type?: NotificationType;
   highlights?: string[];
   id?: string;
+  timestamp?: number;
 } 
 
 export enum NotificationType {

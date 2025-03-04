@@ -58,17 +58,31 @@ export function RiskReportsUploader() {
       {
         field: 'size',
         headerName: 'Size',
-        width: 120,
+        minWidth: 120,
         autoHeight: true,
         valueFormatter: params => calculateFileSize(params.value)
       },
       {
         field: 'upload_date',
         headerName: 'Date',
-        width: 120,
+        minWidth: 120,
         sort: 'desc',
         cellClass: 'date-cell', // Optional: Apply date styling
-        autoHeight: true
+        autoHeight: true,
+        wrapText: true,
+        valueFormatter: (params) => {
+          if (!params.value) {
+            return '';
+          }
+          const date = new Date(params.value);
+          const month = String(date.getMonth() + 1).padStart(2, '0');
+          const day = String(date.getDate()).padStart(2, '0');
+          const year = date.getFullYear();
+          const hours = String(date.getHours()).padStart(2, '0');
+          const minutes = String(date.getMinutes()).padStart(2, '0');
+          const seconds = String(date.getSeconds()).padStart(2, '0');
+          return `${month}/${day}/${year} ${hours}:${minutes}:${seconds}`;
+        }
       },
       {
         field: '',

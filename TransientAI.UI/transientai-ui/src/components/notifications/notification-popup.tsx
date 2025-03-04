@@ -1,5 +1,4 @@
 import { CorporateAction } from "@/services/corporate-actions";
-import { ResearchReport } from "@/services/reports-data";
 import { ReactNode } from "react";
 import styles from './notification-popup.module.scss';
 import * as Dialog from "@radix-ui/react-dialog";
@@ -25,7 +24,7 @@ export function NotificationPopup({children, notification, notificationId, onOk,
         <Dialog.Content className="DialogContentSmall">
           <Dialog.Title className="DialogTitle">
             <i className="fa-solid fa-circle-exclamation red-color"></i>
-            {notification?.eventDescription}
+            {notification?.action}
           </Dialog.Title>
           <Dialog.Description className="DialogDescription">
 
@@ -41,7 +40,7 @@ export function NotificationPopup({children, notification, notificationId, onOk,
               </div>
               <div className="grid grid-cols-[40%_60%] gap-3 fs-14  p-1">
                 <div className='font-bold text-right'>Account:</div>
-                <div className="text-left">{notification?.accountId}</div>
+                <div className="text-left">{notification?.accounts?.length ? notification.accounts[0].accountNumber : ''}</div>
               </div>
               <div className="grid grid-cols-[40%_60%] gap-3 fs-14 p-1">
                 <div className='font-bold text-right'>Holding Quantity:</div>
@@ -49,15 +48,15 @@ export function NotificationPopup({children, notification, notificationId, onOk,
               </div>
               <div className="grid grid-cols-[40%_60%] gap-3 fs-14 p-1">
                 <div className='font-bold text-right'>Term Details:</div>
-                <div className="text-left">{notification?.termDetails}</div>
+                <div className="text-left">{notification?.terms?.length ? (notification.terms[0].type + ' ' + notification.terms[0].rate) : ''}</div>
               </div>
-              <div className="grid grid-cols-[40%_60%] gap-3 fs-14 p-1">
-                <div className='font-bold text-right'>Entitled Product Id:</div>
-                <div className="text-left">{notification?.entitledProductId}</div>
-              </div>
+              {/*<div className="grid grid-cols-[40%_60%] gap-3 fs-14 p-1">*/}
+              {/*  <div className='font-bold text-right'>Entitled Product Id:</div>*/}
+              {/*  <div className="text-left">{notification?.entitledProductId}</div>*/}
+              {/*</div>*/}
               <div className="grid grid-cols-[40%_60%] gap-3 fs-14 p-1">
                 <div className='font-bold text-right'>Pay Date:</div>
-                <div className="text-left">{notification?.paydate}</div>
+                <div className="text-left">{notification?.dates?.pay_date}</div>
               </div>
             </div>
 
