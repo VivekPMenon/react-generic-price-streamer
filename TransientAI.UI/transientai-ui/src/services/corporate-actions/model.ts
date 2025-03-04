@@ -23,6 +23,7 @@ export interface SecurityIdentifier {
   cusip?: string;
   ric?: string;
   sedol?: string;
+  product_id?: string;
 }
 
 export interface Security {
@@ -51,6 +52,11 @@ export interface Account {
   netAmount?: string;
 }
 
+export interface SecurityDetails {
+  action?: string;
+  product_id?: string;
+}
+
 export interface Terms {
   termNumber?: string;
   type?: string;
@@ -58,6 +64,9 @@ export interface Terms {
   rate?: string;
   currency?: string;
   isDefault?: boolean;
+  security_details?: SecurityDetails;
+  liability?: string;
+  response?: string;
 }
 
 export interface Requirements {

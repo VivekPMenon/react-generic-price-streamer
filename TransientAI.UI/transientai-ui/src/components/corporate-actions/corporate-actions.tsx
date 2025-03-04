@@ -204,10 +204,10 @@ export function CorporateActions() {
                   {/*      `Term: ${corpAction.termsDetails[0].termNumber} Rate: ${corpAction.termsDetails[0].type}`*/}
                   {/*  ) : ''}</div>*/}
                   {/*</div>*/}
-                  {/*<div className="grid grid-cols-[40%_60%] gap-3 fs-13">*/}
-                  {/*  <div className='font-bold'>Entitled Product Id</div>*/}
-                  {/*  <div>{corpAction.entitledProductId}</div>*/}
-                  {/*</div>*/}
+                  <div className="grid grid-cols-[40%_60%] gap-3 fs-13">
+                    <div className='font-bold'>Entitled Product Id</div>
+                    <div>{corpAction.terms?.length ? corpAction.terms[0].security_details?.product_id : ''}</div>
+                  </div>
                   <div className="grid grid-cols-[40%_60%] gap-3 fs-13">
                     <div className='font-bold'>Event Date</div>
                     <div>{corpAction.dates ? corpAction.dates.notification_date : ''}</div>

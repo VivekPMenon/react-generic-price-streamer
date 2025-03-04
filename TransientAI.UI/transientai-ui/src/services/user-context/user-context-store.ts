@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { UserContext, RoleType } from './model';
+import * as auth from '@casl/react';
 
 interface UserContextState {
   userContext: UserContext;
