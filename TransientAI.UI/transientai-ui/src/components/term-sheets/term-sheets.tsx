@@ -9,7 +9,7 @@ import {calculateFileSize, DataGrid} from "@/components/data-grid";
 import {ColDef, GridApi} from "ag-grid-community";
 import {useRiskReportsSlice} from "@/services/reports-data";
 
-const EMPTY = new Uint8Array<ArrayBuffer>();
+const EMPTY = new Uint8Array(0);
 
 export function TermSheets() {
     const gridApiRef = useRef<GridApi | null>(null);
