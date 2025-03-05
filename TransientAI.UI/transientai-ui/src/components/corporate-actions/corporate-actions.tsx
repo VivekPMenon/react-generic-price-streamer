@@ -58,7 +58,12 @@ export function CorporateActions() {
   }
 
   function onSelectEmail(corpAction: CorporateAction, version: number|undefined) {
-    if (version === undefined) return;
+    setSelectedEmailContent('');
+
+    if (!corpAction.eventId || version === undefined) {
+      return;
+    }
+
     corpActionsDataService
         .getCorpActionEmail(corpAction.eventId, version)
         .then(content => {
