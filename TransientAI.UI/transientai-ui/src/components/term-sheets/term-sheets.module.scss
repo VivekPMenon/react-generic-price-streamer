@@ -1,0 +1,74 @@
+@import '../../assets/variables.scss';
+
+.term-sheets-container {
+  display: flex;
+  flex-direction: row;
+  flex: 1 1 50%;
+  padding: 5px;
+  gap: 10px;
+
+  @media screen and (max-width: $mobile-breakpoint-max) {
+    flex-direction: column;
+    flex: 1 1 100%;
+  }
+}
+
+.term-sheets-documents {
+  display: flex;
+  padding: 5px;
+  gap: 40px;
+  flex: 1 1 40%;
+  height: 100%;
+  flex-direction: column;
+  width: 40%;
+}
+
+.term-sheets-uploader {
+  display: flex;
+  padding: 5px;
+  gap: 10px;
+  flex-direction: column;
+  flex: 1 1 20%;
+  height: 100%;
+
+  @media screen and (max-width: $mobile-breakpoint-max) {
+    flex-direction: column;
+    width: 100%;
+  }
+}
+
+.term-sheets-grid {
+  flex: 1 1 30%;
+  height: 200px;
+  width: 100%;
+}
+
+.term-sheets-preview-container {
+  display: flex;
+  flex: 1 1 40%;
+  height: 200px;
+  width: 100%;
+}
+
+.term-sheets-preview {
+  flex: 1 1 100%;
+  height: 200px;
+  width: 100%;
+}
+
+.term-sheets-site-container {
+  display: flex;
+  flex: 1 1 50%;
+}
+
+.term-sheets-site {
+  padding: 0 10px 0 50px;
+  height: calc(100vh - 300px);
+  border-radius: 10px;
+  width: 100%;
+
+  @media screen and (max-width: $mobile-breakpoint-max) {
+    padding: 0;
+    height: calc(100vh - 200px);
+  }
+}
