@@ -1,7 +1,7 @@
 export interface InquiryRequest {
     id?: string;
     date?: string;
-    assignee?: string;
+    assignee_name?: string;
     subject?: string;
     inquiry?: string;
     status?: string;

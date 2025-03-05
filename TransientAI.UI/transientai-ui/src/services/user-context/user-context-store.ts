@@ -24,7 +24,7 @@ export const useUserContextStore = create<UserContextState>((set, get) => ({
       userContext.role = RoleType.Trader;
     }
 
-    userContext.userName = 'John Smith';
+    userContext.userName = 'Chris Napoli';
 
     set({ userContext });
   },
