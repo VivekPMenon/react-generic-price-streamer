@@ -14,5 +14,6 @@ export enum NotificationType {
   Trades = 'Trades',
   CorpAct = 'Corp Act',
   Research = 'Research',
-  RiskReport = 'Risk Report'
+  RiskReport = 'Risk Report',
+  Inquiries = 'Inquiries',
 }

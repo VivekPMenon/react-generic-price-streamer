@@ -2,15 +2,13 @@ import React, {ReactNode, useState} from "react";
 import * as Dialog from '@radix-ui/react-dialog';
 import * as Form from '@radix-ui/react-form';
 import styles from './request-form-popup.module.scss';
-import {investorRelationsService} from "@/services/investor-relations-data";
-import { useUserContextStore } from '@/services/user-context';
+import {useInvestorRelationsStore} from "@/services/investor-relations-data/investor-relations-store";
 
 export interface RequestPopupProps {
     children: ReactNode;
-    onSaved: () => void;
 }
 
-export function RequestFormPopup({children, onSaved}: RequestPopupProps) {
+export function RequestFormPopup({children}: RequestPopupProps) {
     const [open, setOpen] = useState(false);
     const [subject, setSubject] = useState('');
     const [subjectError, setSubjectError] = useState('');
@@ -18,11 +16,9 @@ export function RequestFormPopup({children, onSaved}: RequestPopupProps) {
     const [inquiryError, setInquiryError] = useState('');
     const [dueDate, setDueDate] = useState('');
     const [dueDateError, setDueDateError] = useState('');
-    const [flag, setFlag] = useState<string>('regular');
+    const [flag, setFlag] = useState<string>('regtask');
     const [flagError, setFlagError] = useState('');
-    const [isSaving, setIsSaving] = useState(false);
-
-    const { userContext } = useUserContextStore();
+    const { isSaving, save } = useInvestorRelationsStore();
 
     const handleSubjectChange = (event:any) => {
         setSubject(event.target.value);
@@ -67,11 +63,9 @@ export function RequestFormPopup({children, onSaved}: RequestPopupProps) {
     const handleSubmit = (event:any) => {
         event.preventDefault();
         if (validate()) {
-            setIsSaving(true);
-            investorRelationsService.submit({
+            save({
                 subject: subject,
                 inquiry: inquiry,
-                assignee: userContext.userName,
                 due_date: new Date(dueDate).toISOString(),
                 flag: flag,
                 date_edited: new Date().toISOString(),
@@ -79,10 +73,8 @@ export function RequestFormPopup({children, onSaved}: RequestPopupProps) {
                 completed: false
             })
                 .then(() => {
-                    onSaved();
                     resetAndClose();
-                })
-                .finally(() => setIsSaving(false));
+                });
         }
     };
 
@@ -138,17 +130,6 @@ export function RequestFormPopup({children, onSaved}: RequestPopupProps) {
                                 </Form.Control>
                                 {inquiryError && <Form.Message className={styles['error']}>{inquiryError}</Form.Message>}
                             </Form.Field>
-                            {/*<Form.Field name="assignee">*/}
-                            {/*    <Form.Control asChild>*/}
-                            {/*        <input*/}
-                            {/*            type="text"*/}
-                            {/*            placeholder="Assignee"*/}
-                            {/*            value={assignee}*/}
-                            {/*            onChange={handleAssigneeChange}*/}
-                            {/*        />*/}
-                            {/*    </Form.Control>*/}
-                            {/*    {assigneeError && <Form.Message className={styles['error']}>{assigneeError}</Form.Message>}*/}
-                            {/*</Form.Field>*/}
                             <Form.Field name="dueDate">
                                 <Form.Control asChild>
                                     <input
@@ -164,8 +145,8 @@ export function RequestFormPopup({children, onSaved}: RequestPopupProps) {
                                 <div className="flex space-x-2 mt-4">
                                     <Form.Label>Flag</Form.Label>
                                     <Form.Control asChild>
-                                        <select defaultValue={'regular'} onChange={handleFlagChange}>
-                                            <option value="regular">Regular</option>
+                                        <select onChange={handleFlagChange}>
+                                            <option value="regtask">RegTask</option>
                                             <option value="important">Important</option>
                                             <option value="urgent">Urgent</option>
                                         </select>

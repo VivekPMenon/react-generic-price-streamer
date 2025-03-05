@@ -38,15 +38,15 @@ class InvestorRelationsService {
             .get(
                 'submitted_tasks',
                 {
-                    assignee
+                    assignee_name: assignee
                 }, {
                     serviceName: this.serviceName
                 });
     }
 
     async changeStatus(assignee: string, id: string, status: string): Promise<boolean> {
-        await webApihandler.get('change_status', {
-            assignee,
+        await webApihandler.post('change_status', {
+            assignee_name: assignee,
             update_task_id: id,
             new_status: status
         }, {

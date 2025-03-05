@@ -1,14 +1,15 @@
 'use client'
 
-import { useContext, useEffect, useMemo, useState } from 'react';
+import {useContext, useEffect, useMemo, useState} from 'react';
 import styles from './notifications.module.scss';
-import { Notification, NotificationType } from '@/services/notifications';
-import { useCorpActionsStore } from "@/services/corporate-actions";
-import { MenuContextData } from "@/services/menu-data";
-import { NotificationPopup } from './notification-popup';
-import { useRouter } from 'next/navigation';
-import { useResearchReportsStore, useRiskReportsSlice } from '@/services/reports-data';
-import { Spinner } from '@radix-ui/themes';
+import {Notification, NotificationType} from '@/services/notifications';
+import {useCorpActionsStore} from "@/services/corporate-actions";
+import {MenuContextData} from "@/services/menu-data";
+import {NotificationPopup} from './notification-popup';
+import {useRouter} from 'next/navigation';
+import {useResearchReportsStore, useRiskReportsSlice} from '@/services/reports-data';
+import {Spinner} from '@radix-ui/themes';
+import {useInvestorRelationsStore} from "@/services/investor-relations-data/investor-relations-store";
 
 export interface NotificationsProps {
   onExpandCollapse?: (state: boolean) => void;
@@ -25,12 +26,14 @@ export function Notifications(props: NotificationsProps) {
     NotificationType.Research,
     NotificationType.RiskReport,
     NotificationType.CorpAct,
+    NotificationType.Inquiries,
   ];
 
   const router = useRouter();
   const { isLoading, reports: researchReports, setSelectedReport: setSelectedResearchReport } = useResearchReportsStore();
   const { isLoading: isRiskReportLoading, riskReports, setSelectedReport: setSelectedRiskReport } = useRiskReportsSlice();
   const { corpActions, selectedCorpAction, setSelectedCorpAction } = useCorpActionsStore();
+  const { inquiries } = useInvestorRelationsStore();
   const { activeMenuData, setActiveMenuData } = useContext(MenuContextData);
 
   const [notifications, setNotifications] = useState<Notification[]>([]);
@@ -46,7 +49,7 @@ export function Notifications(props: NotificationsProps) {
 
   useEffect(() => {
     loadNotifications();
-  }, [researchReports, riskReports]);
+  }, [researchReports, riskReports, inquiries]);
 
   // todo ... we will be fetching the entire notification types from an API instead of UI individually calling each categories and stitching
   async function loadNotifications() {
@@ -85,7 +88,20 @@ export function Notifications(props: NotificationsProps) {
             `Key Date: ${corpAction.keyDates!}`,
             `Version: ${corpAction.version}`,
           ]
-        }))
+        })),
+        ...inquiries
+            .map(inquiry => ({
+                id: inquiry.id,
+                title: `${inquiry.subject}`,
+                type: NotificationType.Inquiries,
+                subTitle: inquiry.inquiry ? inquiry.inquiry : '',
+                timestamp: inquiry.due_date ? new Date(inquiry.due_date).getTime() : 0,
+                highlights: [
+                    `Due: ${inquiry.due_date ? new Date(inquiry.due_date).toDateString() : ''}`,
+                    `Assigned to: ${inquiry.assignee_name}`
+                    `${inquiry.flag?.toUpperCase()}`,
+                ]
+            }))
     ];
 
     newNotifications.sort((x, y) => (y.timestamp ?? -1) - (x.timestamp ?? -1));
@@ -117,6 +133,9 @@ export function Notifications(props: NotificationsProps) {
 
       case NotificationType.RiskReport:
         return 'fa-solid fa-bolt';
+
+      case NotificationType.Inquiries:
+       return  'fa-solid fa-handshake';
     }
   }
 
@@ -136,6 +155,9 @@ export function Notifications(props: NotificationsProps) {
 
       case NotificationType.CorpAct:
         return 'pill teal';
+
+      case NotificationType.Inquiries:
+        return 'pill gold';
     }
   }
 
@@ -161,6 +183,10 @@ export function Notifications(props: NotificationsProps) {
       case NotificationType.CorpAct:
         setSelectedCorpAction(corpActions.find(corpAction => corpAction.eventId === notification.id)!);
         router.push(newRoute = '/dashboard/corporate-actions'); // todo.. remove the route hardcoding
+        break;
+
+      case NotificationType.Inquiries:
+        router.push(newRoute = '/dashboard/investor-relations'); // todo.. remove the route hardcoding
         break;
     }
 
