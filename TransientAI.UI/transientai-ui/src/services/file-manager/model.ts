@@ -4,4 +4,5 @@ export interface File {
     uploaded?: Date;
     content?: string;
     native_file?: any;
+    result?: any;
 }

@@ -1,4 +1,4 @@
-@import '../../assets/variables.scss';
+@import '../../assets/variables';
 
 
 .file-uploader-container {
@@ -15,7 +15,6 @@
   flex-direction: column;
   height: 100%;
   padding: 10px;
-  min-height: 300px;
 }
 
 .drop-zone {
@@ -23,6 +22,7 @@
   padding: 20px;
   text-align: center;
   cursor: pointer;
+  width: 100%;
 }
 
 .drop-zone.drag-active {
@@ -40,7 +40,7 @@
   background-color: $gray-1000;
   padding: 10px;
   border-radius: 5px;
-  width: 150px;
+  //width: 150px;
   cursor: pointer;
 }
 
@@ -51,8 +51,6 @@
   align-items: center;
 
   .upload-area {
-    height: 150px;
-    width: 500px;
     border: 1px dashed $border-color;
     display: flex;
     flex-direction: column;
@@ -73,6 +71,11 @@
 
 .file-validation-step {
   @extend .wizard-step-content;
+  height: 175px;
+
+  .grid {
+
+  }
 
   button {
     width: 130px;
@@ -81,6 +84,7 @@
 
 .file-submission-step {
   @extend .wizard-step-content;
+  height: 175px;
 
   .upload-status {
     display: flex;

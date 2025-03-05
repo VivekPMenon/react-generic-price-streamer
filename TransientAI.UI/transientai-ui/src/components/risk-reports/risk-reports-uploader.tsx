@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useRef } from 'react';
 import { calculateFileSize, DataGrid } from '../data-grid';
 import { ColDef, GridApi } from 'ag-grid-community';
-import { FileUploadWizard } from './file-upload-wizard';
+import { FileUploadWizard } from '../file-upload-wizard/file-upload-wizard';
 import { Viewer, Worker } from "@react-pdf-viewer/core";
 import { defaultLayoutPlugin } from "@react-pdf-viewer/default-layout";
 import { themePlugin } from "@react-pdf-viewer/theme";

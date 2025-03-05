@@ -38,7 +38,6 @@ export const menuInfoList: MenuInfo[] = [
   //   badgeCount: 3,
   //   icon: 'fa-solid fa-user'
   // },
-
   {
     route: '/dashboard/research-reports',
     description: 'Research Reports',
@@ -74,5 +73,11 @@ export const menuInfoList: MenuInfo[] = [
     badgeCount: 5,
     icon: 'fa-solid fa-newspaper',
     route: '/dashboard/breaking-news',
+  },
+  {
+    description: 'Term Sheets',
+    badgeCount: 5,
+    icon: 'fa-solid fa-newspaper',
+    route: '/dashboard/term-sheets',
   },
 ];

@@ -5,7 +5,7 @@ import { ColDef } from 'ag-grid-community';
 import { File, fileManagerService } from '@/services/file-manager';
 
 export interface FileUploaderWizardProps {
-  onUploadSuccess?:() => void;
+  onUploadSuccess?:(file: File) => void;
 }
 
 function getColumnDef(): ColDef[] {
@@ -54,10 +54,12 @@ export function FileUploadWizard({onUploadSuccess}: FileUploaderWizardProps) {
 
     const files = Array.from(e.dataTransfer.files) as any[];
     if (files && files.length === 1 && files.every((file: any) => file.type === 'application/pdf')) {
+
       const newFile: File = {
         filename: files[0].name,
         size: files[0].size,
-        native_file: files[0]
+        native_file: files[0],
+        result: e.target.result
       };
       setSelectedFile(newFile);
       setSelectedFiles([newFile]);
@@ -71,6 +73,7 @@ export function FileUploadWizard({onUploadSuccess}: FileUploaderWizardProps) {
     if (!file || file.type !== 'application/pdf') {
       return;
     }
+
 
     const newFile = {
       filename: file.name,
@@ -93,7 +96,7 @@ export function FileUploadWizard({onUploadSuccess}: FileUploaderWizardProps) {
         .then(() => {
           setSelectedFiles([]);
           setSelectedFile(null);
-          onUploadSuccess!();
+          onUploadSuccess!(selectedFile);
         })
         .catch(e => {
           setErrorMessage(e.message);
@@ -167,6 +170,7 @@ export function FileUploadWizard({onUploadSuccess}: FileUploaderWizardProps) {
         stepId === 2 &&
         <div className={styles['file-validation-step']}>
           <DataGrid isSummaryGrid={true}
+            className={styles['grid']}
             rowData={selectedFiles}
             columnDefs={columnDefs}
             rowSelection={'single'}>
