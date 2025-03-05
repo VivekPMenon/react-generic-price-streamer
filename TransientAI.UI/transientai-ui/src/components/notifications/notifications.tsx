@@ -90,7 +90,6 @@ export function Notifications(props: NotificationsProps) {
 
     newNotifications.sort((x, y) => (y.timestamp ?? -1) - (x.timestamp ?? -1));
 
-
     setNotifications(newNotifications);
   }
 
