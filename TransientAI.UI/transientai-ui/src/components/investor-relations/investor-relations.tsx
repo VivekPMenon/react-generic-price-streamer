@@ -20,7 +20,7 @@ function getFlagStyle(flag: string|undefined|null) {
             break;
         }
         case 'important': {
-            style.color = 'red';
+            style.color = 'orange';
             break;
         }
         case 'regular': {
