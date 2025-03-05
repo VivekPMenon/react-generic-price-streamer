@@ -104,7 +104,7 @@ export const SearchableMarkdown = ({ markdownContent, className, title }: Search
         </span> */}
       </div>
 
-      <div ref={contentRef} className={`react-markdown ${className}`}>
+      <div ref={contentRef} className={`react-markdown ${className ? className : ''}`}>
         <ReactMarkdown rehypePlugins={[rehypeRaw]}>{getMarkdownText()}</ReactMarkdown>
       </div>
 

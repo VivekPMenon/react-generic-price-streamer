@@ -181,7 +181,7 @@ export function ResearchReports({ isExpanded }: ResearchReportsProps) {
                 AI Summary
               </div>
 
-              <div className={`height-vh-68 scrollable-div height-100p justify-center`}>
+              <div className={`${styles['summary-markdown']} height-vh-68 scrollable-div height-100p justify-center`}>
                 {
                   getFinalAiContent() ? <SearchableMarkdown markdownContent={getFinalAiContent()} /> : <Spinner size="3" className='self-center'></Spinner>
                 }
