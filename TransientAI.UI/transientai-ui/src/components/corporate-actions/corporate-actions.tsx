@@ -1,7 +1,7 @@
 'use client'
 
 import styles from './corporate-actions.module.scss';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { CorporateAction, useCorpActionsStore } from '@/services/corporate-actions';
 import EmailViewer from '../email-parser/email-viewer';
 import { useScrollTo } from '@/lib/hooks';
@@ -57,14 +57,18 @@ export function CorporateActions() {
     // setCorpActions(corpActions);
   }
 
-  function onSelectEmail(corpAction: CorporateAction, version: string) {
-    // const newEmailContent = emailContents[corpAction.eventId + '_' + version]
-    setSelectedEmailContent(corpAction?.emailHtmlUrl!);
-    scrollToTarget();
+  function onSelectEmail(corpAction: CorporateAction, version: number|undefined) {
+    if (version === undefined) return;
+    corpActionsDataService
+        .getCorpActionEmail(corpAction.eventId, version)
+        .then(content => {
+          setSelectedEmailContent(content);
+          scrollToTarget();
+        });
   }
 
   function onRowClicked(event: RowClickedEvent) {
-    onSelectEmail(event.data, '2');
+    onSelectEmail(event.data, event.data.version);
   }
 
   function getColumnDefs(): ColDef[] {
@@ -175,7 +179,7 @@ export function CorporateActions() {
                 </div>
                 <div className={styles['action-buttons']}>
                   <div className={styles['button-container']}>
-                    <i className='fa-regular fa-envelope' onClick={() => onSelectEmail(corpAction, '2')}></i>
+                    <i className='fa-regular fa-envelope' onClick={() => onSelectEmail(corpAction, corpAction.version)}></i>
                   </div>
 
                 </div>
@@ -225,7 +229,7 @@ export function CorporateActions() {
                   {
                     corpAction.versionHistory?.map(history =>
                       <div key={`${corpAction.eventId}-${history.version}`} className="grid grid-cols-[1fr_3fr] gap-3 fs-13 p-1 text-center">
-                        <div>{history.version}</div>
+                        <div className="blue-color cursor-pointer" onClick={() => onSelectEmail(corpAction, history.version)}>{history.version}</div>
                         <div >{new Date(history.changedDate!).toLocaleString()}</div>
                         {/*<div className="blue-color cursor-pointer" onClick={() => onSelectEmail(corpAction, corpAction.id!)}>Y</div>*/}
                         {/*<div className="blue-color">{(history?.isCurrent ?? false) ? 'Y' : 'N'}</div>*/}
@@ -266,7 +270,7 @@ export function CorporateActions() {
           className={isExpanded ? 'height-vh-82' : 'height-vh-40'} 
           title='Original Email'/> */}
         {selectedEmailContent ?
-          <EmailViewer className={styles['email-viewer'] + ' height-vh-90'} htmlSource={selectedEmailContent} /> : <></>}
+          <EmailViewer className={styles['email-viewer'] + ' height-vh-90'} emailHtml={selectedEmailContent} /> : <></>}
 
       </div>
     </div>

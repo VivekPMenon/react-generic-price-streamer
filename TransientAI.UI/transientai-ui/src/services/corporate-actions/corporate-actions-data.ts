@@ -6,6 +6,21 @@ class CorporateActionsDataService {
   private serviceName = 'corp-actions-api';
   private headers = endpointFinder.getCurrentEnvInfo().corpActionApiHeaders;
 
+  async getCorpActionEmail(eventId: string, version: number): Promise<string> {
+    try {
+      const result = await webApihandler.get(
+          `emails/${eventId}/versions/${version}/html`,
+          {},
+          {
+            serviceName: this.serviceName,
+            headers: this.headers
+          });
+      return result.htmlContent;
+    } catch (e) {
+      return [];
+    }
+  }
+
   async getCorpActions(filterOptions?: CorporateActionFilterOptions): Promise<CorporateAction[]> {
     try {
       const result = await webApihandler.get(
