@@ -1,7 +1,7 @@
 'use client'
 
 import styles from './corporate-actions.module.scss';
-import { useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { CorporateAction, useCorpActionsStore } from '@/services/corporate-actions';
 import EmailViewer from '../email-parser/email-viewer';
 import { useScrollTo } from '@/lib/hooks';
@@ -13,7 +13,7 @@ import { corpActionsDataService } from '@/services/corporate-actions/corporate-a
 export function CorporateActions() {
 
   const { userContext } = useUserContextStore();
-  const { corpActions, selectedCorpAction } = useCorpActionsStore();
+  const { corpActions, selectedCorpAction, setSelectedCorpAction } = useCorpActionsStore();
   const { scrollTargetRef, scrollToTarget } = useScrollTo<HTMLDivElement>();
   const gridApiRef = useRef<GridApi | null>(null);
 
@@ -24,25 +24,32 @@ export function CorporateActions() {
   const colDefs = useMemo(() => getColumnDefs(), [])
 
   // useEffect(() => { loadEmailContents(); }, []);
-  // useEffect(() => { calculateSelectedEmailContent() }, [emailContents, selectedCorpAction]);
+  useEffect(() => { calculateSelectedEmailContent() }, [selectedCorpAction]);
 
   // async function loadEmailContents() {
   //   const emailContents: any = await corpActionsDataService.getEmailSource();
   //   setEmailContents(emailContents);
   // }
 
-  // async function calculateSelectedEmailContent() {
-  //   if (!selectedCorpAction?.eventId) {
-  //     return;
-  //   }
-  //
-  //   const newContent = emailContents[`${selectedCorpAction.eventId}`]
-  //   setSelectedEmailContent(newContent);
-  //
-  //   gridApiRef?.current?.forEachNode((node) =>
-  //     node.setSelected(node.data && node.data?.eventId === selectedCorpAction?.eventId)
-  //   );
-  // }
+  async function calculateSelectedEmailContent() {
+    if (!selectedCorpAction?.eventId) {
+      return;
+    }
+
+    const newContent = await corpActionsDataService.getCorpActionEmail(selectedCorpAction.eventId, selectedCorpAction.version!)
+    setSelectedEmailContent(newContent);
+
+    gridApiRef?.current?.forEachNode((node) =>
+      node.setSelected(node.data && node.data?.eventId === selectedCorpAction?.eventId)
+    );
+
+    setTimeout(() => {
+      const element = document.getElementById(selectedCorpAction.eventId);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }, 0);
+  }
 
   function onSearchQueryChange(event: any) {
     setSearchQuery(event.target.value);
@@ -57,7 +64,7 @@ export function CorporateActions() {
     // setCorpActions(corpActions);
   }
 
-  function onSelectEmail(corpAction: CorporateAction, version: number|undefined) {
+  function onSelectEmail(corpAction: CorporateAction, version: number | undefined) {
     setSelectedEmailContent('');
 
     if (!corpAction.eventId || version === undefined) {
@@ -65,11 +72,11 @@ export function CorporateActions() {
     }
 
     corpActionsDataService
-        .getCorpActionEmail(corpAction.eventId, version)
-        .then(content => {
-          setSelectedEmailContent(content);
-          scrollToTarget();
-        });
+      .getCorpActionEmail(corpAction.eventId, version)
+      .then(content => {
+        setSelectedEmailContent(content);
+        scrollToTarget();
+      });
   }
 
   function onRowClicked(event: RowClickedEvent) {
@@ -160,96 +167,98 @@ export function CorporateActions() {
       isSummaryGrid={true}
       onRowClicked={onRowClicked}
       rowSelection={'single'}
-      >
+    >
     </DataGrid>
-    
+
     :
     <div className={`${styles['corporate-actions-response']} scrollable-div`}>
       {
         corpActions?.map(corpAction =>
-            (
-             <div key={corpAction.eventId} className={`${styles['corporate-action']} ${selectedCorpAction?.eventId === corpAction.eventId ? styles['active'] : ''}`}>
-              <div className={styles['header']}>
-                <i className='fa-solid fa-microphone-lines'></i>
-                <div className={styles['title']}>
-                  <div className={styles['top']}>
-                    <span>Ticker: {corpAction?.security?.identifiers?.ticker}</span>
-                    <span className='margin-left-auto'>ISIN: {corpAction?.security?.identifiers?.isin}</span>
-                  </div>
-                  <div className={styles['bottom']}>
-                    <span>{corpAction?.security?.name}</span>
-                    <span className='margin-left-auto'>{corpAction.eventType}</span>
-                    <span>{corpAction.eventStatus}</span>
-                  </div>
+        (
+          <div id={corpAction.eventId}
+            className={`${styles['corporate-action']} ${selectedCorpAction?.eventId === corpAction.eventId ? styles['active'] : ''}`}
+            onClick={() => setSelectedCorpAction(corpAction)}>
+            <div className={styles['header']}>
+              <i className='fa-solid fa-microphone-lines'></i>
+              <div className={styles['title']}>
+                <div className={styles['top']}>
+                  <span>Ticker: {corpAction?.security?.identifiers?.ticker}</span>
+                  <span className='margin-left-auto'>ISIN: {corpAction?.security?.identifiers?.isin}</span>
                 </div>
-                <div className={styles['action-buttons']}>
-                  <div className={styles['button-container']}>
-                    <i className='fa-regular fa-envelope' onClick={() => onSelectEmail(corpAction, corpAction.version)}></i>
-                  </div>
-
+                <div className={styles['bottom']}>
+                  <span>{corpAction?.security?.name}</span>
+                  <span className='margin-left-auto'>{corpAction.eventType}</span>
+                  <span>{corpAction.eventStatus}</span>
                 </div>
               </div>
+              <div className={styles['action-buttons']}>
+                <div className={styles['button-container']}>
+                  <i className='fa-regular fa-envelope' onClick={() => onSelectEmail(corpAction, corpAction.version)}></i>
+                </div>
 
-              <div className={styles['corporate-action-body']}>
-                {/* <ReactMarkdown className='markdown' remarkPlugins={[remarkGfm]}>
+              </div>
+            </div>
+
+            <div className={styles['corporate-action-body']}>
+              {/* <ReactMarkdown className='markdown' remarkPlugins={[remarkGfm]}>
               {markdown}
             </ReactMarkdown> */}
 
-                <div className={styles['basic-info']}>
-                  <div className="grid grid-cols-[45%_55%] gap-3 fs-13">
-                    <div className='font-bold'>Announcement Id</div>
-                    <div className='orange-color'>{corpAction.eventId}</div>
-                  </div>
-                  <div className="grid grid-cols-[45%_55%] gap-3 fs-13">
-                    <div className='font-bold'>Account</div>
-                    <div>{corpAction.accounts?.length ? corpAction.accounts[0].accountNumber : ''}</div>
-                  </div>
-                  <div className="grid grid-cols-[45%_55%] gap-3 fs-13">
-                    <div className='font-bold'>Position</div>
-                    <div>{corpAction.accounts?.length ? corpAction.accounts[0].holdingQuantity : ''}</div>
-                  </div>
-                  {/*<div className="grid grid-cols-[40%_60%] gap-3 fs-13">*/}
-                  {/*  <div className='font-bold'>Term Details</div>*/}
-                  {/*  <div>{corpAction.termsDetails?.length ? (*/}
-                  {/*      `Term: ${corpAction.termsDetails[0].termNumber} Rate: ${corpAction.termsDetails[0].type}`*/}
-                  {/*  ) : ''}</div>*/}
-                  {/*</div>*/}
-                  <div className="grid grid-cols-[45%_55%] gap-3 fs-13">
-                    <div className='font-bold'>Entitled Product Id</div>
-                    <div>{corpAction.terms?.length ? corpAction.terms[0].security_details?.product_id : ''}</div>
-                  </div>
-                  <div className="grid grid-cols-[45%_55%] gap-3 fs-13">
-                    <div className='font-bold'>Event Date</div>
-                    <div>{corpAction.dates ? new Date(corpAction.dates.notification_date!).toDateString() : ''}</div>
-                  </div>
+              <div className={styles['basic-info']}>
+                <div className="grid grid-cols-[45%_55%] gap-3 fs-13">
+                  <div className='font-bold'>Announcement Id</div>
+                  <div className='orange-color'>{corpAction.eventId}</div>
                 </div>
-
-                <div className='scrollable-div height-vh-15'>
-                  <div className="grid grid-cols-[1fr_3fr] gap-3 fs-12 table-header text-center">
-                    <div>Version</div>
-                    <div>Date & Time</div>
-                    {/*<div>Email</div>*/}
-                    {/*<div>Alert</div>*/}
-                  </div>
-                  {
-                    corpAction.versionHistory?.map(history =>
-                      <div key={`${corpAction.eventId}-${history.version}`} className="grid grid-cols-[1fr_3fr] gap-3 fs-13 p-1 text-center">
-                        <div className="blue-color cursor-pointer" onClick={() => onSelectEmail(corpAction, history.version)}>{history.version}</div>
-                        <div >{new Date(history.changedDate!).toLocaleString()}</div>
-                        {/*<div className="blue-color cursor-pointer" onClick={() => onSelectEmail(corpAction, corpAction.id!)}>Y</div>*/}
-                        {/*<div className="blue-color">{(history?.isCurrent ?? false) ? 'Y' : 'N'}</div>*/}
-                      </div>
-                    )
-                  }
+                <div className="grid grid-cols-[45%_55%] gap-3 fs-13">
+                  <div className='font-bold'>Account</div>
+                  <div>{corpAction.accounts?.length ? corpAction.accounts[0].accountNumber : ''}</div>
+                </div>
+                <div className="grid grid-cols-[45%_55%] gap-3 fs-13">
+                  <div className='font-bold'>Position</div>
+                  <div>{corpAction.accounts?.length ? corpAction.accounts[0].holdingQuantity : ''}</div>
+                </div>
+                {/*<div className="grid grid-cols-[40%_60%] gap-3 fs-13">*/}
+                {/*  <div className='font-bold'>Term Details</div>*/}
+                {/*  <div>{corpAction.termsDetails?.length ? (*/}
+                {/*      `Term: ${corpAction.termsDetails[0].termNumber} Rate: ${corpAction.termsDetails[0].type}`*/}
+                {/*  ) : ''}</div>*/}
+                {/*</div>*/}
+                <div className="grid grid-cols-[45%_55%] gap-3 fs-13">
+                  <div className='font-bold'>Entitled Product Id</div>
+                  <div>{corpAction.terms?.length ? corpAction.terms[0].security_details?.product_id : ''}</div>
+                </div>
+                <div className="grid grid-cols-[45%_55%] gap-3 fs-13">
+                  <div className='font-bold'>Event Date</div>
+                  <div>{corpAction.dates ? new Date(corpAction.dates.notification_date!).toDateString() : ''}</div>
                 </div>
               </div>
 
-               <div className={styles['footer']}>
-                 <span>{`${corpAction?.terms?.length ? (corpAction.terms[0].type + ' ' + corpAction.terms[0].rate) : ''}`}</span>
-               </div>
+              <div className='scrollable-div height-vh-15'>
+                <div className="grid grid-cols-[1fr_3fr] gap-3 fs-12 table-header text-center">
+                  <div>Version</div>
+                  <div>Date & Time</div>
+                  {/*<div>Email</div>*/}
+                  {/*<div>Alert</div>*/}
+                </div>
+                {
+                  corpAction.versionHistory?.map(history =>
+                    <div key={`${corpAction.eventId}-${history.version}`} className="grid grid-cols-[1fr_3fr] gap-3 fs-13 p-1 text-center">
+                      <div className="blue-color cursor-pointer" onClick={() => onSelectEmail(corpAction, history.version)}>{history.version}</div>
+                      <div >{new Date(history.changedDate!).toLocaleString()}</div>
+                      {/*<div className="blue-color cursor-pointer" onClick={() => onSelectEmail(corpAction, corpAction.id!)}>Y</div>*/}
+                      {/*<div className="blue-color">{(history?.isCurrent ?? false) ? 'Y' : 'N'}</div>*/}
+                    </div>
+                  )
+                }
+              </div>
             </div>
-            )
-          )
+
+            <div className={styles['footer']}>
+              <span>{`${corpAction?.terms?.length ? (corpAction.terms[0].type + ' ' + corpAction.terms[0].rate) : ''}`}</span>
+            </div>
+          </div>
+        )
+        )
       }
     </div>;
 
@@ -274,7 +283,7 @@ export function CorporateActions() {
           markdownContent={reportsDataService.getEmailContentMock()} 
           className={isExpanded ? 'height-vh-82' : 'height-vh-40'} 
           title='Original Email'/> */}
-        {selectedEmailContent ?
+        {selectedCorpAction ?
           <EmailViewer className={styles['email-viewer'] + ' height-vh-90'} emailHtml={selectedEmailContent} /> : <></>}
 
       </div>

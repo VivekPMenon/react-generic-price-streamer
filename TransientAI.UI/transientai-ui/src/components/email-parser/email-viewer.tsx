@@ -38,8 +38,13 @@ const EmailViewer = ({ emailHtml, htmlSource, className }: EmailViewerProps) => 
       setSanitizedHtml(cleanHtml);
       setOriginalHtml(cleanHtml);
       return;
+    } else {
+      setSanitizedHtml('No Email Content Found');
+      setOriginalHtml('No Email Content Found');
+      return;
     }
 
+    // todo.. let us figure out if we really need a html file based fetch
     fetch(htmlSource!)
       .then((res) => res.text())
       .then((html) => {
@@ -56,6 +61,11 @@ const EmailViewer = ({ emailHtml, htmlSource, className }: EmailViewerProps) => 
     }
     highlightMatches(deferredSearchTerm);
   }, [deferredSearchTerm]);
+
+  const extractBodyContent = (htmlString: any) => {
+    const match = htmlString.match(/<body[^>]*>([\s\S]*)<\/body>/i);
+    return match ? match[1] : htmlString; // Return body content or fallback to full string
+  };
 
   const sanitizeHtmlWithBase64Images = (html: string) => {
     const parser = new DOMParser();

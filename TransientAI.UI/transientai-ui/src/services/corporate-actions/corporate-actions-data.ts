@@ -9,12 +9,12 @@ class CorporateActionsDataService {
   async getCorpActionEmail(eventId: string, version: number): Promise<string> {
     try {
       const result = await webApihandler.get(
-          `emails/${eventId}/versions/${version}/html`,
-          {},
-          {
-            serviceName: this.serviceName,
-            headers: this.headers
-          });
+        `emails/${eventId}/versions/${version}/html`,
+        {},
+        {
+          serviceName: this.serviceName,
+          headers: this.headers
+        });
       return result.htmlContent;
     } catch (e) {
       return '';
@@ -30,7 +30,7 @@ class CorporateActionsDataService {
           serviceName: this.serviceName,
           headers: this.headers
         });
-      return result.data;
+      return result.data.filter((corpAction: CorporateAction) => corpAction.isin || corpAction.ticker);
     } catch (e) {
       return [];
     }
