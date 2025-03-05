@@ -79,7 +79,7 @@ export function Notifications(props: NotificationsProps) {
           title: `TICKER: ${corpAction.ticker} \n ${corpAction.security?.name} \n ${corpAction.eventType} \n ${corpAction.eventStatus}`,
           type: NotificationType.CorpAct,
           subTitle: `${corpAction.accounts?.length ? ('Account No: ' + corpAction.accounts[0].accountNumber + ', Holding Capacity: ' + corpAction.accounts[0].holdingQuantity) : ''}`,
-          timestamp: new Date().getTime(),
+          timestamp: corpAction?.dates?.notification_date ? new Date(corpAction.dates.notification_date).getTime() : new Date().getTime(),
           highlights: [
             `ISIN: ${corpAction.isin!}, ID: ${corpAction.eventId}`,
             `Key Date: ${corpAction.keyDates!}`,
