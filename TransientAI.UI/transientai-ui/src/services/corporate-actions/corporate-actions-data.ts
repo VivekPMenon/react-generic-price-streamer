@@ -17,7 +17,7 @@ class CorporateActionsDataService {
           });
       return result.htmlContent;
     } catch (e) {
-      return [];
+      return '';
     }
   }
 
