@@ -3,10 +3,11 @@
 import styles from './investor-relations.module.scss';
 import React, {CSSProperties, useEffect, useMemo, useState} from 'react';
 import {DataGrid} from "@/components/data-grid";
-import {getInquiries, InquiryRequest} from "@/services/investor-relations-data";
+import {InquiryRequest} from "@/services/investor-relations-data";
 import {ColDef} from "ag-grid-community";
 import {RequestFormPopup} from "@/components/investor-relations/request-form-popup";
 import {investorRelationsService} from "@/services/investor-relations-data";
+import {useUserContextStore} from "@/services/user-context";
 
 export interface InvestorRelationsProps {
 }
@@ -142,18 +143,16 @@ function getColumnDef(): ColDef[] {
 export function InvestorRelations(props: InvestorRelationsProps) {
     const columnDefs = useMemo<ColDef[]>(() => getColumnDef(), []);
     const [investorInquiries, setInvestorInquiries] = useState<InquiryRequest[]>();
-
-    function loadInquiries() {
-        const loadDataAsync = async () => {
-            const inquiries = await getInquiries();
-            setInvestorInquiries(inquiries);
-        }
-
-        loadDataAsync();
-    }
+    const { userContext } = useUserContextStore();
 
     useEffect(
-        () => loadInquiries(),
+        () => {
+            if (userContext.userName) {
+                investorRelationsService
+                    .getSubmittedTasks(userContext.userName)
+                    .then(ir => setInvestorInquiries(ir));
+            }
+        },
         []);
 
     return (

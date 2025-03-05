@@ -3,6 +3,7 @@ import * as Dialog from '@radix-ui/react-dialog';
 import * as Form from '@radix-ui/react-form';
 import styles from './request-form-popup.module.scss';
 import {investorRelationsService} from "@/services/investor-relations-data";
+import { useUserContextStore } from '@/services/user-context';
 
 export interface RequestPopupProps {
     children: ReactNode;
@@ -14,13 +15,15 @@ export function RequestFormPopup({children}: RequestPopupProps) {
     const [subjectError, setSubjectError] = useState('');
     const [inquiry, setInquiry] = useState('');
     const [inquiryError, setInquiryError] = useState('');
-    const [assignee, setAssignee] = useState('');
-    const [assigneeError, setAssigneeError] = useState('');
+    // const [assignee, setAssignee] = useState('');
+    // const [assigneeError, setAssigneeError] = useState('');
     const [dueDate, setDueDate] = useState('');
     const [dueDateError, setDueDateError] = useState('');
     const [flag, setFlag] = useState<string>('regular');
     const [flagError, setFlagError] = useState('');
     const [isSaving, setIsSaving] = useState(false);
+
+    const { userContext } = useUserContextStore();
 
     const handleSubjectChange = (event:any) => {
         setSubject(event.target.value);
@@ -32,10 +35,10 @@ export function RequestFormPopup({children}: RequestPopupProps) {
         setInquiryError('');
     }
 
-    const handleAssigneeChange = (event:any) => {
-        setAssignee(event.target.value);
-        setAssigneeError('');
-    }
+    // const handleAssigneeChange = (event:any) => {
+    //     setAssignee(event.target.value);
+    //     setAssigneeError('');
+    // }
 
     const handleDueDateChange = (event:any) => {
         setDueDate(event.target.value);
@@ -56,10 +59,10 @@ export function RequestFormPopup({children}: RequestPopupProps) {
             setInquiryError('Inquiry is required');
             return false;
         }
-        if (!assignee) {
-            setAssigneeError('Assignee is required');
-            return false;
-        }
+        // if (!assignee) {
+        //     setAssigneeError('Assignee is required');
+        //     return false;
+        // }
         if (!dueDate) {
             setDueDateError('Due date is required');
             return false;
@@ -78,7 +81,7 @@ export function RequestFormPopup({children}: RequestPopupProps) {
             investorRelationsService.submit({
                 subject: subject,
                 inquiry: inquiry,
-                assignee: assignee,
+                assignee: userContext.userName,
                 due_date: dueDate,
                 flag: flag,
                 date_edited: new Date().toDateString(),
@@ -90,7 +93,7 @@ export function RequestFormPopup({children}: RequestPopupProps) {
         }
     };
 
-    const handleCancel = (event: any) => {
+    const handleCancel = () => {
         resetAndClose();
     }
 
@@ -99,8 +102,8 @@ export function RequestFormPopup({children}: RequestPopupProps) {
         setSubjectError('');
         setInquiry('');
         setInquiryError('');
-        setAssignee('');
-        setAssigneeError('');
+        // setAssignee('');
+        // setAssigneeError('');
         setDueDateError('');
         setFlag('');
         setFlagError('');
@@ -143,17 +146,17 @@ export function RequestFormPopup({children}: RequestPopupProps) {
                                 </Form.Control>
                                 {inquiryError && <Form.Message className={styles['error']}>{inquiryError}</Form.Message>}
                             </Form.Field>
-                            <Form.Field name="assignee">
-                                <Form.Control asChild>
-                                    <input
-                                        type="text"
-                                        placeholder="Assignee"
-                                        value={assignee}
-                                        onChange={handleAssigneeChange}
-                                    />
-                                </Form.Control>
-                                {assigneeError && <Form.Message className={styles['error']}>{assigneeError}</Form.Message>}
-                            </Form.Field>
+                            {/*<Form.Field name="assignee">*/}
+                            {/*    <Form.Control asChild>*/}
+                            {/*        <input*/}
+                            {/*            type="text"*/}
+                            {/*            placeholder="Assignee"*/}
+                            {/*            value={assignee}*/}
+                            {/*            onChange={handleAssigneeChange}*/}
+                            {/*        />*/}
+                            {/*    </Form.Control>*/}
+                            {/*    {assigneeError && <Form.Message className={styles['error']}>{assigneeError}</Form.Message>}*/}
+                            {/*</Form.Field>*/}
                             <Form.Field name="dueDate">
                                 <Form.Control asChild>
                                     <input
@@ -181,7 +184,7 @@ export function RequestFormPopup({children}: RequestPopupProps) {
                         </div>
                         <div className="flex justify-center space-x-2 mt-4">
                             <Form.Submit disabled={isSaving}><button className="button px-4 py-2 rounded-md" type="button" onClick={handleSubmit}>Add Task</button></Form.Submit>
-                            <Dialog.Close asChild><button className="secondary-button px-4 py-2 rounded-md" onClick={handleCancel}>Cancel</button></Dialog.Close>
+                            <Dialog.Close asChild disabled={isSaving}><button className="secondary-button px-4 py-2 rounded-md" onClick={handleCancel}>Cancel</button></Dialog.Close>
                         </div>
                     </Form.Root>
                 </Dialog.Content>
