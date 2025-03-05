@@ -18,7 +18,9 @@ export function RequestFormPopup({children}: RequestPopupProps) {
     const [dueDateError, setDueDateError] = useState('');
     const [flag, setFlag] = useState<string>('regtask');
     const [flagError, setFlagError] = useState('');
-    const { isSaving, save } = useInvestorRelationsStore();
+    const [assignee, setAssignee] = useState<string>('');
+    const [assigneeError, setAssigneeError] = useState('');
+    const { isSaving, save, assignees } = useInvestorRelationsStore();
 
     const handleSubjectChange = (event:any) => {
         setSubject(event.target.value);
@@ -40,6 +42,11 @@ export function RequestFormPopup({children}: RequestPopupProps) {
         setFlagError('');
     }
 
+    const handleAssigneeChange = (event: any) => {
+        setAssignee(event.target.value);
+        setAssigneeError('');
+    }
+
     const validate = () => {
         if (!subject) {
             setSubjectError('Subject is required');
@@ -57,6 +64,10 @@ export function RequestFormPopup({children}: RequestPopupProps) {
             setFlagError('Flag is required');
             return false;
         }
+        if (!assignee) {
+            setAssigneeError('Assign to is required');
+            return false;
+        }
         return true;
     };
 
@@ -68,6 +79,7 @@ export function RequestFormPopup({children}: RequestPopupProps) {
                 inquiry: inquiry,
                 due_date: new Date(dueDate).toISOString(),
                 flag: flag,
+                assignee_name: assignee,
                 date_edited: new Date().toISOString(),
                 status: 'open',
                 completed: false
@@ -91,6 +103,8 @@ export function RequestFormPopup({children}: RequestPopupProps) {
         setDueDateError('');
         setFlag('');
         setFlagError('');
+        setAssignee('');
+        setAssigneeError('')
         setOpen(false);
     }
 
@@ -129,6 +143,21 @@ export function RequestFormPopup({children}: RequestPopupProps) {
                                     />
                                 </Form.Control>
                                 {inquiryError && <Form.Message className={styles['error']}>{inquiryError}</Form.Message>}
+                            </Form.Field>
+                            <Form.Field name="assignee">
+                                <div className="flex space-x-2 mt-4">
+                                    <Form.Label>Assigned To</Form.Label>
+                                    <Form.Control asChild>
+                                        <select onChange={handleAssigneeChange}>
+                                            {
+                                                assignees.map(assignee => (
+                                                    <option value={assignee}>{assignee}</option>
+                                                ))
+                                            }
+                                        </select>
+                                    </Form.Control>
+                                </div>
+                                {assigneeError && <Form.Message className={styles['error']}>{assigneeError}</Form.Message>}
                             </Form.Field>
                             <Form.Field name="dueDate">
                                 <Form.Control asChild>

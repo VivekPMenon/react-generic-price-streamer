@@ -5,6 +5,7 @@ import { useUserContextStore } from '@/services/user-context';
 
 export interface InvestorRelationsStore {
     inquiries: InquiryRequest[];
+    assignees: string[];
     isLoading: boolean;
     isSaving: boolean;
     error: string;
@@ -12,10 +13,12 @@ export interface InvestorRelationsStore {
     loadInquiries: () => Promise<void>;
     save: (inquiry: InquiryRequest) => Promise<void>;
     changeStatus: (assignee: string, id: string, status: string) => Promise<void>;
+    getAssignees: () => Promise<string[]>;
 }
 
 export const useInvestorRelationsStore = create<InvestorRelationsStore>((set, get) => ({
     inquiries: [],
+    assignees: [],
     isLoading: false,
     isSaving: false,
     error: '',
@@ -46,8 +49,6 @@ export const useInvestorRelationsStore = create<InvestorRelationsStore>((set, ge
     save: async(inquiry: InquiryRequest)=> {
         try {
             set({ isSaving: true});
-            const userContext = useUserContextStore.getState().userContext;
-            inquiry.assignee_name = userContext.userName;
             await investorRelationsService.submit(inquiry);
         } catch (e) {
             set({ error: 'Failed to save inquiry'});
@@ -75,8 +76,18 @@ export const useInvestorRelationsStore = create<InvestorRelationsStore>((set, ge
             set({ isSaving: false});
         }
         await get().loadInquiries();
+    },
+    getAssignees: async () => {
+        try {
+            const assignees = await investorRelationsService.getAssignees();
+            assignees.sort();
+            set({assignees});
+        } catch (e) {
+            set({ assignees: [], error: 'Failed to load assignees' });
+        }
     }
 }));
 
-const { loadInquiries } = useInvestorRelationsStore.getState();
+const { loadInquiries, getAssignees } = useInvestorRelationsStore.getState();
 loadInquiries();
+getAssignees();
