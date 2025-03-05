@@ -16,8 +16,6 @@ export function RequestFormPopup({children, onSaved}: RequestPopupProps) {
     const [subjectError, setSubjectError] = useState('');
     const [inquiry, setInquiry] = useState('');
     const [inquiryError, setInquiryError] = useState('');
-    // const [assignee, setAssignee] = useState('');
-    // const [assigneeError, setAssigneeError] = useState('');
     const [dueDate, setDueDate] = useState('');
     const [dueDateError, setDueDateError] = useState('');
     const [flag, setFlag] = useState<string>('regular');
@@ -35,11 +33,6 @@ export function RequestFormPopup({children, onSaved}: RequestPopupProps) {
         setInquiry(event.target.value);
         setInquiryError('');
     }
-
-    // const handleAssigneeChange = (event:any) => {
-    //     setAssignee(event.target.value);
-    //     setAssigneeError('');
-    // }
 
     const handleDueDateChange = (event:any) => {
         setDueDate(event.target.value);
@@ -60,10 +53,6 @@ export function RequestFormPopup({children, onSaved}: RequestPopupProps) {
             setInquiryError('Inquiry is required');
             return false;
         }
-        // if (!assignee) {
-        //     setAssigneeError('Assignee is required');
-        //     return false;
-        // }
         if (!dueDate) {
             setDueDateError('Due date is required');
             return false;
@@ -83,9 +72,9 @@ export function RequestFormPopup({children, onSaved}: RequestPopupProps) {
                 subject: subject,
                 inquiry: inquiry,
                 assignee: userContext.userName,
-                due_date: dueDate,
+                due_date: new Date(dueDate).toISOString(),
                 flag: flag,
-                date_edited: new Date().toDateString(),
+                date_edited: new Date().toISOString(),
                 status: 'open',
                 completed: false
             })
@@ -106,8 +95,7 @@ export function RequestFormPopup({children, onSaved}: RequestPopupProps) {
         setSubjectError('');
         setInquiry('');
         setInquiryError('');
-        // setAssignee('');
-        // setAssigneeError('');
+        setDueDate('');
         setDueDateError('');
         setFlag('');
         setFlagError('');
@@ -176,7 +164,7 @@ export function RequestFormPopup({children, onSaved}: RequestPopupProps) {
                                 <div className="flex space-x-2 mt-4">
                                     <Form.Label>Flag</Form.Label>
                                     <Form.Control asChild>
-                                        <select defaultValue={'regular'} onSelect={handleFlagChange}>
+                                        <select defaultValue={'regular'} onChange={handleFlagChange}>
                                             <option value="regular">Regular</option>
                                             <option value="important">Important</option>
                                             <option value="urgent">Urgent</option>
@@ -187,7 +175,11 @@ export function RequestFormPopup({children, onSaved}: RequestPopupProps) {
                             </Form.Field>
                         </div>
                         <div className="flex justify-center space-x-2 mt-4">
-                            <Form.Submit disabled={isSaving}><button className="button px-4 py-2 rounded-md" type="button" onClick={handleSubmit}>Add Task</button></Form.Submit>
+                            <Form.Submit
+                                disabled={isSaving}
+                                className='button px-4 py-2 rounded-md'
+                                onClick={handleSubmit}
+                            >Add Task</Form.Submit>
                             <Dialog.Close asChild disabled={isSaving}><button className="secondary-button px-4 py-2 rounded-md" onClick={handleCancel}>Cancel</button></Dialog.Close>
                         </div>
                     </Form.Root>

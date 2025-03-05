@@ -143,6 +143,8 @@ export interface CorporateAction {
   eventType?: string;
   eventClassification?: string;
   eventStatus?: string;
+  emailId?: string;
+  emailHtmlUrl?: string;
   security?: Security;
   dates?: CorporateActionDates;
   accounts?: Account[];

@@ -19,30 +19,30 @@ export function CorporateActions() {
 
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [selectedEmailContent, setSelectedEmailContent] = useState<string>('');
-  const [emailContents, setEmailContents] = useState<any>({});
+  // const [emailContents, setEmailContents] = useState<any>({});
 
   const colDefs = useMemo(() => getColumnDefs(), [])
 
-  useEffect(() => { loadEmailContents(); }, []);
-  useEffect(() => { calculateSelectedEmailContent() }, [emailContents, selectedCorpAction]);
+  // useEffect(() => { loadEmailContents(); }, []);
+  // useEffect(() => { calculateSelectedEmailContent() }, [emailContents, selectedCorpAction]);
 
-  async function loadEmailContents() {
-    const emailContents: any = await corpActionsDataService.getEmailSource();
-    setEmailContents(emailContents);
-  }
+  // async function loadEmailContents() {
+  //   const emailContents: any = await corpActionsDataService.getEmailSource();
+  //   setEmailContents(emailContents);
+  // }
 
-  async function calculateSelectedEmailContent() {
-    if (!selectedCorpAction?.eventId) {
-      return;
-    }
-
-    const newContent = emailContents[`${selectedCorpAction.eventId}`]
-    setSelectedEmailContent(newContent);
-
-    gridApiRef?.current?.forEachNode((node) => 
-      node.setSelected(node.data && node.data?.eventId === selectedCorpAction?.eventId)
-    );
-  }
+  // async function calculateSelectedEmailContent() {
+  //   if (!selectedCorpAction?.eventId) {
+  //     return;
+  //   }
+  //
+  //   const newContent = emailContents[`${selectedCorpAction.eventId}`]
+  //   setSelectedEmailContent(newContent);
+  //
+  //   gridApiRef?.current?.forEachNode((node) =>
+  //     node.setSelected(node.data && node.data?.eventId === selectedCorpAction?.eventId)
+  //   );
+  // }
 
   function onSearchQueryChange(event: any) {
     setSearchQuery(event.target.value);
@@ -58,8 +58,8 @@ export function CorporateActions() {
   }
 
   function onSelectEmail(corpAction: CorporateAction, version: string) {
-    const newEmailContent = emailContents[corpAction.eventId + '_' + version]
-    setSelectedEmailContent(newEmailContent);
+    // const newEmailContent = emailContents[corpAction.eventId + '_' + version]
+    setSelectedEmailContent(corpAction?.emailHtmlUrl!);
     scrollToTarget();
   }
 
@@ -224,7 +224,7 @@ export function CorporateActions() {
                   </div>
                   {
                     corpAction.versionHistory?.map(history =>
-                      <div className="grid grid-cols-[1fr_3fr] gap-3 fs-13 p-1 text-center">
+                      <div key={`${corpAction.eventId}-${history.version}`} className="grid grid-cols-[1fr_3fr] gap-3 fs-13 p-1 text-center">
                         <div>{history.version}</div>
                         <div >{new Date(history.changedDate!).toLocaleString()}</div>
                         {/*<div className="blue-color cursor-pointer" onClick={() => onSelectEmail(corpAction, corpAction.id!)}>Y</div>*/}

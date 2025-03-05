@@ -143,14 +143,19 @@ function getColumnDef(): ColDef[] {
 export function InvestorRelations(props: InvestorRelationsProps) {
     const columnDefs = useMemo<ColDef[]>(() => getColumnDef(), []);
     const [investorInquiries, setInvestorInquiries] = useState<InquiryRequest[]>();
+    const [isLoading, setIsLoading] = useState<boolean>(false);
     const { userContext } = useUserContextStore();
 
     function loadInvestorRelations() {
+        setIsLoading(true);
         if (userContext.userName) {
             investorRelationsService
                 .getSubmittedTasks(userContext.userName)
-                .then(ir => setInvestorInquiries(ir));
+                .then(ir => setInvestorInquiries(ir))
+                .finally(() => setIsLoading(false));
+            return;
         }
+        setIsLoading(false);
     }
 
     useEffect(
@@ -172,6 +177,7 @@ export function InvestorRelations(props: InvestorRelationsProps) {
                     isSummaryGrid={true}
                     rowData={investorInquiries}
                     columnDefs={columnDefs}
+                    loading={isLoading}
                 />
             </div>
         </div>

@@ -74,10 +74,10 @@ export const menuInfoList: MenuInfo[] = [
     icon: 'fa-solid fa-newspaper',
     route: '/dashboard/breaking-news',
   },
-  {
-    description: 'Term Sheets',
-    badgeCount: 5,
-    icon: 'fa-solid fa-newspaper',
-    route: '/dashboard/term-sheets',
-  },
+  // {
+  //   description: 'Term Sheets',
+  //   badgeCount: 5,
+  //   icon: 'fa-solid fa-newspaper',
+  //   route: '/dashboard/term-sheets',
+  // },
 ];
