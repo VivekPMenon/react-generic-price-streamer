@@ -1,12 +1,37 @@
 'use client'
 
 import styles from './investor-relations.module.scss';
-import React, {useEffect, useMemo, useState} from 'react';
+import React, {CSSProperties, useEffect, useMemo, useState} from 'react';
 import {DataGrid} from "@/components/data-grid";
 import {getInquiries, InquiryRequest} from "@/services/investor-relations-data";
 import {ColDef} from "ag-grid-community";
+import {RequestFormPopup} from "@/components/investor-relations/request-form-popup";
+import {investorRelationsService} from "@/services/investor-relations-data";
 
 export interface InvestorRelationsProps {
+}
+
+function getFlagStyle(flag: string|undefined|null) {
+    const style: CSSProperties = { };
+    switch(flag) {
+        case 'urgent': {
+            style.color = 'red';
+            break;
+        }
+        case 'important': {
+            style.color = 'red';
+            break;
+        }
+        case 'regular': {
+            style.color = 'green';
+            break;
+        }
+        default: {
+            style.display = 'none';
+            break;
+        }
+    }
+    return style;
 }
 
 function getColumnDef(): ColDef[] {
@@ -18,16 +43,16 @@ function getColumnDef(): ColDef[] {
             cellClass: 'date-cell',
             cellStyle: {
                 "display": "flex",
-                "align-items": "flex-start"
+                "alignItems": "flex-start"
             }
         },
         {
-            field: 'inquiredBy',
+            field: 'assignee',
             headerName: 'From',
             width: 100,
             cellStyle: {
                 "display": "flex",
-                "align-items": "flex-start"
+                "alignItems": "flex-start"
             }
         },
         {
@@ -36,11 +61,11 @@ function getColumnDef(): ColDef[] {
             width: 250,
             cellStyle: {
                 "display": "flex",
-                "align-items": "flex-start"
+                "alignItems": "flex-start"
             }
         },
         {
-            field: 'request',
+            field: 'inquiry',
             headerName: 'Inquiry/Request',
             width: 500,
             maxWidth: 500,
@@ -48,71 +73,73 @@ function getColumnDef(): ColDef[] {
             autoHeight: true,
             cellStyle: {
                 "display": "flex",
-                "align-items": "flex-start"
+                "alignItems": "flex-start"
             }
         },
         {
-            headerName: 'Action',
-            width: 150,
-            cellRenderer:(params:any) => {
-                return (
-                    <div className={styles['action-cell']}>
-                        <i className='fa-regular fa-3x fa-file' style={{ marginRight: '4px' }}></i>
-                    </div>
-                );
-            },
-            cellStyle: {
-                "display": "flex",
-                "align-items": "flex-start"
-            }
-        },
-        {
-            field: 'statuses',
+            field: 'completed',
             headerName: 'Status',
             width: 150,
             autoHeight: true,
-            cellRenderer:(params:any) => {
-                return (
-                    <div className={styles['status-icons']}>
-                        <span><i className='fa-regular fa-check-circle'></i> Completed</span>
-                        <span><i className='fa-regular fa-check-circle'></i> Attached 2 items</span>
-                        <span><i className='fa-regular fa-check-circle'></i> Response</span>
-                    </div>
-                );
+            editable: true,
+            cellRenderer: 'agCheckboxCellRenderer',
+            cellEditor: 'agCheckboxCellEditor',
+            onCellValueChanged: (params) => {
+                params.data.status = params.data.completed
+                    ? 'completed'
+                    : 'open';
+
+                investorRelationsService
+                    .changeStatus(
+                        params.data.assignee,
+                        params.data.id,
+                        params.data.status
+                    );
             },
             cellStyle: {
+                "justifyContent": "center",
+                "alignItems": "flex-start"
+            },
+        },
+        {
+            field: 'flag',
+            headerName: 'Flag',
+            width: 100,
+            cellStyle: {
+                "justifyContent": "center",
+                "alignItems": "flex-start"
+            },
+            cellRenderer: (params: any) => {
+                const style = getFlagStyle(params.data.flag?.toLowerCase());
+                return (
+                    <i className='fa-regular fa-2x fa-flag' style={style}></i>
+                );
+            },
+        },
+        {
+            field: 'due_date',
+            headerName: 'Due',
+            width: 100,
+            cellClass: 'date-cell',
+            cellStyle: {
                 "display": "flex",
-                "align-items": "flex-start"
+                "alignItems": "flex-start"
             }
         },
         {
-            field: 'edited',
+            field: 'date_edited',
             headerName: 'Date edited',
             width: 100,
             cellClass: 'date-cell',
             cellStyle: {
                 "display": "flex",
-                "align-items": "flex-start"
+                "alignItems": "flex-start"
             }
         },
     ];
 }
 
 export function InvestorRelations(props: InvestorRelationsProps) {
-    // const isMobile = window.innerWidth <= 480;
-    // const isTablet = window.innerWidth > 480 && window.innerWidth <= 768;
-    //
-    // const columnDefs = useMemo<ColDef[]>(() => {
-    //     const baseDefs = getColumnDef();
-    //     return baseDefs.map((col) => {
-    //         if (isMobile) {
-    //             return { ...col, width: col.width ? col.width * 0.7 : undefined };
-    //         } else if (isTablet) {
-    //             return { ...col, width: col.width ? col.width * 0.85 : undefined };
-    //         }
-    //         return col;
-    //     });
-    // }, [isMobile, isTablet]);
     const columnDefs = useMemo<ColDef[]>(() => getColumnDef(), []);
     const [investorInquiries, setInvestorInquiries] = useState<InquiryRequest[]>();
 
@@ -131,12 +158,17 @@ export function InvestorRelations(props: InvestorRelationsProps) {
 
     return (
         <div className={styles['investor-relations']}>
+            <div className={styles['header']}>
+                <span>Investor Relations Inquiries</span>
+                <RequestFormPopup>
+                    <i className='fa-regular fa-3x fa-file cursor-pointer'/>
+                </RequestFormPopup>
+            </div>
             <div className={styles['inquiries-grid']}>
                 <DataGrid
                     isSummaryGrid={true}
                     rowData={investorInquiries}
                     columnDefs={columnDefs}
-                    rowSelection={'single'}
                 />
             </div>
         </div>
