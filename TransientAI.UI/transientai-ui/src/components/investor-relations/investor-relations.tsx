@@ -145,13 +145,17 @@ export function InvestorRelations(props: InvestorRelationsProps) {
     const [investorInquiries, setInvestorInquiries] = useState<InquiryRequest[]>();
     const { userContext } = useUserContextStore();
 
+    function loadInvestorRelations() {
+        if (userContext.userName) {
+            investorRelationsService
+                .getSubmittedTasks(userContext.userName)
+                .then(ir => setInvestorInquiries(ir));
+        }
+    }
+
     useEffect(
         () => {
-            if (userContext.userName) {
-                investorRelationsService
-                    .getSubmittedTasks(userContext.userName)
-                    .then(ir => setInvestorInquiries(ir));
-            }
+            loadInvestorRelations();
         },
         []);
 
@@ -159,7 +163,7 @@ export function InvestorRelations(props: InvestorRelationsProps) {
         <div className={styles['investor-relations']}>
             <div className={styles['header']}>
                 <span>Investor Relations Inquiries</span>
-                <RequestFormPopup>
+                <RequestFormPopup onSaved={loadInvestorRelations}>
                     <i className='fa-regular fa-3x fa-file cursor-pointer'/>
                 </RequestFormPopup>
             </div>

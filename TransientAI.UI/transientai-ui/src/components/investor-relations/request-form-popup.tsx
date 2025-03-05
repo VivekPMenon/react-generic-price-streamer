@@ -7,9 +7,10 @@ import { useUserContextStore } from '@/services/user-context';
 
 export interface RequestPopupProps {
     children: ReactNode;
+    onSaved: () => void;
 }
 
-export function RequestFormPopup({children}: RequestPopupProps) {
+export function RequestFormPopup({children, onSaved}: RequestPopupProps) {
     const [open, setOpen] = useState(false);
     const [subject, setSubject] = useState('');
     const [subjectError, setSubjectError] = useState('');
@@ -88,7 +89,10 @@ export function RequestFormPopup({children}: RequestPopupProps) {
                 status: 'open',
                 completed: false
             })
-                .then(() => resetAndClose())
+                .then(() => {
+                    onSaved();
+                    resetAndClose();
+                })
                 .finally(() => setIsSaving(false));
         }
     };
