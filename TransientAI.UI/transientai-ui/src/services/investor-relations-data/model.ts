@@ -1,8 +1,12 @@
 export interface InquiryRequest {
+    id?: string;
     date?: string;
-    inquiredBy?: string;
+    assignee?: string;
     subject?: string;
-    request?: string;
-    statuses: Array<string>;
-    edited?: string;
+    inquiry?: string;
+    status?: string;
+    completed?: boolean;
+    flag?: string;
+    due_date?: string;
+    date_edited?: string;
 }

@@ -2,6 +2,7 @@
 
 .investor-relations {
   display: flex;
+  flex-direction: column;
   padding: 5px;
   height: 100%;
   gap: 20px;
@@ -11,9 +12,20 @@
   }
 }
 
+.header {
+  display: flex;
+  flex: 1 1 10%;
+  flex-direction: row;
+  gap: 20px;
+  max-width: 100%;
+  justify-content: left;
+  align-items: center;
+  height: 50px;
+}
+
 .inquiries-grid {
   display: flex;
-  flex: 1 1 100%;
+  flex: 1 1 90%;
   flex-direction: row;
   max-width: 100%;
 }
