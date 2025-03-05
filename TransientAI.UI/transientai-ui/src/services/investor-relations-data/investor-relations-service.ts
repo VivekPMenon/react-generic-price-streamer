@@ -16,9 +16,14 @@ class InvestorRelationsService {
 
     async submit(inquiry: InquiryRequest): Promise<boolean> {
         try {
+            const newForm = await this.getTaskForm();
+            const newInquiry = {
+                ...newForm,
+                ...inquiry
+            };
             await webApihandler.post(
                 'submit_form',
-                inquiry,
+                newInquiry,
                 {}, {
                     serviceName: this.serviceName
                 });

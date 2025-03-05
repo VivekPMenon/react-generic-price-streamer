@@ -1,8 +1,8 @@
-import React, {ReactNode, useEffect, useState} from "react";
+import React, {ReactNode, useState} from "react";
 import * as Dialog from '@radix-ui/react-dialog';
 import * as Form from '@radix-ui/react-form';
 import styles from './request-form-popup.module.scss';
-import {InquiryRequest, investorRelationsService} from "@/services/investor-relations-data";
+import {investorRelationsService} from "@/services/investor-relations-data";
 
 export interface RequestPopupProps {
     children: ReactNode;
@@ -10,7 +10,6 @@ export interface RequestPopupProps {
 
 export function RequestFormPopup({children}: RequestPopupProps) {
     const [open, setOpen] = useState(false);
-    const [task, setTask] = useState<InquiryRequest>(null);
     const [subject, setSubject] = useState('');
     const [subjectError, setSubjectError] = useState('');
     const [inquiry, setInquiry] = useState('');
@@ -21,14 +20,7 @@ export function RequestFormPopup({children}: RequestPopupProps) {
     const [dueDateError, setDueDateError] = useState('');
     const [flag, setFlag] = useState<string>('regular');
     const [flagError, setFlagError] = useState('');
-
-    useEffect(() => {
-        investorRelationsService
-            .getTaskForm()
-            .then(inquiry => {
-                setTask(inquiry);
-            });
-    }, []);
+    const [isSaving, setIsSaving] = useState(false);
 
     const handleSubjectChange = (event:any) => {
         setSubject(event.target.value);
@@ -82,9 +74,8 @@ export function RequestFormPopup({children}: RequestPopupProps) {
     const handleSubmit = (event:any) => {
         event.preventDefault();
         if (validate()) {
+            setIsSaving(true);
             investorRelationsService.submit({
-                id: task.id,
-                date: task.date,
                 subject: subject,
                 inquiry: inquiry,
                 assignee: assignee,
@@ -93,8 +84,9 @@ export function RequestFormPopup({children}: RequestPopupProps) {
                 date_edited: new Date().toDateString(),
                 status: 'open',
                 completed: false
-            });
-            resetAndClose();
+            })
+                .then(() => resetAndClose())
+                .finally(() => setIsSaving(false));
         }
     };
 
@@ -112,7 +104,6 @@ export function RequestFormPopup({children}: RequestPopupProps) {
         setDueDateError('');
         setFlag('');
         setFlagError('');
-        setTask(null);
         setOpen(false);
     }
 
@@ -189,9 +180,7 @@ export function RequestFormPopup({children}: RequestPopupProps) {
                             </Form.Field>
                         </div>
                         <div className="flex justify-center space-x-2 mt-4">
-                            {task &&
-                                <Form.Submit><button disabled={!task} className="button px-4 py-2 rounded-md" type="button" onClick={handleSubmit}>Add Task</button></Form.Submit>
-                            }
+                            <Form.Submit disabled={isSaving}><button className="button px-4 py-2 rounded-md" type="button" onClick={handleSubmit}>Add Task</button></Form.Submit>
                             <Dialog.Close asChild><button className="secondary-button px-4 py-2 rounded-md" onClick={handleCancel}>Cancel</button></Dialog.Close>
                         </div>
                     </Form.Root>
