@@ -4,7 +4,7 @@ import styles from './corporate-actions.module.scss';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { CorporateAction, useCorpActionsStore } from '@/services/corporate-actions';
 import EmailViewer from '../email-parser/email-viewer';
-import { useScrollTo } from '@/lib/hooks';
+import { useScrollTo, useScrollToElementId } from '@/lib/hooks';
 import { RoleType, useUserContextStore } from '@/services/user-context';
 import { DataGrid, getNumberColDefTemplate } from '../data-grid';
 import { ColDef, GridApi, RowClickedEvent } from 'ag-grid-community';
@@ -15,6 +15,7 @@ export function CorporateActions() {
   const { userContext } = useUserContextStore();
   const { corpActions, selectedCorpAction, setSelectedCorpAction } = useCorpActionsStore();
   const { scrollTargetRef, scrollToTarget } = useScrollTo<HTMLDivElement>();
+  const { scrollToElementId } = useScrollToElementId();
   const gridApiRef = useRef<GridApi | null>(null);
 
   const [searchQuery, setSearchQuery] = useState<string>('');
@@ -43,12 +44,7 @@ export function CorporateActions() {
       node.setSelected(node.data && node.data?.eventId === selectedCorpAction?.eventId)
     );
 
-    setTimeout(() => {
-      const element = document.getElementById(selectedCorpAction.eventId);
-      if (element) {
-        element.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }
-    }, 0);
+    scrollToElementId(selectedCorpAction.eventId);
   }
 
   function onSearchQueryChange(event: any) {

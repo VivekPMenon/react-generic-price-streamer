@@ -10,7 +10,7 @@ import { researchReportsDataService, ResearchReport, useResearchReportsStore } f
 import EmailViewer from '../email-parser/email-viewer';
 import Tags from "@/components/tags/tags";
 import ImageContainer from "@/components/image-container/image-container";
-import { useScrollTo } from '@/lib/hooks';
+import { useScrollTo, useScrollToElementId } from '@/lib/hooks';
 import { Spinner } from '@radix-ui/themes';
 
 
@@ -21,6 +21,7 @@ export interface ResearchReportsProps {
 export function ResearchReports({ isExpanded }: ResearchReportsProps) {
 
   const { scrollTargetRef, scrollToTarget } = useScrollTo<HTMLDivElement>();
+  const { scrollToElementId } = useScrollToElementId();
 
   const { isLoading, reports, selectedReport, setSelectedReport } = useResearchReportsStore();
 
@@ -86,6 +87,8 @@ export function ResearchReports({ isExpanded }: ResearchReportsProps) {
     // time consuming call, doing it in the background
     const aiContentDetails = await researchReportsDataService.getAiSummaryDetailed(report.id!);
     setAiContentDetailed(aiContentDetails);
+
+    scrollToElementId(report.id!);
   }
 
   function getFinalAiContent() {
@@ -136,7 +139,7 @@ export function ResearchReports({ isExpanded }: ResearchReportsProps) {
               <>
                 {
                   visibleReports.map(report =>
-                    <div className={report.name === selectedReport?.name ? 'news-item active' : 'news-item'}
+                    <div id={report.id} className={report.name === selectedReport?.name ? 'news-item active' : 'news-item'}
                       onClick={() => { onReportSelection(report) }}>
                       <div className='news-content'>
                         <div className='news-title'>

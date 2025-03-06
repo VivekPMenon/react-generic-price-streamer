@@ -14,3 +14,16 @@ export function useScrollTo<T extends HTMLElement>(offset = 0) {
 
   return { scrollTargetRef, scrollToTarget };
 }
+
+export function useScrollToElementId(offset = 0) {
+  const scrollToElementId = (elementId: string) => {
+    setTimeout(() => {
+      const element = document.getElementById(elementId);
+      if (!element) return;
+
+      element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 0);
+  };
+
+  return { scrollToElementId };
+}

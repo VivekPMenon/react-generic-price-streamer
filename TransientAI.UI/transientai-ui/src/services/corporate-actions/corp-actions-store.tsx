@@ -5,6 +5,7 @@ import { corpActionsDataService } from './corporate-actions-data';
 export interface CorpActionsDataState {
   corpActions: CorporateAction[];
   selectedCorpAction: CorporateAction | null;
+  isLoading: boolean; 
   setSelectedCorpAction: (corpAction: CorporateAction | null) => void;
   setCorpActions: (corpActionsData: CorporateAction[]) => void;
   loadCorpActions: () => Promise<void>;
@@ -15,8 +16,11 @@ export const useCorpActionsStore = create<CorpActionsDataState>((set) => ({
   corpActions: [],
   setCorpActions: (corpActions) => set({ corpActions }),
   selectedCorpAction: null,
+  isLoading: false, 
   setSelectedCorpAction: (corpAction) => set({ selectedCorpAction: corpAction }),
   loadCorpActions: async () => {
+    set({isLoading: true});
+
     const corpActions = await corpActionsDataService.getCorpActions();
     corpActions.sort(
         (a: CorporateAction, b: CorporateAction) => {
@@ -31,7 +35,9 @@ export const useCorpActionsStore = create<CorpActionsDataState>((set) => ({
         }
 
     )
+
     set({ corpActions });
+    set({isLoading: false});
   },
   loadCorpActionDetail: async(eventId: string)=> {
     return await corpActionsDataService.getCorpActionDetail(eventId);
