@@ -20,7 +20,7 @@ export function PnlMetrics() {
           .then(metrics => setItems(metrics))
           .catch(() => setItems([]));
 
-      if (isTimeBetween('09:30', '10:00')) {
+      if (isTimeBetween('04:00', '05:30')) {
         const intervalId  = setInterval(() => {
           clearInterval(intervalId);
           getPnlMetrics();
@@ -32,8 +32,8 @@ export function PnlMetrics() {
   useEffect(() => {
     const poll = getPnlMetrics();
 
-    if (isTimeBefore('09:30')) {
-      const milliSeconds = getMillisecondsTill('09:30');
+    if (isTimeBefore('04:00')) {
+      const milliSeconds = getMillisecondsTill('04:00');
       const timeoutId = setTimeout(() => {
         clearTimeout(timeoutId);
         getPnlMetrics();
