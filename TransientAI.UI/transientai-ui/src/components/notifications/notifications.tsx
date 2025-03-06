@@ -90,6 +90,8 @@ export function Notifications(props: NotificationsProps) {
   const [selectedType, setSelectedType] = useState<string>(NotificationType.Research);
   const [selectedNotification, setSelectedNotification] = useState<Notification>({}); // todo..
 
+  const showSpinner = isLoading || isRiskReportLoading || isCorpActionsLoading || isInquiriesLoading;
+
   const visibleNotifications = useMemo<Notification[]>(() => notifications
     .filter(notification => selectedType === 'All' || notification.type === selectedType), [
     selectedType,
@@ -252,7 +254,7 @@ export function Notifications(props: NotificationsProps) {
       </div>
       <div ref={divRef} className={`${styles['notification-items']} scrollable-div ${isExpanded ? styles['expanded'] : ''}`}>
         {
-          (isLoading || isRiskReportLoading || isCorpActionsLoading || isInquiriesLoading) ?
+          (showSpinner) ?
             <Spinner size="3" />
             :
             <div
