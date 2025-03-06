@@ -108,7 +108,7 @@ export function Notifications(props: NotificationsProps) {
 
   useEffect(() => {
     loadNotifications();
-  }, [researchReports, riskReports, inquiries]);
+  }, [researchReports, riskReports, inquiries, corpActions]);
 
   // todo ... we will be fetching the entire notification types from an API instead of UI individually calling each categories and stitching
   async function loadNotifications() {
