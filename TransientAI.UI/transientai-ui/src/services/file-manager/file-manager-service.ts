@@ -55,7 +55,7 @@ class FileManagerService {
                     to_email: to,
                     subject: subject,
                     body: body,
-                    filename: filename
+                    pdf_id: filename
                 }, {
                     serviceName: this.serviceName
                 },
