@@ -4,7 +4,7 @@
   --ag-background-color: #{$body-bg};
   --ag-control-panel-background-color: $grid-bg;
   --ag-borders-critical: none;
-  --ag-foreground-color: #{$font-color-200};
+  --ag-foreground-color: #{$font-color-100};
   --ag-row-border-width: 0px;
   --ag-font-size: 11px;
   --ag-borders-side-button: 0px;
@@ -23,7 +23,7 @@
 
   &.summary-grid {
     --ag-font-size: 13px;
-    --ag-foreground-color: #{$font-color-200};
+    --ag-foreground-color: #{$font-color-100};
   }
 
   &:hover {

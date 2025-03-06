@@ -64,8 +64,8 @@ export const DataGrid = forwardRef<GridApi | null, IDataGridProps>((props, ref) 
         {...finalProps}
         statusBar={props.isSummaryGrid ? undefined : statusBar}
         onGridReady={onGridReady}
-        rowHeight={props.isSummaryGrid ? 45 : 35}
-        headerHeight={props.isSummaryGrid ? 45 : 35}
+        rowHeight={props.isSummaryGrid ? 60 : 35}
+        headerHeight={props.isSummaryGrid ? 60 : 35}
         floatingFiltersHeight={props.isSummaryGrid ? 25 : 20}
       />
     </div>
