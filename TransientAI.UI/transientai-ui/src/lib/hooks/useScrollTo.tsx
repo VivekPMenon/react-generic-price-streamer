@@ -1,5 +1,4 @@
 import { useRef } from 'react';
-import {Virtualizer} from "@tanstack/virtual-core";
 
 export function useScrollTo<T extends HTMLElement>(offset = 0) {
   const scrollTargetRef = useRef<T>(null);
@@ -27,14 +26,4 @@ export function useScrollToElementId(offset = 0) {
   };
 
   return { scrollToElementId };
-}
-
-export function useScrollToVirtualizeIndex() {
-  const scrollToVirtualizeIndex = (func: () => void) => {
-    setTimeout(() => {
-      func();
-    }, 0);
-  };
-
-  return { scrollToVirtualizeIndex };
 }

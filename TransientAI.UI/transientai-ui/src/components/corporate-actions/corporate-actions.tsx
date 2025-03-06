@@ -4,12 +4,13 @@ import styles from './corporate-actions.module.scss';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { CorporateAction, useCorpActionsStore } from '@/services/corporate-actions';
 import EmailViewer from '../email-parser/email-viewer';
-import {useScrollTo, useScrollToVirtualizeIndex} from '@/lib/hooks';
+import {useScrollTo} from '@/lib/hooks';
 import { RoleType, useUserContextStore } from '@/services/user-context';
 import { DataGrid, getNumberColDefTemplate } from '../data-grid';
 import { ColDef, GridApi, RowClickedEvent } from 'ag-grid-community';
 import { corpActionsDataService } from '@/services/corporate-actions/corporate-actions-data';
 import {useVirtualizer, VirtualItem} from "@tanstack/react-virtual";
+import {executeAsync} from "@/lib/utility-functions/async";
 
 export function CorporateActions() {
 
@@ -31,8 +32,6 @@ export function CorporateActions() {
     paddingStart: 2,
     paddingEnd: 5
   });
-
-  const { scrollToVirtualizeIndex } = useScrollToVirtualizeIndex();
 
   const colDefs = useMemo(() => getColumnDefs(), [])
 
@@ -57,7 +56,7 @@ export function CorporateActions() {
     );
 
     const selectedIndex = corpActions.findIndex(corpAction => selectedCorpAction?.eventId === corpAction.eventId);
-    scrollToVirtualizeIndex(() => virtualizer.scrollToIndex(selectedIndex));
+    executeAsync(() => virtualizer.scrollToIndex(selectedIndex));
   }
 
   function onSearchQueryChange(event: any) {
