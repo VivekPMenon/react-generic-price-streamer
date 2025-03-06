@@ -13,7 +13,7 @@ import { useInvestorRelationsStore } from "@/services/investor-relations-data/in
 import { InquiryFlag } from "@/services/investor-relations-data";
 import { useVirtualizer, VirtualItem } from "@tanstack/react-virtual";
 import { useRiskDataStore } from '@/services/risk-data/risk-data-store';
-import { formatDate, formatDateToHHMM } from '@/lib/utility-functions/date-operations';
+import { formatDate } from '@/lib/utility-functions/date-operations';
 
 export interface NotificationsProps {
   onExpandCollapse?: (state: boolean) => void;
