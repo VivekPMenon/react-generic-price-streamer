@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { DataGrid, getNumberColDefTemplate } from "../data-grid";
+import { DataGrid } from "../data-grid";
 import { ColDef } from "ag-grid-community";
 import { useRiskDataStore } from "@/services/risk-data/risk-data-store";
 
@@ -17,7 +17,7 @@ export function RiskMetrics() {
         cellClass: 'fs-15'
       },
       {
-        field: 'margin_excess',
+        field: 'marginExcess',
         headerName: 'GS Margin Excess',
         width: 200,
         cellClass: 'justify-end orange-color'

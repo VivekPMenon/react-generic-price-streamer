@@ -25,6 +25,14 @@ export const useRiskDataStore = create<RiskDataState>((set, get) => ({
     set({ isLoading: true, error: null }); // Start loading, reset error
     try {
       const result = await riskDataService.getRiskMetrics();
+      const marginData = result?.margin_data;
+      if (marginData) {
+        marginData.forEach((r: any) =>
+            r.marginExcess = r.margin_excess
+                ? Number(r.margin_excess.replace('$', ''))
+                : 0
+        );
+      }
       set({ riskMetricsItems: result?.margin_data, isLoading: false }); // Data loaded, stop loading
       set({ lastUpdatedTimestamp: result?.timestamp });
     } catch (error) {
