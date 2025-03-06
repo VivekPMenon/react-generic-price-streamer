@@ -130,7 +130,7 @@ export function Notifications(props: NotificationsProps) {
         })),
       ...riskReports
         .map(riskReport => ({
-          id: riskReport.filename,
+          id: riskReport.id,
           title: riskReport.filename,
           type: NotificationType.RiskReport,
           timestamp: riskReport.uploaded ? riskReport.uploaded.getTime() : new Date().getTime(),
@@ -199,7 +199,7 @@ export function Notifications(props: NotificationsProps) {
           router.push(newRoute = '/dashboard/risk-metrics');
           break;
         }
-        setSelectedRiskReport(riskReports.find(report => report.filename === notification.id)?.filename!);
+        setSelectedRiskReport(riskReports.find(report => report.id === notification.id)?.id!);
         router.push(newRoute = '/dashboard/risk-report-portal'); // todo.. remove the route hardcoding
         break;
 

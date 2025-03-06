@@ -52,7 +52,7 @@ export function TermSheets() {
     }, []);
 
     function handleRowSelection(event: any) {
-        setSelectedReport(event.data!.filename);
+        setSelectedReport(event.data!.id);
     }
 
     function getColumnDef(): ColDef[] {
@@ -101,8 +101,8 @@ export function TermSheets() {
             <div className={styles['term-sheets-documents']}>
                 <div className={styles['term-sheets-uploader']}>
                     <FileUploadWizard onUploadSuccess={(file: File) => {
-                        if (file?.filename) {
-                            setSelectedReport(file.filename);
+                        if (file?.id) {
+                            setSelectedReport(file.id);
                         }
                         loadRiskReports()
                             .then(() => {

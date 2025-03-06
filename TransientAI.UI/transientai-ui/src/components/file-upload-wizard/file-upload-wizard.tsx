@@ -58,8 +58,7 @@ export function FileUploadWizard({onUploadSuccess}: FileUploaderWizardProps) {
       const newFile: File = {
         filename: files[0].name,
         size: files[0].size,
-        native_file: files[0],
-        result: e.target.result
+        native_file: files[0]
       };
       setSelectedFile(newFile);
       setSelectedFiles([newFile]);
@@ -73,7 +72,6 @@ export function FileUploadWizard({onUploadSuccess}: FileUploaderWizardProps) {
     if (!file || file.type !== 'application/pdf') {
       return;
     }
-
 
     const newFile = {
       filename: file.name,

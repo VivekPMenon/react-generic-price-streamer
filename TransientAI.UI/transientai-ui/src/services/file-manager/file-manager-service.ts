@@ -10,17 +10,17 @@ class FileManagerService {
                 serviceName: this.serviceName
             });
 
-            return result.map((file: any) => ({
-                ...file,
-                uploaded: new Date()
-            }));
-        } catch (e) {
+            result.forEach((file: File) => {
+                file.uploaded = file.upload_date ? new Date(file.upload_date) : new Date();
+            })
+            return result;
+        } catch (e: any) {
             return [];
         }
     }
 
-    getUploadedFileUrl(fileName: string): string {
-        return webApihandler.getUrl(`get-pdf/${fileName}`, {
+    getUploadedFileUrl(id: string): string {
+        return webApihandler.getUrl(`get-pdf/${id}`, {
             serviceName: this.serviceName
         });
     }
@@ -47,7 +47,7 @@ class FileManagerService {
         return true;
     }
 
-    async emailFile(filename: string, to: string, subject?: string, body?: string): Promise<boolean> {
+    async emailFile(id: string, to: string, subject?: string, body?: string): Promise<boolean> {
         await webApihandler
             .post(
                 'send-email',
@@ -55,7 +55,7 @@ class FileManagerService {
                     to_email: to,
                     subject: subject,
                     body: body,
-                    pdf_id: filename
+                    pdf_id: id
                 }, {
                     serviceName: this.serviceName
                 },

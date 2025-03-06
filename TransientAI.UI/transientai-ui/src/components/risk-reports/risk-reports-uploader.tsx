@@ -37,12 +37,12 @@ export function RiskReportsUploader() {
     }
 
     gridApiRef?.current?.forEachNode((node) => 
-      node.setSelected(node.data && node.data?.filename === selectedReport?.filename)
+      node.setSelected(node.data && node.data?.id === selectedReport?.id)
     );
   }, [selectedReport, gridApiRef?.current]);
 
   function handleRowSelection(event: any) {
-    setSelectedReport(event.data!.filename);
+    setSelectedReport(event.data!.id);
     scrollToTarget();
   }
 

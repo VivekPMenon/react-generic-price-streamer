@@ -4,8 +4,8 @@ import { saveAs } from 'file-saver';
 
 export interface RiskReportsState {
     riskReports: File[];
-    selectedReport: {filename: string, fileUrl: string} | null;
-    setSelectedReport: (fileName: string | null) => void;
+    selectedReport: {id: string, fileUrl: string} | null;
+    setSelectedReport: (id: string | null) => void;
     isLoading: boolean;
     error: string | null;
     loadRiskReports: () => Promise<void>;
@@ -17,10 +17,10 @@ export interface RiskReportsState {
 export const useRiskReportsSlice = create<RiskReportsState>((set, get) => ({
     riskReports: [],
     selectedReport: null,
-    setSelectedReport: (filename) => {
-        if (filename) {
-            const fileUrl = fileManagerService.getUploadedFileUrl(filename);
-            set({selectedReport: {filename, fileUrl}});
+    setSelectedReport: (id) => {
+        if (id) {
+            const fileUrl = fileManagerService.getUploadedFileUrl(id);
+            set({selectedReport: {id, fileUrl}});
         } else {
             set({selectedReport: null});
         }
@@ -39,20 +39,20 @@ export const useRiskReportsSlice = create<RiskReportsState>((set, get) => ({
     },
     deleteFile: async (file: File) => {
         const { selectedReport, loadRiskReports, setSelectedReport } = get();
-        const selectedFileName = file.filename!;
-        if (selectedFileName === selectedReport?.filename) {
+        const selectedFileId = file.id!;
+        if (selectedFileId === selectedReport?.id) {
             setSelectedReport(null);
         }
-        await fileManagerService.deleteFile(selectedFileName);
+        await fileManagerService.deleteFile(selectedFileId);
         await loadRiskReports();
     },
     downloadFile: (file: File) => {
-        const fileUrl = fileManagerService.getUploadedFileUrl(file.filename!);
+        const fileUrl = fileManagerService.getUploadedFileUrl(file.id!);
         saveAs(fileUrl, file.filename);
     },
     emailFile: async (file: File, to: string, subject?: string, body?: string) => {
         try {
-            await fileManagerService.emailFile(file.filename!, to, subject, body);
+            await fileManagerService.emailFile(file.id!, to, subject, body);
         } catch(error) {
             console.error('Error sending email:', error);
         }
