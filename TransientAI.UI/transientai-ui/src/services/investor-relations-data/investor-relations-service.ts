@@ -1,5 +1,5 @@
 import { webApihandler } from "@/services/web-api-handler";
-import {InquiryRequest} from "@/services/investor-relations-data/model";
+import {InquiryRequest, InquiryStatus} from "@/services/investor-relations-data/model";
 
 class InvestorRelationsService {
     readonly serviceName = 'hurricane-api';
@@ -9,7 +9,7 @@ class InvestorRelationsService {
             return await webApihandler.get('task_form', {}, {
                 serviceName: this.serviceName
             });
-        } catch (e) {
+        } catch (e: any) {
             return {};
         }
     }
@@ -28,7 +28,7 @@ class InvestorRelationsService {
                     serviceName: this.serviceName
                 });
             return true;
-        } catch (e) {
+        } catch (e: any) {
             return false;
         }
     }
@@ -36,22 +36,21 @@ class InvestorRelationsService {
     async getSubmittedTasks(assignee: string): Promise<InquiryRequest[]> {
         return await webApihandler
             .get(
-                'submitted_tasks',
-                {
+                'submitted_tasks', {
                     assignee_name: assignee
                 }, {
                     serviceName: this.serviceName
                 });
     }
 
-    async changeStatus(assignee: string, id: string, status: string): Promise<boolean> {
-        await webApihandler.post('change_status', {
-            assignee_name: assignee,
-            update_task_id: id,
-            new_status: status
-        }, {
-            serviceName: this.serviceName
-        });
+    async changeStatus(id: string, status: InquiryStatus): Promise<boolean> {
+        await webApihandler.post(
+            'change_status', {
+                update_task_id: id,
+                new_status: status
+            }, {
+                serviceName: this.serviceName
+            });
         return true;
     }
 
