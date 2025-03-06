@@ -3,10 +3,23 @@ import * as Dialog from '@radix-ui/react-dialog';
 import * as Form from '@radix-ui/react-form';
 import styles from './request-form-popup.module.scss';
 import {useInvestorRelationsStore} from "@/services/investor-relations-data/investor-relations-store";
+import {InquiryFlag, InquiryStatus} from "@/services/investor-relations-data/model";
 
 export interface RequestPopupProps {
     children: ReactNode;
 }
+
+type KeyValuePair = { key: string, value: string|number };
+
+function enumToKeyValuePair<T extends { [key: string]: number | string }>(enumObj: T): KeyValuePair[] {
+    return Object.entries(enumObj)
+        .filter(([key]) => isNaN(Number(key)))
+        .map(([key, value]) => ({
+            key, value
+        }));
+}
+
+const Flags = enumToKeyValuePair(InquiryFlag);
 
 export function RequestFormPopup({children}: RequestPopupProps) {
     const [open, setOpen] = useState(false);
@@ -16,7 +29,7 @@ export function RequestFormPopup({children}: RequestPopupProps) {
     const [inquiryError, setInquiryError] = useState('');
     const [dueDate, setDueDate] = useState('');
     const [dueDateError, setDueDateError] = useState('');
-    const [flag, setFlag] = useState<string>('regtask');
+    const [flag, setFlag] = useState<InquiryFlag>(InquiryFlag.Regular);
     const [flagError, setFlagError] = useState('');
     const [assignee, setAssignee] = useState<string>('');
     const [assigneeError, setAssigneeError] = useState('');
@@ -56,16 +69,16 @@ export function RequestFormPopup({children}: RequestPopupProps) {
             setInquiryError('Inquiry is required');
             return false;
         }
+        if (!assignee) {
+            setAssigneeError('Assign to is required');
+            return false;
+        }
         if (!dueDate) {
             setDueDateError('Due date is required');
             return false;
         }
         if (!flag) {
             setFlagError('Flag is required');
-            return false;
-        }
-        if (!assignee) {
-            setAssigneeError('Assign to is required');
             return false;
         }
         return true;
@@ -81,7 +94,7 @@ export function RequestFormPopup({children}: RequestPopupProps) {
                 flag: flag,
                 assignee_name: assignee,
                 date_edited: new Date().toISOString(),
-                status: 'open',
+                status: InquiryStatus.Open,
                 completed: false
             })
                 .then(() => {
@@ -101,7 +114,7 @@ export function RequestFormPopup({children}: RequestPopupProps) {
         setInquiryError('');
         setDueDate('');
         setDueDateError('');
-        setFlag('');
+        setFlag(InquiryFlag.Regular);
         setFlagError('');
         setAssignee('');
         setAssigneeError('')
@@ -121,37 +134,46 @@ export function RequestFormPopup({children}: RequestPopupProps) {
                     <Form.Root className={styles['form-content']}>
                         <div className="space-y-3">
                             <Form.Field name="subject">
-                                <Form.Control asChild>
-                                    <input
-                                        type="text"
-                                        placeholder="Subject"
-                                        value={subject}
-                                        onChange={handleSubjectChange}
-                                        aria-invalid={!!subjectError}
-                                    />
-                                </Form.Control>
+                                <div className="flex space-x-2 mt-4">
+                                    <Form.Control asChild>
+                                        <input
+                                            type="text"
+                                            placeholder='Subject'
+                                            required={true}
+                                            value={subject}
+                                            onChange={handleSubjectChange}
+                                            aria-invalid={!!subjectError}
+                                        />
+                                    </Form.Control>
+                                </div>
                                 {subjectError && <Form.Message className={styles['error']}>{subjectError}</Form.Message>}
                             </Form.Field>
                             <Form.Field name="inquiry">
-                                <Form.Control asChild>
-                                    <input
-                                        type="text"
-                                        placeholder="Inquiry"
-                                        value={inquiry}
-                                        onChange={handleInquiryChange}
-                                        aria-invalid={!!inquiryError}
-                                    />
-                                </Form.Control>
+                                <div className="flex space-x-2 mt-4">
+                                    <Form.Control asChild>
+                                        <textarea
+                                            placeholder='Inquiry'
+                                            required={true}
+                                            value={inquiry}
+                                            onChange={handleInquiryChange}
+                                            aria-invalid={!!inquiryError}
+                                        />
+                                    </Form.Control>
+                                </div>
                                 {inquiryError && <Form.Message className={styles['error']}>{inquiryError}</Form.Message>}
                             </Form.Field>
                             <Form.Field name="assignee">
-                                <div className="flex space-x-2 mt-4">
-                                    <Form.Label>Assigned To</Form.Label>
+                                <div className="flex mt-4" style={{flexDirection: 'column'}}>
+                                    <Form.Label>Assign To</Form.Label>
                                     <Form.Control asChild>
-                                        <select onChange={handleAssigneeChange}>
+                                        <select
+                                            onChange={handleAssigneeChange}
+                                            required={true}
+                                            aria-placeholder='Assign To'
+                                            style={{ display: 'flex', flex: '1 1 50%' }}>
                                             {
                                                 assignees.map(assignee => (
-                                                    <option value={assignee}>{assignee}</option>
+                                                    <option key={assignee} value={assignee}>{assignee}</option>
                                                 ))
                                             }
                                         </select>
@@ -160,24 +182,34 @@ export function RequestFormPopup({children}: RequestPopupProps) {
                                 {assigneeError && <Form.Message className={styles['error']}>{assigneeError}</Form.Message>}
                             </Form.Field>
                             <Form.Field name="dueDate">
-                                <Form.Control asChild>
-                                    <input
-                                        type="date"
-                                        className={styles['date']}
-                                        value={dueDate}
-                                        onChange={handleDueDateChange}
-                                    />
-                                </Form.Control>
+                                <div className="flex mt-4" style={{flexDirection: 'column'}}>
+                                    <Form.Label>Due</Form.Label>
+                                    <Form.Control asChild>
+                                        <input
+                                            type="date"
+                                            className={styles['date']}
+                                            required={true}
+                                            value={dueDate}
+                                            onChange={handleDueDateChange}
+                                        />
+                                    </Form.Control>
+                                </div>
                                 {dueDateError && <Form.Message className={styles['error']}>{dueDateError}</Form.Message>}
                             </Form.Field>
                             <Form.Field name="flag">
-                                <div className="flex space-x-2 mt-4">
+                                <div className="flex mt-4" style={{flexDirection: 'column'}}>
                                     <Form.Label>Flag</Form.Label>
                                     <Form.Control asChild>
-                                        <select onChange={handleFlagChange}>
-                                            <option value="regtask">RegTask</option>
-                                            <option value="important">Important</option>
-                                            <option value="urgent">Urgent</option>
+                                        <select
+                                            required={true}
+                                            onChange={handleFlagChange}
+                                            aria-placeholder='Flag'
+                                            style={{ display: 'flex', flex: '1 1 50%' }}>
+                                            {
+                                                Flags.map(flag => (
+                                                    <option key={flag.value} value={flag.value}>{flag.key}</option>)
+                                                )
+                                            }
                                         </select>
                                     </Form.Control>
                                 </div>

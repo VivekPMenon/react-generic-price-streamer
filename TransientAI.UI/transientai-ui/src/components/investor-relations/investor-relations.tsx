@@ -30,7 +30,7 @@ function getFlagStyle(flag: string|undefined|null) {
 }
 
 export function InvestorRelations() {
-    const { inquiries, isLoading, changeStatus } = useInvestorRelationsStore();
+    const { inquiries, isLoading, changeStatus, updateStatusFromCompleted } = useInvestorRelationsStore();
     const getColumnDefs = useCallback(() => {
         return [
             {
@@ -66,12 +66,8 @@ export function InvestorRelations() {
                 cellRenderer: 'agCheckboxCellRenderer',
                 cellEditor: 'agCheckboxCellEditor',
                 onCellValueChanged: (params: any) => {
-                    params.data.status = params.data.completed
-                        ? 'completed'
-                        : 'open';
-
+                    updateStatusFromCompleted(params.data);
                     changeStatus(
-                            params.data.assignee_name,
                             params.data.id,
                             params.data.status
                         );

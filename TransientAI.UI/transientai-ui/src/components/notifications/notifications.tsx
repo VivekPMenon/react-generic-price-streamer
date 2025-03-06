@@ -10,6 +10,7 @@ import {useRouter} from 'next/navigation';
 import {useResearchReportsStore, useRiskReportsSlice} from '@/services/reports-data';
 import {Spinner} from '@radix-ui/themes';
 import {useInvestorRelationsStore} from "@/services/investor-relations-data/investor-relations-store";
+import {InquiryFlag} from "@/services/investor-relations-data";
 
 export interface NotificationsProps {
   onExpandCollapse?: (state: boolean) => void;
@@ -99,7 +100,7 @@ export function Notifications(props: NotificationsProps) {
                 highlights: [
                     `Due: ${inquiry.due_date ? new Date(inquiry.due_date).toDateString() : ''}`,
                     `Assigned to: ${inquiry.assignee_name}`,
-                    `${inquiry.flag?.toUpperCase()}`,
+                    `${inquiry.flag ? InquiryFlag[inquiry.flag] : ''}`,
                 ]
             }))
     ];
