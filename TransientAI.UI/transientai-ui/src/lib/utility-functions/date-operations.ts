@@ -90,6 +90,18 @@ export function formatDateToHHMM(date: Date): string {
   return (hrs < 10 ? "0" + hrs : hrs) + ":" + (mins < 10 ? "0" + mins : mins) + " " + clockType;
 }
 
+export function formatDate(isoString: string) {
+  const date = new Date(isoString);
+
+  return new Intl.DateTimeFormat('en-US', {
+    month: 'short',  // "Mar"
+    day: '2-digit',  // "06"
+    hour: 'numeric', // "6"
+    minute: '2-digit', // "00"
+    hour12: true,    // "PM"
+  }).format(date);
+}
+
 export function formatDateToHHMMSS(date: Date): string {
   let hrs = date.getHours();
   const mins = date.getMinutes();

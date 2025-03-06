@@ -15,6 +15,7 @@
   flex-direction: column;
   height: 100%;
   padding: 10px;
+  min-height: 350px;
 }
 
 .drop-zone {
@@ -22,7 +23,7 @@
   padding: 20px;
   text-align: center;
   cursor: pointer;
-  width: 100%;
+  width: 400px;
 }
 
 .drop-zone.drag-active {
@@ -71,7 +72,7 @@
 
 .file-validation-step {
   @extend .wizard-step-content;
-  height: 175px;
+  height: 100%;
 
   .grid {
 
@@ -84,7 +85,7 @@
 
 .file-submission-step {
   @extend .wizard-step-content;
-  height: 175px;
+  height: 100%;
 
   .upload-status {
     display: flex;

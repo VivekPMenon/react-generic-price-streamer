@@ -11,7 +11,9 @@ import { useResearchReportsStore, useRiskReportsSlice } from '@/services/reports
 import { Spinner } from '@radix-ui/themes';
 import { useInvestorRelationsStore } from "@/services/investor-relations-data/investor-relations-store";
 import { InquiryFlag } from "@/services/investor-relations-data";
-import {useVirtualizer, VirtualItem} from "@tanstack/react-virtual";
+import { useVirtualizer, VirtualItem } from "@tanstack/react-virtual";
+import { useRiskDataStore } from '@/services/risk-data/risk-data-store';
+import { formatDate, formatDateToHHMM } from '@/lib/utility-functions/date-operations';
 
 export interface NotificationsProps {
   onExpandCollapse?: (state: boolean) => void;
@@ -19,61 +21,61 @@ export interface NotificationsProps {
 }
 
 function getIconClass(type: NotificationType) {
-    switch (type) {
-        case NotificationType.Axes:
-            return 'fa-solid fa-ban';
+  switch (type) {
+    case NotificationType.Axes:
+      return 'fa-solid fa-ban';
 
-        case NotificationType.Clients:
-            return 'fa-solid fa-user';
+    case NotificationType.Clients:
+      return 'fa-solid fa-user';
 
-        case NotificationType.Trades:
-            return 'fa-solid fa-newspaper';
+    case NotificationType.Trades:
+      return 'fa-solid fa-newspaper';
 
-        case NotificationType.CorpAct:
-            return 'fa-solid fa-microphone-lines';
+    case NotificationType.CorpAct:
+      return 'fa-solid fa-microphone-lines';
 
-        case NotificationType.Research:
-            return 'fa-solid fa-book';
+    case NotificationType.Research:
+      return 'fa-solid fa-book';
 
-        case NotificationType.RiskReport:
-            return 'fa-solid fa-bolt';
+    case NotificationType.RiskReport:
+      return 'fa-solid fa-bolt';
 
-        case NotificationType.Inquiries:
-            return 'fa-solid fa-handshake';
-    }
+    case NotificationType.Inquiries:
+      return 'fa-solid fa-handshake';
+  }
 }
 
 function getPillClass(type: NotificationType) {
-    switch (type) {
-        case NotificationType.Axes:
-        case NotificationType.Research:
-            return 'pill blue';
+  switch (type) {
+    case NotificationType.Axes:
+    case NotificationType.Research:
+      return 'pill blue';
 
-        case NotificationType.Clients:
+    case NotificationType.Clients:
 
-        case NotificationType.RiskReport:
-            return 'pill orange';
+    case NotificationType.RiskReport:
+      return 'pill orange';
 
-        case NotificationType.Trades:
-            return 'pill pink';
+    case NotificationType.Trades:
+      return 'pill pink';
 
-        case NotificationType.CorpAct:
-            return 'pill teal';
+    case NotificationType.CorpAct:
+      return 'pill teal';
 
-        case NotificationType.Inquiries:
-            return 'pill gold';
-    }
+    case NotificationType.Inquiries:
+      return 'pill gold';
+  }
 }
 
 const filterTypes = [
-    'All',
-    // NotificationType.Axes,
-    // NotificationType.Clients,
-    // NotificationType.Trades,
-    NotificationType.Research,
-    NotificationType.RiskReport,
-    NotificationType.CorpAct,
-    NotificationType.Inquiries,
+  'All',
+  // NotificationType.Axes,
+  // NotificationType.Clients,
+  // NotificationType.Trades,
+  NotificationType.Research,
+  NotificationType.RiskReport,
+  NotificationType.CorpAct,
+  NotificationType.Inquiries,
 ];
 
 export function Notifications(props: NotificationsProps) {
@@ -83,6 +85,7 @@ export function Notifications(props: NotificationsProps) {
   const { isLoading: isRiskReportLoading, riskReports, setSelectedReport: setSelectedRiskReport } = useRiskReportsSlice();
   const { isLoading: isCorpActionsLoading, corpActions, selectedCorpAction, setSelectedCorpAction } = useCorpActionsStore();
   const { isLoading: isInquiriesLoading, inquiries } = useInvestorRelationsStore();
+  const { isLoading: isRiskDataLoading, lastUpdatedTimestamp } = useRiskDataStore();
   const { activeMenuData, setActiveMenuData } = useContext(MenuContextData);
 
   const [notifications, setNotifications] = useState<Notification[]>([]);
@@ -90,7 +93,7 @@ export function Notifications(props: NotificationsProps) {
   const [selectedType, setSelectedType] = useState<string>(NotificationType.Research);
   const [selectedNotification, setSelectedNotification] = useState<Notification>({}); // todo..
 
-  const showSpinner = isLoading || isRiskReportLoading || isCorpActionsLoading || isInquiriesLoading;
+  const showSpinner = isLoading || isRiskReportLoading || isCorpActionsLoading || isInquiriesLoading || isRiskDataLoading;
 
   const visibleNotifications = useMemo<Notification[]>(() => notifications
     .filter(notification => selectedType === 'All' || notification.type === selectedType), [
@@ -99,11 +102,11 @@ export function Notifications(props: NotificationsProps) {
   ]);
 
   const virtualizer = useVirtualizer({
-      count: visibleNotifications.length,
-      getScrollElement: () => divRef.current,
-      estimateSize: (i: number) => 200,
-      overscan: 5,
-      gap: 10
+    count: visibleNotifications.length,
+    getScrollElement: () => divRef.current,
+    estimateSize: (i: number) => 200,
+    overscan: 5,
+    gap: 10
   });
 
   useEffect(() => {
@@ -160,7 +163,16 @@ export function Notifications(props: NotificationsProps) {
             `Assigned to: ${inquiry.assignee_name}`,
             `${inquiry.flag ? InquiryFlag[inquiry.flag] : ''}`,
           ]
-        }))
+        })),
+      {
+        id: 'risk-metrics-notification',
+        title: `GS Margin Excess Updated`,
+        type: NotificationType.RiskReport,
+        timestamp: lastUpdatedTimestamp ? new Date(lastUpdatedTimestamp).getTime() : 0,
+        highlights: [
+          formatDate(lastUpdatedTimestamp)
+        ]
+      }
     ];
 
     newNotifications.sort((x, y) => (y.timestamp ?? -1) - (x.timestamp ?? -1));
@@ -183,6 +195,10 @@ export function Notifications(props: NotificationsProps) {
     let newRoute = '';
     switch (notification.type) {
       case NotificationType.RiskReport:
+        if (notification.id === 'risk-metrics-notification') {
+          router.push(newRoute = '/dashboard/risk-metrics');
+          break;
+        }
         setSelectedRiskReport(riskReports.find(report => report.filename === notification.id)?.filename!);
         router.push(newRoute = '/dashboard/risk-report-portal'); // todo.. remove the route hardcoding
         break;
@@ -258,68 +274,68 @@ export function Notifications(props: NotificationsProps) {
             <Spinner size="3" />
             :
             <div
-                style={{
-                    height: `${virtualizer.getTotalSize()}px`,
-                    width: '100%',
-                    position: 'relative',
-                }}>
+              style={{
+                height: `${virtualizer.getTotalSize()}px`,
+                width: '100%',
+                position: 'relative',
+              }}>
               {
-                  items.map((item: VirtualItem) => (
-                      <div
-                          key={item.index}
-                          style={{
-                              position: 'absolute',
-                              top: 0,
-                              left: 0,
-                              width: '100%',
-                              transform: `translateY(${item.start}px)`
-                          }}
-                          className={`${styles['notification-item']} ${visibleNotifications[item.index].id === selectedNotification.id ? styles['active'] : ''}`}
-                          ref={virtualizer.measureElement}
-                          data-index={item.index}
-                        >
-                          <div
-                              key={visibleNotifications[item.index].id!}
-                              onClick={() => onNotificationClick(visibleNotifications[item.index])}
-                          >
-                              <div className={styles['notification-title']}>
-                                  <i className={getIconClass(visibleNotifications[item.index].type!)}></i>
-                                  <span className={styles.name}>{visibleNotifications[item.index].title}</span>
-                                  {/* <span className={styles['notification-count']}>(6)</span> */}
+                items.map((item: VirtualItem) => (
+                  <div
+                    key={item.index}
+                    style={{
+                      position: 'absolute',
+                      top: 0,
+                      left: 0,
+                      width: '100%',
+                      transform: `translateY(${item.start}px)`
+                    }}
+                    className={`${styles['notification-item']} ${visibleNotifications[item.index].id === selectedNotification.id ? styles['active'] : ''}`}
+                    ref={virtualizer.measureElement}
+                    data-index={item.index}
+                  >
+                    <div
+                      key={visibleNotifications[item.index].id!}
+                      onClick={() => onNotificationClick(visibleNotifications[item.index])}
+                    >
+                      <div className={styles['notification-title']}>
+                        <i className={getIconClass(visibleNotifications[item.index].type!)}></i>
+                        <span className={styles.name}>{visibleNotifications[item.index].title}</span>
+                        {/* <span className={styles['notification-count']}>(6)</span> */}
 
-                                  <div className={styles['notification-menu']}>
-                                      <div className={getPillClass(visibleNotifications[item.index].type!)}>
-                                          {visibleNotifications[item.index].type}
-                                      </div>
-
-                                      <NotificationPopup
-                                          onTrigger={onNotificationPopupTrigger}
-                                          notification={selectedCorpAction!}
-                                          onOk={onReadMoreClick}
-                                          notificationId={visibleNotifications[item.index].id}>
-                                          <div>
-                                              <i className='fa-solid fa-ellipsis ml-3'></i>
-                                          </div>
-                                      </NotificationPopup>
-                                  </div>
-                              </div>
-
-                              <div className={styles['notification-content']}>
-                                  <div className='blue-color'>{visibleNotifications[item.index].subTitle}</div>
-                                  <div className={styles['messages']}>
-                                      <ul className="list-disc pl-8 off-white-color-alt">
-                                          {
-                                              visibleNotifications[item.index].highlights?.map(i => <li key={visibleNotifications[item.index].id + i}>{i}</li>)
-                                          }
-                                      </ul>
-                                  </div>
-                              </div>
+                        <div className={styles['notification-menu']}>
+                          <div className={getPillClass(visibleNotifications[item.index].type!)}>
+                            {visibleNotifications[item.index].type}
                           </div>
+
+                          <NotificationPopup
+                            onTrigger={onNotificationPopupTrigger}
+                            notification={selectedCorpAction!}
+                            onOk={onReadMoreClick}
+                            notificationId={visibleNotifications[item.index].id}>
+                            <div>
+                              <i className='fa-solid fa-ellipsis ml-3'></i>
+                            </div>
+                          </NotificationPopup>
+                        </div>
                       </div>
-                  ))
+
+                      <div className={styles['notification-content']}>
+                        <div className='blue-color'>{visibleNotifications[item.index].subTitle}</div>
+                        <div className={styles['messages']}>
+                          <ul className="list-disc pl-8 off-white-color-alt">
+                            {
+                              visibleNotifications[item.index].highlights?.map(i => <li key={visibleNotifications[item.index].id + i}>{i}</li>)
+                            }
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))
               }
-            {/*</div>*/}
-         </div>
+              {/*</div>*/}
+            </div>
         }
       </div>
     </div>
