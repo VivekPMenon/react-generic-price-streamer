@@ -6,7 +6,7 @@
   --ag-borders-critical: none;
   --ag-foreground-color: #{$font-color-100};
   --ag-row-border-width: 0px;
-  --ag-font-size: 11px;
+  --ag-font-size: 13px;
   --ag-borders-side-button: 0px;
   --ag-widget-vertical-spacing: 10px;
 
@@ -22,7 +22,7 @@
   }
 
   &.summary-grid {
-    --ag-font-size: 13px;
+    --ag-font-size: 15px;
     --ag-foreground-color: #{$font-color-100};
   }
 

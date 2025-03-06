@@ -65,7 +65,7 @@ export function RiskReportsUploader() {
       {
         field: 'upload_date',
         headerName: 'Date',
-        minWidth: 120,
+        minWidth: 200,
         sort: 'desc',
         cellClass: 'date-cell', // Optional: Apply date styling
         autoHeight: true,
