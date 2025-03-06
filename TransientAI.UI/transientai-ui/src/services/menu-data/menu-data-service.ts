@@ -74,6 +74,12 @@ export const menuInfoList: MenuInfo[] = [
     icon: 'fa-solid fa-newspaper',
     route: '/dashboard/breaking-news',
   },
+  {
+    description: 'Risk Metrics',
+    badgeCount: 1,
+    icon: 'fa-solid fa-chart-column',
+    route: '/dashboard/risk-metrics',
+  },
   // {
   //   description: 'Term Sheets',
   //   badgeCount: 5,
