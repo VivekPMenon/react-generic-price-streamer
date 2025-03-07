@@ -33,14 +33,14 @@ class PnlMetricsService {
         }
     }
 
-    private async getMarginExcess(): Promise<string> {
+    private async getMarginExcess(): Promise<number> {
         try {
             const result = await webApihandler.get('gs-margin-excess', {}, {
                 serviceName: 'hurricane-api'
             });
             return result === null || result === undefined ? 'N/A' : result['GS_Margin_Excess'];
         } catch (e) {
-            return 'N/A';
+            return Number.NaN;
         }
     }
 }
