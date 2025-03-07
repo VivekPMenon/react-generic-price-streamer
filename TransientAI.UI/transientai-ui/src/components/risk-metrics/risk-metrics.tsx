@@ -2,6 +2,7 @@ import { useMemo } from "react";
 import { DataGrid } from "../data-grid";
 import { ColDef } from "ag-grid-community";
 import { useRiskDataStore } from "@/services/risk-data/risk-data-store";
+import {formatCurrency} from "@/lib/utility-functions";
 
 export function RiskMetrics() {
 
@@ -17,10 +18,13 @@ export function RiskMetrics() {
         cellClass: 'fs-15'
       },
       {
-        field: 'marginExcess',
+        field: 'margin_excess',
         headerName: 'GS Margin Excess',
         width: 200,
-        cellClass: 'justify-end orange-color'
+        cellClass: 'justify-end orange-color',
+        valueFormatter: params => {
+          return formatCurrency(params.value);
+        }
       }
     ];
   }

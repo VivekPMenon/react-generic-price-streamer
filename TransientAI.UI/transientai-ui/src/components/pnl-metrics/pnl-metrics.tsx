@@ -4,6 +4,7 @@ import styles from './pnl-metrics.module.scss';
 import {PnlMetric, pnlMetricsService} from "@/services/pnl-metrics";
 import React, {useRef, useState, useEffect, useCallback} from 'react';
 import {getMillisecondsTill, isTimeBefore, isTimeBetween} from "@/lib/utility-functions/date-operations";
+import {formatCurrency} from "@/lib/utility-functions";
 
 const POLL_INTERVAL: number = 2 * 60 * 1000;
 
@@ -101,7 +102,7 @@ export function PnlMetrics() {
           {items.map((item, index) => (
             <div key={index} className={styles['tile']}>
               <div>{item.title}</div>
-              <div className='orange-color fs-14'>{item.amount}</div>
+              <div className='orange-color fs-14'>{formatCurrency(item.amount)}</div>
             </div>
           ))}
         </div>
