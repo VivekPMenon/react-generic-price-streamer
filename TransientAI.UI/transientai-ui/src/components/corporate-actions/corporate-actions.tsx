@@ -6,7 +6,7 @@ import { CorporateAction, useCorpActionsStore } from '@/services/corporate-actio
 import EmailViewer from '../email-parser/email-viewer';
 import {useScrollTo} from '@/lib/hooks';
 import { RoleType, useUserContextStore } from '@/services/user-context';
-import { DataGrid, getNumberColDefTemplate } from '../data-grid';
+import { DataGrid, getCurrencyColDefTemplate, getNumberColDefTemplate } from '../data-grid';
 import { ColDef, GridApi, RowClickedEvent } from 'ag-grid-community';
 import { corpActionsDataService } from '@/services/corporate-actions/corporate-actions-data';
 import {useVirtualizer, VirtualItem} from "@tanstack/react-virtual";
@@ -96,7 +96,7 @@ export function CorporateActions() {
       {
         field: 'eventId',
         headerName: 'Announcement ID',
-        width: 120,
+        width: 170,
         filter: 'agSetColumnFilter'
       },
       {
@@ -108,19 +108,19 @@ export function CorporateActions() {
       {
         field: 'security.identifiers.isin',
         headerName: 'ISIN',
-        width: 120,
+        width: 170,
         filter: 'agSetColumnFilter'
       },
       {
         field: 'security.name',
         headerName: 'Security Name',
-        width: 120,
+        width: 300,
         filter: 'agSetColumnFilter'
       },
       {
         field: 'eventType',
         headerName: 'Event Type',
-        width: 120,
+        width: 170,
         filter: 'agSetColumnFilter'
       },
       // {
@@ -134,26 +134,25 @@ export function CorporateActions() {
       {
         field: 'eventStatus',
         headerName: 'Status',
-        width: 100,
+        width: 130,
         filter: 'agSetColumnFilter'
       },
       {
         field: 'holdingQuantity',
         headerName: 'Holding',
-        width: 90,
-        ...getNumberColDefTemplate(),
-        filter: 'agNumberColumnFilter'
+        width: 130,
+        ...getCurrencyColDefTemplate()
       },
       {
         field: 'keyDates',
         headerName: 'Key Dates',
-        width: 120,
+        width: 250,
         // filter: 'agDateColumnFilter'
       },
       // {
       //   field: 'eventDate',
       //   headerName: 'Event Date',
-      //   width: 120,
+      //   width: 170,
       //   sort: 'desc',
       //   filter: 'agDateColumnFilter'
       // },

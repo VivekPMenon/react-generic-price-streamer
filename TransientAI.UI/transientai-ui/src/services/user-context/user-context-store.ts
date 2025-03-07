@@ -3,6 +3,8 @@ import { UserContext, RoleType } from './model';
 
 interface UserContextState {
   userContext: UserContext;
+  authenticationError: string;
+  isLoading: boolean;
   setUserContext: (userContext: UserContext) => void;
   clearUserContext: () => void;
   loadUserContext: () => Promise<void>;
@@ -10,6 +12,8 @@ interface UserContextState {
 
 export const useUserContextStore = create<UserContextState>((set, get) => ({
   userContext: {},
+  isLoading: false,
+  authenticationError: '',
   setUserContext: (userContext) => set({ userContext }),
   clearUserContext: () => set({ userContext: {} }),
   loadUserContext: async () => {
@@ -25,6 +29,7 @@ export const useUserContextStore = create<UserContextState>((set, get) => ({
     }
 
     userContext.userName = 'Chris Napoli';
+    userContext.userId = 'Chris Napoli'; // ideally a unique id from the vendor OAuth provider
 
     set({ userContext });
   },
