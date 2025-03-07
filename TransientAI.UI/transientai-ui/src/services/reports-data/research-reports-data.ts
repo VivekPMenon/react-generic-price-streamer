@@ -40,6 +40,11 @@ class ResearchReportsDataService {
     const result = await webApihandler.post(`summarize-email-structured/${emailGuid}`, null, {}, { serviceName: this.serviceName });
     return result.structured_summary;
   }
+
+  async getAiSummaryExecutive(emailGuid: string): Promise<string> {
+    const result = await webApihandler.post(`summarize-email-executive/${emailGuid}`, null, {}, { serviceName: this.serviceName });
+    return result.executive_summary;
+  }
 }
 
 export const researchReportsDataService = new ResearchReportsDataService();

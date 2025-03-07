@@ -79,14 +79,13 @@ export function ResearchReports({ isExpanded }: ResearchReportsProps) {
     setEmailContent(emailContent);
     scrollToTarget();
 
-    const aiContentAbstract = await researchReportsDataService.getAiSummaryAbstract(report.id!);
-    setAiContentAbstract(aiContentAbstract);
-
-    // time consuming call, doing it in the background
-    const aiContentDetails = await researchReportsDataService.getAiSummaryDetailed(report.id!);
-    setAiContentDetailed(aiContentDetails);
-
-    scrollToElementId(report.id!);
+    Promise.allSettled([
+          researchReportsDataService.getAiSummaryExecutive(report.id!)
+              .then(aiContentAbstract => setAiContentAbstract(aiContentAbstract)),
+          researchReportsDataService.getAiSummaryDetailed(report.id!)
+              .then(aiContentDetails => setAiContentDetailed(aiContentDetails))
+        ]
+    ).then(() => scrollToElementId(report.id!));
   }
 
   function getFinalAiContent() {
