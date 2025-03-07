@@ -12,7 +12,7 @@ export default function ProtectedRoute({ children, resourceName }: ProtectedRout
   const router = useRouter();
 
   useEffect(() => {
-    if (authenticationError || !userContext?.userId) {
+    if (authenticationError) {
       router.push('/login');
       return; 
     } 
