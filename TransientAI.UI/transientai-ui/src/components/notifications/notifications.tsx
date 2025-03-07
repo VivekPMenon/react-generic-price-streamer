@@ -115,12 +115,13 @@ export function Notifications(props: NotificationsProps) {
 
   // todo ... we will be fetching the entire notification types from an API instead of UI individually calling each categories and stitching
   async function loadNotifications() {
-    const newNotifications = [
+    const newNotifications: Notification[] = [
       // ...notifications,
       ...researchReports
         .map(researchReport => ({
           id: researchReport.id,
           title: researchReport.name,
+          subTitle: researchReport.concise_summary,
           type: NotificationType.Research,
           timestamp: researchReport.received_date ? new Date(researchReport.received_date).getTime() : new Date().getTime(),
           highlights: [

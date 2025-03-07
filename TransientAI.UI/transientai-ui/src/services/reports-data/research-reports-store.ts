@@ -1,6 +1,9 @@
 import { create } from 'zustand';
 import { ResearchReport } from './model';
 import { researchReportsDataService } from './research-reports-data';
+import { useUnseenItemsStore } from '../unseen-items-store/unseen-items-store';
+
+export const resourceName = 'research-reports';
 
 export interface ResearchReportsState {
   reports: ResearchReport[];
@@ -10,27 +13,45 @@ export interface ResearchReportsState {
   loadReports: () => Promise<void>;
   isLoading: boolean;
   error: string | null;
+  startPolling: () => void;
 }
 
 export const useResearchReportsStore = create<ResearchReportsState>((set, get) => ({
   reports: [],
-  setReports: (reports) => set({ reports }),
   selectedReport: null,
+  isLoading: false,
+  error: null,
+
+  setReports: (reports) => set({ reports }),
   setSelectedReport: (report) => set({ selectedReport: report }),
-  isLoading: false, 
-  error: null, 
+
   loadReports: async () => {
-    set({ isLoading: true, error: null }); // Start loading, reset error
+    set({ isLoading: true, error: null });
+
     try {
-      const reports = await researchReportsDataService.getReports();
-      set({ reports, isLoading: false }); // Data loaded, stop loading
+      const newReports = await researchReportsDataService.getReports();
+      const prevCount = get().reports.length;
+      const newCount = newReports.length;
+      const unseenDiff = newCount - prevCount;
+
+      set({ reports: newReports, isLoading: false });
+
+      if (unseenDiff > 0) {
+        useUnseenItemsStore.getState().addUnseenItems(resourceName, unseenDiff);
+      }
     } catch (error) {
       console.error('Error loading reports:', error);
-      set({ error: 'Failed to load reports.', isLoading: false }); // Set error, stop loading
+      set({ error: 'Failed to load reports.', isLoading: false });
     }
   },
+
+  startPolling: () => {
+    setInterval(() => {
+      get().loadReports();
+    }, 120000); // Polls every 2 minutes
+  }
 }));
 
-// Immediately call loadReports when the store is initialized.
-const { loadReports } = useResearchReportsStore.getState();
+const { loadReports, startPolling } = useResearchReportsStore.getState();
 loadReports();
+startPolling();
