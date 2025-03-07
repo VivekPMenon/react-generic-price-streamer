@@ -1,21 +1,31 @@
 import ReactMarkdown from 'react-markdown';
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useMemo } from "react";
 import rehypeRaw from "rehype-raw";
-import Tags from "@/components/tags/tags";
+import remarkGfm from "remark-gfm";
 
 export interface SearchableMarkdownProps {
   title?: string;
   className?: string;
   markdownContent?: any;
+  onImagesProcessed?: (imageUrls: string[]) => void;
 }
 
-export const SearchableMarkdown = ({ markdownContent, className, title }: SearchableMarkdownProps) => {
+function extractImages(markdownContent: any)  {
+  const regex = /!\[.*?\]\((.*?)\)/g;
+  let matches;
+  const urls = [];
+  while ((matches = regex.exec(markdownContent)) !== null) {
+    urls.push(matches[1]);
+  }
+  return urls;
+}
+
+export const SearchableMarkdown = ({ markdownContent, className, title, onImagesProcessed }: SearchableMarkdownProps) => {
 
   const [searchTerm, setSearchTerm] = useState("");
   const [matches, setMatches] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [showSearchBar, setShowSearchBar] = useState(false);
-
   const contentRef = useRef(null);
 
   useEffect(() => {
@@ -32,6 +42,15 @@ export const SearchableMarkdown = ({ markdownContent, className, title }: Search
     document.addEventListener("keydown", handleKeyDown);
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, []);
+
+  useEffect(() => {
+    if (!onImagesProcessed) {
+      return;
+    }
+
+    const images = extractImages(markdownContent);
+    onImagesProcessed(images);
+  }, [onImagesProcessed, markdownContent]);
 
   // Find matches when search term changes
   useEffect(() => {
@@ -117,7 +136,9 @@ export const SearchableMarkdown = ({ markdownContent, className, title }: Search
       </div>
 
       <div ref={contentRef} className={`react-markdown ${className ? className : ''}`}>
-        <ReactMarkdown rehypePlugins={[rehypeRaw]}>{getMarkdownText()}</ReactMarkdown>
+        <ReactMarkdown
+            rehypePlugins={[rehypeRaw, remarkGfm]}
+        >{getMarkdownText()}</ReactMarkdown>
       </div>
 
     </div>

@@ -7,7 +7,7 @@ import { SearchableMarkdown } from '@/components/markdown';
 import { researchReportsDataService, ResearchReport, useResearchReportsStore } from '@/services/reports-data';
 import EmailViewer from '../email-parser/email-viewer';
 import Tags from "@/components/tags/tags";
-import ImageContainer from "@/components/image-container/image-container";
+import ImageContainer, {ImageItem} from "@/components/image-container/image-container";
 import { useScrollTo, useScrollToElementId } from '@/lib/hooks';
 import { Spinner } from '@radix-ui/themes';
 
@@ -32,8 +32,11 @@ export function ResearchReports({ isExpanded }: ResearchReportsProps) {
   const [aiContentAbstract, setAiContentAbstract] = useState<string>('');
   const [aiContentDetailed, setAiContentDetailed] = useState<string>('');
   const [summaryType, setSummaryType] = useState<'Executive Summary' | 'Verbose'>('Executive Summary');
+  const [processedImages, setProcessedImages] = useState<ImageItem[]|null>(null);
 
-  const visibleReports = useMemo<ResearchReport[]>(() => calculateVisibleReports(), [searchedReports, reports]);
+  const visibleReports = useMemo<ResearchReport[]>(
+      () => calculateVisibleReports(),
+      [calculateVisibleReports]);
 
   useEffect(() => { onReportSelection(selectedReport!) }, [selectedReport]);
 
@@ -96,9 +99,14 @@ export function ResearchReports({ isExpanded }: ResearchReportsProps) {
     return aiContentDetailed;
   }
 
+  function handleProcessedImages(imageUrls: string[]) {
+    setProcessedImages(imageUrls?.length
+      ? imageUrls.map(url => ({image: url}))
+      : null);
+  }
+
   return (
     <div className={styles['research-reports']}>
-
       <div className={styles['reports-container']}>
 
         <div className={styles['filter-panel']}>
@@ -112,7 +120,6 @@ export function ResearchReports({ isExpanded }: ResearchReportsProps) {
               value={searchQuery}
               onChange={event => setSearchQuery(event.target.value)}
               onKeyDown={event => searchReports(event)}></input>
-
             {
               searchQuery ? <i className='fa-solid fa-remove' onClick={event => { setSearchQuery(''); setSearchedReports([]) }}></i> : <i className='fa-solid fa-magnifying-glass'></i>
             }
@@ -136,7 +143,7 @@ export function ResearchReports({ isExpanded }: ResearchReportsProps) {
               <>
                 {
                   visibleReports.map(report =>
-                    <div id={report.id} className={report.name === selectedReport?.name ? 'news-item active' : 'news-item'}
+                    <div key={report.id} id={report.id} className={report.name === selectedReport?.name ? 'news-item active' : 'news-item'}
                       onClick={() => { onReportSelection(report) }}>
                       <div className='news-content'>
                         <div className='news-title'>
@@ -183,12 +190,18 @@ export function ResearchReports({ isExpanded }: ResearchReportsProps) {
 
               <div className={`${styles['summary-markdown']} height-vh-68 scrollable-div height-100p justify-center`}>
                 {
-                  getFinalAiContent() ? <SearchableMarkdown className={`${styles['summary-markdown-body']}`} markdownContent={getFinalAiContent()} /> : <Spinner size="3" className='self-center'></Spinner>
+                  getFinalAiContent()
+                      ? <SearchableMarkdown
+                          className={`${styles['summary-markdown-body']}`}
+                          markdownContent={getFinalAiContent()}
+                          onImagesProcessed={handleProcessedImages}
+                      />
+                      : <Spinner size="3" className='self-center'></Spinner>
                 }
 
-                {selectedReport?.charts &&
+                {processedImages?.length &&
                   <ImageContainer
-                    images={selectedReport?.charts}
+                    images={processedImages}
                   />
                 }
 

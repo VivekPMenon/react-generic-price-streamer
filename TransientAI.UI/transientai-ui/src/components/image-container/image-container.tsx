@@ -3,8 +3,14 @@
 import styles from './image-container.module.scss';
 import {ImagePopup} from "@/components/image-container/image-popup";
 
+export interface ImageItem {
+    image: string;
+    title?: string;
+    description?: string;
+}
+
 type ImageContainerProps = {
-    images: Array<{image: string, title?: string; description?: string}>;
+    images: Array<ImageItem>;
 };
 
 const ImageContainer = (props: ImageContainerProps) => {
