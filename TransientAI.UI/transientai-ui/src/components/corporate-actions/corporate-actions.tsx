@@ -11,6 +11,7 @@ import { ColDef, GridApi, RowClickedEvent } from 'ag-grid-community';
 import { corpActionsDataService } from '@/services/corporate-actions/corporate-actions-data';
 import {useVirtualizer, VirtualItem} from "@tanstack/react-virtual";
 import {executeAsync} from "@/lib/utility-functions/async";
+import {Spinner} from "@radix-ui/themes";
 
 export function CorporateActions() {
 
@@ -22,6 +23,8 @@ export function CorporateActions() {
 
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [selectedEmailContent, setSelectedEmailContent] = useState<string>('');
+  const [isLoadingEmail, setIsLoadingEmail] = useState<boolean>(false);
+
   // const [emailContents, setEmailContents] = useState<any>({});
   const virtualizer = useVirtualizer({
     count: corpActions.length,
@@ -73,9 +76,11 @@ export function CorporateActions() {
   }
 
   function onSelectEmail(corpAction: CorporateAction, version: number | undefined) {
+    setIsLoadingEmail(true);
     setSelectedEmailContent('');
 
     if (!corpAction.eventId || version === undefined) {
+      setIsLoadingEmail(false);
       return;
     }
 
@@ -84,7 +89,8 @@ export function CorporateActions() {
       .then(content => {
         setSelectedEmailContent(content);
         scrollToTarget();
-      });
+      })
+      .finally(() => setIsLoadingEmail(false));
   }
 
   function onRowClicked(event: RowClickedEvent) {
@@ -314,9 +320,13 @@ export function CorporateActions() {
           markdownContent={reportsDataService.getEmailContentMock()} 
           className={isExpanded ? 'height-vh-82' : 'height-vh-40'} 
           title='Original Email'/> */}
-        {selectedCorpAction ?
-          <EmailViewer className={styles['email-viewer'] + ' height-vh-90'} emailHtml={selectedEmailContent} /> : <></>}
-
+        {
+          isLoadingEmail
+            ? <Spinner size="3" />
+            : selectedCorpAction
+                ? <EmailViewer className={styles['email-viewer'] + ' height-vh-90'} emailHtml={selectedEmailContent} />
+                : <></>
+        }
       </div>
     </div>
   );

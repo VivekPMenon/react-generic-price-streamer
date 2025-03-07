@@ -24,11 +24,11 @@ export const useCorpActionsStore = create<CorpActionsDataState>((set) => ({
     const corpActions = await corpActionsDataService.getCorpActions();
     corpActions.sort(
         (a: CorporateAction, b: CorporateAction) => {
-          const aDate = a?.dates?.notification_date
-              ? new Date(a.dates.notification_date).getTime()
+          const aDate = a?.receivedDate
+              ? new Date(a.receivedDate).getTime()
               : -1;
-          const bDate = b?.dates?.notification_date
-              ? new Date(b.dates.notification_date).getTime()
+          const bDate = b?.receivedDate
+              ? new Date(b.receivedDate).getTime()
               : -1;
 
           return bDate - aDate;

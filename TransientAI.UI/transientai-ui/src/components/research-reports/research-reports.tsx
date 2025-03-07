@@ -1,9 +1,7 @@
 'use client';
 
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import styles from './research-reports.module.scss';
-import ReactMarkdown from 'react-markdown';
-import remarkGfm from 'remark-gfm';
 import Segmented from 'rc-segmented';
 import { SearchableMarkdown } from '@/components/markdown';
 import { researchReportsDataService, ResearchReport, useResearchReportsStore } from '@/services/reports-data';
@@ -33,7 +31,7 @@ export function ResearchReports({ isExpanded }: ResearchReportsProps) {
   const [emailContent, setEmailContent] = useState<string>('');
   const [aiContentAbstract, setAiContentAbstract] = useState<string>('');
   const [aiContentDetailed, setAiContentDetailed] = useState<string>('');
-  const [summaryType, setSummaryType] = useState<'Abstract' | 'Verbose'>('Abstract');
+  const [summaryType, setSummaryType] = useState<'Executive Summary' | 'Verbose'>('Executive Summary');
 
   const visibleReports = useMemo<ResearchReport[]>(() => calculateVisibleReports(), [searchedReports, reports]);
 
@@ -92,7 +90,7 @@ export function ResearchReports({ isExpanded }: ResearchReportsProps) {
   }
 
   function getFinalAiContent() {
-    if (summaryType === 'Abstract') {
+    if (summaryType === 'Executive Summary') {
       return aiContentAbstract;
     }
 
@@ -126,7 +124,7 @@ export function ResearchReports({ isExpanded }: ResearchReportsProps) {
           <Segmented
             className={styles['format-type']}
             value={summaryType}
-            options={['Abstract', 'Verbose']}
+            options={['Executive Summary', 'Verbose']}
             onChange={(value: any) => { setSummaryType(value) }}
           />
         </div>
@@ -186,7 +184,7 @@ export function ResearchReports({ isExpanded }: ResearchReportsProps) {
 
               <div className={`${styles['summary-markdown']} height-vh-68 scrollable-div height-100p justify-center`}>
                 {
-                  getFinalAiContent() ? <SearchableMarkdown markdownContent={getFinalAiContent()} /> : <Spinner size="3" className='self-center'></Spinner>
+                  getFinalAiContent() ? <SearchableMarkdown className={`${styles['summary-markdown-body']}`} markdownContent={getFinalAiContent()} /> : <Spinner size="3" className='self-center'></Spinner>
                 }
 
                 {selectedReport?.charts &&
