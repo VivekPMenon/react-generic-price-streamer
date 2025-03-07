@@ -145,6 +145,7 @@ export interface CorporateAction {
   eventStatus?: string;
   emailId?: string;
   emailHtmlUrl?: string;
+  receivedDate?: string;
   security?: Security;
   dates?: CorporateActionDates;
   accounts?: Account[];

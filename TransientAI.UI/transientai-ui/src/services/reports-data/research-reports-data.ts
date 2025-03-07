@@ -4,7 +4,7 @@ import { ResearchReport } from './model';
 class ResearchReportsDataService {
   private serviceName = 'hurricane-api';
 
-  async getReports(): Promise<ResearchReport[]> {
+  async   getReports(): Promise<ResearchReport[]> {
     const results = await webApihandler.get('latest-emails', {}, { serviceName: this.serviceName });
     return results?.map((result: any) => ({
       id: result.id,

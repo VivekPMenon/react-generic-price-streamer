@@ -1,6 +1,6 @@
 import { useUserContextStore } from '@/services/user-context';
 import { useRouter } from 'next/navigation';
-import { useEffect, ReactNode, use } from 'react';
+import { useEffect, ReactNode } from 'react';
 
 interface ProtectedRouteProps {
   children: ReactNode;
