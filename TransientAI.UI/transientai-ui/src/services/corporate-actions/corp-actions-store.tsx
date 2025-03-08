@@ -36,15 +36,10 @@ export const useCorpActionsStore = create<CorpActionsDataState>((set, get) => ({
         return bDate - aDate;
       });
 
-      const prevCount = get().corpActions.length;
-      const newCount = newCorpActions.length;
-      const unseenDiff = newCount - prevCount;
-
-      set({ corpActions: newCorpActions, isLoading: false });
-
-      if (unseenDiff > 0) {
-        useUnseenItemsStore.getState().addUnseenItems(resourceName, unseenDiff);
-      }
+      set((state) => ({
+        corpActions: newCorpActions,
+        isLoading: false,
+      }));
     } catch (error) {
       console.error('Error loading corporate actions:', error);
       set({ isLoading: false });
@@ -56,8 +51,21 @@ export const useCorpActionsStore = create<CorpActionsDataState>((set, get) => ({
   },
 
   startPolling: () => {
-    setInterval(() => {
-      get().loadCorpActions();
+    setInterval(async () => {
+      const prevCount = get().corpActions.length;
+
+      await get().loadCorpActions();
+
+      set((state) => {
+        const newCount = state.corpActions.length;
+        const unseenDiff = newCount - prevCount;
+
+        if (unseenDiff > 0) {
+          useUnseenItemsStore.getState().addUnseenItems(resourceName, unseenDiff);
+        }
+
+        return {}; // No need to modify state here, just ensuring correctness
+      });
     }, 120000); // Polls every 2 minutes
   }
 }));

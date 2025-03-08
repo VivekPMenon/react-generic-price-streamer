@@ -38,13 +38,7 @@ export function CorporateActions() {
 
   const colDefs = useMemo(() => getColumnDefs(), [])
 
-  // useEffect(() => { loadEmailContents(); }, []);
   useEffect(() => { calculateSelectedEmailContent() }, [selectedCorpAction]);
-
-  // async function loadEmailContents() {
-  //   const emailContents: any = await corpActionsDataService.getEmailSource();
-  //   setEmailContents(emailContents);
-  // }
 
   async function calculateSelectedEmailContent() {
     if (!selectedCorpAction?.eventId) {

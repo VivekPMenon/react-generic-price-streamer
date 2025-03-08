@@ -3,17 +3,18 @@
 import { useContext, useEffect, useMemo, useState, useRef } from 'react';
 import styles from './notifications.module.scss';
 import { Notification, NotificationType } from '@/services/notifications';
-import { useCorpActionsStore } from "@/services/corporate-actions";
+import { useCorpActionsStore, resourceName as corpActionResourceName } from "@/services/corporate-actions";
 import { MenuContextData } from "@/services/menu-data";
 import { NotificationPopup } from './notification-popup';
 import { useRouter } from 'next/navigation';
-import { useResearchReportsStore, useRiskReportsSlice } from '@/services/reports-data';
+import { useResearchReportsStore, useRiskReportsSlice, resourceName as researchReportResourceName, resourceNameRiskReports } from '@/services/reports-data';
 import { Spinner } from '@radix-ui/themes';
-import { useInvestorRelationsStore } from "@/services/investor-relations-data/investor-relations-store";
+import { resourceNameInvestorRelations, useInvestorRelationsStore } from "@/services/investor-relations-data/investor-relations-store";
 import { InquiryFlag } from "@/services/investor-relations-data";
 import { useVirtualizer, VirtualItem } from "@tanstack/react-virtual";
 import { useRiskDataStore } from '@/services/risk-data/risk-data-store';
 import { formatDate } from '@/lib/utility-functions/date-operations';
+import { useUnseenItemsStore } from '@/services/unseen-items-store/unseen-items-store';
 
 export interface NotificationsProps {
   onExpandCollapse?: (state: boolean) => void;
@@ -68,7 +69,7 @@ function getPillClass(type: NotificationType) {
 }
 
 const filterTypes = [
-  'All',
+  NotificationType.All,
   // NotificationType.Axes,
   // NotificationType.Clients,
   // NotificationType.Trades,
@@ -78,6 +79,14 @@ const filterTypes = [
   NotificationType.Inquiries,
 ];
 
+export const filterTypeToResourceMap: { [key: string]: string } = {
+  'All': '',
+  [NotificationType.Research]: researchReportResourceName,
+  [NotificationType.RiskReport]: resourceNameRiskReports,
+  [NotificationType.CorpAct]: corpActionResourceName,
+  [NotificationType.Inquiries]: resourceNameInvestorRelations,
+};
+
 export function Notifications(props: NotificationsProps) {
   const router = useRouter();
   const divRef = useRef<HTMLDivElement>(null);
@@ -86,6 +95,7 @@ export function Notifications(props: NotificationsProps) {
   const { isLoading: isCorpActionsLoading, corpActions, selectedCorpAction, setSelectedCorpAction } = useCorpActionsStore();
   const { isLoading: isInquiriesLoading, inquiries } = useInvestorRelationsStore();
   const { isLoading: isRiskDataLoading, lastUpdatedTimestamp } = useRiskDataStore();
+  const { resetUnseenItems, unseenItems } = useUnseenItemsStore();
   const { activeMenuData, setActiveMenuData } = useContext(MenuContextData);
 
   const [notifications, setNotifications] = useState<Notification[]>([]);
@@ -96,7 +106,7 @@ export function Notifications(props: NotificationsProps) {
   const showSpinner = isLoading || isRiskReportLoading || isCorpActionsLoading || isInquiriesLoading || isRiskDataLoading;
 
   const visibleNotifications = useMemo<Notification[]>(() => notifications
-    .filter(notification => selectedType === 'All' || notification.type === selectedType), [
+    .filter(notification => selectedType === NotificationType.All || notification.type === selectedType), [
     selectedType,
     notifications
   ]);
@@ -113,6 +123,23 @@ export function Notifications(props: NotificationsProps) {
     loadNotifications();
   }, [researchReports, riskReports, inquiries, corpActions]);
 
+
+  useEffect(() => {
+    if (selectedType === NotificationType.All) {
+      for (const key of Object.keys(unseenItems)) {
+        if (unseenItems[key] > 0) {
+          resetUnseenItems(key);
+        }
+      }
+
+      return;
+    }
+
+    if (unseenItems[filterTypeToResourceMap[selectedType]] > 0) {
+      resetUnseenItems(filterTypeToResourceMap[selectedType]);
+    }
+  }, [selectedType, unseenItems]);
+
   // todo ... we will be fetching the entire notification types from an API instead of UI individually calling each categories and stitching
   async function loadNotifications() {
     const newNotifications: Notification[] = [
@@ -120,6 +147,7 @@ export function Notifications(props: NotificationsProps) {
       ...researchReports
         .map(researchReport => ({
           id: researchReport.id,
+          resourceName: researchReportResourceName,
           title: researchReport.name,
           subTitle: researchReport.concise_summary,
           type: NotificationType.Research,
@@ -132,6 +160,7 @@ export function Notifications(props: NotificationsProps) {
       ...riskReports
         .map(riskReport => ({
           id: riskReport.id,
+          resourceName: resourceNameRiskReports,
           title: riskReport.filename,
           type: NotificationType.RiskReport,
           timestamp: riskReport.uploaded ? riskReport.uploaded.getTime() : new Date().getTime(),
@@ -142,6 +171,7 @@ export function Notifications(props: NotificationsProps) {
       ...corpActions
         .map(corpAction => ({
           id: corpAction.eventId,
+          resourceName: corpActionResourceName,
           title: `TICKER: ${corpAction.ticker} \n ${corpAction.security?.name} \n ${corpAction.eventType} \n ${corpAction.eventStatus}`,
           type: NotificationType.CorpAct,
           subTitle: `${corpAction.accounts?.length ? ('Account No: ' + corpAction.accounts[0].accountNumber + ', Holding Capacity: ' + corpAction.accounts[0].holdingQuantity) : ''}`,
@@ -247,6 +277,14 @@ export function Notifications(props: NotificationsProps) {
     router.push('/dashboard/corporate-actions'); // todo.. remove the route hardcoding
   }
 
+  function getUnseenItemsCount(filterType: string): number {
+    return unseenItems[filterTypeToResourceMap[filterType]];
+  }
+
+  function changeNotificationType(filterType: string) {
+    setSelectedType(filterType);
+  }
+
   const items = virtualizer.getVirtualItems();
 
   return (
@@ -259,16 +297,19 @@ export function Notifications(props: NotificationsProps) {
 
       <div className='filters'>
         {
-          filterTypes.map(filterType =>
-            <button
+          filterTypes.map(filterType => {
+            const unseenItemsCount = getUnseenItemsCount(filterType);
+
+            return <button
               key={filterType}
-              className={`${filterType === selectedType ? 'filter active' : 'filter'}`}
-              onClick={() => setSelectedType(filterType)}>
+              className={`${filterType === selectedType ? 'filter active' : 'filter'} ${unseenItemsCount > 0 ? 'flash' : ''}`}
+              onClick={() => changeNotificationType(filterType)}>
               {filterType}
             </button>
-          )
+          })
         }
       </div>
+
       <div ref={divRef} className={`${styles['notification-items']} scrollable-div ${isExpanded ? styles['expanded'] : ''}`}>
         {
           (showSpinner) ?
@@ -280,6 +321,7 @@ export function Notifications(props: NotificationsProps) {
                 width: '100%',
                 position: 'relative',
               }}>
+
               {
                 items.map((item: VirtualItem) => (
                   <div
@@ -295,6 +337,7 @@ export function Notifications(props: NotificationsProps) {
                     ref={virtualizer.measureElement}
                     data-index={item.index}
                   >
+
                     <div
                       key={visibleNotifications[item.index].id!}
                       onClick={() => onNotificationClick(visibleNotifications[item.index])}

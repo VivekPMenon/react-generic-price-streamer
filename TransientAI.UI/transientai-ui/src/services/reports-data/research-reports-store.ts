@@ -30,15 +30,8 @@ export const useResearchReportsStore = create<ResearchReportsState>((set, get) =
 
     try {
       const newReports = await researchReportsDataService.getReports();
-      const prevCount = get().reports.length;
-      const newCount = newReports.length;
-      const unseenDiff = newCount - prevCount;
-
+      
       set({ reports: newReports, isLoading: false });
-
-      if (unseenDiff > 0) {
-        useUnseenItemsStore.getState().addUnseenItems(resourceName, unseenDiff);
-      }
     } catch (error) {
       console.error('Error loading reports:', error);
       set({ error: 'Failed to load reports.', isLoading: false });
@@ -46,12 +39,27 @@ export const useResearchReportsStore = create<ResearchReportsState>((set, get) =
   },
 
   startPolling: () => {
-    setInterval(() => {
-      get().loadReports();
+    setInterval(async () => {
+      const prevCount = get().reports.length;
+
+      await get().loadReports();
+
+      // Use Zustand's `set` function to ensure the correct state is retrieved
+      set((state) => {
+        const newCount = state.reports.length;
+        const unseenDiff = newCount - prevCount;
+
+        if (unseenDiff > 0) {
+          useUnseenItemsStore.getState().addUnseenItems(resourceName, unseenDiff);
+        }
+
+        return {}; // No need to modify state here, just ensuring correctness
+      });
     }, 120000); // Polls every 2 minutes
   }
 }));
 
+// Initial Load and Start Polling
 const { loadReports, startPolling } = useResearchReportsStore.getState();
 loadReports();
 startPolling();

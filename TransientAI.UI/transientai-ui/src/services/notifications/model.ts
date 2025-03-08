@@ -6,6 +6,7 @@ export interface Notification {
   highlights?: string[];
   id?: string;
   timestamp?: number;
+  resourceName?: string;
 } 
 
 export enum NotificationType {
@@ -16,4 +17,5 @@ export enum NotificationType {
   Research = 'Research',
   RiskReport = 'Risk Report',
   Inquiries = 'Inquiries',
+  All = 'All'
 }

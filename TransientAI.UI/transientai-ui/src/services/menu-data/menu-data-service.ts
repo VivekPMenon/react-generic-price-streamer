@@ -59,7 +59,7 @@ export const menuInfoList: MenuInfo[] = [
     icon: 'fa-regular fa-file'
   },
   {
-    id: 'research-reports',
+    id: 'corporate-actions',
     route: '/dashboard/corporate-actions',
     description: 'Corporate Actions',
     badgeCount: 1,

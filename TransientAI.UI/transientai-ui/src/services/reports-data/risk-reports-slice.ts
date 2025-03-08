@@ -3,7 +3,7 @@ import { File, fileManagerService } from '@/services/file-manager';
 import { saveAs } from 'file-saver';
 import { useUnseenItemsStore } from '../unseen-items-store/unseen-items-store';
 
-export const resourceName = 'risk-reports';
+export const resourceNameRiskReports = 'risk-reports';
 
 export interface RiskReportsState {
   riskReports: File[];
@@ -38,15 +38,7 @@ export const useRiskReportsSlice = create<RiskReportsState>((set, get) => ({
 
     try {
       const newRiskReports = await fileManagerService.getUploadedFiles();
-      const prevCount = get().riskReports.length;
-      const newCount = newRiskReports.length;
-      const unseenDiff = newCount - prevCount;
-
       set({ riskReports: newRiskReports, isLoading: false });
-
-      if (unseenDiff > 0) {
-        useUnseenItemsStore.getState().addUnseenItems(resourceName, unseenDiff);
-      }
     } catch (error) {
       console.error('Error loading risk reports:', error);
       set({ error: 'Failed to load risk reports.', isLoading: false });
@@ -77,8 +69,22 @@ export const useRiskReportsSlice = create<RiskReportsState>((set, get) => ({
   },
 
   startPolling: () => {
-    setInterval(() => {
-      get().loadRiskReports();
+    setInterval(async () => {
+      const prevCount = get().riskReports.length;
+
+      await get().loadRiskReports();
+
+      // Use Zustand's `set` function to ensure the correct state is retrieved
+      set((state) => {
+        const newCount = state.riskReports.length;
+        const unseenDiff = newCount - prevCount;
+
+        if (unseenDiff > 0) {
+          useUnseenItemsStore.getState().addUnseenItems(resourceNameRiskReports, unseenDiff);
+        }
+
+        return {}; // No need to modify state here, just ensuring correctness
+      });
     }, 120000); // Polls every 2 minutes
   }
 }));
