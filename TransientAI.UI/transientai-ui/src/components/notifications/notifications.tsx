@@ -12,7 +12,7 @@ import { Spinner } from '@radix-ui/themes';
 import { resourceNameInvestorRelations, useInvestorRelationsStore } from "@/services/investor-relations-data/investor-relations-store";
 import { InquiryFlag } from "@/services/investor-relations-data";
 import { useVirtualizer, VirtualItem } from "@tanstack/react-virtual";
-import { useRiskDataStore } from '@/services/risk-data/risk-data-store';
+import { resourceNameRiskMetrics, useRiskDataStore } from '@/services/risk-data/risk-data-store';
 import { formatDate } from '@/lib/utility-functions/date-operations';
 import { useUnseenItemsStore } from '@/services/unseen-items-store/unseen-items-store';
 
@@ -135,8 +135,11 @@ export function Notifications(props: NotificationsProps) {
       return;
     }
 
-    if (unseenItems[filterTypeToResourceMap[selectedType]] > 0) {
+    const additionalResourceToCheck = selectedType === NotificationType.RiskReport ? resourceNameRiskMetrics : '';
+
+    if (unseenItems[filterTypeToResourceMap[selectedType]] > 0 || unseenItems[additionalResourceToCheck] > 0) {
       resetUnseenItems(filterTypeToResourceMap[selectedType]);
+      resetUnseenItems(additionalResourceToCheck);
     }
   }, [selectedType, unseenItems]);
 
@@ -278,7 +281,7 @@ export function Notifications(props: NotificationsProps) {
   }
 
   function getUnseenItemsCount(filterType: string): number {
-    return unseenItems[filterTypeToResourceMap[filterType]];
+    return unseenItems[filterTypeToResourceMap[filterType]] ? unseenItems[filterTypeToResourceMap[filterType]] : 0;
   }
 
   function changeNotificationType(filterType: string) {
@@ -298,7 +301,8 @@ export function Notifications(props: NotificationsProps) {
       <div className='filters'>
         {
           filterTypes.map(filterType => {
-            const unseenItemsCount = getUnseenItemsCount(filterType);
+            const additionalResourceToCheck = filterType === NotificationType.RiskReport ? resourceNameRiskMetrics : '';
+            const unseenItemsCount = getUnseenItemsCount(filterType) + (additionalResourceToCheck ? unseenItems[additionalResourceToCheck] : 0);
 
             return <button
               key={filterType}
