@@ -1,6 +1,9 @@
 import { create } from 'zustand';
 import { ResearchReport } from './model';
 import { researchReportsDataService } from './research-reports-data';
+import { useUnseenItemsStore } from '../unseen-items-store/unseen-items-store';
+
+export const resourceName = 'research-reports';
 
 export interface ResearchReportsState {
   reports: ResearchReport[];
@@ -10,27 +13,53 @@ export interface ResearchReportsState {
   loadReports: () => Promise<void>;
   isLoading: boolean;
   error: string | null;
+  startPolling: () => void;
 }
 
 export const useResearchReportsStore = create<ResearchReportsState>((set, get) => ({
   reports: [],
-  setReports: (reports) => set({ reports }),
   selectedReport: null,
+  isLoading: false,
+  error: null,
+
+  setReports: (reports) => set({ reports }),
   setSelectedReport: (report) => set({ selectedReport: report }),
-  isLoading: false, 
-  error: null, 
+
   loadReports: async () => {
-    set({ isLoading: true, error: null }); // Start loading, reset error
+    set({ isLoading: true, error: null });
+
     try {
-      const reports = await researchReportsDataService.getReports();
-      set({ reports, isLoading: false }); // Data loaded, stop loading
+      const newReports = await researchReportsDataService.getReports();
+      
+      set({ reports: newReports, isLoading: false });
     } catch (error) {
       console.error('Error loading reports:', error);
-      set({ error: 'Failed to load reports.', isLoading: false }); // Set error, stop loading
+      set({ error: 'Failed to load reports.', isLoading: false });
     }
   },
+
+  startPolling: () => {
+    setInterval(async () => {
+      const prevCount = get().reports.length;
+
+      await get().loadReports();
+
+      // Use Zustand's `set` function to ensure the correct state is retrieved
+      set((state) => {
+        const newCount = state.reports.length;
+        const unseenDiff = newCount - prevCount;
+
+        if (unseenDiff > 0) {
+          useUnseenItemsStore.getState().addUnseenItems(resourceName, unseenDiff);
+        }
+
+        return {}; // No need to modify state here, just ensuring correctness
+      });
+    }, 120000); // Polls every 2 minutes
+  }
 }));
 
-// Immediately call loadReports when the store is initialized.
-const { loadReports } = useResearchReportsStore.getState();
+// Initial Load and Start Polling
+const { loadReports, startPolling } = useResearchReportsStore.getState();
 loadReports();
+startPolling();
