@@ -92,6 +92,9 @@ export function formatDateToHHMM(date: Date): string {
 
 export function formatDate(isoString: string) {
   const date = new Date(isoString);
+    if (Number.isNaN(date.valueOf())) {
+    return '';
+  }
 
   return new Intl.DateTimeFormat('en-US', {
     month: 'short',  // "Mar"

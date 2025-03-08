@@ -18,6 +18,11 @@ export function RiskMetrics() {
         cellClass: 'fs-15'
       },
       {
+        field: 'entity',
+        headerName: 'Entity',
+        width: 200
+      },
+      {
         field: 'margin_excess',
         headerName: 'GS Margin Excess',
         width: 200,

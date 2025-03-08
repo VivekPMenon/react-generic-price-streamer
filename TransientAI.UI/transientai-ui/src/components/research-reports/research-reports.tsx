@@ -7,7 +7,7 @@ import { SearchableMarkdown } from '@/components/markdown';
 import { researchReportsDataService, ResearchReport, useResearchReportsStore } from '@/services/reports-data';
 import EmailViewer from '../email-parser/email-viewer';
 import Tags from "@/components/tags/tags";
-import ImageContainer from "@/components/image-container/image-container";
+import ImageContainer, {ImageItem} from "@/components/image-container/image-container";
 import { useScrollTo, useScrollToElementId } from '@/lib/hooks';
 import { Spinner } from '@radix-ui/themes';
 
@@ -33,7 +33,9 @@ export function ResearchReports({ isExpanded }: ResearchReportsProps) {
   const [aiContentDetailed, setAiContentDetailed] = useState<string>('');
   const [summaryType, setSummaryType] = useState<'Executive Summary' | 'Verbose'>('Executive Summary');
 
-  const visibleReports = useMemo<ResearchReport[]>(() => calculateVisibleReports(), [searchedReports, reports]);
+  const visibleReports = useMemo<ResearchReport[]>(
+      () => calculateVisibleReports(),
+      [calculateVisibleReports]);
 
   useEffect(() => { onReportSelection(selectedReport!) }, [selectedReport]);
 
@@ -79,14 +81,13 @@ export function ResearchReports({ isExpanded }: ResearchReportsProps) {
     setEmailContent(emailContent);
     scrollToTarget();
 
-    const aiContentAbstract = await researchReportsDataService.getAiSummaryAbstract(report.id!);
-    setAiContentAbstract(aiContentAbstract);
-
-    // time consuming call, doing it in the background
-    const aiContentDetails = await researchReportsDataService.getAiSummaryDetailed(report.id!);
-    setAiContentDetailed(aiContentDetails);
-
-    scrollToElementId(report.id!);
+    Promise.allSettled([
+          researchReportsDataService.getAiSummaryExecutive(report.id!)
+              .then(aiContentAbstract => setAiContentAbstract(aiContentAbstract)),
+          researchReportsDataService.getAiSummaryDetailed(report.id!)
+              .then(aiContentDetails => setAiContentDetailed(aiContentDetails))
+        ]
+    ).then(() => scrollToElementId(report.id!));
   }
 
   function getFinalAiContent() {
@@ -99,7 +100,6 @@ export function ResearchReports({ isExpanded }: ResearchReportsProps) {
 
   return (
     <div className={styles['research-reports']}>
-
       <div className={styles['reports-container']}>
 
         <div className={styles['filter-panel']}>
@@ -113,7 +113,6 @@ export function ResearchReports({ isExpanded }: ResearchReportsProps) {
               value={searchQuery}
               onChange={event => setSearchQuery(event.target.value)}
               onKeyDown={event => searchReports(event)}></input>
-
             {
               searchQuery ? <i className='fa-solid fa-remove' onClick={event => { setSearchQuery(''); setSearchedReports([]) }}></i> : <i className='fa-solid fa-magnifying-glass'></i>
             }
@@ -137,7 +136,7 @@ export function ResearchReports({ isExpanded }: ResearchReportsProps) {
               <>
                 {
                   visibleReports.map(report =>
-                    <div id={report.id} className={report.name === selectedReport?.name ? 'news-item active' : 'news-item'}
+                    <div key={report.id} id={report.id} className={report.name === selectedReport?.name ? 'news-item active' : 'news-item'}
                       onClick={() => { onReportSelection(report) }}>
                       <div className='news-content'>
                         <div className='news-title'>
@@ -184,12 +183,17 @@ export function ResearchReports({ isExpanded }: ResearchReportsProps) {
 
               <div className={`${styles['summary-markdown']} height-vh-68 scrollable-div height-100p justify-center`}>
                 {
-                  getFinalAiContent() ? <SearchableMarkdown className={`${styles['summary-markdown-body']}`} markdownContent={getFinalAiContent()} /> : <Spinner size="3" className='self-center'></Spinner>
+                  getFinalAiContent()
+                      ? <SearchableMarkdown
+                          className={`${styles['summary-markdown-body']}`}
+                          markdownContent={getFinalAiContent()}
+                      />
+                      : <Spinner size="3" className='self-center'></Spinner>
                 }
 
                 {selectedReport?.charts &&
                   <ImageContainer
-                    images={selectedReport?.charts}
+                    images={selectedReport.charts}
                   />
                 }
 
