@@ -2,7 +2,7 @@
 
 .filters {
   display: flex;
-  gap: 10px;
+  gap: 15px;
   padding: 5px 0;
 
   .filter {
@@ -13,6 +13,7 @@
     text-align: center;
     min-width: 40px;
     cursor: pointer;
+    position: relative;
 
     &:hover {
       background-color: $gray-200;

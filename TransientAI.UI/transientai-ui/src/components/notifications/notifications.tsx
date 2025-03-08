@@ -309,6 +309,8 @@ export function Notifications(props: NotificationsProps) {
               className={`${filterType === selectedType ? 'filter active' : 'filter'} ${unseenItemsCount > 0 ? 'flash' : ''}`}
               onClick={() => changeNotificationType(filterType)}>
               {filterType}
+
+              { unseenItemsCount > 0 && <div className='bubble orange-color'>{unseenItemsCount}</div>}
             </button>
           })
         }

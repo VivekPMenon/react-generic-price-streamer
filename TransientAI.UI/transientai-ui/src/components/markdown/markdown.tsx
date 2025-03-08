@@ -48,12 +48,24 @@ export const SearchableMarkdown = ({ markdownContent, className, title }: Search
 
   // Highlight matches in Markdown content
   const getMarkdownText = () => {
-    if (!searchTerm) return markdownContent;
+    const cleanMarkdown = fixMarkdownFormatting(markdownContent);
+
+    if (!searchTerm)
+      return cleanMarkdown;
+
     const regex = new RegExp(`(${searchTerm})`, "gi");
-    return markdownContent.replace(
+    return cleanMarkdown.replace(
       regex,
       `<mark style="background:yellow;color:black;">$1</mark>`
     );
+  };
+
+  const fixMarkdownFormatting = (str:any) => {
+    return str
+      .split('\n') // Split into lines
+      .map((line:any) => line.replace(/^\s{4,}/, '')) // Remove indentation of 4+ spaces (Markdown code block trigger)
+      .join('\n') // Rejoin into a string with preserved line breaks
+      .trim(); // Remove extra spaces at the start/end
   };
 
   const navigateMatches = (direction: any) => {
@@ -90,15 +102,15 @@ export const SearchableMarkdown = ({ markdownContent, className, title }: Search
             placeholder="Find..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            
+
           />
-          <i className={`fa-solid fa-chevron-left ${ matches?.length ? 'active': ''}`} onClick={() => navigateMatches("prev")}></i>
-          <i className={`fa-solid fa-chevron-right ${ matches?.length ? 'active': ''}`} onClick={() => navigateMatches("next")}></i>
+          <i className={`fa-solid fa-chevron-left ${matches?.length ? 'active' : ''}`} onClick={() => navigateMatches("prev")}></i>
+          <i className={`fa-solid fa-chevron-right ${matches?.length ? 'active' : ''}`} onClick={() => navigateMatches("next")}></i>
           {/* <button onClick={() => navigateMatches("next")} disabled={!matches.length}>Next</button> */}
           {/* <button onClick={() => navigateMatches("next")} disabled={!matches.length}>Next</button> */}
           {/* <button onClick={() => setShowSearchBar(false)}>Close</button> */}
         </div>
-{/* 
+        {/* 
         <span style={{ marginLeft: "10px" }}>
           {matches.length ? `${currentIndex + 1} / ${matches.length}` : "No matches"}
         </span> */}
