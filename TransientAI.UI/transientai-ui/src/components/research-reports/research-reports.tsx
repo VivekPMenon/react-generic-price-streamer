@@ -32,7 +32,6 @@ export function ResearchReports({ isExpanded }: ResearchReportsProps) {
   const [aiContentAbstract, setAiContentAbstract] = useState<string>('');
   const [aiContentDetailed, setAiContentDetailed] = useState<string>('');
   const [summaryType, setSummaryType] = useState<'Executive Summary' | 'Verbose'>('Executive Summary');
-  const [processedImages, setProcessedImages] = useState<ImageItem[]|null>(null);
 
   const visibleReports = useMemo<ResearchReport[]>(
       () => calculateVisibleReports(),
@@ -97,12 +96,6 @@ export function ResearchReports({ isExpanded }: ResearchReportsProps) {
     }
 
     return aiContentDetailed;
-  }
-
-  function handleProcessedImages(imageUrls: string[]) {
-    setProcessedImages(imageUrls?.length
-      ? imageUrls.map(url => ({image: url}))
-      : null);
   }
 
   return (
@@ -194,7 +187,6 @@ export function ResearchReports({ isExpanded }: ResearchReportsProps) {
                       ? <SearchableMarkdown
                           className={`${styles['summary-markdown-body']}`}
                           markdownContent={getFinalAiContent()}
-                          onImagesProcessed={handleProcessedImages}
                       />
                       : <Spinner size="3" className='self-center'></Spinner>
                 }
