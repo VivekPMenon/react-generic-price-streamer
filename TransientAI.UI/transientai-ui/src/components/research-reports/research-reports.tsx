@@ -191,9 +191,9 @@ export function ResearchReports({ isExpanded }: ResearchReportsProps) {
                       : <Spinner size="3" className='self-center'></Spinner>
                 }
 
-                {processedImages?.length &&
+                {selectedReport?.charts &&
                   <ImageContainer
-                    images={processedImages}
+                    images={selectedReport.charts}
                   />
                 }
 
