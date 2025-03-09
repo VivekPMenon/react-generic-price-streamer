@@ -1,26 +1,14 @@
 import ReactMarkdown from 'react-markdown';
-import React, { useEffect, useRef, useState, useMemo } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import rehypeRaw from "rehype-raw";
-import remarkGfm from "remark-gfm";
 
 export interface SearchableMarkdownProps {
   title?: string;
   className?: string;
   markdownContent?: any;
-  onImagesProcessed?: (imageUrls: string[]) => void;
 }
 
-function extractImages(markdownContent: any)  {
-  const regex = /!\[.*?\]\((.*?)\)/g;
-  let matches;
-  const urls = [];
-  while ((matches = regex.exec(markdownContent)) !== null) {
-    urls.push(matches[1]);
-  }
-  return urls;
-}
-
-export const SearchableMarkdown = ({ markdownContent, className, title, onImagesProcessed }: SearchableMarkdownProps) => {
+export const SearchableMarkdown = ({ markdownContent, className, title }: SearchableMarkdownProps) => {
 
   const [searchTerm, setSearchTerm] = useState("");
   const [matches, setMatches] = useState([]);
@@ -42,15 +30,6 @@ export const SearchableMarkdown = ({ markdownContent, className, title, onImages
     document.addEventListener("keydown", handleKeyDown);
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, []);
-
-  useEffect(() => {
-    if (!onImagesProcessed) {
-      return;
-    }
-
-    const images = extractImages(markdownContent);
-    onImagesProcessed(images);
-  }, [onImagesProcessed, markdownContent]);
 
   // Find matches when search term changes
   useEffect(() => {
@@ -137,7 +116,7 @@ export const SearchableMarkdown = ({ markdownContent, className, title, onImages
 
       <div ref={contentRef} className={`react-markdown ${className ? className : ''}`}>
         <ReactMarkdown
-            rehypePlugins={[rehypeRaw, remarkGfm]}
+            rehypePlugins={[rehypeRaw]}
         >{getMarkdownText()}</ReactMarkdown>
       </div>
 

@@ -7,7 +7,7 @@ import { SearchableMarkdown } from '@/components/markdown';
 import { researchReportsDataService, ResearchReport, useResearchReportsStore } from '@/services/reports-data';
 import EmailViewer from '../email-parser/email-viewer';
 import Tags from "@/components/tags/tags";
-import ImageContainer, {ImageItem} from "@/components/image-container/image-container";
+import ImageContainer from "@/components/image-container/image-container";
 import { useScrollTo, useScrollToElementId } from '@/lib/hooks';
 import { Spinner } from '@radix-ui/themes';
 

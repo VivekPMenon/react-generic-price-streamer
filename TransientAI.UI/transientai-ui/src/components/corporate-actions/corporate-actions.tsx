@@ -10,9 +10,8 @@ import { DataGrid, getCurrencyColDefTemplate } from '../data-grid';
 import { ColDef, GridApi, RowClickedEvent } from 'ag-grid-community';
 import { corpActionsDataService } from '@/services/corporate-actions/corporate-actions-data';
 import {useVirtualizer, VirtualItem} from "@tanstack/react-virtual";
-import {executeAsync} from "@/lib/utility-functions/async";
 import {Spinner} from "@radix-ui/themes";
-import {formatDate, formatDateString, tryParseAndFormat} from '@/lib/utility-functions/date-operations';
+import {formatDateString, tryParseAndFormat} from '@/lib/utility-functions/date-operations';
 
 export function CorporateActions() {
 
@@ -39,23 +38,26 @@ export function CorporateActions() {
 
   const colDefs = useMemo(() => getColumnDefs(), [])
 
-  useEffect(() => { calculateSelectedEmailContent() }, [calculateSelectedEmailContent, selectedCorpAction]);
+  useEffect(() => {
+    async function calculateSelectedEmailContent() {
+      if (!selectedCorpAction?.eventId) {
+        return;
+      }
 
-  async function calculateSelectedEmailContent() {
-    if (!selectedCorpAction?.eventId) {
-      return;
+      const newContent = await corpActionsDataService.getCorpActionEmail(selectedCorpAction.eventId, selectedCorpAction.version!)
+      setSelectedEmailContent(newContent);
+
+      gridApiRef?.current?.forEachNode((node) =>
+          node.setSelected(node.data && node.data?.eventId === selectedCorpAction?.eventId)
+      );
+
+      const selectedIndex = corpActions.findIndex(corpAction => selectedCorpAction?.eventId === corpAction.eventId);
+      virtualizer.scrollToIndex(selectedIndex);
     }
 
-    const newContent = await corpActionsDataService.getCorpActionEmail(selectedCorpAction.eventId, selectedCorpAction.version!)
-    setSelectedEmailContent(newContent);
+    calculateSelectedEmailContent();
 
-    gridApiRef?.current?.forEachNode((node) =>
-      node.setSelected(node.data && node.data?.eventId === selectedCorpAction?.eventId)
-    );
-
-    const selectedIndex = corpActions.findIndex(corpAction => selectedCorpAction?.eventId === corpAction.eventId);
-    executeAsync(() => virtualizer.scrollToIndex(selectedIndex));
-  }
+  }, [corpActions, selectedCorpAction, virtualizer]);
 
   function onSearchQueryChange(event: any) {
     setSearchQuery(event.target.value);
