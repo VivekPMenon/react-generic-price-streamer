@@ -11,9 +11,11 @@
     padding: 5px;
     align-content: center;
     text-align: center;
-    min-width: 40px;
+    min-width: 75px;
     cursor: pointer;
     position: relative;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
 
     &:hover {
       background-color: $gray-200;

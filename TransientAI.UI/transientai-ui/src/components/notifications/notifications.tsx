@@ -121,8 +121,7 @@ export function Notifications(props: NotificationsProps) {
 
   useEffect(() => {
     loadNotifications();
-  }, [researchReports, riskReports, inquiries, corpActions]);
-
+  }, [researchReports, riskReports, inquiries, corpActions, loadNotifications]);
 
   useEffect(() => {
     if (selectedType === NotificationType.All) {
@@ -298,7 +297,7 @@ export function Notifications(props: NotificationsProps) {
         <i className='fa-solid fa-expand toggler' onClick={() => expandOrCollapsePanel()}></i>
       </div>
 
-      <div className='filters'>
+      <div className='horizontal-scrollable-div filters'>
         {
           filterTypes.map(filterType => {
             const additionalResourceToCheck = filterType === NotificationType.RiskReport ? resourceNameRiskMetrics : '';
