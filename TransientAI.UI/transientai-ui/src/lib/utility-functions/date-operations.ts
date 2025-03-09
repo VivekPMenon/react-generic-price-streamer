@@ -90,9 +90,69 @@ export function formatDateToHHMM(date: Date): string {
   return (hrs < 10 ? "0" + hrs : hrs) + ":" + (mins < 10 ? "0" + mins : mins) + " " + clockType;
 }
 
-export function formatDate(isoString: string) {
-  const date = new Date(isoString);
+export function formatDateString(dateString: string|undefined|null) {
+  // Should push out to common method - dup code
+  if (!dateString || dateString.length === 0) {
+    return '';
+  }
+
+  const date = new Date(dateString);
+  if (Number.isNaN(date.valueOf())) {
+    return '';
+  }
+
+  return date.toDateString();
+}
+
+export function tryParseIsoDate(dateString: string|undefined|null) {
+  if (!dateString || dateString.length === 0) {
+    return {valid: false, parsed: null};
+  }
+
+  const date = new Date(dateString);
+  if (!Number.isNaN(date.valueOf())) {
+    return {valid: true, parsed: date};
+  }
+
+  const parts = dateString.split('T');
+  if (parts.length !== 2) {
+    return {valid: false, parsed: null};
+  }
+
+  // HACK
+  const timeRegex = /^(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\dZ?$/;
+  if (!timeRegex.test(parts[1])) {
+    const date = new Date(parts[0] + 'T' + parts[1].replaceAll('-', ':'));
     if (Number.isNaN(date.valueOf())) {
+      return {valid: false, parsed: null};
+    }
+    return {valid: true, parsed: date};
+  }
+
+  return {valid: false, parsed: null};
+}
+
+export function tryParseAndFormat(isoString: string|undefined|null) {
+  const result = tryParseIsoDate(isoString);
+  if (result.valid && result.parsed) {
+    return new Intl.DateTimeFormat('en-US', {
+      month: 'short',  // "Mar"
+      day: '2-digit',  // "06"
+      hour: 'numeric', // "6"
+      minute: '2-digit', // "00"
+      hour12: true,    // "PM"
+    }).format(result.parsed);
+  }
+  return '';
+}
+
+export function formatDate(isoString: string|undefined|null) {
+  if (!isoString || isoString.length === 0) {
+    return '';
+  }
+
+  const date = new Date(isoString);
+  if (Number.isNaN(date.valueOf())) {
     return '';
   }
 

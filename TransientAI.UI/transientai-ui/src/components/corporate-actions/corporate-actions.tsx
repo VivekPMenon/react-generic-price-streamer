@@ -6,12 +6,13 @@ import { CorporateAction, useCorpActionsStore } from '@/services/corporate-actio
 import EmailViewer from '../email-parser/email-viewer';
 import {useScrollTo} from '@/lib/hooks';
 import { RoleType, useUserContextStore } from '@/services/user-context';
-import { DataGrid, getCurrencyColDefTemplate, getNumberColDefTemplate } from '../data-grid';
+import { DataGrid, getCurrencyColDefTemplate } from '../data-grid';
 import { ColDef, GridApi, RowClickedEvent } from 'ag-grid-community';
 import { corpActionsDataService } from '@/services/corporate-actions/corporate-actions-data';
 import {useVirtualizer, VirtualItem} from "@tanstack/react-virtual";
 import {executeAsync} from "@/lib/utility-functions/async";
 import {Spinner} from "@radix-ui/themes";
+import {formatDate, formatDateString, tryParseAndFormat} from '@/lib/utility-functions/date-operations';
 
 export function CorporateActions() {
 
@@ -38,7 +39,7 @@ export function CorporateActions() {
 
   const colDefs = useMemo(() => getColumnDefs(), [])
 
-  useEffect(() => { calculateSelectedEmailContent() }, [selectedCorpAction]);
+  useEffect(() => { calculateSelectedEmailContent() }, [calculateSelectedEmailContent, selectedCorpAction]);
 
   async function calculateSelectedEmailContent() {
     if (!selectedCorpAction?.eventId) {
@@ -244,7 +245,7 @@ export function CorporateActions() {
                     </div>
                     <div className="grid grid-cols-[45%_55%] gap-3 fs-13">
                       <div className='font-bold'>Position</div>
-                      <div>{corpAction.accounts?.length !== undefined ? corpAction.accounts[0].holdingQuantity : ''}</div>
+                      <div>{corpAction.accounts?.length ? corpAction.accounts[0].holdingQuantity : ''}</div>
                     </div>
                     {/*<div className="grid grid-cols-[40%_60%] gap-3 fs-13">*/}
                     {/*  <div className='font-bold'>Term Details</div>*/}
@@ -258,7 +259,7 @@ export function CorporateActions() {
                     </div>
                     <div className="grid grid-cols-[45%_55%] gap-3 fs-13">
                       <div className='font-bold'>Event Date</div>
-                      <div>{corpAction.dates?.notification_date ? new Date(corpAction.dates.notification_date!).toDateString() : ''}</div>
+                      <div>{formatDateString(corpAction.dates?.notification_date)}</div>
                     </div>
                   </div>
 
@@ -273,7 +274,7 @@ export function CorporateActions() {
                       corpAction.versionHistory?.map(history =>
                         <div key={`${corpAction.eventId}-${history.version}`} className="grid grid-cols-[1fr_3fr] gap-3 fs-13 p-1 text-center">
                           <div className="blue-color cursor-pointer" onClick={() => onSelectEmail(corpAction, history.version)}>{history.version}</div>
-                          <div >{new Date(history.changedDate!).toLocaleString()}</div>
+                          <div >{tryParseAndFormat(history.changedDate!)}</div>
                           {/*<div className="blue-color cursor-pointer" onClick={() => onSelectEmail(corpAction, corpAction.id!)}>Y</div>*/}
                           {/*<div className="blue-color">{(history?.isCurrent ?? false) ? 'Y' : 'N'}</div>*/}
                         </div>
@@ -283,7 +284,7 @@ export function CorporateActions() {
                 </div>
 
                 <div className={styles['footer']}>
-                  <span>{`${corpAction.terms?.length ? (corpAction.terms[0].type + ' ' + corpAction.terms[0].rate) : ''}`}</span>
+                  <span>{`${corpAction.terms?.length ? (corpAction.terms[0]?.type + ' ' + corpAction.terms[0]?.rate) : ''}`}</span>
                 </div>
               </div>
             </div>

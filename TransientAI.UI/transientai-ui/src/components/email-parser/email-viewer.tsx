@@ -62,10 +62,10 @@ const EmailViewer = ({ emailHtml, htmlSource, className }: EmailViewerProps) => 
     highlightMatches(deferredSearchTerm);
   }, [deferredSearchTerm]);
 
-  const extractBodyContent = (htmlString: any) => {
-    const match = htmlString.match(/<body[^>]*>([\s\S]*)<\/body>/i);
-    return match ? match[1] : htmlString; // Return body content or fallback to full string
-  };
+  // const extractBodyContent = (htmlString: any) => {
+  //   const match = htmlString.match(/<body[^>]*>([\s\S]*)<\/body>/i);
+  //   return match ? match[1] : htmlString; // Return body content or fallback to full string
+  // };
 
   const sanitizeHtmlWithBase64Images = (html: string) => {
     const parser = new DOMParser();
@@ -81,7 +81,7 @@ const EmailViewer = ({ emailHtml, htmlSource, className }: EmailViewerProps) => 
     });
 
     // Sanitize the HTML (excluding the base64 images)
-    let sanitized = DOMPurify.sanitize(doc.documentElement.innerHTML);
+    const sanitized = DOMPurify.sanitize(doc.documentElement.innerHTML);
 
     // Restore base64 images
     const sanitizedDoc = parser.parseFromString(sanitized, "text/html");
@@ -134,7 +134,7 @@ const EmailViewer = ({ emailHtml, htmlSource, className }: EmailViewerProps) => 
     walkNodes(doc.body);
 
     // Convert placeholders to actual highlight spans
-    let highlightedHtml = doc.body.innerHTML
+    const highlightedHtml = doc.body.innerHTML
       .replace(/%%HIGHLIGHT_START%%/g, `<span class="highlighted">`)
       .replace(/%%HIGHLIGHT_END%%/g, `</span>`);
 
