@@ -6,6 +6,7 @@ export interface EmailViewerProps {
   htmlSource?: string;
   title?: string;
   className?: string;
+  //todo: remove this and its usage. its a hack
   scrollToSearchTerm?: string;
 }
 
