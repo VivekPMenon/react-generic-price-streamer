@@ -81,7 +81,7 @@ export const menuInfoList: MenuInfo[] = [
   },
   {
     id: 'risk-metrics',
-    description: 'Risk Metrics',
+    description: 'Risk Insights',
     badgeCount: 1,
     icon: 'fa-solid fa-chart-column',
     route: '/dashboard/risk-metrics',

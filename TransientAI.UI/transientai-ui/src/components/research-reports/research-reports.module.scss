@@ -72,7 +72,7 @@
 
 .email-content {
   flex: 1 1 40%;
-  // padding: 10px;
+  min-width: 40%;
 
   border-radius: 5px;
   background-color: $gray-1000;
@@ -84,6 +84,7 @@
   border-radius: 5px;
   height: 100%;
   margin-left: 10px;
+  min-width: 40%;
 
   .key-words {
     // padding-bottom: 5px;
