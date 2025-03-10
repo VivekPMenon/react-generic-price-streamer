@@ -29,24 +29,7 @@ export function RiskReportsUploader() {
     emailFile
   } = useRiskReportsSlice();
 
-  const columnDefs = useMemo<ColDef[]>(() => getColumnDef(), []);
-
-  useEffect(() => {
-    if(!gridApiRef) {
-      return;
-    }
-
-    gridApiRef?.current?.forEachNode((node) => 
-      node.setSelected(node.data && node.data?.id === selectedReport?.id)
-    );
-  }, [selectedReport, gridApiRef?.current]);
-
-  function handleRowSelection(event: any) {
-    setSelectedReport(event.data!.id);
-    scrollToTarget();
-  }
-
-  function getColumnDef(): ColDef[] {
+  const columnDefs = useMemo<ColDef[]>(() => {
     return [
       {
         field: 'filename',
@@ -99,6 +82,21 @@ export function RiskReportsUploader() {
         </div>)
       }
     ];
+  }, [deleteFile, downloadFile, emailFile]);
+
+  useEffect(() => {
+    if(!gridApiRef) {
+      return;
+    }
+
+    gridApiRef?.current?.forEachNode((node) => 
+      node.setSelected(node.data && node.data?.id === selectedReport?.id)
+    );
+  }, [selectedReport]);
+
+  function handleRowSelection(event: any) {
+    setSelectedReport(event.data!.id);
+    scrollToTarget();
   }
 
   return (

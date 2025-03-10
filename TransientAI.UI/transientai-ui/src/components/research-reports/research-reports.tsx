@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useMemo, useState } from 'react';
+import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import styles from './research-reports.module.scss';
 import Segmented from 'rc-segmented';
 import { SearchableMarkdown } from '@/components/markdown';
@@ -39,10 +39,44 @@ export function ResearchReports({ isExpanded }: ResearchReportsProps) {
   const [summaryType, setSummaryType] = useState<'Executive Summary' | 'Verbose'>('Executive Summary');
 
   const visibleReports = useMemo<ResearchReport[]>(
-      () => calculateVisibleReports(),
-      [calculateVisibleReports]);
+      () => {
+        if (searchedReports?.length) {
+          return searchedReports;
+        }
 
-  useEffect(() => { onReportSelection(selectedReport!) }, [selectedReport]);
+        return reports;
+      }, [searchedReports, reports]);
+
+  const onReportSelection = useCallback(function(report: ResearchReport) {
+  // function onReportSelection(report: ResearchReport) {
+    if (!report?.id) {
+      return;
+    }
+
+    setIsSummaryVisible(true);
+    setSelectedReport(report);
+    // setEmailContent('');
+    setAiContentAbstract(null);
+    setAiContentDetailed(null);
+
+    // purposefully keeping sequential as the AISummary call takes too much time sometimes
+    researchReportsDataService
+        .getEmailContentAsHtml(report.id!)
+        .then(emailContent => {
+          setEmailContent(emailContent);
+          scrollToTarget();
+
+          Promise.allSettled([
+                researchReportsDataService.getAiSummaryExecutive(report.id!)
+                    .then(aiContentAbstract => setAiContentAbstract(aiContentAbstract)),
+                researchReportsDataService.getAiSummaryDetailed(report.id!)
+                    .then(aiContentDetails => setAiContentDetailed(aiContentDetails))
+              ]
+          ).then(() => scrollToElementId(report.id!));
+        });
+  }, []);
+
+  useEffect(() => { onReportSelection(selectedReport!) }, [onReportSelection, selectedReport]);
 
   async function searchReports(event: any) {
     const inputValue = event.target.value;
@@ -62,48 +96,9 @@ export function ResearchReports({ isExpanded }: ResearchReportsProps) {
     setSearchedReports(searchedReports);
   }
 
-  function calculateVisibleReports(): ResearchReport[] {
-    if (searchedReports?.length) {
-      return searchedReports;
-    }
-
-    return reports;
-  }
-
-  async function onReportSelection(report: ResearchReport) {
-    if (!report?.id) {
-      return;
-    }
-
-    setIsSummaryVisible(true);
-    setSelectedReport(report);
-    // setEmailContent('');
-    setAiContentAbstract(null);
-    setAiContentDetailed(null);
-
-    // purposefully keeping sequential as the AISummary call takes too much time sometimes
-    const emailContent = await researchReportsDataService.getEmailContentAsHtml(report.id!)
-    setEmailContent(emailContent);
-    scrollToTarget();
-
-    Promise.allSettled([
-          researchReportsDataService.getAiSummaryExecutive(report.id!)
-              .then(aiContentAbstract => setAiContentAbstract(aiContentAbstract)),
-          researchReportsDataService.getAiSummaryDetailed(report.id!)
-              .then(aiContentDetails => setAiContentDetailed(aiContentDetails))
-        ]
-    ).then(() => scrollToElementId(report.id!));
-  }
-
-  function getFinalAiContent() {
-    if (summaryType === 'Executive Summary') {
-      return aiContentAbstract;
-    }
-
-    return aiContentDetailed;
-  }
-
-  const finalAiContent = getFinalAiContent();
+  const finalAiContent = summaryType === 'Executive Summary'
+     ? aiContentAbstract
+     : aiContentDetailed;
 
   return (
     <div className={styles['research-reports']}>
@@ -121,7 +116,10 @@ export function ResearchReports({ isExpanded }: ResearchReportsProps) {
               onChange={event => setSearchQuery(event.target.value)}
               onKeyDown={event => searchReports(event)}></input>
             {
-              searchQuery ? <i className='fa-solid fa-remove' onClick={event => { setSearchQuery(''); setSearchedReports([]) }}></i> : <i className='fa-solid fa-magnifying-glass'></i>
+              searchQuery ? <i className='fa-solid fa-remove' onClick={() => {
+                setSearchQuery('');
+                setSearchedReports([])
+              }}></i> : <i className='fa-solid fa-magnifying-glass'></i>
             }
 
           </div>

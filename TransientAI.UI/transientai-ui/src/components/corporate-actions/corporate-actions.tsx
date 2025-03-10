@@ -321,7 +321,11 @@ export function CorporateActions() {
           isLoadingEmail
             ? <Spinner size="3" />
             : selectedCorpAction
-                ? <EmailViewer className={styles['email-viewer'] + ' height-vh-90'} emailHtml={selectedEmailContent} />
+                ? <EmailViewer
+                      className={styles['email-viewer'] + ' height-vh-90'}
+                      emailHtml={selectedEmailContent}
+                      scrollToSearchTerm={selectedCorpAction.eventId}
+                  />
                 : <></>
         }
       </div>
