@@ -25,13 +25,15 @@ export function ImagePopup({children, url, title, description}: ImagePopupProps)
                     <Dialog.Title>
                         {title}
                     </Dialog.Title>
-                    <div className={styles['content']}>
+                    <div className={`${styles['content']}`}>
                         <div className={styles['img-root']}>
                             <img src={url} className={styles['img-content']}/>
                         </div>
                     </div>
                     <Dialog.Description className="DialogDescription">
-                        {description}
+                        <div className={`${styles['img-description']} scrollable-div height-vh-10`}>
+                            {description}
+                        </div>
                     </Dialog.Description>
                 </Dialog.Content>
             </Dialog.Portal>
