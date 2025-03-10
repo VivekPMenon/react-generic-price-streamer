@@ -4,7 +4,12 @@ import React, { useEffect, useMemo, useState } from 'react';
 import styles from './research-reports.module.scss';
 import Segmented from 'rc-segmented';
 import { SearchableMarkdown } from '@/components/markdown';
-import { researchReportsDataService, ResearchReport, useResearchReportsStore } from '@/services/reports-data';
+import {
+  researchReportsDataService,
+  ResearchReport,
+  useResearchReportsStore,
+  ReportSummary
+} from '@/services/reports-data';
 import EmailViewer from '../email-parser/email-viewer';
 import Tags from "@/components/tags/tags";
 import ImageContainer from "@/components/image-container/image-container";
@@ -29,8 +34,8 @@ export function ResearchReports({ isExpanded }: ResearchReportsProps) {
   const [isSearchResultsLoading, setIsSearchResultsLoading] = useState<boolean>(false);
 
   const [emailContent, setEmailContent] = useState<string>('');
-  const [aiContentAbstract, setAiContentAbstract] = useState<string>('');
-  const [aiContentDetailed, setAiContentDetailed] = useState<string>('');
+  const [aiContentAbstract, setAiContentAbstract] = useState<ReportSummary|null>(null);
+  const [aiContentDetailed, setAiContentDetailed] = useState<ReportSummary|null>(null);
   const [summaryType, setSummaryType] = useState<'Executive Summary' | 'Verbose'>('Executive Summary');
 
   const visibleReports = useMemo<ResearchReport[]>(
@@ -73,8 +78,8 @@ export function ResearchReports({ isExpanded }: ResearchReportsProps) {
     setIsSummaryVisible(true);
     setSelectedReport(report);
     // setEmailContent('');
-    setAiContentAbstract('');
-    setAiContentDetailed('');
+    setAiContentAbstract(null);
+    setAiContentDetailed(null);
 
     // purposefully keeping sequential as the AISummary call takes too much time sometimes
     const emailContent = await researchReportsDataService.getEmailContentAsHtml(report.id!)
@@ -97,6 +102,8 @@ export function ResearchReports({ isExpanded }: ResearchReportsProps) {
 
     return aiContentDetailed;
   }
+
+  const finalAiContent = getFinalAiContent();
 
   return (
     <div className={styles['research-reports']}>
@@ -183,17 +190,17 @@ export function ResearchReports({ isExpanded }: ResearchReportsProps) {
 
               <div className={`${styles['summary-markdown']} height-vh-68 scrollable-div height-100p justify-center`}>
                 {
-                  getFinalAiContent()
+                  finalAiContent
                       ? <SearchableMarkdown
                           className={`${styles['summary-markdown-body']}`}
-                          markdownContent={getFinalAiContent()}
+                          markdownContent={finalAiContent.content}
                       />
                       : <Spinner size="3" className='self-center'></Spinner>
                 }
 
-                {selectedReport?.charts &&
+                {finalAiContent?.images &&
                   <ImageContainer
-                    images={selectedReport.charts}
+                    images={finalAiContent.images}
                   />
                 }
 

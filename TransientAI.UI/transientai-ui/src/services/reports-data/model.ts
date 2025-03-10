@@ -1,5 +1,5 @@
-export interface ChartSummary {
-  image: string,
+export interface ImageItem {
+  url: string,
   title?: string,
   description?: string;
 }
@@ -12,7 +12,6 @@ export interface ResearchReport {
   sender?: string;
   received_date?: string;
   concise_summary?: string;
-  charts?: Array<ChartSummary>;
   keywords?: Array<string>;
 }
 
@@ -23,4 +22,9 @@ export interface RiskReport {
   pdfSource?: string;
   uploadedBy?: string;
   uploadStatus?: string;
+}
+
+export interface ReportSummary {
+  content?: string;
+  images?: Array<ImageItem>;
 }

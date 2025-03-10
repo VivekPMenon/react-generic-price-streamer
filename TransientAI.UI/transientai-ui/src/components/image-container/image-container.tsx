@@ -4,7 +4,7 @@ import styles from './image-container.module.scss';
 import {ImagePopup} from "@/components/image-container/image-popup";
 
 export interface ImageItem {
-    image: string;
+    url: string;
     title?: string;
     description?: string;
 }
@@ -20,11 +20,11 @@ const ImageContainer = (props: ImageContainerProps) => {
         <div className={styles['image-container']}>
             <ul className={styles['image-section']}>
                 { images.map((image) => (
-                    <li key={image.image}>
+                    <li key={image.url}>
                         <ImagePopup {...image}>
                             <div>
                                 <h2>{image.title}</h2>
-                                <img src={image.image} alt={image.title}/>
+                                <img src={image.url} alt={image.title}/>
                                 <span>{image.description}</span>
                             </div>
                         </ImagePopup>

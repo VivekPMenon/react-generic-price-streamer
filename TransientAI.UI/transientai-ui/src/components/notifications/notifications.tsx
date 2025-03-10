@@ -114,14 +114,86 @@ export function Notifications(props: NotificationsProps) {
   const virtualizer = useVirtualizer({
     count: visibleNotifications.length,
     getScrollElement: () => divRef.current,
-    estimateSize: (i: number) => 200,
+    estimateSize: () => 200,
     overscan: 5,
     gap: 10
   });
 
   useEffect(() => {
+    // todo ... we will be fetching the entire notification types from an API instead of UI individually calling each categories and stitching
+    function loadNotifications() {
+      const newNotifications: Notification[] = [
+        // ...notifications,
+        ...researchReports
+            .map(researchReport => ({
+              id: researchReport.id,
+              resourceName: researchReportResourceName,
+              title: researchReport.name,
+              subTitle: researchReport.concise_summary,
+              type: NotificationType.Research,
+              timestamp: researchReport.received_date ? new Date(researchReport.received_date).getTime() : new Date().getTime(),
+              highlights: [
+                `Sender: ${researchReport.sender!}`,
+                `Date: ${researchReport.received_date!}`,
+              ]
+            })),
+        ...riskReports
+            .map(riskReport => ({
+              id: riskReport.id,
+              resourceName: resourceNameRiskReports,
+              title: riskReport.filename,
+              type: NotificationType.RiskReport,
+              timestamp: riskReport.uploaded ? riskReport.uploaded.getTime() : new Date().getTime(),
+              highlights: [
+                `Date: ${riskReport.uploaded!}`
+              ]
+            })),
+        ...corpActions
+            .map(corpAction => ({
+              id: corpAction.eventId,
+              resourceName: corpActionResourceName,
+              title: `TICKER: ${corpAction.ticker} \n ${corpAction.security?.name} \n ${corpAction.eventType} \n ${corpAction.eventStatus}`,
+              type: NotificationType.CorpAct,
+              subTitle: `${corpAction.accounts?.length ? ('Account No: ' + corpAction.accounts[0].accountNumber + ', Holding Capacity: ' + corpAction.accounts[0].holdingQuantity) : ''}`,
+              timestamp: corpAction?.receivedDate ? new Date(corpAction.receivedDate).getTime() : new Date().getTime(),
+              highlights: [
+                `ISIN: ${corpAction.isin!}, ID: ${corpAction.eventId}`,
+                `Key Date: ${corpAction.keyDates!}`,
+                `Version: ${corpAction.version}`,
+              ]
+            })),
+        ...inquiries
+            .map(inquiry => ({
+              id: inquiry.id,
+              title: `${inquiry.subject}`,
+              type: NotificationType.Inquiries,
+              subTitle: inquiry.inquiry ? inquiry.inquiry : '',
+              timestamp: inquiry.due_date ? new Date(inquiry.due_date).getTime() : 0,
+              highlights: [
+                `Due: ${inquiry.due_date ? new Date(inquiry.due_date).toDateString() : ''}`,
+                `Assigned to: ${inquiry.assignee_name}`,
+                `${inquiry.flag ? InquiryFlag[inquiry.flag] : ''}`,
+              ]
+            })),
+        {
+          id: 'risk-metrics-notification',
+          title: `GS Margin Excess Updated`,
+          type: NotificationType.RiskReport,
+          timestamp: lastUpdatedTimestamp ? new Date(lastUpdatedTimestamp).getTime() : 0,
+          highlights: [
+            formatDate(lastUpdatedTimestamp)
+          ]
+        }
+      ];
+
+      newNotifications.sort((x, y) => (y.timestamp ?? -1) - (x.timestamp ?? -1));
+
+      setNotifications(newNotifications);
+    }
+
     loadNotifications();
-  }, [researchReports, riskReports, inquiries, corpActions, loadNotifications]);
+
+  }, [researchReports, riskReports, inquiries, corpActions, lastUpdatedTimestamp]);
 
   useEffect(() => {
     if (selectedType === NotificationType.All) {
@@ -140,78 +212,7 @@ export function Notifications(props: NotificationsProps) {
       resetUnseenItems(filterTypeToResourceMap[selectedType]);
       resetUnseenItems(additionalResourceToCheck);
     }
-  }, [selectedType, unseenItems]);
-
-  // todo ... we will be fetching the entire notification types from an API instead of UI individually calling each categories and stitching
-  async function loadNotifications() {
-    const newNotifications: Notification[] = [
-      // ...notifications,
-      ...researchReports
-        .map(researchReport => ({
-          id: researchReport.id,
-          resourceName: researchReportResourceName,
-          title: researchReport.name,
-          subTitle: researchReport.concise_summary,
-          type: NotificationType.Research,
-          timestamp: researchReport.received_date ? new Date(researchReport.received_date).getTime() : new Date().getTime(),
-          highlights: [
-            `Sender: ${researchReport.sender!}`,
-            `Date: ${researchReport.received_date!}`,
-          ]
-        })),
-      ...riskReports
-        .map(riskReport => ({
-          id: riskReport.id,
-          resourceName: resourceNameRiskReports,
-          title: riskReport.filename,
-          type: NotificationType.RiskReport,
-          timestamp: riskReport.uploaded ? riskReport.uploaded.getTime() : new Date().getTime(),
-          highlights: [
-            `Date: ${riskReport.uploaded!}`
-          ]
-        })),
-      ...corpActions
-        .map(corpAction => ({
-          id: corpAction.eventId,
-          resourceName: corpActionResourceName,
-          title: `TICKER: ${corpAction.ticker} \n ${corpAction.security?.name} \n ${corpAction.eventType} \n ${corpAction.eventStatus}`,
-          type: NotificationType.CorpAct,
-          subTitle: `${corpAction.accounts?.length ? ('Account No: ' + corpAction.accounts[0].accountNumber + ', Holding Capacity: ' + corpAction.accounts[0].holdingQuantity) : ''}`,
-          timestamp: corpAction?.receivedDate ? new Date(corpAction.receivedDate).getTime() : new Date().getTime(),
-          highlights: [
-            `ISIN: ${corpAction.isin!}, ID: ${corpAction.eventId}`,
-            `Key Date: ${corpAction.keyDates!}`,
-            `Version: ${corpAction.version}`,
-          ]
-        })),
-      ...inquiries
-        .map(inquiry => ({
-          id: inquiry.id,
-          title: `${inquiry.subject}`,
-          type: NotificationType.Inquiries,
-          subTitle: inquiry.inquiry ? inquiry.inquiry : '',
-          timestamp: inquiry.due_date ? new Date(inquiry.due_date).getTime() : 0,
-          highlights: [
-            `Due: ${inquiry.due_date ? new Date(inquiry.due_date).toDateString() : ''}`,
-            `Assigned to: ${inquiry.assignee_name}`,
-            `${inquiry.flag ? InquiryFlag[inquiry.flag] : ''}`,
-          ]
-        })),
-      {
-        id: 'risk-metrics-notification',
-        title: `GS Margin Excess Updated`,
-        type: NotificationType.RiskReport,
-        timestamp: lastUpdatedTimestamp ? new Date(lastUpdatedTimestamp).getTime() : 0,
-        highlights: [
-          formatDate(lastUpdatedTimestamp)
-        ]
-      }
-    ];
-
-    newNotifications.sort((x, y) => (y.timestamp ?? -1) - (x.timestamp ?? -1));
-
-    setNotifications(newNotifications);
-  }
+  }, [resetUnseenItems, selectedType, unseenItems]);
 
   function expandOrCollapsePanel() {
     setIsExpanded(!isExpanded);
