@@ -1,3 +1,5 @@
+'use client';
+
 import { ReactNode } from "react";
 import styles from './image-popup.module.scss';
 import * as Dialog from "@radix-ui/react-dialog";
@@ -27,7 +29,7 @@ export function ImagePopup({children, url, title, description}: ImagePopupProps)
                     </Dialog.Title>
                     <div className={`${styles['content']}`}>
                         <div className={styles['img-root']}>
-                            <img src={url} className={styles['img-content']}/>
+                            <img src={url} alt={description} className={styles['img-content']}/>
                         </div>
                     </div>
                     <Dialog.Description className="DialogDescription">

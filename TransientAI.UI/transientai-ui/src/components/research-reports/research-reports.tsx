@@ -76,7 +76,7 @@ export function ResearchReports({ isExpanded }: ResearchReportsProps) {
         });
   }, []);
 
-  useEffect(() => { onReportSelection(selectedReport!) }, [selectedReport]);
+  useEffect(() => { onReportSelection(selectedReport!) }, [onReportSelection, selectedReport]);
 
   async function searchReports(event: any) {
     const inputValue = event.target.value;
