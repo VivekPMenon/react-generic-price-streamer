@@ -135,7 +135,7 @@ export function ResearchReports({ isExpanded }: ResearchReportsProps) {
           />
         </div>
 
-        <div className={`${styles['reports']} news scrollable-div`}>
+        <div className={`${styles['reports']} height-vh-63 news scrollable-div`}>
           {
             isLoading || isSearchResultsLoading ?
               <Spinner size="3" className='self-center'></Spinner>
@@ -179,7 +179,7 @@ export function ResearchReports({ isExpanded }: ResearchReportsProps) {
                 {/* {
                   emailContent ? <EmailViewer className='height-vh-68' emailHtml={emailContent} /> : <Spinner size="3" className='self-center p-2'></Spinner>
                 } */}
-                <EmailViewer className='height-vh-68' emailHtml={emailContent} />
+                <EmailViewer className='height-vh-70' emailHtml={emailContent} />
               </div>
             </div>
 
@@ -188,27 +188,27 @@ export function ResearchReports({ isExpanded }: ResearchReportsProps) {
                 AI Summary
               </div>
 
-              <div className={`${styles['summary-markdown']} height-vh-68 scrollable-div height-100p justify-center`}>
+              <div className={`height-vh-70 justify-center scrollable-div `}>
+                <div >
                 {
                   finalAiContent
                       ? <SearchableMarkdown
-                          className={`${styles['summary-markdown-body']}`}
                           markdownContent={finalAiContent.content}
                       />
                       : <Spinner size="3" className='self-center'></Spinner>
                 }
-
+                </div>
                 {finalAiContent?.images &&
-                  <ImageContainer
-                    images={finalAiContent.images}
-                  />
+                    <ImageContainer
+                        images={finalAiContent.images}
+                    />
                 }
 
                 {selectedReport?.keywords &&
-                  <Tags
-                    header='Keywords:'
-                    tags={selectedReport.keywords}
-                  />}
+                    <Tags
+                        header='Keywords:'
+                        tags={selectedReport.keywords}
+                    />}
               </div>
             </div>
           </> : <></>
