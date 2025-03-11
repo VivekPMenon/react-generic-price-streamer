@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { MenuInfo } from './model';
-import { menuInfoList } from './menu-data';
+import { menuInfoList } from './menu-data-service';
 
 interface MenuState {
   activeMenuList: MenuInfo[];
