@@ -15,6 +15,8 @@ import { useVirtualizer, VirtualItem } from "@tanstack/react-virtual";
 import { resourceNameRiskMetrics, useRiskDataStore } from '@/services/risk-data/risk-data-store';
 import { formatDate } from '@/lib/utility-functions/date-operations';
 import { useUnseenItemsStore } from '@/services/unseen-items-store/unseen-items-store';
+import { resourceName, useBreakNewsDataStore } from '@/services/break-news/break-news-data-store';
+import { BreakingNews } from '../breaking-news';
 
 export interface NotificationsProps {
   onExpandCollapse?: (state: boolean) => void;
@@ -76,6 +78,7 @@ const filterTypes = [
   NotificationType.RiskReport,
   NotificationType.CorpAct,
   NotificationType.Inquiries,
+  NotificationType.BreakNews
 ];
 
 export const filterTypeToResourceMap: { [key: string]: string } = {
@@ -303,7 +306,7 @@ export function Notifications(props: NotificationsProps) {
               onClick={() => changeNotificationType(filterType)}>
               {filterType}
 
-              { unseenItemsCount > 0 && <div className='bubble orange-color'>{unseenItemsCount}</div>}
+              { unseenItemsCount > 0 && <div className='bubble off-white-color'>{unseenItemsCount}</div>}
             </button>
           })
         }
