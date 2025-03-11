@@ -92,7 +92,7 @@ export function InvestorRelations() {
                 cellClass: 'date-cell',
                 autoHeight: true,
                 wrapText: true,
-                valueFormatter: (params) => {
+                valueFormatter: (params: any) => {
                     return tryParseAndFormat(params.value)
                 }
             },
@@ -103,7 +103,7 @@ export function InvestorRelations() {
                 cellClass: 'date-cell',
                 autoHeight: true,
                 wrapText: true,
-                valueFormatter: (params) => {
+                valueFormatter: (params: any) => {
                     return tryParseAndFormat(params.value)
                 }
             },

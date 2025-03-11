@@ -31,7 +31,9 @@ export function ImagePopup({children, url, title, description}: ImagePopupProps)
                     </Dialog.Title>
                     <div className={`${styles['content']}`}>
                         <div className={styles['img-root']}>
-                            <InnerImageZoom src={url} alt={description ?? ''} />
+                            <InnerImageZoom src={url} imgAttributes={{
+                                alt: description ?? ''
+                            }}  />
                         </div>
                     </div>
 
