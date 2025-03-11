@@ -47,7 +47,7 @@ export const useResearchReportsStore = create<ResearchReportsState>((set, get) =
       // Use Zustand's `set` function to ensure the correct state is retrieved
       set((state) => {
         const newCount = state.reports.length;
-        const unseenDiff = newCount - prevCount;
+        const unseenDiff = Math.abs(newCount - prevCount);
 
         if (unseenDiff > 0) {
           useUnseenItemsStore.getState().addUnseenItems(resourceName, unseenDiff);
