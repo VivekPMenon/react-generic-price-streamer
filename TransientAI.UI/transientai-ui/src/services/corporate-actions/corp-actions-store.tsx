@@ -58,7 +58,7 @@ export const useCorpActionsStore = create<CorpActionsDataState>((set, get) => ({
 
       set((state) => {
         const newCount = state.corpActions.length;
-        const unseenDiff = newCount - prevCount;
+        const unseenDiff = Math.abs(newCount - prevCount);
 
         if (unseenDiff > 0) {
           useUnseenItemsStore.getState().addUnseenItems(resourceName, unseenDiff);

@@ -77,7 +77,7 @@ export const useRiskReportsSlice = create<RiskReportsState>((set, get) => ({
       // Use Zustand's `set` function to ensure the correct state is retrieved
       set((state) => {
         const newCount = state.riskReports.length;
-        const unseenDiff = newCount - prevCount;
+        const unseenDiff = Math.abs(newCount - prevCount);
 
         if (unseenDiff > 0) {
           useUnseenItemsStore.getState().addUnseenItems(resourceNameRiskReports, unseenDiff);

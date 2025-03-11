@@ -12,6 +12,10 @@
   @media screen and (max-width: $mobile-breakpoint-max) {
     gap: 1px;
   }
+
+  img {
+    background-color: white;
+  }
 }
 
 .dialog-content {
@@ -43,10 +47,10 @@
   }
 }
 
+
 .img-content {
   height: 350px;
   width: 550px;
-
 }
 
 .img-description {
