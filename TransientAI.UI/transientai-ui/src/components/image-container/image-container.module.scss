@@ -25,7 +25,9 @@
 
 .image-section li img {
   height: 250px;
-  width: 350px
+  width: 350px;
+  background-color: $white;
+  cursor: pointer;
 }
 
 .img-description {
