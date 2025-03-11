@@ -1,7 +1,7 @@
 'use client'
 
 import styles from './investor-relations.module.scss';
-import React, {useCallback, useState} from 'react';
+import React, {useCallback} from 'react';
 import {DataGrid} from "@/components/data-grid";
 import {RequestFormPopup} from "@/components/investor-relations/request-form-popup";
 import {useInvestorRelationsStore} from "@/services/investor-relations-data/investor-relations-store";
@@ -112,13 +112,13 @@ export function InvestorRelations() {
     }, [changeStatus]);
 
     const columnDefs = getColumnDefs();
-    const [open, setOpen] = useState(false);
+    // const [open, setOpen] = useState(false);
 
     return (
         <div className={styles['investor-relations']}>
             <div className={styles['header']}>
                 <span>Investor Relations Inquiries</span>
-                <RequestFormPopup onSubmitted={() => setOpen(true)}>
+                <RequestFormPopup>
                     <i className='fa-regular fa-3x fa-file cursor-pointer'/>
                 </RequestFormPopup>
             </div>
