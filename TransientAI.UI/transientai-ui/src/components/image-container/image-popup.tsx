@@ -4,6 +4,8 @@ import { ReactNode } from "react";
 import styles from './image-popup.module.scss';
 import * as Dialog from "@radix-ui/react-dialog";
 import { Cross1Icon } from "@radix-ui/react-icons";
+import InnerImageZoom from 'react-inner-image-zoom';
+import 'react-inner-image-zoom/lib/InnerImageZoom/styles.min.css';
 
 export interface ImagePopupProps {
     url: string;
@@ -29,15 +31,16 @@ export function ImagePopup({children, url, title, description}: ImagePopupProps)
                     </Dialog.Title>
                     <div className={`${styles['content']}`}>
                         <div className={styles['img-root']}>
-                            <img src={url} alt={description} className={styles['img-content']}/>
+                            <InnerImageZoom src={url} alt={description ?? ''} />
                         </div>
                     </div>
-                    <Dialog.Description className="DialogDescription">
-                        <div className={`${styles['img-description']} scrollable-div height-vh-10`}>
-                            {description}
-                        </div>
-                    </Dialog.Description>
+
                 </Dialog.Content>
+                <Dialog.Description className="DialogDescription">
+                    <div className={`${styles['img-description']} scrollable-div height-vh-10`}>
+                        {description}
+                    </div>
+                </Dialog.Description>
             </Dialog.Portal>
         </Dialog.Root>
     );

@@ -5,6 +5,7 @@ import React, {useCallback} from 'react';
 import {DataGrid} from "@/components/data-grid";
 import {RequestFormPopup} from "@/components/investor-relations/request-form-popup";
 import {useInvestorRelationsStore} from "@/services/investor-relations-data/investor-relations-store";
+import {tryParseAndFormat} from "@/lib/utility-functions/date-operations";
 
 function getFlagStyle(flag: string|undefined|null) {
     const style: any = { display: "flex" };
@@ -89,12 +90,22 @@ export function InvestorRelations() {
                 headerName: 'Due',
                 width: 100,
                 cellClass: 'date-cell',
+                autoHeight: true,
+                wrapText: true,
+                valueFormatter: (params) => {
+                    return tryParseAndFormat(params.value)
+                }
             },
             {
                 field: 'date_edited',
                 headerName: 'Date edited',
                 width: 100,
                 cellClass: 'date-cell',
+                autoHeight: true,
+                wrapText: true,
+                valueFormatter: (params) => {
+                    return tryParseAndFormat(params.value)
+                }
             },
         ];
     }, [changeStatus]);
