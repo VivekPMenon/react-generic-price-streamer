@@ -15,8 +15,6 @@ import { useVirtualizer, VirtualItem } from "@tanstack/react-virtual";
 import { resourceNameRiskMetrics, useRiskDataStore } from '@/services/risk-data/risk-data-store';
 import { formatDate } from '@/lib/utility-functions/date-operations';
 import { useUnseenItemsStore } from '@/services/unseen-items-store/unseen-items-store';
-import { resourceName, useBreakNewsDataStore } from '@/services/break-news/break-news-data-store';
-import { BreakingNews } from '../breaking-news';
 
 export interface NotificationsProps {
   onExpandCollapse?: (state: boolean) => void;
@@ -45,6 +43,9 @@ function getIconClass(type: NotificationType) {
 
     case NotificationType.Inquiries:
       return 'fa-solid fa-handshake';
+    
+    case NotificationType.BreakNews:
+      return 'fa fa-whatsapp';
   }
 }
 
@@ -98,7 +99,7 @@ export function Notifications(props: NotificationsProps) {
   const { isLoading: isInquiriesLoading, inquiries } = useInvestorRelationsStore();
   const { isLoading: isRiskDataLoading, lastUpdatedTimestamp } = useRiskDataStore();
   const { resetUnseenItems, unseenItems } = useUnseenItemsStore();
-  const { fullMenuList, activeMenuList, selectedMenu, setActiveMenu } = useMenuStore();
+  const { fullMenuList, activeMenuList, setActiveMenu } = useMenuStore();
 
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
@@ -185,6 +186,14 @@ export function Notifications(props: NotificationsProps) {
           highlights: [
             formatDate(lastUpdatedTimestamp)
           ]
+        },
+        {
+          id: 'Hurricane Capital',
+          title: 'Whats App',
+          type: NotificationType.BreakNews,
+          highlights: [
+            '~CNAP: UDJPY moves below the 50% of the move up from Septomber 2024.'
+          ]
         }
       ];
 
@@ -251,6 +260,10 @@ export function Notifications(props: NotificationsProps) {
 
       case NotificationType.Inquiries:
         router.push(newRoute = '/dashboard/investor-relations'); // todo.. remove the route hardcoding
+        break;
+
+      case NotificationType.BreakNews:
+        router.push(newRoute = '/dashboard/breaking-news'); // todo.. remove the route hardcoding
         break;
     }
 
