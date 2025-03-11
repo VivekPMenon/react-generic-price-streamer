@@ -1,9 +1,10 @@
 'use client';
 
-import { ActiveMenuData, MenuContextData, MenuInfo } from '@/services/menu-data';
+import { useMenuStore } from '@/services/menu-data';
 import styles from './explorer.module.scss';
-import { useContext, useMemo, useState } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { MenuInfo } from '@/services/menu-data';
 
 export interface NotificationsProps {
   onExpandCollapse?: (state: boolean) => void;
@@ -11,80 +12,54 @@ export interface NotificationsProps {
 }
 
 export function Explorer(props: NotificationsProps) {
-
   const router = useRouter();
-
-  const { activeMenuData, setActiveMenuData } = useContext(MenuContextData);
+  const { activeMenuList, fullMenuList, selectedMenu, setActiveMenu } = useMenuStore();
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
-  
+
   function expandOrCollapsePanel() {
     setIsExpanded(!isExpanded);
-    props.onExpandCollapse!(!isExpanded);
+    props.onExpandCollapse?.(!isExpanded);
   }
 
-  function onParentMenuClick(selectedMenuInfo: MenuInfo) {
-    const newMenuList: MenuInfo[] = [...activeMenuData?.activeMenuList!];
-
-    if (!newMenuList.find(menu => menu.description === selectedMenuInfo.description)) {
-      newMenuList.push(selectedMenuInfo);
-    }
-
-    setActiveMenuData!({
-      ...activeMenuData,
-      activeMenuList: newMenuList,
-      selectedMenu: selectedMenuInfo
-    });
-
-    router.push(selectedMenuInfo.route!);
-    props.onNavigate!();
-  }
-
-  function onChildMenuClick(menuInfo: MenuInfo) {
-    setActiveMenuData!({
-      activeMenuList: [
-        ...activeMenuData?.activeMenuList!,
-        menuInfo
-      ],
-      fullMenuLIst: activeMenuData?.fullMenuLIst,
-      selectedMenu: menuInfo
-    });
+  function onMenuClick(selectedMenuInfo: MenuInfo) {
+    setActiveMenu(selectedMenuInfo);
+    router.push(selectedMenuInfo.route || '/');
+    props.onNavigate?.();
   }
 
   return (
     <div className={`${styles.explorer} widget`}>
-      <div className='widget-title'>
+      <div className="widget-title">
         Explorer
-        {/* <i className='fa-solid fa-expand toggler' onClick={() => expandOrCollapsePanel()}></i> */}
       </div>
 
       <div className="menu">
-        {
-          activeMenuData?.fullMenuLIst?.map(menuInfo => (
-            <div className="menu-item" key={menuInfo.description}>
+        {fullMenuList.map(menuInfo => (
+          <div className="menu-item" key={menuInfo.description}>
 
-              <div className={`parent-menu ${menuInfo.description === activeMenuData?.selectedMenu?.description ? 'active' : ''}`}
-                onClick={() => onParentMenuClick(menuInfo)}>
-                <span className={`icon ${menuInfo.icon}`}></span>
-                <span className="text">{menuInfo.description}</span>
-                {menuInfo.badgeCount! > 0 ? <span className="badge">{menuInfo.badgeCount}</span> : <></>}
-              </div>
-
-              {
-                menuInfo.children ? menuInfo.children.map(childMenu => (
-                  <div className="submenu" key={childMenu.description}>
-                    <div className="submenu-item" onClick={() => onChildMenuClick(menuInfo)}>
-                      {childMenu.description}
-                      <span className="timestamp">{childMenu.subDescription}</span>
-                    </div>
-                  </div>
-                )) : <></>
-              }
-
+            <div 
+              className={`parent-menu ${menuInfo.description === selectedMenu?.description ? 'active' : ''}`}
+              onClick={() => onMenuClick(menuInfo)}
+            >
+              <span className={`icon ${menuInfo.icon}`}></span>
+              <span className="text">{menuInfo.description}</span>
+              {menuInfo.badgeCount && menuInfo.badgeCount > 0 && (
+                <span className="badge">{menuInfo.badgeCount}</span>
+              )}
             </div>
-          ))
-        }
-      </div>
 
+            {menuInfo.children && menuInfo.children.map(childMenu => (
+              <div className="submenu" key={childMenu.description}>
+                <div className="submenu-item" onClick={() => onMenuClick(childMenu)}>
+                  {childMenu.description}
+                  <span className="timestamp">{childMenu.subDescription}</span>
+                </div>
+              </div>
+            ))}
+
+          </div>
+        ))}
+      </div>
     </div>
-  )
+  );
 }

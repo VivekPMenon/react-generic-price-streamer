@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Theme } from "@radix-ui/themes";
 import "./globals.scss";
-import { MenuContextDataProvider } from "@/services/menu-data";
 import { ChatbotDataContextProvider } from "@/services/chatbot-data";
 import { SearchDataContextProvider } from "@/services/search-data";
 
@@ -39,13 +38,11 @@ export default function RootLayout({
       
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased font-sans dark`}>
         <Theme accentColor="teal" className="height-100p">
-          <MenuContextDataProvider>
-            <ChatbotDataContextProvider>
-              <SearchDataContextProvider>
-                  {children}
-              </SearchDataContextProvider>
-            </ChatbotDataContextProvider>
-          </MenuContextDataProvider>
+          <ChatbotDataContextProvider>
+            <SearchDataContextProvider>
+              {children}
+            </SearchDataContextProvider>
+          </ChatbotDataContextProvider>
         </Theme>
       </body>
     </html>

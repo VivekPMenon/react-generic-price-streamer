@@ -1,10 +1,10 @@
 'use client'
 
-import { useContext, useEffect, useMemo, useState, useRef } from 'react';
+import { useEffect, useMemo, useState, useRef } from 'react';
 import styles from './notifications.module.scss';
 import { Notification, NotificationType } from '@/services/notifications';
 import { useCorpActionsStore, resourceName as corpActionResourceName } from "@/services/corporate-actions";
-import { MenuContextData } from "@/services/menu-data";
+import { useMenuStore } from "@/services/menu-data";
 import { NotificationPopup } from './notification-popup';
 import { useRouter } from 'next/navigation';
 import { useResearchReportsStore, useRiskReportsSlice, resourceName as researchReportResourceName, resourceNameRiskReports } from '@/services/reports-data';
@@ -53,7 +53,6 @@ function getPillClass(type: NotificationType) {
       return 'pill blue';
 
     case NotificationType.Clients:
-
     case NotificationType.RiskReport:
       return 'pill orange';
 
@@ -96,7 +95,7 @@ export function Notifications(props: NotificationsProps) {
   const { isLoading: isInquiriesLoading, inquiries } = useInvestorRelationsStore();
   const { isLoading: isRiskDataLoading, lastUpdatedTimestamp } = useRiskDataStore();
   const { resetUnseenItems, unseenItems } = useUnseenItemsStore();
-  const { activeMenuData, setActiveMenuData } = useContext(MenuContextData);
+  const { fullMenuList, activeMenuList, selectedMenu, setActiveMenu } = useMenuStore();
 
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
@@ -252,16 +251,10 @@ export function Notifications(props: NotificationsProps) {
         break;
     }
 
-    // todo.. refcator, we need to associate route navigation and active menu setting using a zustand store
-    const selectedMenu = activeMenuData?.fullMenuLIst?.find(menu => menu.route === newRoute)
-    if (activeMenuData && !activeMenuData?.activeMenuList?.find(menu => menu.route === newRoute)) {
-      activeMenuData.activeMenuList = [...activeMenuData?.activeMenuList!, selectedMenu!];
+    const menuForRoute = fullMenuList.find(menu => menu.route === newRoute);
+    if (menuForRoute) {
+      setActiveMenu(menuForRoute);
     }
-
-    setActiveMenuData!({
-      ...activeMenuData,
-      selectedMenu: activeMenuData?.activeMenuList?.find(menu => menu.route === newRoute)
-    });
 
     setSelectedNotification(notification);
     props.notificationClicked!(notification);
@@ -272,10 +265,9 @@ export function Notifications(props: NotificationsProps) {
     //   corpActions: [selectedCorpAction]
     // });
 
-    setActiveMenuData!({
-      ...activeMenuData,
-      selectedMenu: activeMenuData?.activeMenuList?.length ? activeMenuData?.activeMenuList[0] : {}
-    });
+    if (activeMenuList.length > 0) {
+      setActiveMenu(activeMenuList[0]);
+    }
 
     router.push('/dashboard/corporate-actions'); // todo.. remove the route hardcoding
   }
