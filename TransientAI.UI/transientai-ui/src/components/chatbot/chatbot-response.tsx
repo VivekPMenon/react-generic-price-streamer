@@ -1,12 +1,14 @@
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import styles from './chatbot-response.module.scss';
 import { chatbotDataService } from '@/services/chatbot-data/chatbot-data-service';
 import { ChatbotConversation, ChatHistory } from '@/services/chatbot-data/model';
 import { Spinner } from '@radix-ui/themes';
 import ReactMarkdown from 'react-markdown';
 import { getCurrentTimestamp } from '@/lib/utility-functions/date-operations';
-import { MenuContextData, MenuInfo } from '@/services/menu-data';
+import { MenuInfo } from '@/services/menu-data';
 import { ChatbotDataContext } from '@/services/chatbot-data';
+import { useContext } from 'react';
+import { useMenuStore } from '@/services/menu-data/menu-data-store'; // Import the Zustand store
 
 export interface ChatbotResponseProps {
   query: string;
@@ -15,7 +17,7 @@ export interface ChatbotResponseProps {
 
 export function ChatbotResponse(props: ChatbotResponseProps) {
 
-  const { activeMenuData, setActiveMenuData } = useContext(MenuContextData);
+  const { fullMenuList, setActiveMenu } = useMenuStore();
   const { chatbotData, setChatbotData } = useContext(ChatbotDataContext);
 
   const [query, setQuery] = useState<string>('');
@@ -83,16 +85,13 @@ export function ChatbotResponse(props: ChatbotResponseProps) {
   }
 
   function clipChatHistory(chatHistory: ChatHistory) {
-    const newMenuList: MenuInfo[] = [...activeMenuData?.fullMenuLIst!];
-    newMenuList.push({
+    const newMenuItem: MenuInfo = {
       description: chatHistory.title,
-      icon: 'fa-solid fa-thumbtack'
-    });
-
-    setActiveMenuData!({
-      ...activeMenuData,
-      fullMenuLIst: newMenuList
-    });
+      icon: 'fa-solid fa-thumbtack',
+      id: chatHistory.conversation_id
+    };
+    
+    setActiveMenu(newMenuItem);
   }
 
   function navigateBack() {

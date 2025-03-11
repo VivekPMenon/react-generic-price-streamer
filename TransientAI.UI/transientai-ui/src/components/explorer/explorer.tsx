@@ -1,10 +1,10 @@
 'use client';
 
-import { useMenuStore } from '@/services/menu-data-store';
+import { useMenuStore } from '@/services/menu-data';
 import styles from './explorer.module.scss';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { MenuInfo } from '@/services/menu-data-store';
+import { MenuInfo } from '@/services/menu-data';
 
 export interface NotificationsProps {
   onExpandCollapse?: (state: boolean) => void;

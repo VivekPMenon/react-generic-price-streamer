@@ -7,7 +7,7 @@ import { ReactNode, useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useDeviceType } from '@/lib/hooks';
 import { useUnseenItemsStore } from '@/services/unseen-items-store/unseen-items-store';
-import { useMenuStore } from '@/services/menu-data-store';
+import { useMenuStore } from '@/services/menu-data';
 
 export interface DashboardTabsProps {
   children?: ReactNode;
