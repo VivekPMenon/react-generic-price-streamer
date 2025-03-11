@@ -24,8 +24,8 @@ const ImageContainer = (props: ImageContainerProps) => {
                         <ImagePopup {...image}>
                             <div>
                                 <h2>{image.title}</h2>
-                                <img src={image.url} alt={image.title}/>
-                                <span>{image.description}</span>
+                                <img src={image.url} alt={image.title ?? image.description} />
+                                <div className={`${styles['img-description']}`}>{image.description}</div>
                             </div>
                         </ImagePopup>
                     </li>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useDeferredValue } from "react";
+import React, { useState, useEffect, useRef, useDeferredValue, useCallback } from "react";
 import DOMPurify from "dompurify";
 
 export interface EmailViewerProps {
@@ -6,6 +6,8 @@ export interface EmailViewerProps {
   htmlSource?: string;
   title?: string;
   className?: string;
+  //todo: remove this and its usage. its a hack
+  scrollToSearchTerm?: string;
 }
 
 // Debounce Hook for better performance
@@ -20,7 +22,7 @@ const useDebounce = (value: string, delay: number) => {
   return debouncedValue;
 };
 
-const EmailViewer = ({ emailHtml, htmlSource, className }: EmailViewerProps) => {
+const EmailViewer = ({ emailHtml, htmlSource, className, scrollToSearchTerm }: EmailViewerProps) => {
   
   const [sanitizedHtml, setSanitizedHtml] = useState("");
   const [originalHtml, setOriginalHtml] = useState("");
@@ -63,7 +65,7 @@ const EmailViewer = ({ emailHtml, htmlSource, className }: EmailViewerProps) => 
     return sanitizedDoc.documentElement.innerHTML;
   };
 
-  const navigateMatches = (direction: number) => {
+  const navigateMatches = useCallback((direction: number) => {
     if (matchIndices.length === 0) return;
 
     let newIndex = currentMatchIndex + direction;
@@ -80,7 +82,7 @@ const EmailViewer = ({ emailHtml, htmlSource, className }: EmailViewerProps) => 
       highlightedElements.forEach((el) => el.classList.remove("active-match"));
       highlightedElements[newIndex].classList.add("active-match");
     }
-  };
+  }, []);
 
   useEffect(() => {
     if (emailHtml) {
@@ -160,12 +162,19 @@ const EmailViewer = ({ emailHtml, htmlSource, className }: EmailViewerProps) => 
       setCurrentMatchIndex(0);
     };
 
+    if (scrollToSearchTerm) {
+      setSearchTerm(scrollToSearchTerm);
+      highlightMatches(scrollToSearchTerm);
+      navigateMatches(1);
+      return;
+    }
+
     if (!deferredSearchTerm.trim()) {
       resetHighlighting();
       return;
     }
     highlightMatches(deferredSearchTerm);
-  }, [deferredSearchTerm, originalHtml]);
+  }, [deferredSearchTerm, navigateMatches, originalHtml, scrollToSearchTerm]);
 
   return (
     <div className="email-viewer-container">
