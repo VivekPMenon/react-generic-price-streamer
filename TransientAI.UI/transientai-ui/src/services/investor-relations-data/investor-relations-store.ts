@@ -105,7 +105,7 @@ export const useInvestorRelationsStore = create<InvestorRelationsStore>((set, ge
       // Ensure we fetch the latest count after the state is updated
       set((state) => {
         const newCount = state.inquiries.length;
-        const unseenDiff = newCount - prevCount;
+        const unseenDiff = Math.abs(newCount - prevCount);
 
         if (unseenDiff > 0) {
           useUnseenItemsStore.getState().addUnseenItems(resourceNameInvestorRelations, unseenDiff);

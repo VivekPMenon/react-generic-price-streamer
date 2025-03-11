@@ -72,14 +72,14 @@
 
 .email-content {
   flex: 1 1 40%;
-  min-width: 40%;
-
+  max-width: 40%;
   border-radius: 5px;
   background-color: $gray-1000;
 }
 
 .ai-summary {
   flex: 1 1 40%;
+  max-width: 40%;
   background-color: $gray-1000;
   border-radius: 5px;
   height: 100%;

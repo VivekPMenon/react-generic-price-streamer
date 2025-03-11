@@ -177,7 +177,7 @@ export function ResearchReports({ isExpanded }: ResearchReportsProps) {
                 {/* {
                   emailContent ? <EmailViewer className='height-vh-68' emailHtml={emailContent} /> : <Spinner size="3" className='self-center p-2'></Spinner>
                 } */}
-                <EmailViewer className='height-vh-70' emailHtml={emailContent} />
+                <EmailViewer className='height-vh-68' emailHtml={emailContent} />
               </div>
             </div>
 
@@ -186,7 +186,7 @@ export function ResearchReports({ isExpanded }: ResearchReportsProps) {
                 AI Summary
               </div>
 
-              <div className={`height-vh-70 justify-center scrollable-div `}>
+              <div className={`height-vh-68 justify-center scrollable-div `}>
                 <div >
                 {
                   finalAiContent
