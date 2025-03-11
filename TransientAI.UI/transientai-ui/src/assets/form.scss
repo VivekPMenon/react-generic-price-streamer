@@ -61,11 +61,7 @@
 }
 
 .horizontal-scrollable-div::-webkit-scrollbar {
-  height: 7px;
-}
-
-.horizontal-scrollable-div:hover::-webkit-scrollbar {
-  height: 7px;
+  height: 5px;
 }
 
 .horizontal-scrollable-div::-webkit-scrollbar-track {
@@ -73,6 +69,10 @@
 }
 
 .horizontal-scrollable-div::-webkit-scrollbar-thumb {
+  background: transparent;
+}
+
+.horizontal-scrollable-div:hover::-webkit-scrollbar-thumb {
   background: $scrollbar-thumb-bg;
   border-radius: 5px;
 }
