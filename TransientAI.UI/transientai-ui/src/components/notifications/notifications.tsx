@@ -302,7 +302,8 @@ export function Notifications(props: NotificationsProps) {
         {
           filterTypes.map(filterType => {
             const additionalResourceToCheck = filterType === NotificationType.RiskReport ? resourceNameRiskMetrics : '';
-            const unseenItemsCount = getUnseenItemsCount(filterType) + (additionalResourceToCheck ? unseenItems[additionalResourceToCheck] : 0);
+            const unseenItemsCount = getUnseenItemsCount(filterType) 
+              + (additionalResourceToCheck && unseenItems[additionalResourceToCheck] > 0 ? unseenItems[additionalResourceToCheck] : 0);
 
             return <button
               key={filterType}
