@@ -1,4 +1,4 @@
-import React, {ReactNode, useState} from "react";
+import React, {ReactNode, useEffect, useState} from "react";
 import * as Dialog from '@radix-ui/react-dialog';
 import * as Form from '@radix-ui/react-form';
 import styles from './request-form-popup.module.scss';
@@ -7,6 +7,7 @@ import {InquiryFlag, InquiryStatus} from "@/services/investor-relations-data/mod
 
 export interface RequestPopupProps {
     children: ReactNode;
+    onSubmitted?: () => void;
 }
 
 type KeyValuePair = { key: string, value: string|number };
@@ -21,7 +22,9 @@ function enumToKeyValuePair<T extends { [key: string]: number | string }>(enumOb
 
 const Flags = enumToKeyValuePair(InquiryFlag);
 
-export function RequestFormPopup({children}: RequestPopupProps) {
+const AssignTo: string = 'Assign to';
+
+export function RequestFormPopup({children, onSubmitted}: RequestPopupProps) {
     const [open, setOpen] = useState(false);
     const [subject, setSubject] = useState('');
     const [subjectError, setSubjectError] = useState('');
@@ -34,6 +37,7 @@ export function RequestFormPopup({children}: RequestPopupProps) {
     const [assignee, setAssignee] = useState<string>('');
     const [assigneeError, setAssigneeError] = useState('');
     const { isSaving, save, assignees } = useInvestorRelationsStore();
+    const [selectableAssignees, setSelectableAssignees] = useState<string[]>([]);
 
     const handleSubjectChange = (event:any) => {
         setSubject(event.target.value);
@@ -56,8 +60,9 @@ export function RequestFormPopup({children}: RequestPopupProps) {
     }
 
     const handleAssigneeChange = (event: any) => {
-        setAssignee(event.target.value);
-        setAssigneeError('');
+        const selectedValue = event.target.value;
+        setAssignee(selectedValue);
+        setAssigneeError(selectedValue === AssignTo ? 'Assign to is required' : '');
     }
 
     const validate = () => {
@@ -69,7 +74,7 @@ export function RequestFormPopup({children}: RequestPopupProps) {
             setInquiryError('Inquiry is required');
             return false;
         }
-        if (!assignee) {
+        if (!assignee || assignee === AssignTo) {
             setAssigneeError('Assign to is required');
             return false;
         }
@@ -99,6 +104,9 @@ export function RequestFormPopup({children}: RequestPopupProps) {
             })
                 .then(() => {
                     resetAndClose();
+                    if (onSubmitted) {
+                        onSubmitted();
+                    }
                 });
         }
     };
@@ -121,6 +129,10 @@ export function RequestFormPopup({children}: RequestPopupProps) {
         setOpen(false);
     }
 
+    useEffect(() => {
+        setSelectableAssignees(['Assign to', ...assignees])
+    }, [assignees]);
+
     return (
         <Dialog.Root open={open} onOpenChange={setOpen}>
             <Dialog.Trigger asChild>
@@ -137,6 +149,7 @@ export function RequestFormPopup({children}: RequestPopupProps) {
                                 <div className="flex space-x-2 mt-4">
                                     <Form.Control asChild>
                                         <input
+                                            disabled={isSaving}
                                             type="text"
                                             placeholder='Subject'
                                             required={true}
@@ -152,6 +165,7 @@ export function RequestFormPopup({children}: RequestPopupProps) {
                                 <div className="flex space-x-2 mt-4">
                                     <Form.Control asChild>
                                         <textarea
+                                            disabled={isSaving}
                                             placeholder='Inquiry'
                                             required={true}
                                             value={inquiry}
@@ -167,12 +181,12 @@ export function RequestFormPopup({children}: RequestPopupProps) {
                                     <Form.Label>Assign To</Form.Label>
                                     <Form.Control asChild>
                                         <select
+                                            disabled={isSaving}
                                             onChange={handleAssigneeChange}
                                             required={true}
-                                            aria-placeholder='Assign To'
                                             style={{ display: 'flex', flex: '1 1 50%' }}>
                                             {
-                                                assignees.map(assignee => (
+                                                selectableAssignees.map(assignee => (
                                                     <option key={assignee} value={assignee}>{assignee}</option>
                                                 ))
                                             }
@@ -186,6 +200,7 @@ export function RequestFormPopup({children}: RequestPopupProps) {
                                     <Form.Label>Due</Form.Label>
                                     <Form.Control asChild>
                                         <input
+                                            disabled={isSaving}
                                             type="date"
                                             className={styles['date']}
                                             required={true}
@@ -201,9 +216,9 @@ export function RequestFormPopup({children}: RequestPopupProps) {
                                     <Form.Label>Flag</Form.Label>
                                     <Form.Control asChild>
                                         <select
+                                            disabled={isSaving}
                                             required={true}
                                             onChange={handleFlagChange}
-                                            aria-placeholder='Flag'
                                             style={{ display: 'flex', flex: '1 1 50%' }}>
                                             {
                                                 Flags.map(flag => (

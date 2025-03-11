@@ -1,11 +1,12 @@
 'use client'
 
 import styles from './investor-relations.module.scss';
-import React, {useCallback} from 'react';
+import React, {useCallback, useRef, useState} from 'react';
 import {DataGrid} from "@/components/data-grid";
 import {RequestFormPopup} from "@/components/investor-relations/request-form-popup";
 import {useInvestorRelationsStore} from "@/services/investor-relations-data/investor-relations-store";
 import {tryParseAndFormat} from "@/lib/utility-functions/date-operations";
+import {Toast} from '@/components/toast';
 
 function getFlagStyle(flag: string|undefined|null) {
     const style: any = { display: "flex" };
@@ -111,12 +112,13 @@ export function InvestorRelations() {
     }, [changeStatus]);
 
     const columnDefs = getColumnDefs();
+    const [open, setOpen] = useState(false);
 
     return (
         <div className={styles['investor-relations']}>
             <div className={styles['header']}>
                 <span>Investor Relations Inquiries</span>
-                <RequestFormPopup>
+                <RequestFormPopup onSubmitted={() => setOpen(true)}>
                     <i className='fa-regular fa-3x fa-file cursor-pointer'/>
                 </RequestFormPopup>
             </div>
@@ -128,6 +130,14 @@ export function InvestorRelations() {
                     loading={isLoading}
                 />
             </div>
+            {/*<Toast*/}
+            {/*    altText='Saved successfully.'*/}
+            {/*    type='foreground'*/}
+            {/*    content='Saved successfully.'*/}
+            {/*    defaultOpen={false}*/}
+            {/*    open={open}*/}
+            {/*    onOpenChange={setOpen}*/}
+            {/*/>*/}
         </div>
     );
 }

@@ -55,10 +55,9 @@ class InvestorRelationsService {
     }
 
     async getAssignees(): Promise<string[]> {
-        const result = await webApihandler.get('assignee_names', {}, {
+        return await webApihandler.get('assignee_names', {}, {
             serviceName: this.serviceName
         });
-        return result.data;
     }
 }
 
