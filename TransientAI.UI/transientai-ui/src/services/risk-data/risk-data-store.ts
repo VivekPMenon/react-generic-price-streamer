@@ -12,6 +12,7 @@ export interface RiskDataState {
   lastUpdatedTimestamp: string;
   setSelectedRiskMetricsItem: (riskMetricsItem: RiskMetricsItem | null) => void;
   loadRiskMetrics: () => Promise<void>;
+  riskMetricsItemsFiltered: RiskMetricsItem[] | null;
   isLoading: boolean;
   error: string | null;
   startPolling: () => void;
@@ -19,6 +20,7 @@ export interface RiskDataState {
 
 export const useRiskDataStore = create<RiskDataState>((set, get) => ({
   riskMetricsItems: null,
+  riskMetricsItemsFiltered: null,
   selectedRiskMetricsItem: null,
   lastUpdatedTimestamp: '',
   isLoading: false,
@@ -35,7 +37,10 @@ export const useRiskDataStore = create<RiskDataState>((set, get) => ({
       set({
         riskMetricsItems: result?.margin_data,
         lastUpdatedTimestamp: result?.timestamp,
-        isLoading: false
+        isLoading: false,
+        riskMetricsItemsFiltered: result?.margin_data?.filter((data: RiskMetricsItem) => {
+          return data.name === 'Chris Napoli' || data.name === 'IBIS_ALL*';
+        })
       });
     } catch (error) {
       console.error('Error loading risk metrics:', error);

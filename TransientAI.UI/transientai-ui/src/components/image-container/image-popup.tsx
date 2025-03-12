@@ -21,29 +21,29 @@ export function ImagePopup({children, url, title, description}: ImagePopupProps)
             </Dialog.Trigger>
             <Dialog.Portal>
                 <Dialog.Overlay className="DialogOverlay" />
-                <Dialog.Content className={styles['dialog']}>
+                <Dialog.Content>
                     <Rnd
                         lockAspectRatio={true}
-                        enableResizing={{bottomRight: true}}
-                        enableUserSelectHack={true}
-                        className={`${styles['dialog-content']}`}
+                        enableResizing={true}
+                        disableDragging={true}
+                        className={`${styles['dialog']}`}
                     >
-                        <div className={`${styles['dialog-close']}`}>
+                        <div className={styles['dialog-close']}>
                             <Dialog.DialogClose>
                                 <Cross1Icon  />
                             </Dialog.DialogClose>
                         </div>
-                        <div className={styles['content']}>
-                            <Dialog.Title>
-                                {title}
+                        <div className={`${styles['dialog-content']} `}>
+                            <Dialog.Title className={`DialogTitle ${styles['dialog-title']} `} >
+                                {title ?? 'Test'}
                             </Dialog.Title>
                             <img
                                 src={url}
-                                alt={description ?? ''}
+                                alt={url ?? ''}
                             />
-                            <Dialog.Description className="DialogDescription" asChild={true}>
-                                <div className={`${styles['img-description']} scrollable-div height-vh-10`}>
-                                    {description}
+                            <Dialog.Description asChild={true}>
+                                <div className={`${styles['img-description']} scrollable-div`}>
+                                    {description ?? ''}
                                 </div>
                             </Dialog.Description>
                         </div>
