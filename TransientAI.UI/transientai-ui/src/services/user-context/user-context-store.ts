@@ -28,6 +28,11 @@ export const useUserContextStore = create<UserContextState>((set, get) => ({
     const currentEnv = endpointFinder.getCurrentEnvInfo();
 
     try {
+      if (currentEnv.isAuthDisabled) {
+        set({ isAuthenticated: true, isLoading: false });
+        return;
+      }
+
       set({ isLoading: true });
 
       await msalInstance.initialize();
