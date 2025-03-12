@@ -10,6 +10,8 @@
     "lint-fix": "next lint --fix"
   },
   "dependencies": {
+    "@azure/msal-browser": "^4.7.0",
+    "@azure/msal-react": "^3.0.6",
     "@casl/ability": "^6.7.3",
     "@casl/react": "^5.0.0",
     "@coreui/icons": "^3.0.1",

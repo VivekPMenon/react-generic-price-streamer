@@ -8,6 +8,11 @@ import { Suspense, useEffect, useState } from 'react';
 import { DashboardTabs } from '@/components/dashboard-tabs/dashboard-tabs';
 import { PnlMetrics } from '@/components/pnl-metrics/pnl-metrics';
 import { useDeviceType } from '@/lib/hooks';
+import { useUserContextStore } from '@/services/user-context';
+import { MsalProvider } from '@azure/msal-react';
+import msalInstance from '../msal-config';
+import { Spinner } from '@radix-ui/themes';
+import { webApihandler } from '@/services/web-api-handler';
 
 export default function DashboardLayout({
   children,
@@ -15,18 +20,24 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }>) {
 
+  // todo.. unabel to add this to the root of the app, as it is server side rendered, create an intermediate layout that wil act as root for all client dashbaords
+  const { loadUserContext, isLoading, isAuthenticated, userContext } = useUserContextStore();
+
+  useEffect(() => {
+    loadUserContext();
+  }, []);
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      webApihandler.setBearerToken(userContext.token!);
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
+  }, [isAuthenticated]);
+
   const deviceType = useDeviceType();
 
   const [expandedPanels, setExpandedPanels] = useState<string[]>([]);
   const [isMenuVisible, setIsMenuVisible] = useState<boolean>(true);
-
-  // useEffect(() => {
-  //   if (deviceType !== 'mobile') {
-  //     setIsMenuVisible(true);
-  //   } else {
-  //     setIsMenuVisible(false);
-  //   }
-  // }, [deviceType]); // todo.. not using useeffect
 
   function onExpandCollapse(panelName: string, isExpanded: boolean) {
     const latestExpandedPanels = [...expandedPanels];
@@ -46,34 +57,43 @@ export default function DashboardLayout({
   }
 
   return (
-    <div className={styles.home}>
-      <Header isMenuVisible={isMenuVisible} onMenuToggle={onMenuToggle}></Header>
+    <MsalProvider instance={msalInstance}>
+      {
+        isLoading || !isAuthenticated ? <div className='p-2 flex gap-2 items-center justify-center height-100p'>
+          <Spinner size={"3"}></Spinner>
+          Trying to authenticate you. Please wait...
+        </div> :
 
-      <main>
-        <div className={`${styles['left-panel']} ${!isMenuVisible && deviceType === 'mobile' ? styles['collapsed'] : ''}`}>
-          {
-            !expandedPanels.includes('notifications') ?
-              <Explorer
-                onExpandCollapse={isExpanded => onExpandCollapse('explorer', isExpanded)}
-                onNavigate={() => setIsMenuVisible(false)}>
-              </Explorer> : <></>
-          }
-          {
-            !expandedPanels.includes('explorer') ?
-              <Notifications onExpandCollapse={isExpanded => onExpandCollapse('notifications', isExpanded)}
-                notificationClicked={notification => setIsMenuVisible(false)}>
-              </Notifications> : <></>
-          }
-        </div>
+          <div className={styles.home}>
+            <Header isMenuVisible={isMenuVisible} onMenuToggle={onMenuToggle}></Header>
 
-        <div className={`${styles['middle-panel']} ${isMenuVisible && deviceType === 'mobile' ? styles['collapsed'] : ''}`}>
-          <PnlMetrics></PnlMetrics>
+            <main>
+              <div className={`${styles['left-panel']} ${!isMenuVisible && deviceType === 'mobile' ? styles['collapsed'] : ''}`}>
+                {
+                  !expandedPanels.includes('notifications') ?
+                    <Explorer
+                      onExpandCollapse={isExpanded => onExpandCollapse('explorer', isExpanded)}
+                      onNavigate={() => setIsMenuVisible(false)}>
+                    </Explorer> : <></>
+                }
+                {
+                  !expandedPanels.includes('explorer') ?
+                    <Notifications onExpandCollapse={isExpanded => onExpandCollapse('notifications', isExpanded)}
+                      notificationClicked={notification => setIsMenuVisible(false)}>
+                    </Notifications> : <></>
+                }
+              </div>
 
-          <DashboardTabs>
-            {children}
-          </DashboardTabs>
-        </div>
-      </main>
-    </div>
+              <div className={`${styles['middle-panel']} ${isMenuVisible && deviceType === 'mobile' ? styles['collapsed'] : ''}`}>
+                <PnlMetrics></PnlMetrics>
+
+                <DashboardTabs>
+                  {children}
+                </DashboardTabs>
+              </div>
+            </main>
+          </div>
+      }
+    </MsalProvider>
   );
 }
