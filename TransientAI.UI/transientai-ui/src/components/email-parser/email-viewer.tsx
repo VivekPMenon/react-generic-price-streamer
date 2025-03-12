@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, useDeferredValue, useCallback } from "react";
 import DOMPurify from "dompurify";
+import {executeAsync} from "@/lib/utility-functions/async";
 
 export interface EmailViewerProps {
   emailHtml?: string;
@@ -11,16 +12,16 @@ export interface EmailViewerProps {
 }
 
 // Debounce Hook for better performance
-const useDebounce = (value: string, delay: number) => {
-  const [debouncedValue, setDebouncedValue] = useState(value);
-
-  useEffect(() => {
-    const handler = setTimeout(() => setDebouncedValue(value), delay);
-    return () => clearTimeout(handler);
-  }, [value, delay]);
-
-  return debouncedValue;
-};
+// const useDebounce = (value: string, delay: number) => {
+//   const [debouncedValue, setDebouncedValue] = useState(value);
+//
+//   useEffect(() => {
+//     const handler = setTimeout(() => setDebouncedValue(value), delay);
+//     return () => clearTimeout(handler);
+//   }, [value, delay]);
+//
+//   return debouncedValue;
+// };
 
 const EmailViewer = ({ emailHtml, htmlSource, className, scrollToSearchTerm }: EmailViewerProps) => {
   
@@ -31,8 +32,8 @@ const EmailViewer = ({ emailHtml, htmlSource, className, scrollToSearchTerm }: E
   const [currentMatchIndex, setCurrentMatchIndex] = useState(0);
   const contentRef = useRef<HTMLDivElement>(null);
 
-  const debouncedSearchTerm = useDebounce(searchTerm, 300);
-  const deferredSearchTerm = useDeferredValue(debouncedSearchTerm);
+  // const debouncedSearchTerm = useDebounce(searchTerm, 300);
+  const deferredSearchTerm = useDeferredValue(searchTerm);
 
   // const extractBodyContent = (htmlString: any) => {
   //   const match = htmlString.match(/<body[^>]*>([\s\S]*)<\/body>/i);
@@ -162,19 +163,21 @@ const EmailViewer = ({ emailHtml, htmlSource, className, scrollToSearchTerm }: E
       setCurrentMatchIndex(0);
     };
 
-    if (scrollToSearchTerm) {
-      setSearchTerm(scrollToSearchTerm);
-      highlightMatches(scrollToSearchTerm);
-      navigateMatches(1);
-      return;
-    }
-
     if (!deferredSearchTerm.trim()) {
       resetHighlighting();
       return;
     }
     highlightMatches(deferredSearchTerm);
   }, [deferredSearchTerm, navigateMatches, originalHtml, scrollToSearchTerm]);
+
+  useEffect(() => {
+    if (scrollToSearchTerm) {
+      setSearchTerm(scrollToSearchTerm);
+      executeAsync(() => {
+        navigateMatches(1);
+      }, 350);
+    }
+  }, [scrollToSearchTerm]);
 
   return (
     <div className="email-viewer-container">
@@ -189,7 +192,6 @@ const EmailViewer = ({ emailHtml, htmlSource, className, scrollToSearchTerm }: E
             placeholder="Find..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-
           />
           <i className={`fa-solid fa-chevron-left ${matchIndices?.length > 0 ? 'active' : ''}`} onClick={() => navigateMatches(-1)}></i>
           <i className={`fa-solid fa-chevron-right ${matchIndices?.length > 0 ? 'active' : ''}`} onClick={() => navigateMatches(1)}></i>

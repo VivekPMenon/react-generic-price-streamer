@@ -39,20 +39,10 @@
 }
 
 .img-root {
-  padding: 20px 50px;
-
+  margin: 5px auto;
+  width: 100%;
 
   @media screen and (max-width: $mobile-breakpoint-max) {
     padding: 1px 1px;
   }
-}
-
-
-.img-content {
-  height: 350px;
-  width: 550px;
-}
-
-.img-description {
-
 }

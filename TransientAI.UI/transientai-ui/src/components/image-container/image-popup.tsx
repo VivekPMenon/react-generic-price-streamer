@@ -4,6 +4,8 @@ import { ReactNode } from "react";
 import styles from './image-popup.module.scss';
 import * as Dialog from "@radix-ui/react-dialog";
 import { Cross1Icon } from "@radix-ui/react-icons";
+// @ts-expect-error no dt file was provided
+import ImageZoom from 'react-image-zooom';
 
 export interface ImagePopupProps {
     url: string;
@@ -28,16 +30,19 @@ export function ImagePopup({children, url, title, description}: ImagePopupProps)
                         {title}
                     </Dialog.Title>
                     <div className={`${styles['content']}`}>
-                        <div className={styles['img-root']}>
-                            <img src={url} alt={description} className={styles['img-content']}/>
-                        </div>
+                        <ImageZoom
+                            src={url}
+                            alt={description ?? ''}
+                            fullWidth={true}
+                            className={styles['img-root']}
+                            />
                     </div>
-                    <Dialog.Description className="DialogDescription">
-                        <div className={`${styles['img-description']} scrollable-div height-vh-10`}>
-                            {description}
-                        </div>
-                    </Dialog.Description>
                 </Dialog.Content>
+                <Dialog.Description className="DialogDescription">
+                    <div className={`${styles['img-description']} scrollable-div height-vh-10`}>
+                        {description}
+                    </div>
+                </Dialog.Description>
             </Dialog.Portal>
         </Dialog.Root>
     );

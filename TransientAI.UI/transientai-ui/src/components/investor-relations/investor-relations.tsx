@@ -5,6 +5,8 @@ import React, {useCallback} from 'react';
 import {DataGrid} from "@/components/data-grid";
 import {RequestFormPopup} from "@/components/investor-relations/request-form-popup";
 import {useInvestorRelationsStore} from "@/services/investor-relations-data/investor-relations-store";
+import {tryParseAndFormat} from "@/lib/utility-functions/date-operations";
+// import {Toast} from '@/components/toast';
 
 function getFlagStyle(flag: string|undefined|null) {
     const style: any = { display: "flex" };
@@ -89,17 +91,28 @@ export function InvestorRelations() {
                 headerName: 'Due',
                 width: 100,
                 cellClass: 'date-cell',
+                autoHeight: true,
+                wrapText: true,
+                valueFormatter: (params: any) => {
+                    return tryParseAndFormat(params.value)
+                }
             },
             {
                 field: 'date_edited',
                 headerName: 'Date edited',
                 width: 100,
                 cellClass: 'date-cell',
+                autoHeight: true,
+                wrapText: true,
+                valueFormatter: (params: any) => {
+                    return tryParseAndFormat(params.value)
+                }
             },
         ];
     }, [changeStatus]);
 
     const columnDefs = getColumnDefs();
+    // const [open, setOpen] = useState(false);
 
     return (
         <div className={styles['investor-relations']}>
@@ -117,6 +130,14 @@ export function InvestorRelations() {
                     loading={isLoading}
                 />
             </div>
+            {/*<Toast*/}
+            {/*    altText='Saved successfully.'*/}
+            {/*    type='foreground'*/}
+            {/*    content='Saved successfully.'*/}
+            {/*    defaultOpen={false}*/}
+            {/*    open={open}*/}
+            {/*    onOpenChange={setOpen}*/}
+            {/*/>*/}
         </div>
     );
 }
