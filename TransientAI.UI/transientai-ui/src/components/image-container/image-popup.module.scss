@@ -1,36 +1,19 @@
 @import '../../assets/variables.scss';
 
-.content {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  text-align: center;
-  font-size: 20px;
-  align-items: center;
-  justify-content: center;
-
-  @media screen and (max-width: $mobile-breakpoint-max) {
-    gap: 1px;
-  }
-
-  img {
-    background-color: white;
-  }
-}
-
-.dialog-content {
-  background-color: #0c101b;
+.dialog {
+  background-color: $body-bg;
   border-radius: 6px;
-  box-shadow: 0 10px 38px -10px #0e121659, 0 10px 20px -15px #0e121633;
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  box-shadow: $dialog-shadow;
+  padding: 5px;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
   width: 50vw;
-  max-width: 35vw;
-  max-height: 75vh;
-  padding: 25px;
+  min-height: fit-content !important;
+  max-height: 75vh !important;
   animation: .15s cubic-bezier(.16, 1, .3, 1) contentShow;
+
+  border: 1px solid $border-color;
 
   @media screen and (max-width: $mobile-breakpoint-max) {
     gap: 1px;
@@ -38,11 +21,42 @@
   }
 }
 
-.img-root {
-  margin: 5px auto;
-  width: 100%;
+.dialog-content {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  text-align: center;
+  font-size: 20px;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  flex: 1;
 
   @media screen and (max-width: $mobile-breakpoint-max) {
-    padding: 1px 1px;
+    gap: 1px;
+  }
+
+  img {
+    background-color: white;
+    width: 100%;
+    height: 80%;
   }
 }
+
+.dialog-title {
+}
+
+.dialog-close {
+  display: flex;
+  justify-content: flex-end;
+  padding: 5px;
+  cursor: pointer;
+}
+
+.img-description {
+  font-size: 15px;
+  max-height: 10vh;
+  max-width: 100%;
+  word-wrap: break-word;
+}
+

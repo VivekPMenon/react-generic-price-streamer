@@ -2,7 +2,6 @@ import { useMemo } from "react";
 import { DataGrid, getCurrencyColDefTemplate } from "../data-grid";
 import { ColDef } from "ag-grid-community";
 import { useRiskDataStore } from "@/services/risk-data/risk-data-store";
-import {formatCurrency} from "@/lib/utility-functions";
 
 export function RiskMetrics() {
 

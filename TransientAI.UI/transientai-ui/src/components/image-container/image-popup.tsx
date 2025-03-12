@@ -1,11 +1,10 @@
 'use client';
 
-import { ReactNode } from "react";
-import styles from './image-popup.module.scss';
-import * as Dialog from "@radix-ui/react-dialog";
+import { ReactNode } from 'react';
 import { Cross1Icon } from "@radix-ui/react-icons";
-// @ts-expect-error no dt file was provided
-import ImageZoom from 'react-image-zooom';
+import { Rnd } from 'react-rnd';
+import * as Dialog from "@radix-ui/react-dialog";
+import styles from './image-popup.module.scss';
 
 export interface ImagePopupProps {
     url: string;
@@ -22,27 +21,34 @@ export function ImagePopup({children, url, title, description}: ImagePopupProps)
             </Dialog.Trigger>
             <Dialog.Portal>
                 <Dialog.Overlay className="DialogOverlay" />
-                <Dialog.Content className={styles['dialog-content']}>
-                    <Dialog.DialogClose>
-                        <Cross1Icon />
-                    </Dialog.DialogClose>
-                    <Dialog.Title>
-                        {title}
-                    </Dialog.Title>
-                    <div className={`${styles['content']}`}>
-                        <ImageZoom
-                            src={url}
-                            alt={description ?? ''}
-                            fullWidth={true}
-                            className={styles['img-root']}
+                <Dialog.Content>
+                    <Rnd
+                        lockAspectRatio={true}
+                        enableResizing={true}
+                        disableDragging={true}
+                        className={`${styles['dialog']}`}
+                    >
+                        <div className={styles['dialog-close']}>
+                            <Dialog.DialogClose>
+                                <Cross1Icon  />
+                            </Dialog.DialogClose>
+                        </div>
+                        <div className={`${styles['dialog-content']} `}>
+                            <Dialog.Title className={`DialogTitle ${styles['dialog-title']} `} >
+                                {title ?? 'Test'}
+                            </Dialog.Title>
+                            <img
+                                src={url}
+                                alt={url ?? ''}
                             />
-                    </div>
+                            <Dialog.Description asChild={true}>
+                                <div className={`${styles['img-description']} scrollable-div`}>
+                                    {description ?? ''}
+                                </div>
+                            </Dialog.Description>
+                        </div>
+                    </Rnd>
                 </Dialog.Content>
-                <Dialog.Description className="DialogDescription">
-                    <div className={`${styles['img-description']} scrollable-div height-vh-10`}>
-                        {description}
-                    </div>
-                </Dialog.Description>
             </Dialog.Portal>
         </Dialog.Root>
     );
