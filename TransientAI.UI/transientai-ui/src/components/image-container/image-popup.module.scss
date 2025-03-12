@@ -15,7 +15,12 @@
 
   img {
     background-color: white;
+    width: 100%;
+    height: auto;
   }
+}
+
+.dialog {
 }
 
 .dialog-content {
@@ -38,11 +43,11 @@
   }
 }
 
-.img-root {
-  margin: 5px auto;
-  width: 100%;
+.dialog-close {
+  display: flex;
+  justify-content: flex-end;
+  margin: -20px -20px 5px 0px;
+}
 
-  @media screen and (max-width: $mobile-breakpoint-max) {
-    padding: 1px 1px;
-  }
+.img-description {
 }
