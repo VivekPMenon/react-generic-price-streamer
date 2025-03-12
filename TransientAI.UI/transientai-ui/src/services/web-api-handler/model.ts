@@ -13,4 +13,12 @@ export interface EndpointConfig {
   randomStr?: string;
   httpsServices?: { [name: string]: string };
   headers?: { [name: string]: string };
+  authInfo?: AuthenticationInfo;  
+}
+
+export interface AuthenticationInfo {
+  clientId?: string;
+  tenantId?: string;
+  redirectUri?: string;
+  scope?: string;
 }

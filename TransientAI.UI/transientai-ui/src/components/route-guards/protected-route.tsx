@@ -14,25 +14,25 @@ export default function ProtectedRoute({ children, resourceName }: ProtectedRout
   useEffect(() => {
     if (authenticationError) {
       router.push('/login');
-      return; 
-    } 
-    
+      return;
+    }
+
     if (resourceName && !userContext.accessibleResources?.find(resource => resource.resourceName === resourceName)) {
       router.push('/unauthorized');
     }
   }, [userContext, authenticationError]);
 
-  if(isLoading) {
+  if (isLoading) {
     return <>loading...</>; // todo.. use nice loading screen 
   }
 
-  if(authenticationError) {
+  if (authenticationError) {
     return <>Unuthenticated</>; //  todo.. nice auth erorr page :)
   }
 
   if (resourceName && !userContext.accessibleResources?.find(resource => resource.resourceName === resourceName)) {
     return <>Unauthorized</>;
-  } 
-    
+  }
+
   return <>{children}</>;
 }
