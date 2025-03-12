@@ -75,16 +75,23 @@
   max-width: 40%;
   border-radius: 5px;
   background-color: $gray-1000;
+  
+  @media screen and (max-width: $mobile-breakpoint-max) {
+    max-width: 100%;
+  }
 }
 
 .ai-summary {
   flex: 1 1 40%;
-  max-width: 40%;
   background-color: $gray-1000;
   border-radius: 5px;
   height: 100%;
   margin-left: 10px;
   min-width: 40%;
+
+  @media screen and (max-width: $mobile-breakpoint-max) {
+    max-width: 100%;
+  }
 
   .key-words {
     // padding-bottom: 5px;
