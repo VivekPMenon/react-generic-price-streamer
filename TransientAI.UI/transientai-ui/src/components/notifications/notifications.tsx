@@ -80,7 +80,7 @@ const filterTypes = [
   NotificationType.RiskReport,
   NotificationType.CorpAct,
   NotificationType.Inquiries,
-  NotificationType.BreakNews
+  // NotificationType.BreakNews
 ];
 
 export const filterTypeToResourceMap: { [key: string]: string } = {
