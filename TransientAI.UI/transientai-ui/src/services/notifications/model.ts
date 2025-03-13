@@ -2,6 +2,7 @@
 export interface Notification {
   title?: string;
   subTitle?: string;
+  sideTitle?: string;
   type?: NotificationType;
   highlights?: string[];
   id?: string;
@@ -10,6 +11,7 @@ export interface Notification {
 } 
 
 export enum NotificationType {
+  BreakNews = 'Break News',
   Axes ='Axes',
   Clients = 'Client',
   Trades = 'Trades',

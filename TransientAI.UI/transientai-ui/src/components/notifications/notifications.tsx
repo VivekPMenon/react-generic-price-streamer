@@ -7,14 +7,15 @@ import { useCorpActionsStore, resourceName as corpActionResourceName } from "@/s
 import { useMenuStore } from "@/services/menu-data";
 import { NotificationPopup } from './notification-popup';
 import { useRouter } from 'next/navigation';
-import { useResearchReportsStore, useRiskReportsSlice, resourceName as researchReportResourceName, resourceNameRiskReports } from '@/services/reports-data';
+import { useResearchReportsStore, useRiskReportsSlice, resourceName as researchReportResourceName, resourceNameRiskReports, ResearchReport } from '@/services/reports-data';
 import { Spinner } from '@radix-ui/themes';
 import { resourceNameInvestorRelations, useInvestorRelationsStore } from "@/services/investor-relations-data/investor-relations-store";
 import { InquiryFlag } from "@/services/investor-relations-data";
 import { useVirtualizer, VirtualItem } from "@tanstack/react-virtual";
 import { resourceNameRiskMetrics, useRiskDataStore } from '@/services/risk-data/risk-data-store';
-import { formatDate } from '@/lib/utility-functions/date-operations';
+import { formatDate, formatDateToHHMM } from '@/lib/utility-functions/date-operations';
 import { useUnseenItemsStore } from '@/services/unseen-items-store/unseen-items-store';
+import { useBreakNewsDataStore, resourceName as BreakNewsresourceName } from '@/services/break-news/break-news-data-store';
 
 export interface NotificationsProps {
   onExpandCollapse?: (state: boolean) => void;
@@ -43,6 +44,9 @@ function getIconClass(type: NotificationType) {
 
     case NotificationType.Inquiries:
       return 'fa-solid fa-handshake';
+
+    case NotificationType.BreakNews:
+      return 'fa fa-whatsapp text-green-600';
   }
 }
 
@@ -76,6 +80,7 @@ const filterTypes = [
   NotificationType.RiskReport,
   NotificationType.CorpAct,
   NotificationType.Inquiries,
+  // NotificationType.BreakNews
 ];
 
 export const filterTypeToResourceMap: { [key: string]: string } = {
@@ -84,6 +89,7 @@ export const filterTypeToResourceMap: { [key: string]: string } = {
   [NotificationType.RiskReport]: resourceNameRiskReports,
   [NotificationType.CorpAct]: corpActionResourceName,
   [NotificationType.Inquiries]: resourceNameInvestorRelations,
+  [NotificationType.BreakNews]: BreakNewsresourceName
 };
 
 export function Notifications(props: NotificationsProps) {
@@ -94,15 +100,16 @@ export function Notifications(props: NotificationsProps) {
   const { isLoading: isCorpActionsLoading, corpActions, selectedCorpAction, setSelectedCorpAction } = useCorpActionsStore();
   const { isLoading: isInquiriesLoading, inquiries } = useInvestorRelationsStore();
   const { isLoading: isRiskDataLoading, lastUpdatedTimestamp } = useRiskDataStore();
+  const { isLoading: isBreakingNewsLoading, breakNewsItems, setSelectedBreakNewsItem, setGroupId } = useBreakNewsDataStore();
   const { resetUnseenItems, unseenItems } = useUnseenItemsStore();
-  const { fullMenuList, activeMenuList, selectedMenu, setActiveMenu } = useMenuStore();
+  const { fullMenuList, activeMenuList, setActiveMenu } = useMenuStore();
 
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
   const [selectedType, setSelectedType] = useState<string>(NotificationType.Research);
   const [selectedNotification, setSelectedNotification] = useState<Notification>({}); // todo..
 
-  const showSpinner = isLoading || isRiskReportLoading || isCorpActionsLoading || isInquiriesLoading || isRiskDataLoading;
+  const showSpinner = isLoading || isRiskReportLoading || isCorpActionsLoading || isInquiriesLoading || isRiskDataLoading || isBreakingNewsLoading;
 
   const visibleNotifications = useMemo<Notification[]>(() => notifications
     .filter(notification => selectedType === NotificationType.All || notification.type === selectedType), [
@@ -118,81 +125,14 @@ export function Notifications(props: NotificationsProps) {
     gap: 10
   });
 
-  useEffect(() => {
-    // todo ... we will be fetching the entire notification types from an API instead of UI individually calling each categories and stitching
-    function loadNotifications() {
-      const newNotifications: Notification[] = [
-        // ...notifications,
-        ...researchReports
-            .map(researchReport => ({
-              id: researchReport.id,
-              resourceName: researchReportResourceName,
-              title: researchReport.name,
-              subTitle: researchReport.concise_summary,
-              type: NotificationType.Research,
-              timestamp: researchReport.received_date ? new Date(researchReport.received_date).getTime() : new Date().getTime(),
-              highlights: [
-                `Sender: ${researchReport.sender!}`,
-                `Date: ${researchReport.received_date!}`,
-              ]
-            })),
-        ...riskReports
-            .map(riskReport => ({
-              id: riskReport.id,
-              resourceName: resourceNameRiskReports,
-              title: riskReport.filename,
-              type: NotificationType.RiskReport,
-              timestamp: riskReport.uploaded ? riskReport.uploaded.getTime() : new Date().getTime(),
-              highlights: [
-                `Date: ${riskReport.uploaded!}`
-              ]
-            })),
-        ...corpActions
-            .map(corpAction => ({
-              id: corpAction.eventId,
-              resourceName: corpActionResourceName,
-              title: `TICKER: ${corpAction.ticker} \n ${corpAction.security?.name} \n ${corpAction.eventType} \n ${corpAction.eventStatus}`,
-              type: NotificationType.CorpAct,
-              subTitle: `${corpAction.accounts?.length ? ('Account No: ' + corpAction.accounts[0].accountNumber + ', Holding Capacity: ' + corpAction.accounts[0].holdingQuantity) : ''}`,
-              timestamp: corpAction?.receivedDate ? new Date(corpAction.receivedDate).getTime() : new Date().getTime(),
-              highlights: [
-                `ISIN: ${corpAction.isin!}, ID: ${corpAction.eventId}`,
-                `Key Date: ${corpAction.keyDates!}`,
-                `Version: ${corpAction.version}`,
-              ]
-            })),
-        ...inquiries
-            .map(inquiry => ({
-              id: inquiry.id,
-              title: `${inquiry.subject}`,
-              type: NotificationType.Inquiries,
-              subTitle: inquiry.inquiry ? inquiry.inquiry : '',
-              timestamp: inquiry.due_date ? new Date(inquiry.due_date).getTime() : 0,
-              highlights: [
-                `Due: ${inquiry.due_date ? new Date(inquiry.due_date).toDateString() : ''}`,
-                `Assigned to: ${inquiry.assignee_name}`,
-                `${inquiry.flag ? InquiryFlag[inquiry.flag] : ''}`,
-              ]
-            })),
-        {
-          id: 'risk-metrics-notification',
-          title: `GS Margin Excess Updated`,
-          type: NotificationType.RiskReport,
-          timestamp: lastUpdatedTimestamp ? new Date(lastUpdatedTimestamp).getTime() : 0,
-          highlights: [
-            formatDate(lastUpdatedTimestamp)
-          ]
-        }
-      ];
-
-      newNotifications.sort((x, y) => (y.timestamp ?? -1) - (x.timestamp ?? -1));
-
-      setNotifications(newNotifications);
-    }
-
-    loadNotifications();
-
-  }, [researchReports, riskReports, inquiries, corpActions, lastUpdatedTimestamp]);
+  // todo ... we will be fetching the entire notification types from an API instead of UI individually calling each categories and stitching
+  useEffect(() => loadNotifications(), [
+    researchReports,
+    riskReports,
+    inquiries,
+    corpActions,
+    lastUpdatedTimestamp
+  ]);
 
   useEffect(() => {
     if (selectedType === NotificationType.All) {
@@ -212,6 +152,97 @@ export function Notifications(props: NotificationsProps) {
       resetUnseenItems(additionalResourceToCheck);
     }
   }, [resetUnseenItems, selectedType, unseenItems]);
+
+  function loadNotifications() {
+    const newNotifications: Notification[] = [
+      // ...notifications,
+      ...researchReports
+        .map(researchReport => ({
+          id: researchReport.id,
+          resourceName: researchReportResourceName,
+          title: researchReport.name,
+          // subTitle: researchReport.concise_summary,
+          type: NotificationType.Research,
+          timestamp: researchReport.received_date ? new Date(researchReport.received_date).getTime() : new Date().getTime(),
+          highlights: getResearchReportHighlights(researchReport)
+        })),
+      ...riskReports
+        .map(riskReport => ({
+          id: riskReport.id,
+          resourceName: resourceNameRiskReports,
+          title: riskReport.filename,
+          type: NotificationType.RiskReport,
+          timestamp: riskReport.uploaded ? riskReport.uploaded.getTime() : new Date().getTime(),
+          highlights: [
+            `Date: ${riskReport.uploaded!}`
+          ]
+        })),
+      ...corpActions
+        .map(corpAction => ({
+          id: corpAction.eventId,
+          resourceName: corpActionResourceName,
+          title: `TICKER: ${corpAction.ticker} \n ${corpAction.security?.name} \n ${corpAction.eventType} \n ${corpAction.eventStatus}`,
+          type: NotificationType.CorpAct,
+          subTitle: `${corpAction.accounts?.length ? ('Account No: ' + corpAction.accounts[0].accountNumber + ', Holding Capacity: ' + corpAction.accounts[0].holdingQuantity) : ''}`,
+          timestamp: corpAction?.receivedDate ? new Date(corpAction.receivedDate).getTime() : new Date().getTime(),
+          highlights: [
+            `ISIN: ${corpAction.isin!}, ID: ${corpAction.eventId}`,
+            `Key Date: ${corpAction.keyDates!}`,
+            `Version: ${corpAction.version}`,
+          ]
+        })),
+      ...inquiries
+        .map(inquiry => ({
+          id: inquiry.id,
+          title: `${inquiry.subject}`,
+          type: NotificationType.Inquiries,
+          subTitle: inquiry.inquiry ? inquiry.inquiry : '',
+          timestamp: inquiry.due_date ? new Date(inquiry.due_date).getTime() : 0,
+          highlights: [
+            `Due: ${inquiry.due_date ? new Date(inquiry.due_date).toDateString() : ''}`,
+            `Assigned to: ${inquiry.assignee_name}`,
+            `${inquiry.flag ? InquiryFlag[inquiry.flag] : ''}`,
+          ]
+        })),
+      {
+        id: 'risk-metrics-notification',
+        title: `GS Margin Excess Updated`,
+        type: NotificationType.RiskReport,
+        timestamp: lastUpdatedTimestamp ? new Date(lastUpdatedTimestamp).getTime() : 0,
+        highlights: [
+          formatDate(lastUpdatedTimestamp)
+        ]
+      },
+      ...breakNewsItems
+        .map(news => ({
+          id: news.id?.toString(),
+          title: 'WhatsApp',
+          sideTitle: `${news.group_name} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;${formatDateToHHMM(news?.sender_time_info || '')}`,
+          type: NotificationType.BreakNews,
+          highlights: [
+            `${news.message}`,
+          ]
+        }))
+    ];
+
+    newNotifications.sort((x, y) => (y.timestamp ?? -1) - (x.timestamp ?? -1));
+
+    setNotifications(newNotifications);
+  }
+
+  function getResearchReportHighlights(researchReport: ResearchReport): string[] {
+    const senderInfo = `${researchReport.sender} | ${formatDate(researchReport.received_date)}`;
+    if (researchReport.concise_summary) {
+      return [
+        researchReport.concise_summary,
+        senderInfo
+      ];
+    }
+
+    return [
+      senderInfo
+    ];
+  }
 
   function expandOrCollapsePanel() {
     setIsExpanded(!isExpanded);
@@ -249,6 +280,13 @@ export function Notifications(props: NotificationsProps) {
       case NotificationType.Inquiries:
         router.push(newRoute = '/dashboard/investor-relations'); // todo.. remove the route hardcoding
         break;
+
+      case NotificationType.BreakNews:
+        const selectedNewsItem = breakNewsItems.find((news) => news.id == notification.id);
+        setSelectedBreakNewsItem(selectedNewsItem!);
+        setGroupId(selectedNewsItem?.group_id || null);
+        router.push(newRoute = '/dashboard/breaking-news'); // todo.. remove the route hardcoding
+        break;
     }
 
     const menuForRoute = fullMenuList.find(menu => menu.route === newRoute);
@@ -281,7 +319,6 @@ export function Notifications(props: NotificationsProps) {
   }
 
   const items = virtualizer.getVirtualItems();
-
   return (
     //TODO .. create a common component for WIdget with transclusion so that widget tiel etc. can be reused
     <div className={`${styles.notifications} widget`}>
@@ -294,7 +331,7 @@ export function Notifications(props: NotificationsProps) {
         {
           filterTypes.map(filterType => {
             const additionalResourceToCheck = filterType === NotificationType.RiskReport ? resourceNameRiskMetrics : '';
-            const unseenItemsCount = getUnseenItemsCount(filterType) 
+            const unseenItemsCount = getUnseenItemsCount(filterType)
               + (additionalResourceToCheck && unseenItems[additionalResourceToCheck] > 0 ? unseenItems[additionalResourceToCheck] : 0);
 
             return <button
@@ -303,7 +340,7 @@ export function Notifications(props: NotificationsProps) {
               onClick={() => changeNotificationType(filterType)}>
               {filterType}
 
-              { unseenItemsCount > 0 && <div className='bubble orange-color'>{unseenItemsCount}</div>}
+              {unseenItemsCount > 0 && <div className='bubble off-white-color'>{unseenItemsCount}</div>}
             </button>
           })
         }
@@ -347,10 +384,14 @@ export function Notifications(props: NotificationsProps) {
                         {/* <span className={styles['notification-count']}>(6)</span> */}
 
                         <div className={styles['notification-menu']}>
-                          <div className={getPillClass(visibleNotifications[item.index].type!)}>
-                            {visibleNotifications[item.index].type}
-                          </div>
-
+                          {
+                            visibleNotifications[item.index].sideTitle ?
+                              <div className={'text-sm text-white'} dangerouslySetInnerHTML={{ __html: visibleNotifications[item.index].sideTitle! }}></div>
+                              :
+                              <div className={getPillClass(visibleNotifications[item.index].type!)}>
+                                {visibleNotifications[item.index].type}
+                              </div>
+                          }
                           <NotificationPopup
                             onTrigger={onNotificationPopupTrigger}
                             notification={selectedCorpAction!}

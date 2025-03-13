@@ -1,9 +1,9 @@
 'use client'
 
 import styles from './pnl-metrics.module.scss';
-import React, {useRef, useState, useEffect} from 'react';
-import {formatCurrency} from "@/lib/utility-functions";
-import {useRiskDataStore} from "@/services/risk-data/risk-data-store";
+import React, { useRef, useState, useEffect } from 'react';
+import { formatCurrency } from "@/lib/utility-functions";
+import { useRiskDataStore } from "@/services/risk-data/risk-data-store";
 
 export function PnlMetrics() {
 
@@ -58,7 +58,7 @@ export function PnlMetrics() {
   return (
     <div className={styles['pnl-metrics']}>
       PnL And Financial Resource Metrics
-      
+
       <div className={styles['ribbon']}>
         <i
           className={`fa-solid fa-chevron-left ${!canScrollLeft ? styles['disabled'] : ''}`}
@@ -68,9 +68,10 @@ export function PnlMetrics() {
         <div className={styles['tiles']} ref={carouselRef}>
           {riskMetricsItemsFiltered?.map((item, index) => (
             <div key={index} className={styles['tile']}>
-              <div>Margin Excess</div>
-              <div>{item.name}</div>
-              <div className='orange-color fs-14'>{formatCurrency(Number(item.margin_excess))}</div>
+              <div className={styles['pnl-type']}>Margin Excess</div>
+              <div className={styles['user-pnl']}>
+                {item.name}: <div className='orange-color fs-14'>{formatCurrency(Number(item.margin_excess))}</div>
+              </div>
             </div>
           ))}
         </div>

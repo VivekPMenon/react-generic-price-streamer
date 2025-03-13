@@ -79,9 +79,10 @@ export function areDatesIdentical(date1: Date, date2: Date): boolean {
   return date1.getTime() === date2.getTime();
 }
 
-export function formatDateToHHMM(date: Date): string {
-  let hrs = date.getHours();
-  const mins = date.getMinutes();
+export function formatDateToHHMM(date: Date | string): string {
+  let dateObj = typeof date === 'string' ? new Date(date) : date;
+  let hrs = dateObj.getHours();
+  const mins = dateObj.getMinutes();
   const clockType = hrs >= 12 ? "PM" : "AM";
   hrs = hrs % 12;
   if (hrs === 0) {
