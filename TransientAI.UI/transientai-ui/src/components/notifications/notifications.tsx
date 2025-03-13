@@ -13,8 +13,9 @@ import { resourceNameInvestorRelations, useInvestorRelationsStore } from "@/serv
 import { InquiryFlag } from "@/services/investor-relations-data";
 import { useVirtualizer, VirtualItem } from "@tanstack/react-virtual";
 import { resourceNameRiskMetrics, useRiskDataStore } from '@/services/risk-data/risk-data-store';
-import { formatDate } from '@/lib/utility-functions/date-operations';
+import { formatDate, formatDateToHHMM } from '@/lib/utility-functions/date-operations';
 import { useUnseenItemsStore } from '@/services/unseen-items-store/unseen-items-store';
+import { useBreakNewsDataStore, resourceName as BreakNewsresourceName } from '@/services/break-news/break-news-data-store';
 
 export interface NotificationsProps {
   onExpandCollapse?: (state: boolean) => void;
@@ -45,7 +46,7 @@ function getIconClass(type: NotificationType) {
       return 'fa-solid fa-handshake';
     
     case NotificationType.BreakNews:
-      return 'fa fa-whatsapp';
+      return 'fa fa-whatsapp text-green-600';
   }
 }
 
@@ -88,6 +89,7 @@ export const filterTypeToResourceMap: { [key: string]: string } = {
   [NotificationType.RiskReport]: resourceNameRiskReports,
   [NotificationType.CorpAct]: corpActionResourceName,
   [NotificationType.Inquiries]: resourceNameInvestorRelations,
+  [NotificationType.BreakNews]: BreakNewsresourceName
 };
 
 export function Notifications(props: NotificationsProps) {
@@ -98,6 +100,7 @@ export function Notifications(props: NotificationsProps) {
   const { isLoading: isCorpActionsLoading, corpActions, selectedCorpAction, setSelectedCorpAction } = useCorpActionsStore();
   const { isLoading: isInquiriesLoading, inquiries } = useInvestorRelationsStore();
   const { isLoading: isRiskDataLoading, lastUpdatedTimestamp } = useRiskDataStore();
+  const { isLoading: isBreakingNewsLoading, breakNewsItems, setSelectedBreakNewsItem} = useBreakNewsDataStore();
   const { resetUnseenItems, unseenItems } = useUnseenItemsStore();
   const { fullMenuList, activeMenuList, setActiveMenu } = useMenuStore();
 
@@ -106,7 +109,7 @@ export function Notifications(props: NotificationsProps) {
   const [selectedType, setSelectedType] = useState<string>(NotificationType.Research);
   const [selectedNotification, setSelectedNotification] = useState<Notification>({}); // todo..
 
-  const showSpinner = isLoading || isRiskReportLoading || isCorpActionsLoading || isInquiriesLoading || isRiskDataLoading;
+  const showSpinner = isLoading || isRiskReportLoading || isCorpActionsLoading || isInquiriesLoading || isRiskDataLoading || isBreakingNewsLoading;
 
   const visibleNotifications = useMemo<Notification[]>(() => notifications
     .filter(notification => selectedType === NotificationType.All || notification.type === selectedType), [
@@ -187,14 +190,16 @@ export function Notifications(props: NotificationsProps) {
             formatDate(lastUpdatedTimestamp)
           ]
         },
-        {
-          id: 'Hurricane Capital',
-          title: 'Whats App',
-          type: NotificationType.BreakNews,
-          highlights: [
-            '~CNAP: UDJPY moves below the 50% of the move up from Septomber 2024.'
-          ]
-        }
+        ...breakNewsItems
+           .map(news => ({
+            id: news.id?.toString(),
+            title: 'Whats app',
+            sideTitle: `${news.group_name} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;${formatDateToHHMM(news?.sender_time_info || '')}`,
+            type: NotificationType.BreakNews,
+            highlights: [
+              `${news.message}`,
+            ]
+           }))
       ];
 
       newNotifications.sort((x, y) => (y.timestamp ?? -1) - (x.timestamp ?? -1));
@@ -263,6 +268,8 @@ export function Notifications(props: NotificationsProps) {
         break;
 
       case NotificationType.BreakNews:
+        const selectedNewsItem = breakNewsItems.find((news) => news.id == notification.id);
+        setSelectedBreakNewsItem(selectedNewsItem!)
         router.push(newRoute = '/dashboard/breaking-news'); // todo.. remove the route hardcoding
         break;
     }
@@ -297,7 +304,6 @@ export function Notifications(props: NotificationsProps) {
   }
 
   const items = virtualizer.getVirtualItems();
-
   return (
     //TODO .. create a common component for WIdget with transclusion so that widget tiel etc. can be reused
     <div className={`${styles.notifications} widget`}>
@@ -363,10 +369,14 @@ export function Notifications(props: NotificationsProps) {
                         {/* <span className={styles['notification-count']}>(6)</span> */}
 
                         <div className={styles['notification-menu']}>
-                          <div className={getPillClass(visibleNotifications[item.index].type!)}>
-                            {visibleNotifications[item.index].type}
-                          </div>
-
+                          {
+                            visibleNotifications[item.index].sideTitle ?
+                              <div className={'text-sm text-white'} dangerouslySetInnerHTML={{ __html: visibleNotifications[item.index].sideTitle! }}></div>
+                              :
+                              <div className={getPillClass(visibleNotifications[item.index].type!)}>
+                                {visibleNotifications[item.index].type}
+                              </div>
+                          }
                           <NotificationPopup
                             onTrigger={onNotificationPopupTrigger}
                             notification={selectedCorpAction!}

@@ -2,6 +2,7 @@
 export interface Notification {
   title?: string;
   subTitle?: string;
+  sideTitle?: string;
   type?: NotificationType;
   highlights?: string[];
   id?: string;

@@ -5,10 +5,9 @@ import { breakNewsDataService } from './break-news-data-service';
 import { useUnseenItemsStore } from '../unseen-items-store/unseen-items-store';
 
 
-export const resourceName = 'Break News';
-
+export const resourceName = 'break-news';
 export interface BreakNewsDataState {
-  breakNewsItems: BreakNewsItem[] | null;
+  breakNewsItems: BreakNewsItem[];
   setBreakNewsItems: (breakNewsItems: BreakNewsItem[]) => void;
   selectedBreakNewsItem: BreakNewsItem | null;
   lastUpdatedTimestamp: string;
@@ -20,7 +19,7 @@ export interface BreakNewsDataState {
 }
 
 export const useBreakNewsDataStore = create<BreakNewsDataState>((set, get) => ({
-  breakNewsItems: null,
+  breakNewsItems: [],
   selectedBreakNewsItem: null,
   lastUpdatedTimestamp: '',
   isLoading: false,
@@ -35,9 +34,8 @@ export const useBreakNewsDataStore = create<BreakNewsDataState>((set, get) => ({
 
     try {
       const result = await breakNewsDataService.getBreakNews();
-      console.log(result);
       set({
-        breakNewsItems: [],
+        breakNewsItems: result.data.records,
         lastUpdatedTimestamp: '',
         isLoading: false
       });
