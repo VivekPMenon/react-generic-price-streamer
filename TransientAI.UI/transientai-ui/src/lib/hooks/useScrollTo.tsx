@@ -21,9 +21,17 @@ export function useScrollToElementId(offset = 0) {
       const element = document.getElementById(elementId);
       if (!element) return;
 
+      const rect = element.getBoundingClientRect();
+      const isVisible =
+        rect.top >= 0 &&
+        rect.bottom <= (window.innerHeight || document.documentElement.clientHeight);
+
+      if (isVisible) return;
+
       element.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }, 0);
   };
 
   return { scrollToElementId };
 }
+
