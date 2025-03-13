@@ -3,18 +3,19 @@
 import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import styles from './research-reports.module.scss';
 import Segmented from 'rc-segmented';
-import { SearchableMarkdown } from '@/components/markdown';
+import {SearchableMarkdown} from '@/components/markdown';
 import {
-  researchReportsDataService,
+  ReportSummary,
+  ReportType,
   ResearchReport,
-  useResearchReportsStore,
-  ReportSummary
+  researchReportsDataService,
+  useResearchReportsStore
 } from '@/services/reports-data';
 import EmailViewer from '../email-parser/email-viewer';
 import Tags from "@/components/tags/tags";
 import ImageContainer from "@/components/image-container/image-container";
-import { useScrollTo, useScrollToElementId } from '@/lib/hooks';
-import { Spinner } from '@radix-ui/themes';
+import {useScrollTo, useScrollToElementId} from '@/lib/hooks';
+import {Spinner} from '@radix-ui/themes';
 
 
 export interface ResearchReportsProps {
@@ -34,9 +35,9 @@ export function ResearchReports({ isExpanded }: ResearchReportsProps) {
   const [isSearchResultsLoading, setIsSearchResultsLoading] = useState<boolean>(false);
 
   const [emailContent, setEmailContent] = useState<string>('');
-  const [aiContentAbstract, setAiContentAbstract] = useState<ReportSummary|null>(null);
-  const [aiContentDetailed, setAiContentDetailed] = useState<ReportSummary|null>(null);
-  const [summaryType, setSummaryType] = useState<'Executive Summary' | 'Verbose'>('Executive Summary');
+  const [aiContent1, setAiContent1] = useState<ReportSummary|null>(null);
+  const [aiContent2, setAiContent2] = useState<ReportSummary|null>(null);
+  const [summaryType, setSummaryType] = useState<ReportType.ExecutiveSummary|ReportType.Abstract>(ReportType.ExecutiveSummary);
 
   const visibleReports = useMemo<ResearchReport[]>(
       () => {
@@ -56,8 +57,8 @@ export function ResearchReports({ isExpanded }: ResearchReportsProps) {
     setIsSummaryVisible(true);
     setSelectedReport(report);
     // setEmailContent('');
-    setAiContentAbstract(null);
-    setAiContentDetailed(null);
+    setAiContent1(null);
+    setAiContent2(null);
 
     // purposefully keeping sequential as the AISummary call takes too much time sometimes
     researchReportsDataService
@@ -67,10 +68,10 @@ export function ResearchReports({ isExpanded }: ResearchReportsProps) {
           scrollToTarget();
 
           Promise.allSettled([
-                researchReportsDataService.getAiSummaryExecutive(report.id!)
-                    .then(aiContentAbstract => setAiContentAbstract(aiContentAbstract)),
-                researchReportsDataService.getAiSummaryDetailed(report.id!)
-                    .then(aiContentDetails => setAiContentDetailed(aiContentDetails))
+                researchReportsDataService.getAiSummary(report.id!, ReportType.ExecutiveSummary)
+                    .then(result => setAiContent1(result)),
+                researchReportsDataService.getAiSummary(report.id!, ReportType.Abstract)
+                    .then(result => setAiContent2(result))
               ]
           ).then(() => scrollToElementId(report.id!));
         });
@@ -96,9 +97,9 @@ export function ResearchReports({ isExpanded }: ResearchReportsProps) {
     setSearchedReports(searchedReports);
   }
 
-  const finalAiContent = summaryType === 'Executive Summary'
-     ? aiContentAbstract
-     : aiContentDetailed;
+  const finalAiContent = summaryType === ReportType.ExecutiveSummary
+     ? aiContent1
+     : aiContent2;
 
   return (
     <div className={styles['research-reports']}>
@@ -128,7 +129,7 @@ export function ResearchReports({ isExpanded }: ResearchReportsProps) {
           <Segmented
             className={styles['format-type']}
             value={summaryType}
-            options={['Executive Summary', 'Verbose']}
+            options={[ReportType.ExecutiveSummary, ReportType.Abstract]}
             onChange={(value: any) => { setSummaryType(value) }}
           />
         </div>

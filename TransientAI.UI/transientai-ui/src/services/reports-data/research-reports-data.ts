@@ -1,5 +1,5 @@
-import { webApihandler } from '../web-api-handler';
-import {ReportSummary, ResearchReport} from './model';
+import {webApihandler} from '../web-api-handler';
+import {ReportSummary, ReportType, ResearchReport} from './model';
 
 class ResearchReportsDataService {
   private serviceName = 'hurricane-api';
@@ -31,19 +31,27 @@ class ResearchReportsDataService {
     return result.html_content;
   }
 
-  async getAiSummaryAbstract(emailGuid: string): Promise<ReportSummary> {
-    const result = await webApihandler.post(`summarize-email-abstract/${emailGuid}`, null, {}, { serviceName: this.serviceName });
-    return { content: result.abstract_summary, images: result.images };
-  }
-
-  async getAiSummaryDetailed(emailGuid: string): Promise<ReportSummary> {
-    const result = await webApihandler.post(`summarize-email-structured/${emailGuid}`, null, {}, { serviceName: this.serviceName });
-    return { content: result.structured_summary, images: result.images };
-  }
-
-  async getAiSummaryExecutive(emailGuid: string): Promise<ReportSummary> {
-    const result = await webApihandler.post(`summarize-email-executive/${emailGuid}`, null, {}, { serviceName: this.serviceName });
-    return { content: result.executive_summary, images: result.images };
+  async getAiSummary(emailGuid: string, type: ReportType): Promise<ReportSummary> {
+    let serviceName= '';
+    let extractor: (result: any) => string;
+    switch (type) {
+      case ReportType.Abstract:
+        serviceName = 'summarize-email-abstract';
+        extractor = (result: any) => result.abstract_summary;
+        break;
+      case ReportType.Detailed:
+        serviceName = 'summarize-email-structured/';
+        extractor = (result: any) => result.structured_summary;
+        break;
+      case ReportType.ExecutiveSummary:
+        serviceName = 'summarize-email-executive';
+        extractor = (result: any) => result.executive_summary;
+        break;
+      default:
+        throw new Error(`Unknown type ${type}`);
+    }
+    const result = await webApihandler.post(`${serviceName}/${emailGuid}`, null, {}, { serviceName: this.serviceName });
+    return { content: extractor(result), images: result.images };
   }
 }
 
