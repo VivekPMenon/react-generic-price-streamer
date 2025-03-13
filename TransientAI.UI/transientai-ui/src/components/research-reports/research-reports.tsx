@@ -70,7 +70,8 @@ export function ResearchReports({ isExpanded }: ResearchReportsProps) {
           Promise.allSettled([
                 researchReportsDataService.getAiSummary(report.id!, ReportType.ExecutiveSummary)
                     .then(result => setAiContent1(result)),
-                researchReportsDataService.getAiSummary(report.id!, ReportType.Abstract)
+                // TODO: purposely calling detailed report - even though selection is Abstract
+                researchReportsDataService.getAiSummary(report.id!, ReportType.Detailed)
                     .then(result => setAiContent2(result))
               ]
           ).then(() => scrollToElementId(report.id!));
