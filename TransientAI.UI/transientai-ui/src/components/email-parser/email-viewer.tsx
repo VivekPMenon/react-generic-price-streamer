@@ -111,7 +111,7 @@ const navigateMatchesCore = (doc: HTMLElement, direction: number, currentMatch: 
   if (highlightedElements[newIndex]) {
     highlightedElements[newIndex].scrollIntoView({
       behavior: "smooth",
-      block: "center",
+      block: "start",
     });
     highlightedElements[newIndex].classList.add("active-match");
   }
