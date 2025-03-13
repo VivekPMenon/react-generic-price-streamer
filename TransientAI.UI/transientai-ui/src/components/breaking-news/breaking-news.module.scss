@@ -32,3 +32,14 @@
     display: none;
   }
 }
+
+
+.search-box {
+  display: flex;
+  align-items: center;
+
+  i {
+    padding: 0 10px;
+    cursor: pointer;
+  }
+}

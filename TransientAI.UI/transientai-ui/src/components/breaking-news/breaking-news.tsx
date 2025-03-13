@@ -5,6 +5,7 @@ import { Spinner } from '@radix-ui/themes';
 import { Message, MessageType } from './models';
 import { useBreakNewsDataStore } from '@/services/break-news/break-news-data-store';
 import { breakNewsDataService } from '@/services/break-news/break-news-data-service';
+import WhatsAppGroupDropdown from './breaking-group';
 
 export interface BreakingNewsProps {
   isExpanded: boolean;
@@ -14,10 +15,11 @@ export function BreakingNews({ isExpanded }: BreakingNewsProps) {
   const [articles, setArticles] = useState<ConsolidatedArticles>({});
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
-  const { selectedBreakNewsItem } = useBreakNewsDataStore();
+  const { selectedGroupId } = useBreakNewsDataStore();
   const [messages, setMessages] = useState<Message[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
+  const [searchQuery, setSearchQuery] = useState<string>('');
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const MESSAGES_PER_PAGE = 10;
 
@@ -31,7 +33,7 @@ export function BreakingNews({ isExpanded }: BreakingNewsProps) {
 
     try {
       const response = await breakNewsDataService.getGroupMessages(
-        selectedBreakNewsItem?.group_id || '1',
+        selectedGroupId,
         pageNumber,
         MESSAGES_PER_PAGE
       );
@@ -61,13 +63,13 @@ export function BreakingNews({ isExpanded }: BreakingNewsProps) {
         setIsLoadingMore(false);
       }
     }
-  }, [selectedBreakNewsItem]);
+  }, [selectedGroupId]);
 
   // Initial load of messages
   useEffect(() => {
     setCurrentPage(1);
     fetchMessages(1, true);
-  }, [selectedBreakNewsItem, fetchMessages]);
+  }, [selectedGroupId, fetchMessages]);
 
   // Handle scroll to load more messages
   const handleScroll = useCallback(() => {
@@ -271,10 +273,10 @@ export function BreakingNews({ isExpanded }: BreakingNewsProps) {
 
   return (
     <div className={`${styles['breaking-news']} scrollable-div height-vh-75`}>
-      <div className='w-[60%] mr-4'>
+      <div className='sm:w-[60%] mr-4 max-sm:w-full'>
         <div className={`${styles['whats-app-logo']} inline-block`}>
           <i className='fa fa-whatsapp mr-2 text-green-600'></i>
-          <span>Whats app</span>
+          <span>WhatsApp</span>
         </div>
         <div 
           onScroll={handleScroll}
@@ -311,14 +313,33 @@ export function BreakingNews({ isExpanded }: BreakingNewsProps) {
       </div>
 
       <div className='flex-grow'>
-        <div className={`${styles['whats-app-logo']} inline-block`}>
-          <i className='fa fa-whatsapp mr-2 text-green-600'></i>
-          <span>Whats app Group</span>
+        <div>
+          <div className={`${styles['whats-app-logo']} inline-block`}>
+            <i className='fa fa-whatsapp mr-2 text-green-600'></i>
+            <span>WhatsApp Group</span>
+          </div>
+          <div>
+          <WhatsAppGroupDropdown></WhatsAppGroupDropdown>
+          </div>
         </div>
+
         <div className={`${styles['whatsapp-cont']} bg-gray-700 p-2`}>
-          <p>Group</p>
+           <div className={styles['search-box']}>
+            <input type='text' className='mb-2'
+              autoFocus={true}
+              autoComplete='on'
+              value={searchQuery}
+              onChange={event => setSearchQuery(event.target.value)}></input>
+            {
+              searchQuery ? <i className='fa-solid fa-remove' onClick={() => {
+                setSearchQuery('');
+                // setSearchedReports([])
+              }}></i> : <i className='fa-solid fa-magnifying-glass'></i>
+            }
+
+          </div>
         </div>
-      </div> 
+      </div>
     </div>
   );
 }

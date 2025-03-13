@@ -100,7 +100,7 @@ export function Notifications(props: NotificationsProps) {
   const { isLoading: isCorpActionsLoading, corpActions, selectedCorpAction, setSelectedCorpAction } = useCorpActionsStore();
   const { isLoading: isInquiriesLoading, inquiries } = useInvestorRelationsStore();
   const { isLoading: isRiskDataLoading, lastUpdatedTimestamp } = useRiskDataStore();
-  const { isLoading: isBreakingNewsLoading, breakNewsItems, setSelectedBreakNewsItem} = useBreakNewsDataStore();
+  const { isLoading: isBreakingNewsLoading, breakNewsItems, setSelectedBreakNewsItem, setGroupId} = useBreakNewsDataStore();
   const { resetUnseenItems, unseenItems } = useUnseenItemsStore();
   const { fullMenuList, activeMenuList, setActiveMenu } = useMenuStore();
 
@@ -193,7 +193,7 @@ export function Notifications(props: NotificationsProps) {
         ...breakNewsItems
            .map(news => ({
             id: news.id?.toString(),
-            title: 'Whats app',
+            title: 'WhatsApp',
             sideTitle: `${news.group_name} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;${formatDateToHHMM(news?.sender_time_info || '')}`,
             type: NotificationType.BreakNews,
             highlights: [
@@ -269,7 +269,8 @@ export function Notifications(props: NotificationsProps) {
 
       case NotificationType.BreakNews:
         const selectedNewsItem = breakNewsItems.find((news) => news.id == notification.id);
-        setSelectedBreakNewsItem(selectedNewsItem!)
+        setSelectedBreakNewsItem(selectedNewsItem!);
+        setGroupId(selectedNewsItem?.group_id || null);
         router.push(newRoute = '/dashboard/breaking-news'); // todo.. remove the route hardcoding
         break;
     }

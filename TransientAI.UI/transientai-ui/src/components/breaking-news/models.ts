@@ -18,3 +18,10 @@ export interface Message {
     message?: string;
     read_status?: string;
 }
+
+
+export interface IGroupList {
+    group_id: number | string,
+    group_name: string,
+    unread_message_count: number
+}

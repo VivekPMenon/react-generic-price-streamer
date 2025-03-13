@@ -13,6 +13,8 @@ export interface BreakNewsDataState {
   lastUpdatedTimestamp: string;
   setSelectedBreakNewsItem: (riskMetricsItem: BreakNewsItem | null) => void;
   loadBreakNews: () => Promise<void>;
+  setGroupId: (groupId: string | number | null)=> void;
+  selectedGroupId: string | number | null;
   isLoading: boolean;
   error: string | null;
   startPolling: () => void;
@@ -22,12 +24,13 @@ export const useBreakNewsDataStore = create<BreakNewsDataState>((set, get) => ({
   breakNewsItems: [],
   selectedBreakNewsItem: null,
   lastUpdatedTimestamp: '',
+  selectedGroupId: null,
   isLoading: false,
   error: null,
 
   setBreakNewsItems: (breakNewsItems) => set({ breakNewsItems }),
   setSelectedBreakNewsItem: (selectedBreakNewsItem) => set({ selectedBreakNewsItem: selectedBreakNewsItem }),
-
+  setGroupId: (groupId) => set({selectedGroupId: groupId}),
   loadBreakNews: async () => {
     set({ isLoading: true, error: null });
 
