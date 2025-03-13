@@ -12,16 +12,16 @@ export interface EmailViewerProps {
 }
 
 // Debounce Hook for better performance
-// const useDebounce = (value: string, delay: number) => {
-//   const [debouncedValue, setDebouncedValue] = useState(value);
-//
-//   useEffect(() => {
-//     const handler = setTimeout(() => setDebouncedValue(value), delay);
-//     return () => clearTimeout(handler);
-//   }, [value, delay]);
-//
-//   return debouncedValue;
-// };
+const useDebounce = (value: string, delay: number) => {
+  const [debouncedValue, setDebouncedValue] = useState(value);
+
+  useEffect(() => {
+    const handler = setTimeout(() => setDebouncedValue(value), delay);
+    return () => clearTimeout(handler);
+  }, [value, delay]);
+
+  return debouncedValue;
+};
 
 const EmailViewer = ({ emailHtml, htmlSource, className, scrollToSearchTerm }: EmailViewerProps) => {
   
@@ -32,8 +32,8 @@ const EmailViewer = ({ emailHtml, htmlSource, className, scrollToSearchTerm }: E
   const [currentMatchIndex, setCurrentMatchIndex] = useState(0);
   const contentRef = useRef<HTMLDivElement>(null);
 
-  // const debouncedSearchTerm = useDebounce(searchTerm, 300);
-  const deferredSearchTerm = useDeferredValue(searchTerm);
+  const debouncedSearchTerm = useDebounce(searchTerm, 300);
+  const deferredSearchTerm = useDeferredValue(debouncedSearchTerm);
 
   // const extractBodyContent = (htmlString: any) => {
   //   const match = htmlString.match(/<body[^>]*>([\s\S]*)<\/body>/i);
@@ -175,7 +175,7 @@ const EmailViewer = ({ emailHtml, htmlSource, className, scrollToSearchTerm }: E
       setSearchTerm(scrollToSearchTerm);
       executeAsync(() => {
         navigateMatches(1);
-      }, 350);
+      }, 1000);
     }
   }, [scrollToSearchTerm]);
 
