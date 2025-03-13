@@ -7,8 +7,13 @@ class WebApihandler {
   private readonly bankId = 123;
   private readonly viewId = 101;
   readonly userId = 'e7e02b68-1234-4c7f-a0db-5fd57d688d4c';
+  private bearerToken = '';
 
   constructor() {
+  }
+
+  setBearerToken(token: string) {
+    this.bearerToken = token;
   }
 
   async get(url: string, params: { [key: string]: any }, options?: WebApihandlerOptions) {
@@ -24,7 +29,10 @@ class WebApihandler {
         ...params
       },
       method: 'GET',
-      headers: options?.headers
+      headers: {
+        'Authorization': `Bearer ${this.bearerToken}`,
+        ...options?.headers
+      }
     });
 
     return result.data;
@@ -43,7 +51,7 @@ class WebApihandler {
     });
   }
 
-  async post(url: string, data: any, params?: { [key: string]: any }, options?: WebApihandlerOptions, headers?: { [key: string]: any }) {
+  async post(url: string, data: any, params?: { [key: string]: any }, options?: WebApihandlerOptions) {
     const finalUrl = this.getUrl(url, options);
     console.log(finalUrl);
 
@@ -56,7 +64,10 @@ class WebApihandler {
         user_id: this.userId,
         ...params
       },
-      headers,
+      headers: {
+        'Authorization': `Bearer ${this.bearerToken}`,
+        ...options?.headers
+      },
       data,
       method: 'POST'
     });
@@ -83,7 +94,10 @@ class WebApihandler {
     const apiResult = await axios({
       url: finalUrl,
       method: 'DELETE',
-      ...webApiOptions
+      headers: {
+        'Authorization': `Bearer ${this.bearerToken}`,
+        ...webApiOptions?.headers
+      }
     });
 
     return apiResult.data;

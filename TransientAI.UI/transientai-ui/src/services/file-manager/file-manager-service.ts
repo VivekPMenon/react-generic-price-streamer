@@ -33,12 +33,12 @@ class FileManagerService {
             .post(
                 'upload-pdf',
                 data, {}, {
-                serviceName: this.serviceName
-            },
-                {
+                serviceName: this.serviceName,
+                headers: {
                     'Content-Type': 'multipart/form-data',
                     'accept': 'application/json'
-                });
+                }
+            });
         return true;
     }
 
@@ -57,10 +57,10 @@ class FileManagerService {
                     body: body,
                     pdf_id: id
                 }, {
-                    serviceName: this.serviceName
-                },
-                {
-                    'accept': 'application/json'
+                    serviceName: this.serviceName,
+                    headers: {
+                        'accept': 'application/json'
+                    }
                 });
         return true;
     }

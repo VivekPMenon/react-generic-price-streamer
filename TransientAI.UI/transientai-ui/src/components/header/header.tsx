@@ -4,6 +4,7 @@ import { useContext } from 'react';
 import styles from './header.module.scss';
 import { SearchDataContext } from '@/services/search-data';
 import { useDeviceType } from '@/lib/hooks';
+import { useUserContextStore } from '@/services/user-context';
 
 export interface HeaderProps {
   onMenuToggle?: () => void;
@@ -13,6 +14,7 @@ export interface HeaderProps {
 export function Header({ onMenuToggle, isMenuVisible }: HeaderProps) {
 
   const { searchData, setSearchData } = useContext(SearchDataContext);
+  const { userContext } = useUserContextStore();
   const deviceType = useDeviceType();
 
   return (
@@ -58,10 +60,14 @@ export function Header({ onMenuToggle, isMenuVisible }: HeaderProps) {
 
       {/* // todo remove inlines tyling */}
       <div className='flex'>
+        {/* <div className={styles['welcome-message']}>
+          Hi {userContext?.userName}
+        </div> */}
 
         <div className={styles['client-logo']}>
           <img src="/images/HurricaneLogo_Brightened.png" />
           <span>HURRICANE CAPITAL</span>
+          {/* {userContext?.userId} */}
         </div>
 
         <div className='profile-pic'>

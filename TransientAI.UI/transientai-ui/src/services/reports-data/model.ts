@@ -28,3 +28,9 @@ export interface ReportSummary {
   content?: string;
   images?: Array<ImageItem>;
 }
+
+export enum ReportType {
+  Abstract = 'Abstract',
+  Detailed = 'Detailed',
+  ExecutiveSummary = 'Executive Summary',
+}

@@ -1,12 +1,10 @@
 import { webApihandler } from "../web-api-handler";
-import { RiskMetricsItem } from "./model";
 
 class RiskDataService {
   private serviceName = 'hurricane-api';
 
   async getRiskMetrics(): Promise<any> {
-    const results = await webApihandler.get('/gs-margin-excess-all', {}, { serviceName: this.serviceName });
-    return results;
+    return await webApihandler.get('/gs-margin-excess-all', {}, { serviceName: this.serviceName });
   }
 }
 
