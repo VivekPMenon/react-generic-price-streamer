@@ -80,9 +80,14 @@ const { loadUserContext } = useUserContextStore.getState();
 loadUserContext();
 
 function mapAccountToUser(account: AccountInfo): UserContext {
+  const parts = account.name?.split(' ') || [];
+  const initials = parts[0]?.[0]?.toUpperCase() + (parts.at(-1)?.[0]?.toUpperCase() || '');
+
   return {
     userName: account.name,
     token: account.idToken,
-    userId: account.username
+    userId: account.username,
+    userInitials: initials,
   };
 }
+

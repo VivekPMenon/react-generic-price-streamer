@@ -4,6 +4,7 @@ export interface UserContext {
   role?: RoleType;
   token?: string;
   accessibleResources?: Resource[];
+  userInitials?: string;
 }
 
 export enum RoleType {
