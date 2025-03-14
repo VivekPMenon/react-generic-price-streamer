@@ -7,7 +7,7 @@ import { useDeviceType } from "@/lib/hooks";
 export function RiskMetrics() {
 
   const deviceType = useDeviceType();
-  const columnDefs = useMemo<ColDef[]>(() => getColumnDef(), []);
+  const columnDefs = useMemo<ColDef[]>(() => getColumnDef(), [deviceType]);
   const { riskMetricsItems } = useRiskDataStore();  
 
   function getColumnDef(): ColDef[] {
