@@ -16,18 +16,19 @@ export function RiskMetrics() {
       {
         field: 'name',
         headerName: 'Manager',
-        width: columnWidth,
+        width: 150,
         cellClass: 'fs-15'
       },
       {
         field: 'entity',
         headerName: 'Entity',
-        width: columnWidth
+        width: 90,
       },
       {
         field: 'margin_excess',
         headerName: 'GS Margin Excess',
-        width: columnWidth,
+        // wrapHeaderText: true,
+        width: 140,
         ...getCurrencyColDefTemplate()
       }
     ];
