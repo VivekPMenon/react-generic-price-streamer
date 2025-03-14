@@ -15,6 +15,9 @@
   color: $font-color-100;
   font-size: 13px;
 
+  @media screen and (max-width: $mobile-breakpoint-max) {
+    gap: 5px;
+  }
 
   i {
     // color: $teal;
