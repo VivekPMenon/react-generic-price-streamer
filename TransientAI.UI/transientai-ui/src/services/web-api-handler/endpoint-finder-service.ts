@@ -19,7 +19,7 @@ class EndpointFinderService {
         'hurricane-api': 'https://hurricanecap-devfastapi.azurewebsites.net',
         'corp-actions-api': 'https://hcapcorpactionsapi.azure-api.net/CorporateActionsAPIExecutor'
       },
-      isAuthDisabled: false,
+      isAuthDisabled: true,
       authInfo: {
         clientId: '0c97ab31-64c5-4b64-9bf3-487aa1263b61',
         tenantId: '93d4e288-2dde-4182-acf6-653a54c2da69',
