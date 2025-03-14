@@ -2,10 +2,12 @@ import { useMemo } from "react";
 import { DataGrid, getCurrencyColDefTemplate } from "../data-grid";
 import { ColDef } from "ag-grid-community";
 import { useRiskDataStore } from "@/services/risk-data/risk-data-store";
+import { useDeviceType } from "@/lib/hooks";
 
 export function RiskMetrics() {
 
-  const columnDefs = useMemo<ColDef[]>(() => getColumnDef(), []);
+  const deviceType = useDeviceType();
+  const columnDefs = useMemo<ColDef[]>(() => getColumnDef(), [deviceType]);
   const { riskMetricsItems } = useRiskDataStore();  
 
   function getColumnDef(): ColDef[] {
@@ -13,18 +15,19 @@ export function RiskMetrics() {
       {
         field: 'name',
         headerName: 'Manager',
-        width: 200,
+        width: deviceType === 'mobile' ? 140 : 150,
         cellClass: 'fs-15'
       },
       {
         field: 'entity',
         headerName: 'Entity',
-        width: 200
+        width: deviceType === 'mobile' ? 80: 100,
       },
       {
         field: 'margin_excess',
         headerName: 'GS Margin Excess',
-        width: 200,
+        // wrapHeaderText: true,
+        width: deviceType === 'mobile' ? 130: 150,
         ...getCurrencyColDefTemplate()
       }
     ];
