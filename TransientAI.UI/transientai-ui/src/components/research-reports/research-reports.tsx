@@ -57,6 +57,7 @@ export function ResearchReports({ isExpanded }: ResearchReportsProps) {
     setSelectedReport(report);
     setExecutiveSummary(null);
     setDetailedSummary(null);
+    scrollToElementId(report.id!);
 
     try {
       const emailContent = await researchReportsDataService.getEmailContentAsHtml(report.id!);
@@ -70,7 +71,6 @@ export function ResearchReports({ isExpanded }: ResearchReportsProps) {
 
       setExecutiveSummary(aiSummary1);
       setDetailedSummary(aiSummary2);
-      scrollToElementId(report.id!);
 
       // if (deviceType === 'mobile') {
       //   scrollToTarget();
