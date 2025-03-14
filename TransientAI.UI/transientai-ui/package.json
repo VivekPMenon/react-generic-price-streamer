@@ -46,6 +46,7 @@
     "react-dom": "^19.0.0",
     "react-markdown": "^9.0.3",
     "react-rnd": "^10.5.2",
+    "react-select": "^5.10.1",
     "rehype-raw": "^7.0.0",
     "remark-gfm": "^4.0.0",
     "sass": "^1.83.1",

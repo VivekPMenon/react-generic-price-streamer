@@ -2,7 +2,7 @@ import { webApihandler } from "../web-api-handler";
 // import { BreakNewsItem } from "./model";
 
 class BreakNewsDataService {
-  private serviceName = 'hurricane-api';
+  private serviceName = 'hurricane-api-2-0';
 
   async getBreakNews(): Promise<any> {
     const results = await webApihandler.get('entity/list_unseen_messages', {}, { serviceName: this.serviceName });

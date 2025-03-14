@@ -20,13 +20,13 @@
 
 .whatsapp-cont{
   border-radius: 5px;
-  background-image: url('/images/whatsapp_bg.jpeg');
   height: 72vh;
   overflow-y: auto;
-  background-position: center;
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-blend-mode: color-burn;
+  // background-image: url('/images/whatsapp_bg.jpeg');
+  // background-position: center;
+  // background-size: cover;
+  // background-repeat: no-repeat;
+  // background-blend-mode: color-burn;
 
   &::-webkit-scrollbar {
     display: none;
@@ -42,4 +42,9 @@
     padding: 0 10px;
     cursor: pointer;
   }
+}
+
+.message-item {
+   background-color: $gray-1000;
+   color: $font-color-100;
 }
