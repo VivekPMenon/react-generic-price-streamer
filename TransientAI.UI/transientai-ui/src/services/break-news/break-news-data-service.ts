@@ -2,7 +2,7 @@ import { webApihandler } from "../web-api-handler";
 // import { BreakNewsItem } from "./model";
 
 class BreakNewsDataService {
-  private serviceName = 'hurricane-api';
+  private serviceName = 'hurricane-api-2-0';
 
   async getBreakNews(): Promise<any> {
     const results = await webApihandler.get('entity/list_unseen_messages', {}, { serviceName: this.serviceName });
@@ -16,6 +16,11 @@ class BreakNewsDataService {
 
   async getGroupList(): Promise<any> {
     const results = await webApihandler.get('entity/list-groups/',{}, { serviceName: this.serviceName });
+    return results;
+  }
+
+  async updateMessageStatus(messageId: string | number): Promise<any> {
+    const results = await webApihandler.put('entity/update-read-status/', {}, {id:messageId}, { serviceName: this.serviceName });
     return results;
   }
 }

@@ -1,4 +1,3 @@
-import { ConsolidatedArticles} from '@/services/news-data';
 import styles from './breaking-news.module.scss';
 import { useEffect, useState, useRef, useCallback } from 'react';
 import { Spinner } from '@radix-ui/themes';
@@ -12,14 +11,12 @@ export interface BreakingNewsProps {
 }
 
 export function BreakingNews({ isExpanded }: BreakingNewsProps) {
-  const [articles, setArticles] = useState<ConsolidatedArticles>({});
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
-  const { selectedGroupId } = useBreakNewsDataStore();
+  const { selectedGroupId, selectedBreakNewsItem } = useBreakNewsDataStore();
   const [messages, setMessages] = useState<Message[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
-  const [searchQuery, setSearchQuery] = useState<string>('');
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const MESSAGES_PER_PAGE = 10;
 
@@ -65,11 +62,20 @@ export function BreakingNews({ isExpanded }: BreakingNewsProps) {
     }
   }, [selectedGroupId]);
 
+  const messageStatus = async (messageId: string | number) => {
+    try {
+      await breakNewsDataService.updateMessageStatus(messageId);
+    } catch (error) {
+      console.error('Error updating message status:', error);
+    }
+  }
+
   // Initial load of messages
   useEffect(() => {
     setCurrentPage(1);
     fetchMessages(1, true);
-  }, [selectedGroupId, fetchMessages]);
+    messageStatus(selectedBreakNewsItem?.id || '');
+  }, [selectedGroupId, selectedBreakNewsItem, fetchMessages]);
 
   // Handle scroll to load more messages
   const handleScroll = useCallback(() => {
@@ -273,14 +279,10 @@ export function BreakingNews({ isExpanded }: BreakingNewsProps) {
 
   return (
     <div className={`${styles['breaking-news']} scrollable-div height-vh-75`}>
-      <div className='sm:w-[60%] mr-4 max-sm:w-full'>
-        <div className={`${styles['whats-app-logo']} inline-block`}>
-          <i className='fa fa-whatsapp mr-2 text-green-600'></i>
-          <span>WhatsApp</span>
-        </div>
+      <div className='sm:w-[60%] mr-4 max-sm:w-full border-r border-r-gray-600'>
         <div 
           onScroll={handleScroll}
-          className={`${styles['whatsapp-cont']} bg-gray-700 p-2 overflow-y-auto`}
+          className={`${styles['whatsapp-cont']} p-2 overflow-y-auto`}
           ref={scrollContainerRef}
         >
           {/* Loading indicator for previous messages */}
@@ -302,7 +304,7 @@ export function BreakingNews({ isExpanded }: BreakingNewsProps) {
           {Object.entries(groupedMessages).map(([dateString, messagesForDate]) => (
             <div key={dateString}>
               <div className="flex justify-center mb-3">
-                <div className="bg-gray-800 text-xs text-gray-400 px-2 py-1 rounded-full">
+                <div className={`text-xs px-2 py-1 rounded-full ${styles['message-item']}`}>
                   {formatDate(messagesForDate[0].sender_time_info || '')}
                 </div>
               </div>
@@ -314,30 +316,11 @@ export function BreakingNews({ isExpanded }: BreakingNewsProps) {
 
       <div className='flex-grow'>
         <div>
-          <div className={`${styles['whats-app-logo']} inline-block`}>
-            <i className='fa fa-whatsapp mr-2 text-green-600'></i>
-            <span>WhatsApp Group</span>
-          </div>
-          <div>
           <WhatsAppGroupDropdown></WhatsAppGroupDropdown>
-          </div>
         </div>
 
-        <div className={`${styles['whatsapp-cont']} bg-gray-700 p-2`}>
-           <div className={styles['search-box']}>
-            <input type='text' className='mb-2'
-              autoFocus={true}
-              autoComplete='on'
-              value={searchQuery}
-              onChange={event => setSearchQuery(event.target.value)}></input>
-            {
-              searchQuery ? <i className='fa-solid fa-remove' onClick={() => {
-                setSearchQuery('');
-                // setSearchedReports([])
-              }}></i> : <i className='fa-solid fa-magnifying-glass'></i>
-            }
-
-          </div>
+        <div className={`${styles['whatsapp-cont']} p-2`}>
+          {/* <BreakingNewaChatBot></BreakingNewaChatBot> */}
         </div>
       </div>
     </div>
