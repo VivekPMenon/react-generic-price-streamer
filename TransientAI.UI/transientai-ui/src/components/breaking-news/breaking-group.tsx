@@ -3,106 +3,123 @@ import { breakNewsDataService } from '@/services/break-news/break-news-data-serv
 import { useBreakNewsDataStore } from '@/services/break-news/break-news-data-store';
 import React, { useCallback, useEffect, useState } from 'react';
 import { IGroupList } from './models';
-
+import Select from 'react-select';
 
 const WhatsAppGroupDropdown = () => {
- 
-  const [isOpen, setIsOpen] = useState(false);
-  const [searchText, setSearchText] = useState('');
   const [groupList, setGroupList] = useState<IGroupList[]>([]);
-  const [selectedGroup, setSelectedGroup] = useState<IGroupList>();
+  const [selectedGroup, setSelectedGroup] = useState<IGroupList | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const { setGroupId,selectedGroupId } = useBreakNewsDataStore();
+  const { setGroupId, selectedGroupId } = useBreakNewsDataStore();
 
-  // Filter groups based on search text
-  const filteredGroups = groupList.filter(group => 
-    group.group_name.toLowerCase().includes(searchText.toLowerCase())
-  );
-
-  // Toggle dropdown visibility
-  const toggleDropdown = () => {
-    setIsOpen(!isOpen);
-  };
+  // Convert group list to format required by react-select
+  const groupOptions = groupList.map(group => ({
+    value: group.group_id,
+    label: group.group_name,
+    group: group
+  }));
 
   // Handle group selection
-  const selectGroup = (group: IGroupList) => {
-    setSelectedGroup(group);
-    setGroupId(group.group_id);
-    setIsOpen(false);
+  const handleSelectChange = (selectedOption: any) => {
+    if (selectedOption) {
+      setSelectedGroup(selectedOption.group);
+      setGroupId(selectedOption.value);
+    }
   };
 
-    const fetchGroups = useCallback(async () => {
+  const fetchGroups = useCallback(async () => {
     setIsLoading(true);
-      try {
-        const response = await breakNewsDataService.getGroupList()
-        setGroupList(response as IGroupList[] || []);
-      } catch (error) {
-        console.error('Error loading messages:', error);
-      } finally {
-          setIsLoading(false);
-      }
-    },[]);
-
-  useEffect(()=>{
-    fetchGroups();
-  },[fetchGroups]);
-
-  useEffect(()=>{
-    if(selectedGroupId){
-        const set = groupList.find(x=> x.group_id == selectedGroupId);
-        setSelectedGroup(set);
+    try {
+      const response = await breakNewsDataService.getGroupList();
+      setGroupList(response as IGroupList[] || []);
+    } catch (error) {
+      console.error('Error loading groups:', error);
+    } finally {
+      setIsLoading(false);
     }
-  },[groupList, selectedGroupId])
+  }, []);
+
+  useEffect(() => {
+    fetchGroups();
+  }, [fetchGroups]);
+
+  useEffect(() => {
+    if (selectedGroupId && groupList.length > 0) {
+      const foundGroup = groupList.find(x => x.group_id === selectedGroupId);
+      setSelectedGroup(foundGroup || null);
+    }
+  }, [groupList, selectedGroupId]);
+
+  // Custom styles for react-select to match your dark theme
+  const customStyles = {
+    control: (provided: any) => ({
+      ...provided,
+      backgroundColor: '#1f2937', // bg-gray-800
+      borderColor: '#374151', // border-gray-700
+      color: 'white',
+      boxShadow: 'none',
+      '&:hover': {
+        borderColor: '#4B5563' // border-gray-600 on hover
+      }
+    }),
+    menu: (provided: any) => ({
+      ...provided,
+      backgroundColor: '#1f2937', // bg-gray-800
+    }),
+    option: (provided: any, state: any) => ({
+      ...provided,
+      backgroundColor: state.isSelected 
+        ? '#4B5563' // bg-gray-600 for selected
+        : state.isFocused 
+          ? '#374151' // bg-gray-700 for focused
+          : '#1f2937', // bg-gray-800 for default
+      color: 'white',
+      '&:hover': {
+        backgroundColor: '#374151', // bg-gray-700 on hover
+      }
+    }),
+    singleValue: (provided: any) => ({
+      ...provided,
+      color: 'white'
+    }),
+    input: (provided: any) => ({
+      ...provided,
+      color: 'white'
+    }),
+    placeholder: (provided: any) => ({
+      ...provided,
+      color: '#9CA3AF' // text-gray-400
+    }),
+    dropdownIndicator: (provided: any) => ({
+      ...provided,
+      color: '#9CA3AF', // text-gray-400
+      '&:hover': {
+        color: 'white'
+      }
+    }),
+    indicatorSeparator: (provided: any) => ({
+      ...provided,
+      backgroundColor: '#4B5563' // bg-gray-600
+    }),
+  };
 
   return (
     <div className="flex-grow">
-      <div className="relative">
-        {/* Selected Group Display */}
-        <div 
-          className="flex items-center bg-gray-800 text-white p-3 rounded-t-md cursor-pointer"
-          onClick={toggleDropdown}
-        >
-          <div className="inline-block">
-            {/* <span className="text-green-600 mr-2 text-xl">{selectedGroup.icon}</span> */}
-            <span>{selectedGroup?.group_name}</span>
-          </div>
-          <span className="ml-auto">▼</span>
-        </div>
-
-        {/* Dropdown */}
-        {isOpen && (
-          <div className="absolute w-full bg-gray-700 rounded-b-md shadow-lg z-10">
-            {/* Search Bar */}
-            <div className="p-2 border-b border-gray-600 flex items-center">
-              <input
-                type="text"
-                placeholder="Search groups..."
-                className="bg-gray-800 text-white w-full p-2 rounded-md outline-none"
-                value={searchText}
-                onChange={(e) => setSearchText(e.target.value)}
-              />
-            </div>
-
-            {/* Group List */}
-            <div className="max-h-60 overflow-y-auto">
-              {filteredGroups.length > 0 ? (
-                filteredGroups.map(group => (
-                  <div
-                    key={group.group_id}
-                    className="flex items-center p-3 hover:bg-gray-600 cursor-pointer"
-                    onClick={() => selectGroup(group)}
-                  >
-                    {/* <span className="text-xl mr-3">{group.icon}</span> */}
-                    <span className="text-white">{group.group_name}</span>
-                  </div>
-                ))
-              ) : (
-                <div className="p-3 text-gray-400 text-center">No groups found</div>
-              )}
-            </div>
-          </div>
-        )}
-      </div>
+      <Select
+        isLoading={isLoading}
+        options={groupOptions}
+        styles={customStyles}
+        placeholder="Select WhatsApp Group"
+        value={selectedGroup ? {
+          value: selectedGroup.group_id,
+          label: selectedGroup.group_name,
+          group: selectedGroup
+        } : null}
+        onChange={handleSelectChange}
+        className="text-base"
+        classNamePrefix="select"
+        isSearchable={true}
+        noOptionsMessage={() => "No groups found"}
+      />
     </div>
   );
 };

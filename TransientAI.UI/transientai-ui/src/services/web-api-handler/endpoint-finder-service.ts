@@ -17,6 +17,7 @@ class EndpointFinderService {
         'news-api': 'https://newsapi.org/v2',
         'openai-api': 'https://news-api-r966.onrender.com',
         'hurricane-api': 'https://hurricanecap-devfastapi.azurewebsites.net',
+        'hurricane-api-2-0': 'https://hurricane-dev-web01.purplebay-509ff298.eastus2.azurecontainerapps.io',
         'corp-actions-api': 'https://hcapcorpactionsapi.azure-api.net/CorporateActionsAPIExecutor'
       },
       isAuthDisabled: true,
