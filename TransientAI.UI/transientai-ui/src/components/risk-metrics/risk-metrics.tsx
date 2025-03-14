@@ -11,24 +11,23 @@ export function RiskMetrics() {
   const { riskMetricsItems } = useRiskDataStore();  
 
   function getColumnDef(): ColDef[] {
-    const columnWidth = deviceType === 'mobile' ? 130 : 200;
     return [
       {
         field: 'name',
         headerName: 'Manager',
-        width: 150,
+        width: deviceType === 'mobile' ? 140 : 150,
         cellClass: 'fs-15'
       },
       {
         field: 'entity',
         headerName: 'Entity',
-        width: 90,
+        width: deviceType === 'mobile' ? 80: 100,
       },
       {
         field: 'margin_excess',
         headerName: 'GS Margin Excess',
         // wrapHeaderText: true,
-        width: 140,
+        width: deviceType === 'mobile' ? 130: 150,
         ...getCurrencyColDefTemplate()
       }
     ];

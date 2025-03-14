@@ -5,6 +5,8 @@ import styles from './header.module.scss';
 import { SearchDataContext } from '@/services/search-data';
 import { useDeviceType } from '@/lib/hooks';
 import { useUserContextStore } from '@/services/user-context';
+import * as Popover from '@radix-ui/react-popover';
+import ProfilePopover from './profile-popover';
 
 export interface HeaderProps {
   onMenuToggle?: () => void;
@@ -70,9 +72,15 @@ export function Header({ onMenuToggle, isMenuVisible }: HeaderProps) {
           {/* {userContext?.userId} */}
         </div>
 
-        <div className='profile-pic'>
-          <img src="/images/ProfilePic.jpeg"></img>
-        </div>
+        {
+          !userContext.token ?
+            <div className='profile-pic'>
+              <img src="/images/ProfilePic.jpeg"></img>
+            </div>
+            :
+            <ProfilePopover userContext={userContext}></ProfilePopover>
+        }
+
         {/* 
         <div className='profile-pic'>
           <img src="/images/ProfilePicAI.png"></img>
