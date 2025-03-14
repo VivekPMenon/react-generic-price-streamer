@@ -13,7 +13,7 @@ import { resourceNameInvestorRelations, useInvestorRelationsStore } from "@/serv
 import { InquiryFlag } from "@/services/investor-relations-data";
 import { useVirtualizer, VirtualItem } from "@tanstack/react-virtual";
 import { resourceNameRiskMetrics, useRiskDataStore } from '@/services/risk-data/risk-data-store';
-import { formatDate, formatDateToHHMM } from '@/lib/utility-functions/date-operations';
+import { formatDate } from '@/lib/utility-functions/date-operations';
 import { useUnseenItemsStore } from '@/services/unseen-items-store/unseen-items-store';
 import { useBreakNewsDataStore, resourceName as BreakNewsresourceName } from '@/services/break-news/break-news-data-store';
 
@@ -68,6 +68,9 @@ function getPillClass(type: NotificationType) {
 
     case NotificationType.Inquiries:
       return 'pill gold';
+
+    case NotificationType.BreakNews:
+      return 'pill bg-green-600';
   }
 }
 
@@ -80,7 +83,7 @@ const filterTypes = [
   NotificationType.RiskReport,
   NotificationType.CorpAct,
   NotificationType.Inquiries,
-  // NotificationType.BreakNews
+  NotificationType.BreakNews
 ];
 
 export const filterTypeToResourceMap: { [key: string]: string } = {
@@ -216,11 +219,11 @@ export function Notifications(props: NotificationsProps) {
       ...breakNewsItems
         .map(news => ({
           id: news.id?.toString(),
-          title: 'WhatsApp',
-          sideTitle: `${news.group_name} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;${formatDateToHHMM(news?.sender_time_info || '')}`,
+          title: news.message,
+          sideTitle: 'WhatsApp',
           type: NotificationType.BreakNews,
           highlights: [
-            `${news.message}`,
+            `${formatDate(news?.sender_time_info || '')}`,
           ]
         }))
     ];
@@ -380,13 +383,15 @@ export function Notifications(props: NotificationsProps) {
                     >
                       <div className={styles['notification-title']}>
                         <i className={getIconClass(visibleNotifications[item.index].type!)}></i>
-                        <span className={styles.name}>{visibleNotifications[item.index].title}</span>
+                        <span className={`${styles.name} truncate`}>{visibleNotifications[item.index].title}</span>
                         {/* <span className={styles['notification-count']}>(6)</span> */}
 
                         <div className={styles['notification-menu']}>
                           {
                             visibleNotifications[item.index].sideTitle ?
-                              <div className={'text-sm text-white'} dangerouslySetInnerHTML={{ __html: visibleNotifications[item.index].sideTitle! }}></div>
+                              <div className={getPillClass(visibleNotifications[item.index].type!)}>
+                                {visibleNotifications[item.index].sideTitle}
+                              </div>
                               :
                               <div className={getPillClass(visibleNotifications[item.index].type!)}>
                                 {visibleNotifications[item.index].type}

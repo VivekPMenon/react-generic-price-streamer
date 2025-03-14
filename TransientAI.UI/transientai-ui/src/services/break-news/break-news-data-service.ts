@@ -18,6 +18,11 @@ class BreakNewsDataService {
     const results = await webApihandler.get('entity/list-groups/',{}, { serviceName: this.serviceName });
     return results;
   }
+
+  async updateMessageStatus(messageId: string | number): Promise<any> {
+    const results = await webApihandler.put('entity/update-read-status/', {}, {id:messageId}, { serviceName: this.serviceName });
+    return results;
+  }
 }
 
 export const breakNewsDataService = new BreakNewsDataService();

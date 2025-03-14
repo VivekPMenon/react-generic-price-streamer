@@ -75,12 +75,22 @@ class WebApihandler {
     return result.data;
   }
 
-  async put(url: string, data: object, webApiOptions?: WebApihandlerOptions) {
+  async put(url: string, data: any, params?: { [key: string]: any }, webApiOptions?: WebApihandlerOptions) {
     // caching if needed
+    const finalUrl = this.getUrl(url, webApiOptions);
 
     const apiResult = await axios({
-      url,
+      url: finalUrl,
       method: 'PUT',
+      params: {
+        bank_id: this.bankId,
+        view_id: this.viewId,
+        user_id: this.userId,
+        ...params
+      },
+      headers: {
+        'Authorization': `Bearer ${this.bearerToken}`,
+      },
       data,
       ...webApiOptions
     });

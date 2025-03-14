@@ -13,7 +13,7 @@ export interface BreakingNewsProps {
 export function BreakingNews({ isExpanded }: BreakingNewsProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
-  const { selectedGroupId } = useBreakNewsDataStore();
+  const { selectedGroupId, selectedBreakNewsItem } = useBreakNewsDataStore();
   const [messages, setMessages] = useState<Message[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
@@ -62,11 +62,20 @@ export function BreakingNews({ isExpanded }: BreakingNewsProps) {
     }
   }, [selectedGroupId]);
 
+  const messageStatus = async (messageId: string | number) => {
+    try {
+      await breakNewsDataService.updateMessageStatus(messageId);
+    } catch (error) {
+      console.error('Error updating message status:', error);
+    }
+  }
+
   // Initial load of messages
   useEffect(() => {
     setCurrentPage(1);
     fetchMessages(1, true);
-  }, [selectedGroupId, fetchMessages]);
+    messageStatus(selectedBreakNewsItem?.id || '');
+  }, [selectedGroupId, selectedBreakNewsItem, fetchMessages]);
 
   // Handle scroll to load more messages
   const handleScroll = useCallback(() => {
