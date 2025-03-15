@@ -1,0 +1,14 @@
+[
+  {
+    "ResourceName": "Corporate Actions",
+    "ResourceId": "CorpActions"
+  },
+  {
+    "ResourceName": "Breaking News",
+    "ResourceId": "BreakingNews"
+  },
+  {
+    "ResourceName": "Risk Metrics",
+    "ResourceId": "RiskMetrics"
+  }
+]

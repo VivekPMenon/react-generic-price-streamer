@@ -50,7 +50,7 @@ export const endpointConfigs: { [host: string]: EndpointConfig } = {
     corpActionApiHeaders: devCorpApiHeaders,
     randomStr: '',
     httpsServices: devHttpServices,
-    isAuthDisabled: true,
+    isAuthDisabled: false,
     authInfo: {
       ...devAuthInfo,
       redirectUri: 'https://hurricanecap-eff0hjhehxebcpbf.eastus2-01.azurewebsites.net/'
