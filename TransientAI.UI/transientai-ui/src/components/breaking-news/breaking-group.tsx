@@ -30,7 +30,13 @@ const WhatsAppGroupDropdown = () => {
     setIsLoading(true);
     try {
       const response = await breakNewsDataService.getGroupList();
+      const groupData = response as IGroupList[] || [];
       setGroupList(response as IGroupList[] || []);
+       // Set the first group as the default selection
+       if (groupData.length > 0) {
+        setSelectedGroup(groupData[0]);
+        setGroupId(groupData[0].group_id);
+      }
     } catch (error) {
       console.error('Error loading groups:', error);
     } finally {
