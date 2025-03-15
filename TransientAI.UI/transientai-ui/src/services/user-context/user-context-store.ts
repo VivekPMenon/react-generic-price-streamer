@@ -91,7 +91,7 @@ function mapAccountToUser(account: AccountInfo): UserContext {
     token: account.idToken,
     userId: account.username,
     userInitials: initials,
-    role: userGroupUsers?.GroupId as RoleType,
+    roles: userGroupUsers?.GroupId as RoleType,
   };
 }
 

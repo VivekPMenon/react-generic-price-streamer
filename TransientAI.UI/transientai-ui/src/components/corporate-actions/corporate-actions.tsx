@@ -171,7 +171,7 @@ export function CorporateActions() {
 
   const items = virtualizer.getVirtualItems();
 
-  const corpActionsListElement = userContext.role === RoleType.Operations ?
+  const corpActionsListElement = userContext.roles?.includes(RoleType.Operations) ?
     <DataGrid
       ref={gridApiRef}
       className='p-2'
