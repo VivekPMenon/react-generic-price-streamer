@@ -1,7 +1,7 @@
 export interface UserContext {
   userName?: string;
   userId?: string;
-  roles?: RoleType;
+  roles?: RoleType[];
   token?: string;
   accessibleResources?: Resource[];
   userInitials?: string;

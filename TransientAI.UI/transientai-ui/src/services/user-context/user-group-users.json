@@ -9,10 +9,6 @@
   },
   {
     "GroupId": "Operations",
-    "UserId": "vpmenon@hurricanecap.com"
-  },
-  {
-    "GroupId": "Operations",
     "UserId": "dkim@hurricanecap.com"
   }
 ]
