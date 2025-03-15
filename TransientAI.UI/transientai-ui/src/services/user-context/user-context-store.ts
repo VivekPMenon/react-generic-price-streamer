@@ -84,14 +84,16 @@ function mapAccountToUser(account: AccountInfo): UserContext {
   const parts = account.name?.split(' ') || [];
   const initials = parts[0]?.[0]?.toUpperCase() + (parts.at(-1)?.[0]?.toUpperCase() || '');
 
-  const userGroupUsers = userGroupUsersJson.find(userGroupUser => userGroupUser.UserId?.toLowerCase() === account?.username?.toLowerCase());
+  const roles = userGroupUsersJson
+    .filter(userGroupUser => userGroupUser.UserId?.toLowerCase() === account?.username?.toLowerCase())
+    .map(userGroupUser => userGroupUser.GroupId);
 
   return {
     userName: account.name,
     token: account.idToken,
     userId: account.username,
     userInitials: initials,
-    role: userGroupUsers?.GroupId as RoleType,
+    roles: roles as RoleType[],
   };
 }
 
