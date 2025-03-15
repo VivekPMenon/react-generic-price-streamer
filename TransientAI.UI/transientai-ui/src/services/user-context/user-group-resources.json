@@ -1,0 +1,16 @@
+[
+  {
+    "GroupId": "Traders",
+    "ResourceId": "CorpActions",
+    "ResourceSubCategory":"All",
+    "HasReadAccess": "Y",
+    "HasWriteAccess": "Y"
+  },
+  {
+    "GroupId": "Traders",
+    "ResourceId": "BreakingNews",
+    "ResourceSubCategory":"All",
+    "HasReadAccess": "Y",
+    "HasWriteAccess": "Y"
+  }
+]

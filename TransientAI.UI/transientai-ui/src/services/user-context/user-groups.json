@@ -1,0 +1,18 @@
+[
+  {
+    "GroupName": "Traders",
+    "GroupId": "Traders"
+  },
+  {
+    "GroupName": "Operations",
+    "GroupId": "Operations"
+  },
+  {
+    "GroupName": "Sales",
+    "GroupId": "Sales"
+  },
+  {
+    "GroupName": "Support",
+    "GroupId": "Support"
+  }
+]

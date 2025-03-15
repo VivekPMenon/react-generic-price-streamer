@@ -3,6 +3,7 @@ import { UserContext, RoleType } from './model';
 import msalInstance from '@/app/msal-config';
 import { endpointFinder } from '../web-api-handler/endpoint-finder-service';
 import { AccountInfo } from '@azure/msal-browser';
+import userGroupUsersJson from './user-group-users.json';
 
 interface UserContextState {
   userContext: UserContext;
@@ -83,11 +84,14 @@ function mapAccountToUser(account: AccountInfo): UserContext {
   const parts = account.name?.split(' ') || [];
   const initials = parts[0]?.[0]?.toUpperCase() + (parts.at(-1)?.[0]?.toUpperCase() || '');
 
+  const userGroupUsers = userGroupUsersJson.find(userGroupUser => userGroupUser.UserId?.toLowerCase() === account?.username?.toLowerCase());
+
   return {
     userName: account.name,
     token: account.idToken,
     userId: account.username,
     userInitials: initials,
+    role: userGroupUsers?.GroupId as RoleType,
   };
 }
 
