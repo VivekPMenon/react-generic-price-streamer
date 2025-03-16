@@ -10,7 +10,7 @@ interface MenuState {
   closeTab: (menuId: string) => void;
 }
 
-const defaultTab = menuInfoList.find(menu => menu.description === "Research Reports");
+const defaultTab = menuInfoList.find(menu => menu.description === "Macro Panel");
 
 export const useMenuStore = create<MenuState>((set) => ({
   activeMenuList: defaultTab ? [defaultTab] : [],

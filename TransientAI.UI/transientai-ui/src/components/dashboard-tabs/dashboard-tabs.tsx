@@ -14,7 +14,7 @@ export interface DashboardTabsProps {
 }
 
 export function DashboardTabs({ children }: DashboardTabsProps) {
-  const defaultTab = 'Research Reports';
+  const defaultTab = 'Macro Panel';
   const router = useRouter();
   const deviceType = useDeviceType();
 

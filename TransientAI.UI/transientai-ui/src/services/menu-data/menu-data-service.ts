@@ -39,6 +39,13 @@ export const menuInfoList: MenuInfo[] = [
   //   icon: 'fa-solid fa-user'
   // },
   {
+    id: 'macro-panel',
+    route: '/dashboard/macro-panel',
+    description: 'Macro Panel',
+    badgeCount: 1,
+    icon: 'fa-solid fa-list-check'
+  },
+  {
     id: 'research-reports',
     route: '/dashboard/research-reports',
     description: 'Research Reports',

@@ -24,6 +24,39 @@
   }
 }
 
+.email-container-dark {
+  padding: 10px;
+  background-color: black;
+  border-radius: 10px;
+  color: white !important;
+
+  p, div, span {
+    color: white !important;
+  }
+
+  td {
+    color: white !important;
+  }
+
+  tbody {
+    background-color: black !important;
+  }
+
+  tbody td{
+    color: white !important;
+  }
+
+  .highlighted {
+    background-color: yellow;
+    color: black !important;
+    font-weight: bold;
+    padding: 2px;
+  }
+  
+  .active-match {
+    background-color: orange !important;
+  }  
+}
 
 .highlighted {
   background-color: yellow;

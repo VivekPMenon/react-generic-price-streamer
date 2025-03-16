@@ -16,6 +16,7 @@ import { resourceNameRiskMetrics, useRiskDataStore } from '@/services/risk-data/
 import { formatDate } from '@/lib/utility-functions/date-operations';
 import { useUnseenItemsStore } from '@/services/unseen-items-store/unseen-items-store';
 import { useBreakNewsDataStore, resourceName as BreakNewsresourceName } from '@/services/break-news/break-news-data-store';
+import { resourceName as bloombergReportResourceName, useMacroPanelDataStore } from '@/services/macro-panel-data/macro-panel-data-store';
 
 export interface NotificationsProps {
   onExpandCollapse?: (state: boolean) => void;
@@ -47,6 +48,9 @@ function getIconClass(type: NotificationType) {
 
     case NotificationType.BreakNews:
       return 'fa fa-whatsapp text-green-600';
+
+    case NotificationType.Macro:
+      return 'fa fa-list-check';
   }
 }
 
@@ -57,10 +61,11 @@ function getPillClass(type: NotificationType) {
       return 'pill blue';
 
     case NotificationType.Clients:
-    case NotificationType.RiskReport:
+    case NotificationType.Macro:
       return 'pill orange';
 
     case NotificationType.Trades:
+    case NotificationType.RiskReport:
       return 'pill pink';
 
     case NotificationType.CorpAct:
@@ -76,6 +81,7 @@ function getPillClass(type: NotificationType) {
 
 const filterTypes = [
   NotificationType.All,
+  NotificationType.Macro,
   // NotificationType.Axes,
   // NotificationType.Clients,
   // NotificationType.Trades,
@@ -104,12 +110,13 @@ export function Notifications(props: NotificationsProps) {
   const { isLoading: isInquiriesLoading, inquiries } = useInvestorRelationsStore();
   const { isLoading: isRiskDataLoading, lastUpdatedTimestamp } = useRiskDataStore();
   const { isLoading: isBreakingNewsLoading, breakNewsItems, setSelectedBreakNewsItem, setGroupId } = useBreakNewsDataStore();
+  const { isLoading: isBloombergEmailReportsLoading, bloombergEmailReports, setSelectedReport } = useMacroPanelDataStore();
   const { resetUnseenItems, unseenItems } = useUnseenItemsStore();
   const { fullMenuList, activeMenuList, setActiveMenu } = useMenuStore();
 
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
-  const [selectedType, setSelectedType] = useState<string>(NotificationType.Research);
+  const [selectedType, setSelectedType] = useState<string>(NotificationType.Macro);
   const [selectedNotification, setSelectedNotification] = useState<Notification>({}); // todo..
 
   const showSpinner = isLoading || isRiskReportLoading || isCorpActionsLoading || isInquiriesLoading || isRiskDataLoading || isBreakingNewsLoading;
@@ -134,7 +141,8 @@ export function Notifications(props: NotificationsProps) {
     riskReports,
     inquiries,
     corpActions,
-    lastUpdatedTimestamp
+    lastUpdatedTimestamp,
+    bloombergEmailReports
   ]);
 
   useEffect(() => {
@@ -159,6 +167,18 @@ export function Notifications(props: NotificationsProps) {
   function loadNotifications() {
     const newNotifications: Notification[] = [
       // ...notifications,
+      ...bloombergEmailReports
+        .map(bloombergEmailReport => ({
+          id: bloombergEmailReport.received_date,
+          resourceName: bloombergReportResourceName,
+          title: bloombergEmailReport.subject,
+          // subTitle: researchReport.concise_summary,
+          type: NotificationType.Macro,
+          timestamp: bloombergEmailReport.received_date ? new Date(bloombergEmailReport.received_date).getTime() : new Date().getTime(),
+          highlights: [
+            `Date: ${formatDate(bloombergEmailReport.received_date)}`
+          ]
+        })),
       ...researchReports
         .map(researchReport => ({
           id: researchReport.id,
@@ -282,6 +302,11 @@ export function Notifications(props: NotificationsProps) {
 
       case NotificationType.Inquiries:
         router.push(newRoute = '/dashboard/investor-relations'); // todo.. remove the route hardcoding
+        break;
+
+      case NotificationType.Macro:
+        router.push(newRoute = '/dashboard/macro-panel'); // todo.. remove the route hardcoding
+        setSelectedReport(bloombergEmailReports.find(report => report.received_date === notification.id)!);
         break;
 
       case NotificationType.BreakNews:
