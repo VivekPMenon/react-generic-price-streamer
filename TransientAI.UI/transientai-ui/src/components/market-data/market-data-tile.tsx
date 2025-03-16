@@ -8,11 +8,11 @@ import { formatCurrency, formatDecimal, formatShortened } from "@/lib/utility-fu
 import Highcharts from 'highcharts';
 import Highstock from 'highcharts/highstock';
 import styles from './market-data-tile.module.scss';
-import {useMarketDataStore} from "@/services/market-data/market-data-store";
 
 export interface MarketDataTileProps {
     instrument: Instrument,
     logoUrl: string;
+    removeInstrument: (instrument: Instrument) => void;
 }
 
 function getChartOptions(instrument: Instrument) {
@@ -156,9 +156,7 @@ function getChartOptions(instrument: Instrument) {
     return chartOptions;
 }
 
-export function MarketDataTile({instrument, logoUrl}: MarketDataTileProps) {
-    const {removeInstrument} = useMarketDataStore();
-
+export function MarketDataTile({instrument, logoUrl, removeInstrument}: MarketDataTileProps) {
     return (
         <div className={`${styles['tile']} scrollable-div`}>
             <div className={styles['remove-panel']}>

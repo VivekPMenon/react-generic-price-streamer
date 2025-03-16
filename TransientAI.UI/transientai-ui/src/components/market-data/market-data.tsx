@@ -55,6 +55,7 @@ export function MarketData() {
                         <MarketDataTile
                             key={instrument.ticker}
                             instrument={instrument}
+                            removeInstrument={removeInstrument}
                             logoUrl={getInstrumentLogoUrl(instrument, ImageType.PNG, 100)}
                         />
                     ))
