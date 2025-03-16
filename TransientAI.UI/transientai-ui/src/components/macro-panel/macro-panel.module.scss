@@ -3,6 +3,10 @@
 .macro-panel {
   display: flex;
   gap: 20px;
+  
+  @media screen and (max-width: $mobile-breakpoint-max) {
+    flex-direction: column;
+  }
 
   .previous-reports {
     flex: 1 1 40%;
