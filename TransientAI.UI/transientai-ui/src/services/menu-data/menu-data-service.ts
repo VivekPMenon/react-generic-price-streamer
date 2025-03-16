@@ -80,6 +80,13 @@ export const menuInfoList: MenuInfo[] = [
     icon: 'fa-solid fa-handshake'
   },
   {
+    id: 'market-data',
+    route: '/dashboard/market-data',
+    description: 'Market Data',
+    badgeCount: 1,
+    icon: 'fas fa-chart-line'
+  },
+  {
     id: 'breaking-news',
     description: 'Breaking News',
     badgeCount: 5,

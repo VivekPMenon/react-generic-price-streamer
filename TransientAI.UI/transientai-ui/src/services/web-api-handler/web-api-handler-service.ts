@@ -113,10 +113,14 @@ class WebApihandler {
     return apiResult.data;
   }
 
-  getUrl(url: string, options?: WebApihandlerOptions): string {
+  getUrl(url: string, options?: WebApihandlerOptions, params?: { [key: string]: any }): string {
     const currentEnv = endpointFinder.getCurrentEnvInfo();
     const httpsEndpoint = options?.serviceName ? currentEnv.httpsServices![options.serviceName] : currentEnv.httpsEndpoint;
-    const finalUrl = `${httpsEndpoint}/${url}`;
+
+    let finalUrl = `${httpsEndpoint}/${url}`;
+    if (params && params.lenth) {
+      finalUrl += `?${new URLSearchParams(params).toString()}`
+    }
     return finalUrl;
   }
 
