@@ -8,16 +8,17 @@ export interface Notification {
   id?: string;
   timestamp?: number;
   resourceName?: string;
-} 
+}
 
 export enum NotificationType {
   BreakNews = 'Break News',
-  Axes ='Axes',
+  Axes = 'Axes',
   Clients = 'Client',
   Trades = 'Trades',
   CorpAct = 'Corp Act',
   Research = 'Research',
   RiskReport = 'Risk Report',
   Inquiries = 'Inquiries',
-  All = 'All'
+  All = 'All',
+  Macro = 'Macro'
 }

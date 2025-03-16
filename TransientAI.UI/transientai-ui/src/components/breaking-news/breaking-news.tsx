@@ -279,7 +279,7 @@ export function BreakingNews({ isExpanded }: BreakingNewsProps) {
 
   return (
     <div className={`${styles['breaking-news']} scrollable-div height-vh-75`}>
-      <div className='sm:w-[60%] mr-4 max-sm:w-full border-r border-r-gray-600'>
+      <div className='sm:w-[60%] mr-4 max-sm:w-full border-r border-color-r'>
         <div 
           onScroll={handleScroll}
           className={`${styles['whatsapp-cont']} p-2 overflow-y-auto`}

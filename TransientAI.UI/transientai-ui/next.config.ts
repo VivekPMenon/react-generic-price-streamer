@@ -20,7 +20,7 @@ const nextConfig: NextConfig = {
       },
       {
         source: '/dashboard',
-        destination: '/dashboard/research-reports',
+        destination: '/dashboard/macro-panel',
         permanent: true, // Set to false if temporary
       },
     ]);

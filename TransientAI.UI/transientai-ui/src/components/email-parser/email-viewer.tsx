@@ -8,6 +8,7 @@ export interface EmailViewerProps {
   className?: string;
   //todo: remove this and its usage. its a hack
   scrollToSearchTerm?: string;
+  hideSearch?: boolean;
 }
 
 // Debounce Hook for better performance
@@ -42,8 +43,8 @@ const highlightMatches = (originalHtml: string, term: string): null | [Document,
     if (node.nodeType === Node.TEXT_NODE && node.textContent?.trim()) {
       const regex = new RegExp(`(${term})`, "gi");
       node.textContent = node.textContent.replace(
-          regex,
-          `%%HIGHLIGHT_START%%$1%%HIGHLIGHT_END%%`
+        regex,
+        `%%HIGHLIGHT_START%%$1%%HIGHLIGHT_END%%`
       );
     }
   };
@@ -58,8 +59,8 @@ const highlightMatches = (originalHtml: string, term: string): null | [Document,
 
   // Convert placeholders to actual highlight spans
   const highlightedHtml = doc.body.innerHTML
-      .replace(/%%HIGHLIGHT_START%%/g, `<span class="highlighted">`)
-      .replace(/%%HIGHLIGHT_END%%/g, `</span>`);
+    .replace(/%%HIGHLIGHT_START%%/g, `<span class="highlighted">`)
+    .replace(/%%HIGHLIGHT_END%%/g, `</span>`);
 
   // Restore base64 images
   const finalDoc = parser.parseFromString(highlightedHtml, "text/html");
@@ -101,7 +102,7 @@ const navigateMatchesCore = (doc: HTMLElement, direction: number, currentMatch: 
   const highlightedElements = doc.querySelectorAll(".highlighted");
   highlightedElements.forEach((el) => el.classList.remove("active-match"));
 
-  if (matches.length === 0)  return;
+  if (matches.length === 0) return;
 
   let newIndex = currentMatch + direction;
   if (newIndex < 0) newIndex = matches.length - 1;
@@ -121,8 +122,8 @@ const cleanSearchTermEntry = (entry: string): string => {
   return entry ? entry.replace(/[^a-zA-Z0-9\-\/\s:]/g, '') : entry;
 };
 
-const EmailViewer = ({ emailHtml, htmlSource, className, scrollToSearchTerm }: EmailViewerProps) => {
-  
+const EmailViewer = ({ emailHtml, htmlSource, className, scrollToSearchTerm, hideSearch }: EmailViewerProps) => {
+
   const [sanitizedHtml, setSanitizedHtml] = useState("");
   const [originalHtml, setOriginalHtml] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
@@ -135,10 +136,10 @@ const EmailViewer = ({ emailHtml, htmlSource, className, scrollToSearchTerm }: E
   const deferredSearchTerm = useDeferredValue(debouncedSearchTerm);
 
   const navigateMatches = useCallback(
-      (direction: number, index: number, indices: number[]) => {
+    (direction: number, index: number, indices: number[]) => {
       const ele = contentRef.current ? contentRef.current : document.body;
       navigateMatchesCore(ele, direction, index, indices, setCurrentMatchIndex);
-  }, []);
+    }, []);
 
   function handleSearchTermChanged(value: string) {
     setSearchTerm(cleanSearchTermEntry(value));
@@ -194,29 +195,32 @@ const EmailViewer = ({ emailHtml, htmlSource, className, scrollToSearchTerm }: E
 
   return (
     <div className="email-viewer-container">
-      <div className='search-bar'>
-        <div className='title'>
-          {/* {title} */}
-        </div>
+      {
+        !hideSearch &&
+        <div className='search-bar'>
+          <div className='title'>
+            {/* {title} */}
+          </div>
 
-        <div className='search-toolbar'>
-          <input
-            type="text"
-            placeholder="Find..."
-            value={searchTerm}
-            onChange={(e) => handleSearchTermChanged(e.target.value)}
-          />
-          <i className={`fa-solid fa-chevron-left ${matchIndices?.length > 0 ? 'active' : ''}`} onClick={() => navigateMatches(-1, currentMatchIndex, matchIndices)}></i>
-          <i className={`fa-solid fa-chevron-right ${matchIndices?.length > 0 ? 'active' : ''}`} onClick={() => navigateMatches(1, currentMatchIndex, matchIndices)}></i>
-          {/* <button onClick={() => navigateMatches("next")} disabled={!matches.length}>Next</button> */}
-          {/* <button onClick={() => navigateMatches("next")} disabled={!matches.length}>Next</button> */}
-          {/* <button onClick={() => setShowSearchBar(false)}>Close</button> */}
-        </div>
-        {/* 
+          <div className='search-toolbar'>
+            <input
+              type="text"
+              placeholder="Find..."
+              value={searchTerm}
+              onChange={(e) => handleSearchTermChanged(e.target.value)}
+            />
+            <i className={`fa-solid fa-chevron-left ${matchIndices?.length > 0 ? 'active' : ''}`} onClick={() => navigateMatches(-1, currentMatchIndex, matchIndices)}></i>
+            <i className={`fa-solid fa-chevron-right ${matchIndices?.length > 0 ? 'active' : ''}`} onClick={() => navigateMatches(1, currentMatchIndex, matchIndices)}></i>
+            {/* <button onClick={() => navigateMatches("next")} disabled={!matches.length}>Next</button> */}
+            {/* <button onClick={() => navigateMatches("next")} disabled={!matches.length}>Next</button> */}
+            {/* <button onClick={() => setShowSearchBar(false)}>Close</button> */}
+          </div>
+          {/* 
         <span style={{ marginLeft: "10px" }}>
           {matches.length ? `${currentIndex + 1} / ${matches.length}` : "No matches"}
         </span> */}
-      </div>
+        </div>
+      }
 
       <div
         ref={contentRef}
