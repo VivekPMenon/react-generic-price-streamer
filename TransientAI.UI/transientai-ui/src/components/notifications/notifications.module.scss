@@ -17,17 +17,17 @@
   flex-direction: column;
   gap: 10px;
   padding: 10px 5px 10px 0px;
-  max-height: calc(100vh - 500px);
-  height: calc(100vh - 500px);
+  max-height: calc(100vh - 550px);
+  height: calc(100vh - 550px);
   align-items: center;
 
   @media screen and (max-width: $mobile-breakpoint-max) { 
-    max-height: calc(100vh - 500px);
+    max-height: calc(100vh - 550px);
   }
 
   &.expanded {
-    max-height: calc(100vh - 200px);
-    height: calc(100vh - 200px);
+    max-height: calc(100vh - 250px);
+    height: calc(100vh - 250px);
   }
 
   .notification-item {

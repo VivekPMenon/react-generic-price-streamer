@@ -2,11 +2,9 @@
 
 .market-data-container {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   color: $font-color-100;
   gap: 15px;
-  align-content: stretch;
-  flex-wrap: wrap;
 
   @media screen and (max-width: $mobile-breakpoint-max) {
     flex-direction: column;
@@ -21,18 +19,6 @@
   align-content: stretch;
   gap: 3px;
   max-height: 15vh;
-
-  @media screen and (max-width: $mobile-breakpoint-max) {
-    flex-direction: row;
-  }
-}
-
-.filter-panel {
-  display: flex;
-  padding: 10px 20px 0px 10px;
-  flex-direction: column;
-  align-content: stretch;
-  gap: 3px;
 
   @media screen and (max-width: $mobile-breakpoint-max) {
     flex-direction: row;
@@ -71,13 +57,13 @@
 }
 
 .market-data-tiles-container {
-  max-height: 75vh;
-  width: 95vw;
+  width: calc(100% - 400px);
+  max-height: calc(100vh - 400px);
   display: flex;
   flex-direction: row;
   align-items: flex-start;
   padding: 0;
-  gap: 10px;
+  gap: 20px;
 
   @media screen and (max-width: $mobile-breakpoint-max) {
     flex-direction: column;
@@ -88,5 +74,3 @@
 .expanded {
   max-height: 88vh;
 }
-
-

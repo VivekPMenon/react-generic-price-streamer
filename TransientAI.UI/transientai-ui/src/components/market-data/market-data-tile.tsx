@@ -18,143 +18,85 @@ export interface MarketDataTileProps {
 function getChartOptions(instrument: Instrument) {
     let seriesData: any[] = [];
     if (instrument.marketData?.length) {
-        seriesData = instrument.marketData.map(data => {
-            const date = new Date(data.date!);
-            return [date.getTime(), data.open, data.high, data.low, data.close]
-        });
+      seriesData = instrument.marketData.map(data => {
+        const date = new Date(data.date!);
+        return [date.getTime(), data.open, data.high, data.low, data.close];
+      });
     }
-
+  
     const chartOptions: Highcharts.Options = {
-        chart: {
-            backgroundColor: '#0C101B',
-        },
-        title: {
-            text: '',
-        },
-        xAxis: {
-            type: 'datetime',
-            events: {
-                afterSetExtremes: function (e) {
-                    console.log('Min:', new Date(e.min), 'Max:', new Date(e.max));
-                },
-            },
-            crosshair: {
-                snap: false
-            },
-            labels: { style: { color: '#dddddd' } },
-            gridLineWidth: 0
-        },
-        yAxis: {
-            title: { text: null },
-            labels: { style: { color: '#dddddd' } },
-            gridLineWidth: 0,
-            crosshair: {
-                snap: false
-            },
-        },
-        navigator: {
-            enabled: true,
-            height: 50
-        },
-        scrollbar: {
-            enabled: false
-        },
-        rangeSelector: {
-            enabled: true,
-            inputEnabled: false,
-            buttons: [
-                {
-                    type: 'month',
-                    count: 1,
-                    text: '1M', // Label for the button
-                },
-                {
-                    type: 'month',
-                    count: 3,
-                    text: '3M', // Label for the button
-                },
-                {
-                    type: 'month',
-                    count: 6,
-                    text: '6M', // Label for the button
-                },
-                {
-                    type: 'year',
-                    count: 1,
-                    text: '1Y', // Label for the button
-                },
-                {
-                    type: 'all',
-                    text: 'All', // Label for the button
-                }
+      chart: {
+        backgroundColor: '#0C101B',
+      },
+      title: {
+        text: '',
+      },
+      xAxis: {
+        type: 'datetime',
+        labels: { style: { color: '#dddddd' } },
+        gridLineWidth: 0,
+      },
+      yAxis: {
+        title: { text: null },
+        labels: { style: { color: '#dddddd' } },
+        gridLineWidth: 0,
+      },
+      navigator: {
+        enabled: true,
+        height: 50,
+      },
+      scrollbar: {
+        enabled: false,
+      },
+      rangeSelector: {
+        enabled: true,
+      },
+      plotOptions: {
+        area: {
+          fillColor: {
+            linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
+            stops: [
+              [0, 'rgba(25, 135, 84, 0.4)'], // Green at top
+              [1, 'rgba(25, 135, 84, 0)'],   // Transparent at bottom
             ],
-            buttonTheme: {
-                fill: '#1E2128',
-                stroke: '#1E2128',
-                padding: 7,
-                style: {
-                    color: '#FFFFFF',
-                    borderRadius: 5
-                },
-                states: {
-                    hover: {
-                        fill: '#555555', // Background color on hover
-                        style: {
-                            color: '#FFFFFF', // Text color on hover
-                        },
-                    },
-                    select: {
-                        fill: 'white', // Background color when selected
-                        style: {
-                            color: 'black', // Text color when selected
-                        },
-                    },
-                },
-            },
-            inputStyle: {
-                color: '#FFFFFF', // Input text color
-                backgroundColor: '#333333', // Input background color
-            },
-            labelStyle: {
-                color: '#FFFFFF'
-            },
+          },
+          lineColor: '#28a745', // Bright green line
+          lineWidth: 2,
+          marker: { enabled: false },
+          threshold: null,
         },
-        plotOptions: {
-            area: {
-                fillColor: {
-                    linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
-                    stops: [
-                        [0, 'rgba(0, 255, 0, 0.2)'], // Lighter at the top
-                        [1, 'rgba(0, 0, 0, 0)'],
-                    ],
-                },
-                lineColor: '#198754',
-                lineWidth: 1,
-                marker: { enabled: true, radius: 3 },
-                threshold: null,
-            },
+      },
+      series: [
+        {
+          type: 'ohlc',
+          name: instrument.ticker,
+          data: seriesData,
+          dataGrouping: {
+            groupAll: true,
+          },
         },
-        tooltip: {
-            pointFormat: '<span style="color:{series.color}">{series.name}</span><br/>' +
-                'Open: <b>{point.open:.3f}</b><br/>' +
-                'High: <b>{point.high:.3f}</b><br/>' +
-                'Low: <b>{point.low:.3f}</b><br/>' +
-                'Close: <b>{point.close:.3f}</b><br/>'
+        {
+          type: 'area', // Add an area chart overlay for gradient effect
+          name: 'Trend',
+          data: seriesData.map(d => [d[0], d[4]]), // Use closing price for the area chart
+          fillColor: {
+            linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
+            stops: [
+              [0, 'rgba(0, 255, 0, 0.4)'], // Bright green at top
+              [1, 'rgba(0, 255, 0, 0)'],   // Fully transparent at bottom
+            ],
+          },
+          lineColor: '#28a745', // Bright green line
+          lineWidth: 2,
+          marker: { enabled: false },
+          threshold: null,
         },
-        series: [
-            {
-                type: 'ohlc',
-                name: instrument.ticker,
-                data: seriesData,
-                dataGrouping: {
-                    groupAll: true
-                }
-            },
-        ],
+      ],
     };
-
+  
     return chartOptions;
-}
+  }
+  
 
 export function MarketDataTile({instrument, logoUrl, removeInstrument}: MarketDataTileProps) {
     return (
