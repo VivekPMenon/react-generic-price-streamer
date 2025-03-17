@@ -17,12 +17,74 @@ const formatter = new Intl.NumberFormat('en-US', {
     maximumFractionDigits: 0,
 });
 
-export function formatCurrency(amount: number|undefined, defaultValue: string = '') {
+const formatterNoSymbol = new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+    maximumFractionDigits: 0,
+    currencyDisplay: 'code'
+});
+
+export function formatCurrency(amount: number|undefined, defaultValue: string = '', showSymbol: boolean = true) {
     if (amount) {
         if (Number.isNaN(amount)) {
             return defaultValue;
         }
-        return formatter.format(amount);
+
+        return showSymbol
+            ? formatter.format(amount)
+            : formatterNoSymbol.format(amount).replace('USD', '').trim();
+    }
+    return defaultValue;
+}
+
+export function formatShortened(amount: number|undefined, defaultValue: string = '') {
+    if (amount) {
+        if (Number.isNaN(amount)) {
+            return defaultValue;
+        }
+
+        if (Math.abs(amount) >= 1_000_000_000_000) {
+            return (amount / 1_000_000_000_000).toFixed(1) + 'T';
+        } else if (Math.abs(amount) >= 1_000_000_000) {
+            return (amount / 1_000_000_000).toFixed(1) + 'B';
+        } else if (Math.abs(amount) >= 1_000_000) {
+            return (amount / 1_000_000).toFixed(1) + 'M';
+        } else {
+            return amount.toString();
+        }
+    }
+    return defaultValue;
+}
+
+
+const percentFormatter = new Intl.NumberFormat('en-US', {
+    style: 'percent',
+    maximumFractionDigits: 2,
+});
+
+export function formatPercent(amount: number|undefined, defaultValue: string = '') {
+    if (amount) {
+        if (Number.isNaN(amount)) {
+            return defaultValue;
+        }
+
+        return percentFormatter.format(amount);
+    }
+    return defaultValue;
+}
+
+const decimalFormatter = new Intl.NumberFormat('en-US', {
+    style: 'decimal',
+    maximumFractionDigits: 2,
+});
+
+export function formatDecimal(amount: number|undefined, defaultValue: string = '') {
+    if (amount) {
+        if (Number.isNaN(amount)) {
+            return defaultValue;
+        }
+
+        return decimalFormatter.format(amount);
     }
     return defaultValue;
 }
