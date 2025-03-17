@@ -16,10 +16,12 @@ export function MacroPanel() {
   return (
     <div className={`${styles['macro-panel']}`}>
 
-      <EmailViewer
-        hideSearch={true}
-        className={`${styles['bloomberg-report']} scrollable-div email-container-dark`}
-        emailHtml={selectedReport?.html_content}></EmailViewer>
+      <div className={styles['bloomberg-report']}>
+        <EmailViewer
+          hideSearch={true}
+          className={`${styles['email-viewer']} scrollable-div email-container-dark`}
+          emailHtml={selectedReport?.html_content}></EmailViewer>
+      </div>
 
       <div className={styles['previous-reports']}>
         <div className="sub-header">All Reports</div>

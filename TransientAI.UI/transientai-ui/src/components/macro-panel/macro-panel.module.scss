@@ -14,9 +14,10 @@
 
 
   .bloomberg-report {
-    height: calc(100vh - 300px);
     flex: 1 1 60%;
+
+    .email-viewer {
+      height: calc(100vh - 300px);
+    }
   }
-
-
 }
