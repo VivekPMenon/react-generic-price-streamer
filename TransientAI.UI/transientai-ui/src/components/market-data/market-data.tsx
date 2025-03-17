@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import styles from './market-data.module.scss';
 import {useMarketDataStore} from "@/services/market-data/market-data-store";
 import {MarketDataTile} from "@/components/market-data/market-data-tile";
@@ -9,6 +9,12 @@ import {ImageType} from "@/services/market-data";
 export function MarketData() {
     const [searchQuery, setSearchQuery] = useState<string>('');
     const {instruments, isLoading, error, findInstrument, removeInstrument, getInstrumentLogoUrl} = useMarketDataStore();
+
+    useEffect(() => {
+        if (!isLoading) {
+            setSearchQuery('');
+        }
+    }, [isLoading]);
 
     function search(event: any) {
         const inputValue = event.target.value;

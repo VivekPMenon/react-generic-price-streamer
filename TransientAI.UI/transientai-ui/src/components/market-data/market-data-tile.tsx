@@ -7,6 +7,7 @@ import {Instrument} from "@/services/market-data";
 import { formatCurrency, formatDecimal, formatShortened } from "@/lib/utility-functions";
 import Highcharts from 'highcharts';
 import Highstock from 'highcharts/highstock';
+import "highcharts/modules/exporting";
 import styles from './market-data-tile.module.scss';
 
 export interface MarketDataTileProps {
@@ -144,11 +145,20 @@ function getChartOptions(instrument: Instrument) {
           threshold: null,
         },
       ],
+      exporting: {
+        enabled: true,
+          buttons: {
+            contextButton: {
+                theme: {
+                    fill: '#1E2128'
+                }
+            }
+          }
+      }
     };
   
     return chartOptions;
   }
-  
 
 export function MarketDataTile({instrument, logoUrl, removeInstrument}: MarketDataTileProps) {
     return (
