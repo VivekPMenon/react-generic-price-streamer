@@ -29,7 +29,6 @@ export const useMarketDataStore = create<MarketDataStore>()(
                     set({isLoading: true});
                 }
 
-                debugger;
                 const instruments = get().instruments;
                 const index = instruments.findIndex(instrument => instrument.ticker.toUpperCase() === search);
                 if (index >= 0) {

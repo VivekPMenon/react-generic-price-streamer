@@ -161,6 +161,9 @@ function getChartOptions(instrument: Instrument) {
   }
 
 export function MarketDataTile({instrument, logoUrl, removeInstrument}: MarketDataTileProps) {
+    function handleError(e: any) {
+        e.target.style.display = 'none';
+    }
     return (
         <div className={`${styles['tile']} scrollable-div`}>
             <div className={styles['remove-panel']}>
@@ -171,6 +174,7 @@ export function MarketDataTile({instrument, logoUrl, removeInstrument}: MarketDa
                     <img
                         src={logoUrl}
                         alt={instrument.company_name}
+                        onError={handleError}
                     />
                 </div>
                 <div className={styles['details']}>
