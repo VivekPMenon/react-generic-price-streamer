@@ -5,6 +5,7 @@ import styles from './market-data.module.scss';
 import {useMarketDataStore} from "@/services/market-data/market-data-store";
 import {MarketDataTile} from "@/components/market-data/market-data-tile";
 import {ImageType} from "@/services/market-data";
+import { Spinner } from '@radix-ui/themes';
 
 export function MarketData() {
     const [searchQuery, setSearchQuery] = useState<string>('');
@@ -47,9 +48,11 @@ export function MarketData() {
                            onKeyDown={event => search(event)}
                         />
                         {
-                            searchQuery ? <i className='fa-solid fa-remove' onClick={() => {
-                                setSearchQuery('');
-                            }}></i> : <i className='fa-solid fa-magnifying-glass'></i>
+                            isLoading
+                                ? (<Spinner size='3' className='ml-2'></Spinner>)
+                                : searchQuery ? <i className='fa-solid fa-remove' onClick={() => {
+                                    setSearchQuery('');
+                                  }}></i> : <i className='fa-solid fa-magnifying-glass'></i>
                         }
                     </div>
                     <div className={`${styles['error']}`}>{error}</div>

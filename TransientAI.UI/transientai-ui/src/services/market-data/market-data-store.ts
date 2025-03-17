@@ -7,8 +7,9 @@ export interface MarketDataStore {
     tickers: string[];
     instruments: Instrument[];
     isLoading: boolean;
+    setIsLoading: (isLoading: boolean) => void;
     error: string;
-    findInstrument: (company_or_ticker: string) => void;
+    findInstrument: (company_or_ticker: string, period: PeriodType, manageLoadingExternally: boolean) => void;
     removeInstrument: (instrument: Instrument) => void;
     getInstrumentLogoUrl: (instrument: Instrument, format: ImageType, size: number) => string;
 }
@@ -20,10 +21,13 @@ export const useMarketDataStore = create<MarketDataStore>()(
         isLoading: false,
         error: '',
 
-        findInstrument: async (company_or_ticker: string, period: PeriodType = PeriodType.ONE_YEAR) => {
+        setIsLoading: (isLoading: boolean) => set({isLoading}),
+        findInstrument: async (company_or_ticker: string, period: PeriodType = PeriodType.ONE_YEAR, manageLoadingExternally: boolean = false) => {
             const search = company_or_ticker.toUpperCase();
             try {
-                set({isLoading: true});
+                if (!manageLoadingExternally) {
+                    set({isLoading: true});
+                }
 
                 const instruments = get().instruments;
                 const index = instruments.findIndex(instrument => instrument.ticker.toUpperCase() === search);
@@ -47,7 +51,9 @@ export const useMarketDataStore = create<MarketDataStore>()(
             } catch (e: any) {
                 set({error: `Could not find ${search}`});
             } finally {
-                set({isLoading: false});
+                if (!manageLoadingExternally) {
+                    set({isLoading: false});
+                }
             }
         },
 
@@ -77,7 +83,11 @@ export const useMarketDataStore = create<MarketDataStore>()(
                   const tickers = state?.tickers;
                   if (tickers && tickers.length) {
                       const unique = new Set(state.tickers)
-                      Promise.allSettled([...unique].map((ticker: string) => state.findInstrument(ticker)));
+                      state.setIsLoading(true);
+                      Promise
+                          .allSettled([...unique]
+                          .map((ticker: string) => state.findInstrument(ticker, PeriodType.ONE_YEAR, true)))
+                          .finally(() => state.setIsLoading(false));
                   }
               }
           }
