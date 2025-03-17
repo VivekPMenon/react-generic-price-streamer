@@ -49,7 +49,7 @@ export function MarketData() {
                     <div className={`${styles['error']}`}>{error}</div>
                 </div>
             </div>
-            <div className={`${styles['market-data-tiles-container']} horizontal-scrollable-div`}>
+            <div className={`${styles['market-data-tiles-container']} horizontal-scrollable-div scrollable-div`}>
                 {
                     instruments.map(instrument => (
                         <MarketDataTile
