@@ -9,6 +9,7 @@ export interface MarketDataStore {
     isLoading: boolean;
     setIsLoading: (isLoading: boolean) => void;
     error: string;
+    clearAllInstruments: () => void;
     findInstrument: (company_or_ticker: string, period: PeriodType, manageLoadingExternally: boolean) => void;
     removeInstrument: (instrument: Instrument) => void;
     getInstrumentLogoUrl: (instrument: Instrument, format: ImageType, size: number) => string;
@@ -22,6 +23,9 @@ export const useMarketDataStore = create<MarketDataStore>()(
         error: '',
 
         setIsLoading: (isLoading: boolean) => set({isLoading}),
+        clearAllInstruments: () => {
+            set({instruments: []});
+        },
         findInstrument: async (company_or_ticker: string, period: PeriodType = PeriodType.ONE_YEAR, manageLoadingExternally: boolean = false) => {
             const search = company_or_ticker.toUpperCase();
             try {

@@ -9,7 +9,7 @@ import { Spinner } from '@radix-ui/themes';
 
 export function MarketData() {
     const [searchQuery, setSearchQuery] = useState<string>('');
-    const {instruments, isLoading, error, findInstrument, removeInstrument, getInstrumentLogoUrl} = useMarketDataStore();
+    const {instruments, isLoading, error, findInstrument, removeInstrument, getInstrumentLogoUrl, clearAllInstruments} = useMarketDataStore();
 
     useEffect(() => {
         if (!isLoading) {
@@ -56,6 +56,13 @@ export function MarketData() {
                         }
                     </div>
                     <div className={`${styles['error']}`}>{error}</div>
+                    <button
+                        type={'button'}
+                        className={'button'}
+                        disabled={instruments.length === 0}
+                        content={'Clear All'}
+                        onClick={() => clearAllInstruments()}
+                    >Clear All</button>
                 </div>
             </div>
             <div className={`${styles['market-data-tiles-container']} horizontal-scrollable-div scrollable-div`}>

@@ -54,23 +54,32 @@ function getChartOptions(instrument: Instrument) {
         inputEnabled: false,
         buttons: [
           {
-            type: 'day',
-            count: 7,
-            text: '1W', // Label for the button
+              type: 'month',
+              count: 1,
+              text: '1M',
           },
           {
-            type: 'day',
-            count: 14,
-            text: '2W', // Label for the button
+              type: 'month',
+              count: 3,
+              text: '3M',
           },
           {
-            type: 'month',
-            count: 1,
-            text: '1M', // Label for the button
+              type: 'month',
+              count: 6,
+              text: '6M',
           },
           {
-            type: 'all',
-            text: 'All', // Label for the button
+              type: 'ytd',
+              text: 'YTD',
+          },
+          {
+              type: 'year',
+              count: 1,
+              text: '1Y',
+          },
+          {
+              type: 'all',
+              text: 'All',
           }
         ],
         buttonTheme: {
@@ -181,35 +190,43 @@ export function MarketDataTile({instrument, logoUrl, removeInstrument}: MarketDa
                     <div>{instrument.company_name}</div>
                     <div>{instrument.ticker}</div>
                 </div>
+                {/*<div className={styles['current-price-info']}>*/}
+                {/*    <div className={styles['current-price']}>*/}
+                {/*        <div>{instrument.company_name}</div>*/}
+                {/*        <div>{instrument.ticker}</div>*/}
+                {/*        <div>{instrument.ticker}</div>*/}
+                {/*    </div>*/}
+                {/*    <div >As of {instrument.company_name}</div>*/}
+                {/*</div>*/}
             </div>
             <div className={`${styles['financial-details']}`}>
                 <div>Quarterly financials</div>
                 <div className={styles['financial-details-table']}>
-                    <div className="grid grid-cols-[40%_30%_30%] fs-13">
+                    <div className="grid grid-cols-[40%_30%_30%]">
                         <div>(USD)</div>
                         <div>{instrument.financials?.latest_quarter}</div>
                         <div>Y/Y</div>
                     </div>
 
-                    <div className="grid grid-cols-[40%_30%_30%] fs-13">
+                    <div className="grid grid-cols-[40%_30%_30%]">
                         <div>Revenue</div>
                         <div className="blue-color">{formatShortened(instrument.financials?.revenue, '-')}</div>
                         <div className="blue-color">{formatDecimal(instrument.financials?.yoy_revenue, '-')}%</div>
                     </div>
 
-                    <div className="grid grid-cols-[40%_30%_30%] fs-13">
+                    <div className="grid grid-cols-[40%_30%_30%]">
                         <div>Net income</div>
                         <div className="blue-color">{formatShortened(instrument.financials?.net_income, '-')}</div>
                         <div className="blue-color">{formatDecimal(instrument.financials?.yoy_net_income, '-')}%</div>
                     </div>
 
-                    <div className="grid grid-cols-[40%_30%_30%] fs-13">
+                    <div className="grid grid-cols-[40%_30%_30%]">
                         <div>Diluted EPS</div>
                         <div className="blue-color">{formatShortened(instrument.financials?.diluted_eps, '-')}</div>
                         <div className="blue-color">{formatDecimal(instrument.financials?.yoy_eps, '-')}%</div>
                     </div>
 
-                    <div className="grid grid-cols-[40%_30%_30%] fs-13">
+                    <div className="grid grid-cols-[40%_30%_30%]">
                         <div>Net profit margin</div>
                         <div className="blue-color">{formatDecimal(instrument.financials?.net_profit_margin, '-')}%</div>
                         <div className="blue-color">{formatDecimal(instrument.financials?.yoy_net_profit_margin, '-')}%</div>
@@ -221,13 +238,13 @@ export function MarketDataTile({instrument, logoUrl, removeInstrument}: MarketDa
                         <div></div>
                     </div>
 
-                    <div className="grid grid-cols-[40%_30%_30%] fs-13">
+                    <div className="grid grid-cols-[40%_30%_30%]">
                         <div>Previous</div>
                         <div>EPS</div>
                         <div>Revenue</div>
                     </div>
 
-                    <div className="grid grid-cols-[40%_30%_30%] fs-13">
+                    <div className="grid grid-cols-[40%_30%_30%]">
                         <div></div>
                         <div className="blue-color">{`${instrument.financials?.eps_beat ?? ''} ${formatDecimal(instrument.financials?.eps_surprise, '-')}%`}</div>
                         <div className="blue-color">{`${instrument.financials?.revenue_beat ?? ''} ${formatDecimal(instrument.financials?.revenue_surprise, '-')}%`}</div>
@@ -235,19 +252,19 @@ export function MarketDataTile({instrument, logoUrl, removeInstrument}: MarketDa
                 </div>
             </div>
             <div className={styles['price-summary-table']}>
-                <div className="grid grid-cols-6 gap-2 fs-13">
+                <div className="grid grid-cols-6 gap-2">
                     <div className="">Open</div>
-                    <div className="blue-color">{formatCurrency(instrument.lastMarketData?.open, '-', false)}</div>
+                    <div className="blue-color">{formatDecimal(instrument.lastMarketData?.open, '-')}</div>
                     <div className="">High</div>
-                    <div className="blue-color">{formatCurrency(instrument.lastMarketData?.high, '-', false)}</div>
+                    <div className="blue-color">{formatDecimal(instrument.lastMarketData?.high, '-')}</div>
                 </div>
 
-                <div className="grid grid-cols-6 gap-2 fs-13">
+                <div className="grid grid-cols-6 gap-2">
                     <div className="">Close</div>
-                    <div className="blue-color">{formatCurrency(instrument.lastMarketData?.close, '-', false)}</div>
+                    <div className="blue-color">{formatDecimal(instrument.lastMarketData?.close, '-')}</div>
 
                     <div className="">Low</div>
-                    <div className="blue-color">{formatCurrency(instrument.lastMarketData?.low, '-', false)}</div>
+                    <div className="blue-color">{formatDecimal(instrument.lastMarketData?.low, '-')}</div>
                 </div>
             </div>
 
