@@ -4,7 +4,7 @@ import React, {useEffect, useState} from 'react';
 import styles from './market-data.module.scss';
 import {useMarketDataStore} from "@/services/market-data/market-data-store";
 import {MarketDataTile} from "@/components/market-data/market-data-tile";
-import {ImageType} from "@/services/market-data";
+import {ImageType, PeriodType} from "@/services/market-data";
 import { Spinner } from '@radix-ui/themes';
 
 export function MarketData() {
@@ -27,7 +27,7 @@ export function MarketData() {
             return;
         }
 
-        findInstrument(inputValue);
+        findInstrument(inputValue, PeriodType.ONE_YEAR, false);
     }
 
     return (
