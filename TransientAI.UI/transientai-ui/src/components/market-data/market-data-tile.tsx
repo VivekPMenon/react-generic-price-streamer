@@ -225,8 +225,8 @@ export function MarketDataTile({instrument, logoUrl, removeInstrument}: MarketDa
 
                     <div className="grid grid-cols-[40%_30%_30%] fs-13">
                         <div></div>
-                        <div className="blue-color">{`${instrument.financials?.eps_beat} ${formatDecimal(instrument.financials?.eps_surprise, '-')}%`}</div>
-                        <div className="blue-color">{`${instrument.financials?.revenue_beat} ${formatDecimal(instrument.financials?.revenue_surprise, '-')}%`}</div>
+                        <div className="blue-color">{`${instrument.financials?.eps_beat ?? ''} ${formatDecimal(instrument.financials?.eps_surprise, '-')}%`}</div>
+                        <div className="blue-color">{`${instrument.financials?.revenue_beat ?? ''} ${formatDecimal(instrument.financials?.revenue_surprise, '-')}%`}</div>
                     </div>
                 </div>
             </div>
