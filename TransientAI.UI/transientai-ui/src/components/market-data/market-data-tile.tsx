@@ -50,6 +50,58 @@ function getChartOptions(instrument: Instrument) {
       },
       rangeSelector: {
         enabled: true,
+        inputEnabled: false,
+        buttons: [
+          {
+            type: 'day',
+            count: 7,
+            text: '1W', // Label for the button
+          },
+          {
+            type: 'day',
+            count: 14,
+            text: '2W', // Label for the button
+          },
+          {
+            type: 'month',
+            count: 1,
+            text: '1M', // Label for the button
+          },
+          {
+            type: 'all',
+            text: 'All', // Label for the button
+          }
+        ],
+        buttonTheme: {
+          fill: '#1E2128',
+          stroke: '#1E2128',
+          padding: 7,
+          style: {
+            color: '#FFFFFF',
+            borderRadius: 5
+          },
+          states: {
+            hover: {
+              fill: '#555555', // Background color on hover
+              style: {
+                color: '#FFFFFF', // Text color on hover
+              },
+            },
+            select: {
+              fill: 'white', // Background color when selected
+              style: {
+                color: 'black', // Text color when selected
+              },
+            },
+          },
+        },
+        inputStyle: {
+          color: '#FFFFFF', // Input text color
+          backgroundColor: '#333333', // Input background color
+        },
+        labelStyle: {
+          color: '#FFFFFF'
+        },
       },
       plotOptions: {
         area: {
