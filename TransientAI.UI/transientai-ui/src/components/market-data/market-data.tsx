@@ -38,7 +38,6 @@ export function MarketData() {
                     <div className={styles['search-box']}>
                         <input
                            type='text'
-                           className='mb-2'
                            disabled={isLoading}
                            placeholder='Search Ticker/Company name or ask the AI Chatbot'
                            autoFocus={true}
@@ -58,7 +57,7 @@ export function MarketData() {
                     <div className={`${styles['error']}`}>{error}</div>
                     <button
                         type={'button'}
-                        className={'button'}
+                        className={`${styles['clear-button']} button`}
                         disabled={instruments.length === 0}
                         content={'Clear All'}
                         onClick={() => clearAllInstruments()}

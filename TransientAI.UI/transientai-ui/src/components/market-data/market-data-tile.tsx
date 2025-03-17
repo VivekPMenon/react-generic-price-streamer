@@ -174,7 +174,7 @@ export function MarketDataTile({instrument, logoUrl, removeInstrument}: MarketDa
         e.target.style.display = 'none';
     }
     return (
-        <div className={`${styles['tile']} scrollable-div`}>
+        <div className={`${styles['tile']}`}>
             <div className={styles['remove-panel']}>
                 <i className={`fa-solid fa-x ${styles['remove-button']}`} onClick={() => removeInstrument(instrument)}></i>
             </div>

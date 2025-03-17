@@ -7,6 +7,12 @@
   padding: 10px;
   height: calc(100vh - 450px);
   width: 500px;
+
+  @media screen and (max-width: $mobile-breakpoint-max) {
+    width: calc(100vw - 35px);
+    height: 750px;
+    vertical-align: center;
+  }
 }
 
 .remove-panel {
