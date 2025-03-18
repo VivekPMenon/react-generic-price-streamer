@@ -61,7 +61,7 @@
   display: flex;
   flex-direction: row;
   gap: 15px;
-  padding: 5px 0px 10px 5px;
+  padding: 5px 0px 5px 5px;
 
   .logo {
     height: 50px;
@@ -78,7 +78,7 @@
   display: flex;
   flex-direction: column;
   width: 100%;
-  padding-left: 20px;
+  padding-left: 5px;
 
   @media screen and (max-width: $mobile-breakpoint-max) {
     padding-left: 5px;
@@ -88,12 +88,12 @@
 .current-price-section {
   display: flex;
   flex-direction: row;
-  gap: 15px;
+  gap: 10px;
   align-items: center;
 }
 
 .current-price {
-  font-size: 50px;
+  font-size: 40px;
   font-weight: bolder;
   line-height: 35px;
   height: 35px;
@@ -107,7 +107,7 @@
 
 .price-change {
   color: $white;
-  font-size: 18px;
+  font-size: 16px;
   font-weight: bold;
 
   @media screen and (max-width: $mobile-breakpoint-max) {

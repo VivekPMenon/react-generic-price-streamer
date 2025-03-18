@@ -178,18 +178,16 @@ export function MarketDataTile({instrument, logoUrl, removeInstrument}: MarketDa
         e.target.style.display = 'none';
     }
 
-    let sign: string;
+    let sign: string = '';
     let style: string;
     if (instrument.change === 0.0) {
-        sign = '';
         style = styles['price-change'];
     } else {
         if (instrument.change > 0.0) {
             sign = '+';
             style = styles['price-change-positive'];
         } else {
-            sign = '-';
-            style = styles['price-change-neagtive'];
+            style = styles['price-change-negative'];
         }
     }
 
@@ -216,7 +214,7 @@ export function MarketDataTile({instrument, logoUrl, removeInstrument}: MarketDa
                         <div className={style}>{`${sign}${formatDecimal(instrument.change)}`}</div>
                         <div className={style}>{`(${sign}${formatDecimal(instrument.percent_change)}%)`}</div>
                     </div>
-                    <div className={styles['price-timestamp']}>As of {formatDateTime(instrument.timestamp)}</div>
+                    <div className={styles['price-timestamp']}>As of {instrument.timestamp.toLocaleString()}</div>
                 </div>
             </div>
             <div className={styles['financial-details']}>
