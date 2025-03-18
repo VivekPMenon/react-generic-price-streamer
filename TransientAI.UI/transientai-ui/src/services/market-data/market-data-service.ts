@@ -39,6 +39,10 @@ class MarketDataService {
       let previousClose: number|undefined = undefined;
       let latest: MarketData|undefined = undefined;
       if (marketData && marketData.length) {
+        marketData.forEach((market: any) => {
+          market.date = new Date(market.date);
+        });
+
         latest = marketData[marketData.length - 1];
         if (isToday(latest?.date) && marketData[marketData.length - 2]) {
           previousClose = marketData[marketData.length - 2]?.close;
