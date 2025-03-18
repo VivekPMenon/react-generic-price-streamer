@@ -4,7 +4,7 @@ import dynamic from 'next/dynamic';
 
 const HighchartsReact = dynamic(() => import('highcharts-react-official'), { ssr: false });
 import {Instrument} from "@/services/market-data";
-import { formatCurrency, formatDecimal, formatShortened } from "@/lib/utility-functions";
+import { formatDecimal, formatShortened } from "@/lib/utility-functions";
 import Highcharts from 'highcharts';
 import Highstock from 'highcharts/highstock';
 import "highcharts/modules/exporting";
@@ -173,6 +173,10 @@ export function MarketDataTile({instrument, logoUrl, removeInstrument}: MarketDa
     function handleError(e: any) {
         e.target.style.display = 'none';
     }
+
+    const sign = instrument.change === 0 ? '' : instrument.change > 0 ? '+' : '-';
+    const style = instrument.change === 0 ? styles['price-change'] : instrument.change > 0 ? styles['price-change-positive'] : styles['price-change-neagtive'];
+
     return (
         <div className={`${styles['tile']}`}>
             <div className={styles['remove-panel']}>
@@ -190,14 +194,14 @@ export function MarketDataTile({instrument, logoUrl, removeInstrument}: MarketDa
                     <div>{instrument.company_name}</div>
                     <div>{instrument.ticker}</div>
                 </div>
-                {/*<div className={styles['current-price-info']}>*/}
-                {/*    <div className={styles['current-price']}>*/}
-                {/*        <div>{instrument.company_name}</div>*/}
-                {/*        <div>{instrument.ticker}</div>*/}
-                {/*        <div>{instrument.ticker}</div>*/}
-                {/*    </div>*/}
-                {/*    <div >As of {instrument.company_name}</div>*/}
-                {/*</div>*/}
+                <div className={styles['current-price-info']}>
+                    <div className={styles['current-price-section']}>
+                        <div className={`${style} ${styles['current-price']}`}>{formatDecimal(instrument.current_price, '-')}</div>
+                        <div className={style}>{`${sign}${formatDecimal(instrument.change)}`}</div>
+                        <div className={style}>{`(${sign}${formatDecimal(instrument.percent_change)}%)`}</div>
+                    </div>
+                    <div className={styles['price-timestamp']}>As of {instrument.timestamp.toLocaleDateString()}</div>
+                </div>
             </div>
             <div className={`${styles['financial-details']}`}>
                 <div>Quarterly financials</div>

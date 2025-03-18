@@ -87,6 +87,10 @@ export interface Instrument {
   ticker: string;
   company_name: string;
   marketData?: MarketData[];
-  lastMarketData?: MarketData;
   financials?: FinancialData;
+  lastMarketData?: MarketData
+  current_price: number;
+  change: number;
+  percent_change: number;
+  timestamp: Date;
 }

@@ -76,13 +76,39 @@
 .current-price-info {
   display: flex;
   flex-direction: column;
+  vertical-align: top;
+  align-items: center;
+  width: 100%;
+  padding: 0px;
 }
 
-.current-price {
+.current-price-section {
   display: flex;
   flex-direction: row;
   gap: 15px;
-  padding: 5px 0px 10px 5px;
+  padding: 5px;
+  vertical-align: center;
   align-items: center;
+  align-content: center;
 }
 
+.current-price {
+  font-size: 40px;
+  font-weight: bolder;
+}
+
+.price-change-positive {
+  color: $green;
+}
+
+.price-change-negative {
+  color: $red;
+}
+
+.price-change {
+  color: $white;
+}
+
+.price-timestamp {
+  font-size: 11px;
+}

@@ -35,16 +35,19 @@ class MarketDataService {
               });
 
       const marketData = result.data;
-      let latest: MarketData|undefined = undefined;
-      if (marketData && marketData.length) {
-        latest = marketData[marketData.length - 1];
-      }
+      const latest: MarketData|undefined = marketData && marketData.length
+          ? marketData[marketData.length - 1]
+          : undefined;
 
       return {
         ticker: result.ticker,
         company_name: result.company_name,
-        marketData: result.data,
-        lastMarketData: latest
+        marketData: marketData,
+        lastMarketData: latest,
+        current_price: result.current_price,
+        change: result.change,
+        percent_change: result.percent_change,
+        timestamp: new Date(result.timestamp)
       };
     } catch (e) {
       return null;
