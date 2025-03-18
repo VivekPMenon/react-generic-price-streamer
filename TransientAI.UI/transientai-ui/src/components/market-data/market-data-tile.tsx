@@ -270,15 +270,15 @@ export function MarketDataTile({instrument, logoUrl, removeInstrument}: MarketDa
                 </div>
             </div>
             <div className={styles['price-summary-table']}>
-                <div className="grid grid-cols-6 gap-2">
+                <div className="grid grid-cols-4 gap-2">
                     <div className="">Open</div>
                     <div className="blue-color">{formatDecimal(instrument.lastMarketData?.open, '-')}</div>
                     <div className="">High</div>
                     <div className="blue-color">{formatDecimal(instrument.lastMarketData?.high, '-')}</div>
                 </div>
 
-                <div className="grid grid-cols-6 gap-2">
-                    <div className="">Close</div>
+                <div className="grid grid-cols-4 gap-2">
+                    <div className="">Prev Close</div>
                     <div className="blue-color">{formatDecimal(instrument.lastMarketData?.close, '-')}</div>
 
                     <div className="">Low</div>
