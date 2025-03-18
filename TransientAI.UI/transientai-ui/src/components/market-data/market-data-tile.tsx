@@ -155,6 +155,9 @@ function getChartOptions(instrument: Instrument) {
           threshold: null,
         },
       ],
+      tooltip: {
+        valueDecimals: 2
+      },
       exporting: {
         enabled: true,
           buttons: {
