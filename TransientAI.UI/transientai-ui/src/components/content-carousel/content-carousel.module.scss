@@ -1,0 +1,128 @@
+@import '../../assets/variables.scss';
+
+.main-content {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  font-size: 14px;
+  padding: 10px 0px;
+}
+
+.ribbon {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+  color: $font-color-100;
+  font-size: 13px;
+
+  @media screen and (max-width: $mobile-breakpoint-max) {
+    gap: 5px;
+  }
+
+  i {
+    // color: $teal;
+    cursor: pointer;
+    padding: 5px;
+    color: $font-color-200;
+
+    &:hover {
+      color: white;
+    }
+  }
+
+  .tiles {
+    display: flex;
+    max-width: calc(100vw - 520px);
+    overflow-x: hidden;
+    gap: 15px;
+
+    @media screen and (max-width: $mobile-breakpoint-max) {
+      max-width: calc(100vw - 0px);
+      overflow-x: auto; // Allow horizontal scrolling
+      white-space: nowrap; // Prevent wrapping
+      gap: 15px;
+      -webkit-overflow-scrolling: touch; // Enable smooth scrolling on iOS
+    }
+  }
+
+  .tile {
+    background-color: $gray-1000;
+    border-radius: 5px;
+    padding: 10px;
+    width: 250px;
+    min-width: 160px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+
+    .pnl-type {
+      opacity: .7;
+    }
+
+    .user-pnl {
+      font-size: 1.1em;
+      display: flex;
+      gap: 5px;
+    }
+
+    &.active {
+      border: 1px solid $teal-100;
+    }
+  }
+
+  .disabled {
+    opacity: .4;
+    cursor: auto;
+  }
+}
+
+
+
+.notification-item {
+  border-radius: 5px;
+  color: $font-color-200;
+  font-size: 12px;
+  padding: 10px;
+  background-color: $gray-1000;
+  align-content: baseline;
+  cursor: pointer;
+  width: 100%;
+
+  &.active {
+    border: 1px solid $teal-100;
+  }
+}
+
+.notification-title {
+  display: flex;
+  gap: 10px;
+  align-items: baseline;
+  // text-transform: uppercase;
+
+  .name {
+    font-size: 14px;
+    color: $white;
+    // white-space: pre-line;
+  }
+
+  i {
+    font-size: 14px;
+  }
+}
+
+
+.notification-menu {
+  margin-left: auto;
+  display: flex;
+  align-items: baseline;
+}
+
+.notification-content {
+  display: flex;
+  flex-direction: column;
+  padding: 5px 0;
+
+  li {
+    padding: 3px;
+  }
+}
