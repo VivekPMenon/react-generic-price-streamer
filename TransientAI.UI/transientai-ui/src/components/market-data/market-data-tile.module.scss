@@ -28,7 +28,6 @@
   display: flex;
   flex-direction: column;
   padding: 5px 0px 10px 5px;
-  // border-bottom: 1px solid $border-color;
 }
 
 .price-graph {
@@ -39,11 +38,13 @@
   max-height: 45vh;
 }
 
+.financial-details {
+}
+
 .financial-details-table {
   display: flex;
   flex-direction: column;
   padding: 5px 0px 10px 5px;
-  // border-bottom: 1px solid $border-color;
 }
 
 .price-graph-title {
@@ -76,39 +77,41 @@
 .current-price-info {
   display: flex;
   flex-direction: column;
-  vertical-align: top;
-  align-items: center;
   width: 100%;
-  padding: 0px;
+  padding-left: 20px;
 }
 
 .current-price-section {
   display: flex;
   flex-direction: row;
   gap: 15px;
-  padding: 5px;
-  vertical-align: center;
   align-items: center;
-  align-content: center;
 }
 
 .current-price {
-  font-size: 40px;
+  font-size: 50px;
   font-weight: bolder;
-}
-
-.price-change-positive {
-  color: $green;
-}
-
-.price-change-negative {
-  color: $red;
+  line-height: 35px;
+  height: 35px;
 }
 
 .price-change {
   color: $white;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.price-change-positive {
+  @extend .price-change;
+  color: $green;
+}
+
+.price-change-negative {
+  @extend .price-change;
+  color: $red;
 }
 
 .price-timestamp {
   font-size: 11px;
+  padding-top: 5px;
 }

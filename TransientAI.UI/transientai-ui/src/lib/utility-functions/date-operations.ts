@@ -172,6 +172,18 @@ export function formatDate(isoString: string|undefined|null) {
   return new Intl.DateTimeFormat('en-US', {
     month: 'short',  // "Mar"
     day: '2-digit',  // "06"
+    year: 'numeric',
+    hour: 'numeric', // "6"
+    minute: '2-digit', // "00"
+    hour12: true,    // "PM"
+  }).format(date);
+}
+
+export function formatDateTime(date: Date) {
+  return new Intl.DateTimeFormat('en-US', {
+    month: 'short',  // "Mar"
+    day: '2-digit',  // "06"
+    year: 'numeric',
     hour: 'numeric', // "6"
     minute: '2-digit', // "00"
     hour12: true,    // "PM"

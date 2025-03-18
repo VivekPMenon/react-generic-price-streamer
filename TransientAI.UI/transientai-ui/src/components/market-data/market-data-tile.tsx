@@ -9,6 +9,7 @@ import Highcharts from 'highcharts';
 import Highstock from 'highcharts/highstock';
 import "highcharts/modules/exporting";
 import styles from './market-data-tile.module.scss';
+import {formatDateTime, formatDateToHHMMSS, tryParseAndFormat} from "@/lib/utility-functions/date-operations";
 
 export interface MarketDataTileProps {
     instrument: Instrument,
@@ -174,8 +175,20 @@ export function MarketDataTile({instrument, logoUrl, removeInstrument}: MarketDa
         e.target.style.display = 'none';
     }
 
-    const sign = instrument.change === 0 ? '' : instrument.change > 0 ? '+' : '-';
-    const style = instrument.change === 0 ? styles['price-change'] : instrument.change > 0 ? styles['price-change-positive'] : styles['price-change-neagtive'];
+    let sign: string;
+    let style: string;
+    if (instrument.change === 0.0) {
+        sign = '';
+        style = styles['price-change'];
+    } else {
+        if (instrument.change > 0.0) {
+            sign = '+';
+            style = styles['price-change-positive'];
+        } else {
+            sign = '-';
+            style = styles['price-change-neagtive'];
+        }
+    }
 
     return (
         <div className={`${styles['tile']}`}>
@@ -196,14 +209,14 @@ export function MarketDataTile({instrument, logoUrl, removeInstrument}: MarketDa
                 </div>
                 <div className={styles['current-price-info']}>
                     <div className={styles['current-price-section']}>
-                        <div className={`${style} ${styles['current-price']}`}>{formatDecimal(instrument.current_price, '-')}</div>
+                        <div className={`${styles['current-price']}`}>{formatDecimal(instrument.current_price, '-')}</div>
                         <div className={style}>{`${sign}${formatDecimal(instrument.change)}`}</div>
                         <div className={style}>{`(${sign}${formatDecimal(instrument.percent_change)}%)`}</div>
                     </div>
-                    <div className={styles['price-timestamp']}>As of {instrument.timestamp.toLocaleDateString()}</div>
+                    <div className={styles['price-timestamp']}>As of {formatDateTime(instrument.timestamp)}</div>
                 </div>
             </div>
-            <div className={`${styles['financial-details']}`}>
+            <div className={styles['financial-details']}>
                 <div>Quarterly financials</div>
                 <div className={styles['financial-details-table']}>
                     <div className="grid grid-cols-[40%_30%_30%]">
