@@ -32,8 +32,6 @@
 
 .clear-button {
   @media screen and (max-width: $mobile-breakpoint-max) {
-  //  width: 75px;
-  //  margin: 20px;
   }
 }
 
@@ -54,7 +52,7 @@
 .search-box {
   display: flex;
   flex-direction: row;
-  width: 30vw;
+  width: 25vw;
   align-items: center;
 
   i {
