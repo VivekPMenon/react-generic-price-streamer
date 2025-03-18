@@ -88,7 +88,8 @@ export interface Instrument {
   company_name: string;
   marketData?: MarketData[];
   financials?: FinancialData;
-  lastMarketData?: MarketData
+  lastMarketData?: MarketData;
+  previous_close?: number;
   current_price: number;
   change: number;
   percent_change: number;

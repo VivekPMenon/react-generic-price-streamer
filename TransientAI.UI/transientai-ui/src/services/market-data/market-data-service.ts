@@ -1,5 +1,6 @@
 import {webApihandler} from "../web-api-handler";
 import {FinancialData, GraphDataPoint, ImageType, Instrument, MarketData, PeriodType, Price, TraceData} from "./model";
+import {isToday} from "@/lib/utility-functions/date-operations";
 
 class MarketDataService {
   readonly serviceName = 'hurricane-api';
@@ -35,9 +36,16 @@ class MarketDataService {
               });
 
       const marketData = result.data;
-      const latest: MarketData|undefined = marketData && marketData.length
-          ? marketData[marketData.length - 1]
-          : undefined;
+      let previousClose: number|undefined = undefined;
+      let latest: MarketData|undefined = undefined;
+      if (marketData && marketData.length) {
+        latest = marketData[marketData.length - 1];
+        if (isToday(latest?.date) && marketData[marketData.length - 2]) {
+          previousClose = marketData[marketData.length - 2]?.close;
+        } else {
+          previousClose = latest?.close;
+        }
+      }
 
       return {
         ticker: result.ticker,
@@ -45,6 +53,7 @@ class MarketDataService {
         marketData: marketData,
         lastMarketData: latest,
         current_price: result.current_price,
+        previous_close: previousClose,
         change: result.change,
         percent_change: result.percent_change,
         timestamp: new Date(result.timestamp)

@@ -279,7 +279,7 @@ export function MarketDataTile({instrument, logoUrl, removeInstrument}: MarketDa
 
                 <div className="grid grid-cols-4 gap-2">
                     <div className="">Prev Close</div>
-                    <div className="blue-color">{formatDecimal(instrument.lastMarketData?.close, '-')}</div>
+                    <div className="blue-color">{formatDecimal(instrument.previous_close, '-')}</div>
 
                     <div className="">Low</div>
                     <div className="blue-color">{formatDecimal(instrument.lastMarketData?.low, '-')}</div>
