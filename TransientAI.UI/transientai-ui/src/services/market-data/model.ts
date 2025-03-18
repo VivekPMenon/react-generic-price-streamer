@@ -94,4 +94,5 @@ export interface Instrument {
   change: number;
   percent_change: number;
   timestamp: Date;
+  timeout: any;
 }

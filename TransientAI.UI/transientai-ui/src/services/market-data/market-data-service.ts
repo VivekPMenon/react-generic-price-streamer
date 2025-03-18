@@ -60,30 +60,35 @@ class MarketDataService {
         previous_close: previousClose,
         change: result.change,
         percent_change: result.percent_change,
-        timestamp: new Date(result.timestamp)
+        timestamp: new Date(result.timestamp),
+        timeout: null
       };
     } catch (e) {
       return null;
     }
   }
 
-  async getFinancialData(company_or_ticker : string, period: PeriodType = PeriodType.ONE_YEAR): Promise<FinancialData> {
-    const financials = await webApihandler
-        .get(
-            `financials/${company_or_ticker}`, {
-              period
-            }, {
-              serviceName: this.serviceName
-            });
+  async getFinancialData(company_or_ticker : string, period: PeriodType = PeriodType.ONE_YEAR): Promise<FinancialData|null> {
+   try {
+     const financials = await webApihandler
+         .get(
+             `financials/${company_or_ticker}`, {
+               period
+             }, {
+               serviceName: this.serviceName
+             });
 
-    if (financials.latest_quarter_date) {
-      financials.latest_quarter = new Date(financials.latest_quarter_date).toLocaleDateString('en-US', {
-        month: 'short',
-        year: 'numeric'
-      });
-    }
+     if (financials.latest_quarter_date) {
+       financials.latest_quarter = new Date(financials.latest_quarter_date).toLocaleDateString('en-US', {
+         month: 'short',
+         year: 'numeric'
+       });
+     }
 
-    return financials;
+     return financials;
+   } catch (e: any) {
+     return null;
+   }
   }
 
   async getLogo(company_or_ticker: string, format: ImageType = ImageType.SVG, size: number = 100): Promise<any> {
