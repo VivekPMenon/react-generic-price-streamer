@@ -1,6 +1,6 @@
 import {webApihandler} from "../web-api-handler";
 import {FinancialData, GraphDataPoint, ImageType, Instrument, MarketData, PeriodType, Price, TraceData} from "./model";
-import {isToday} from "@/lib/utility-functions/date-operations";
+import {isToday, parseLocalDate} from "@/lib/utility-functions/date-operations";
 
 class MarketDataService {
   readonly serviceName = 'hurricane-api';
@@ -40,7 +40,7 @@ class MarketDataService {
       let latest: MarketData|undefined = undefined;
       if (marketData && marketData.length) {
         marketData.forEach((market: any) => {
-          market.date = new Date(market.date);
+          market.date = parseLocalDate(market.date);
         });
 
         latest = marketData[marketData.length - 1];

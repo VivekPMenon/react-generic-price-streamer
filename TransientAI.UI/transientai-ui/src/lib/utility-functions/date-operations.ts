@@ -269,3 +269,11 @@ export function getMillisecondsTill(time: string): number {
 
   return new Date().getTime() - date.getTime();
 }
+
+export function parseLocalDate(value: string|null|undefined): Date|null {
+  if (!value) {
+    return null;
+  }
+  const [year, month, day] = value.split("-").map(Number);
+  return new Date(year, month - 1, day);
+}
