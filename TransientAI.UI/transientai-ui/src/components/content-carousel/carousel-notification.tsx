@@ -134,7 +134,7 @@ export function CarouselNotifications () {
             <div className='blue-color'>{item.subTitle}</div>
             <div className={styles['messages']}>
               <ul className='list-disc pl-8 off-white-color-alt'>
-                {item.highlights?.map(i => (
+                {item.highlights?.map((i: any) => (
                   <li key={item.id + i}>{i}</li>
                 ))}
               </ul>
