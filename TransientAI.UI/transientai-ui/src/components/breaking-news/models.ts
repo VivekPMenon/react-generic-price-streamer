@@ -1,8 +1,3 @@
-export enum MessageType {
-    Text = 'text',
-    Attachment = 'attachment'
-}
-
 export enum ReadStatus {
     Seen = 'seen',
     Unseen = 'unseen'
@@ -16,6 +11,7 @@ export interface Message {
     sender_time_info?: string;
     message_type?: string;
     message?: string;
+    attachment?: string;
     read_status?: string;
 }
 

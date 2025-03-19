@@ -4,15 +4,16 @@ import { Explorer } from '@/components/explorer/explorer';
 import { Header } from '../../components/header/header'
 import styles from './layout.module.scss';
 import { Notifications } from '@/components/notifications';
-import { Suspense, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { DashboardTabs } from '@/components/dashboard-tabs/dashboard-tabs';
-import { PnlMetrics } from '@/components/pnl-metrics/pnl-metrics';
 import { useDeviceType } from '@/lib/hooks';
 import { useUserContextStore } from '@/services/user-context';
 import { MsalProvider } from '@azure/msal-react';
 import msalInstance from '../msal-config';
 import { Spinner } from '@radix-ui/themes';
 import { webApihandler } from '@/services/web-api-handler';
+import { ContentCarousel } from '@/components/content-carousel/content-carousel';
+import { EContentTypes } from '@/components/content-carousel/model';
 
 export default function DashboardLayout({
   children,
@@ -85,8 +86,8 @@ export default function DashboardLayout({
               </div>
 
               <div className={`${styles['middle-panel']} ${isMenuVisible && deviceType === 'mobile' ? styles['collapsed'] : ''}`}>
-                <PnlMetrics></PnlMetrics>
-
+                <ContentCarousel
+                  contentType={EContentTypes.NOTIFICATION} />
                 <DashboardTabs>
                   {children}
                 </DashboardTabs>
