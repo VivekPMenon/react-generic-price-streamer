@@ -11,21 +11,21 @@ interface ContentCarouselProps {
   title?: string
 }
 
-export function ContentCarousel ({
-  title,
-  contentType
-}: ContentCarouselProps) {
-  const carouselRef = useRef<HTMLDivElement | null>(null);
-  const [canScrollLeft, setCanScrollLeft] = useState(false);
-  const [canScrollRight, setCanScrollRight] = useState(true);
+export function ContentCarousel ({ title, contentType }: ContentCarouselProps) {
+  const carouselRef = useRef<HTMLDivElement | null>(null)
+  const [canScrollLeft, setCanScrollLeft] = useState(false)
+  const [canScrollRight, setCanScrollRight] = useState(true)
 
   useEffect(() => {
-    checkScroll()
-
-    const ref = carouselRef.current
+    const ref = carouselRef.current;
     if (ref) {
       ref.addEventListener('scroll', checkScroll)
     }
+
+    // Wait for 1 second before executing the checkScroll function
+    setTimeout(() => {
+      checkScroll();
+    }, 1000);
 
     const handleResize = () => {
       checkScroll()

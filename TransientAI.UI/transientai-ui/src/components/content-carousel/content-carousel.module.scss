@@ -1,5 +1,8 @@
 @import '../../assets/variables.scss';
 
+//local variable
+$tiles-width: 280px;
+
 .main-content {
   display: flex;
   flex-direction: column;
@@ -32,12 +35,12 @@
 
   .tiles {
     display: flex;
-    max-width: calc(100vw - 520px);
+    max-width: ($tiles-width+$tiles-width);
     overflow-x: hidden;
-    gap: 15px;
+    gap: 15px;  
 
     @media screen and (max-width: $mobile-breakpoint-max) {
-      max-width: calc(100vw - 0px);
+      max-width: calc(100vw - 60px);
       overflow-x: auto; // Allow horizontal scrolling
       white-space: nowrap; // Prevent wrapping
       gap: 15px;
@@ -49,8 +52,8 @@
     background-color: $gray-1000;
     border-radius: 5px;
     padding: 10px;
-    width: 250px;
-    min-width: 160px;
+    width: $tiles-width;
+    min-width: $tiles-width;
     display: flex;
     flex-direction: column;
     gap: 5px;
@@ -67,6 +70,10 @@
 
     &.active {
       border: 1px solid $teal-100;
+    }
+
+    @media screen and (max-width: $mobile-breakpoint-max) {
+      min-width: $tiles-width + 50px;
     }
   }
 
