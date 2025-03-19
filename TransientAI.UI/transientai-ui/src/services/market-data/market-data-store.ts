@@ -147,7 +147,7 @@ export const useMarketDataStore = create<MarketDataStore>()(
               if (!error && state) {
                   const tickers = state?.tickers;
                   if (tickers && tickers.length) {
-                      const unique = new Set(state.tickers);
+                      const unique = Array.from(new Set(tickers)).slice(0, MAX_INSTRUMENTS);
                       state.setIsLoading(true);
                       Promise
                           .allSettled([...unique]
