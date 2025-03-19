@@ -205,7 +205,7 @@ export function MarketDataTile({instrument, logoUrl, removeInstrument}: MarketDa
                     />
                 </div>
                 <div className={styles['details']}>
-                    <div>{instrument.company_name}</div>
+                    <div className={styles['company-name']}>{instrument.company_name}</div>
                     <div>{instrument.ticker}</div>
                 </div>
                 <div className={styles['current-price-info']}>
