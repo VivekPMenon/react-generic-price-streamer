@@ -214,7 +214,7 @@ export function MarketDataTile({instrument, logoUrl, removeInstrument}: MarketDa
                         <div className={style}>{`${sign}${formatDecimal(instrument.change)}`}</div>
                         <div className={style}>{`(${sign}${formatDecimal(instrument.percent_change)}%)`}</div>
                     </div>
-                    <div className={styles['price-timestamp']}>As of {instrument.timestamp.toLocaleString()}</div>
+                    <div className={styles['price-timestamp']}>As of {formatDateTime(instrument.timestamp)}</div>
                 </div>
             </div>
             <div className={styles['financial-details']}>

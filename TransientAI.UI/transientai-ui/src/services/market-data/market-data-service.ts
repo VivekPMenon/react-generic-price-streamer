@@ -51,6 +51,12 @@ class MarketDataService {
         }
       }
 
+      const timestamp = new Date(
+          result.timestamp.endsWith('Z')
+              ? result.timestamp
+              : result.timestamp + 'Z'
+      );
+
       return {
         ticker: result.ticker,
         company_name: result.company_name,
@@ -60,8 +66,8 @@ class MarketDataService {
         previous_close: previousClose,
         change: result.change,
         percent_change: result.percent_change,
-        timestamp: new Date(result.timestamp),
-        timeout: null
+        timestamp: new Date(timestamp),
+        dispose: null
       };
     } catch (e) {
       return null;

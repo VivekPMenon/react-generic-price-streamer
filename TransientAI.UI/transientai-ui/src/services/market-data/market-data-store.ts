@@ -30,8 +30,8 @@ export const useMarketDataStore = create<MarketDataStore>()(
         setIsLoading: (isLoading: boolean) => set({isLoading}),
         clearAllInstruments: () => {
             get().instruments.forEach((instrument: Instrument) => {
-                if (instrument.timeout) {
-                    clearInterval(instrument.timeout);
+                if (instrument.dispose) {
+                    instrument.dispose();
                 }
             });
             set({instruments: [], isLoading: false, maxInstruments: false});
@@ -80,7 +80,7 @@ export const useMarketDataStore = create<MarketDataStore>()(
                 }
                 instruments.unshift(instrument);
 
-                instrument.timeout = setInterval(async () => {
+                const timeout = setInterval(async () => {
                     const {instruments: currentInstruments, loadInstrument} = get();
                     const index = currentInstruments
                         .findIndex(i => instrument.ticker.toUpperCase() === i.ticker.toUpperCase());
@@ -88,15 +88,17 @@ export const useMarketDataStore = create<MarketDataStore>()(
                     if (index >= 0) {
                         const refreshed = await loadInstrument(instrument.ticker, period, false);
                         if (refreshed) {
-                            refreshed.timeout = instrument.timeout;
+                            refreshed.dispose = instrument.dispose;
                             refreshed.financials = instrument.financials;
                             currentInstruments[index] = refreshed;
                             set({instruments: [...currentInstruments], maxInstruments: instruments.length >= MAX_INSTRUMENTS});
                             return;
                         }
                     }
-                    clearInterval(instrument.timeout);
+                    clearInterval(timeout);
                 }, REFRESH_INTERVAL);
+
+                instrument.dispose = () => clearInterval(timeout);
 
                 set({instruments: [...instruments], error: '', maxInstruments: instruments.length >= MAX_INSTRUMENTS});
 
@@ -117,8 +119,8 @@ export const useMarketDataStore = create<MarketDataStore>()(
                 const copy = [...instruments];
                 const removed = copy.splice(index, 1);
                 removed.forEach((instrument: Instrument) => {
-                    if (instrument.timeout) {
-                        clearInterval(instrument.timeout);
+                    if (instrument.dispose) {
+                        instrument.dispose();
                     }
                 });
                 set({instruments: [...copy], maxInstruments: copy.length >= MAX_INSTRUMENTS});
