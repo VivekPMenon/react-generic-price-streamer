@@ -1,6 +1,6 @@
 import {create} from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
-import {ImageType, Instrument, PeriodType} from "@/services/market-data/model";
+import {FinancialData, ImageType, Instrument, PeriodType} from "@/services/market-data/model";
 import {marketDataService} from "@/services/market-data/market-data-service";
 
 export interface MarketDataStore {
@@ -13,7 +13,12 @@ export interface MarketDataStore {
     findInstrument: (company_or_ticker: string, period: PeriodType, manageLoadingExternally: boolean) => void;
     removeInstrument: (instrument: Instrument) => void;
     getInstrumentLogoUrl: (instrument: Instrument, format: ImageType, size: number) => string;
+    maxInstruments: boolean;
+    loadInstrument: (company_or_ticker: string, period: PeriodType, includeFinancials: boolean) => Promise<Instrument|null>;
 }
+
+const MAX_INSTRUMENTS = 5;
+const REFRESH_INTERVAL = 30000;
 
 export const useMarketDataStore = create<MarketDataStore>()(
     persist((set, get) => ({
@@ -21,10 +26,38 @@ export const useMarketDataStore = create<MarketDataStore>()(
         instruments: [],
         isLoading: false,
         error: '',
-
+        maxInstruments: false,
         setIsLoading: (isLoading: boolean) => set({isLoading}),
         clearAllInstruments: () => {
-            set({instruments: []});
+            get().instruments.forEach((instrument: Instrument) => {
+                if (instrument.dispose) {
+                    instrument.dispose();
+                }
+            });
+            set({instruments: [], isLoading: false, maxInstruments: false});
+        },
+        loadInstrument: async (company_or_ticker: string, period: PeriodType, includeFinancials: boolean) => {
+            const promises: Promise<any>[] = [
+                marketDataService.getMarketData(company_or_ticker, period)
+            ];
+
+            if (includeFinancials) {
+                promises.push(marketDataService.getFinancialData(company_or_ticker));
+            }
+
+            const results = (await Promise.allSettled(promises))
+                .map(result => result.status === 'fulfilled' ? result.value : null);
+
+            const instrument = results[0] as Instrument;
+            if (!instrument) {
+                return null;
+            }
+
+            if (includeFinancials) {
+                instrument.financials = results[1] as FinancialData;
+            }
+
+            return instrument;
         },
         findInstrument: async (company_or_ticker: string, period: PeriodType = PeriodType.ONE_YEAR, manageLoadingExternally: boolean = false) => {
             const search = company_or_ticker.toUpperCase();
@@ -36,22 +69,38 @@ export const useMarketDataStore = create<MarketDataStore>()(
                 const instruments = get().instruments;
                 const index = instruments.findIndex(instrument => instrument.ticker.toUpperCase() === search);
                 if (index >= 0) {
+                    set({error: `${search} already found`});
                     return;
                 }
 
-                const instrument = await marketDataService.getMarketData(search, period);
+                const instrument = await get().loadInstrument(search, period, true);
                 if (!instrument) {
                     set({error: `Could not find ${search}`});
                     return;
                 }
-
-                await marketDataService.getFinancialData(instrument.ticker)
-                    .then(value => instrument.financials = value)
-                    .catch(() => {/*ignore*/});
-
                 instruments.unshift(instrument);
 
-                set({instruments: instruments, error: ''});
+                const timeout = setInterval(async () => {
+                    const {instruments: currentInstruments, loadInstrument} = get();
+                    const index = currentInstruments
+                        .findIndex(i => instrument.ticker.toUpperCase() === i.ticker.toUpperCase());
+
+                    if (index >= 0) {
+                        const refreshed = await loadInstrument(instrument.ticker, period, false);
+                        if (refreshed) {
+                            refreshed.dispose = instrument.dispose;
+                            refreshed.financials = instrument.financials;
+                            currentInstruments[index] = refreshed;
+                            set({instruments: [...currentInstruments], maxInstruments: instruments.length >= MAX_INSTRUMENTS});
+                            return;
+                        }
+                    }
+                    clearInterval(timeout);
+                }, REFRESH_INTERVAL);
+
+                instrument.dispose = () => clearInterval(timeout);
+
+                set({instruments: [...instruments], error: '', maxInstruments: instruments.length >= MAX_INSTRUMENTS});
 
             } catch (e: any) {
                 set({error: `Could not find ${search}`});
@@ -68,8 +117,13 @@ export const useMarketDataStore = create<MarketDataStore>()(
             const index = instruments.findIndex(instrument => instrument.ticker === ticker);
             if (index >= 0) {
                 const copy = [...instruments];
-                copy.splice(index, 1);
-                set({instruments: [...copy]});
+                const removed = copy.splice(index, 1);
+                removed.forEach((instrument: Instrument) => {
+                    if (instrument.dispose) {
+                        instrument.dispose();
+                    }
+                });
+                set({instruments: [...copy], maxInstruments: copy.length >= MAX_INSTRUMENTS});
             }
         },
 
@@ -87,7 +141,7 @@ export const useMarketDataStore = create<MarketDataStore>()(
               if (!error && state) {
                   const tickers = state?.tickers;
                   if (tickers && tickers.length) {
-                      const unique = new Set(state.tickers)
+                      const unique = new Set(state.tickers);
                       state.setIsLoading(true);
                       Promise
                           .allSettled([...unique]

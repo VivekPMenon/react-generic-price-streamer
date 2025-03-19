@@ -18,6 +18,16 @@ export function isSameMinute(date1: Date, date2: Date): boolean {
   return date1.getMinutes() === date2.getMinutes();
 }
 
+export function isToday(date: Date|null|undefined): boolean {
+  if (!date) {
+    return false;
+  }
+  const today = new Date();
+  return isSameMonth(today, date) &&
+      isSameDayDate(today, date) &&
+      isSameYear(today, date);
+}
+
 export function getCurrentDate() {
   const date = new Date();
   return date.toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' });
@@ -258,4 +268,12 @@ export function getMillisecondsTill(time: string): number {
   const date = new Date(now.getFullYear(), now.getMonth(), now.getDate(), timeHours, timeMinutes, 0);
 
   return new Date().getTime() - date.getTime();
+}
+
+export function parseLocalDate(value: string|null|undefined): Date|null {
+  if (!value) {
+    return null;
+  }
+  const [year, month, day] = value.split("-").map(Number);
+  return new Date(year, month - 1, day);
 }

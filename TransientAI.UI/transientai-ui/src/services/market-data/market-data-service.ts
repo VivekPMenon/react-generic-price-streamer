@@ -1,5 +1,6 @@
 import {webApihandler} from "../web-api-handler";
 import {FinancialData, GraphDataPoint, ImageType, Instrument, MarketData, PeriodType, Price, TraceData} from "./model";
+import {isToday, parseLocalDate} from "@/lib/utility-functions/date-operations";
 
 class MarketDataService {
   readonly serviceName = 'hurricane-api';
@@ -35,9 +36,26 @@ class MarketDataService {
               });
 
       const marketData = result.data;
-      const latest: MarketData|undefined = marketData && marketData.length
-          ? marketData[marketData.length - 1]
-          : undefined;
+      let previousClose: number|undefined = undefined;
+      let latest: MarketData|undefined = undefined;
+      if (marketData && marketData.length) {
+        marketData.forEach((market: any) => {
+          market.date = parseLocalDate(market.date);
+        });
+
+        latest = marketData[marketData.length - 1];
+        if (isToday(latest?.date) && marketData[marketData.length - 2]) {
+          previousClose = marketData[marketData.length - 2]?.close;
+        } else {
+          previousClose = latest?.close;
+        }
+      }
+
+      const timestamp = new Date(
+          result.timestamp.endsWith('Z')
+              ? result.timestamp
+              : result.timestamp + 'Z'
+      );
 
       return {
         ticker: result.ticker,
@@ -45,32 +63,38 @@ class MarketDataService {
         marketData: marketData,
         lastMarketData: latest,
         current_price: result.current_price,
+        previous_close: previousClose,
         change: result.change,
         percent_change: result.percent_change,
-        timestamp: new Date(result.timestamp)
+        timestamp: new Date(timestamp),
+        dispose: null
       };
     } catch (e) {
       return null;
     }
   }
 
-  async getFinancialData(company_or_ticker : string, period: PeriodType = PeriodType.ONE_YEAR): Promise<FinancialData> {
-    const financials = await webApihandler
-        .get(
-            `financials/${company_or_ticker}`, {
-              period
-            }, {
-              serviceName: this.serviceName
-            });
+  async getFinancialData(company_or_ticker : string, period: PeriodType = PeriodType.ONE_YEAR): Promise<FinancialData|null> {
+   try {
+     const financials = await webApihandler
+         .get(
+             `financials/${company_or_ticker}`, {
+               period
+             }, {
+               serviceName: this.serviceName
+             });
 
-    if (financials.latest_quarter_date) {
-      financials.latest_quarter = new Date(financials.latest_quarter_date).toLocaleDateString('en-US', {
-        month: 'short',
-        year: 'numeric'
-      });
-    }
+     if (financials.latest_quarter_date) {
+       financials.latest_quarter = new Date(financials.latest_quarter_date).toLocaleDateString('en-US', {
+         month: 'short',
+         year: 'numeric'
+       });
+     }
 
-    return financials;
+     return financials;
+   } catch (e: any) {
+     return null;
+   }
   }
 
   async getLogo(company_or_ticker: string, format: ImageType = ImageType.SVG, size: number = 100): Promise<any> {
