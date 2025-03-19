@@ -1,7 +1,7 @@
 import styles from './breaking-news.module.scss';
 import { useEffect, useState, useRef, useCallback } from 'react';
 import { Spinner } from '@radix-ui/themes';
-import { Message, MessageType } from './models';
+import { Message } from './models';
 import { useBreakNewsDataStore } from '@/services/break-news/break-news-data-store';
 import { breakNewsDataService } from '@/services/break-news/break-news-data-service';
 import WhatsAppGroupDropdown from './breaking-group';
@@ -199,68 +199,88 @@ export function BreakingNews({ isExpanded }: BreakingNewsProps) {
   };
   
   function getMessageType(message: Message) {
-    if (!message?.message) return null; // Handle undefined or empty message safely
-  
+    if (!message) return null; // Handle undefined message safely
+    
+    // If there's no message content and no attachment, return null
+    if (!message.message && !message.attachment) return null;
+    
     const imageExtensions = ["jpg", "jpeg", "png", "gif", "webp"];
     const videoExtensions = ["mp4", "webm", "ogg"];
-  
-    // Extract file extension from URL
-    const urlParts = message.message.split(".");
-    const extension = urlParts.length > 1 ? urlParts[urlParts.length - 1].toLowerCase().split("?")[0] : "";
-  
-    if (message.message_type === MessageType.Attachment) {
+    
+    // Create the text component if message text exists
+    const textComponent = message.message ? (
+      <p className="text-sm max-w-xs md:max-w-sm lg:max-w-md mb-2">
+        {message.message}
+      </p>
+    ) : null;
+    
+    // Create the attachment component if attachment exists
+    let attachmentComponent = null;
+    
+    if (message.attachment) {
+      // Extract file extension from URL
+      const urlParts = message.attachment.split(".");
+      const extension = urlParts.length > 1 ? urlParts[urlParts.length - 1].toLowerCase().split("?")[0] : "";
+      
       if (imageExtensions.includes(extension)) {
-        // Show Image
-        return (
-          <div>
+        // Image attachment
+        attachmentComponent = (
+          <div className="mt-1">
             <img
-              src={message.message}
+              src={message.attachment}
               alt="Attachment"
               className="w-full h-auto max-h-[300px] rounded-lg object-cover"
             />
           </div>
         );
       } else if (videoExtensions.includes(extension)) {
-        // Show Video
-        return (
-          <div>
+        // Video attachment
+        attachmentComponent = (
+          <div className="mt-1">
             <video
               controls
               className="w-full h-auto max-h-[300px] rounded-lg"
             >
-              <source src={message.message} type={`video/${extension}`} />
+              <source src={message.attachment} type={`video/${extension}`} />
               Your browser does not support the video tag.
             </video>
           </div>
         );
       } else {
-        // Show as a link if it's not an image or video
-        return (
-          <a
-            href={message.message}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-blue-400 underline break-all"
-          >
-            {message.message}
-          </a>
+        // Other file attachment (link)
+        attachmentComponent = (
+          <div className="mt-1">
+            <a
+              href={message.attachment}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-blue-400 underline break-all flex items-center"
+            >
+              <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                <path d="M11 3a1 1 0 100 2h2.586l-6.293 6.293a1 1 0 101.414 1.414L15 6.414V9a1 1 0 102 0V4a1 1 0 00-1-1h-5z"></path>
+                <path d="M5 5a2 2 0 00-2 2v8a2 2 0 002 2h8a2 2 0 002-2v-3a1 1 0 10-2 0v3H5V7h3a1 1 0 000-2H5z"></path>
+              </svg>
+              {message.attachment.split('/').pop()}
+            </a>
+          </div>
         );
       }
     }
-  
-    // Default text message rendering
+    
+    // Return both text and attachment in a container
     return (
-      <p className="text-sm max-w-xs md:max-w-sm lg:max-w-md">
-        {message.message}
-      </p>
+      <div className="message-container">
+        {attachmentComponent}
+        {textComponent}
+      </div>
     );
   }
   
 
-  const renderMessage = (message: Message, message_type: MessageType) => {
+  const renderMessage = (message: Message) => {
     return (
       <div key={message.id} className="mb-3 flex flex-col items-start">
-        <div className={`bg-[#2a2d30] text-white p-2 rounded-lg flex flex-col ${message_type === MessageType.Attachment ? 'w-[70%]' : 'max-w-lg'}`}>
+        <div className={`bg-[#2a2d30] text-white p-2 rounded-lg flex flex-col ${message.attachment ? 'w-[70%]' : 'max-w-lg'}`}>
           <div className="flex-1">{getMessageType(message)}</div>
           <span className="text-xs text-gray-400 whitespace-nowrap w-full text-end p-1">{formatTime(message.sender_time_info || '')}</span>
         </div>
@@ -308,7 +328,7 @@ export function BreakingNews({ isExpanded }: BreakingNewsProps) {
                   {formatDate(messagesForDate[0].sender_time_info || '')}
                 </div>
               </div>
-              {messagesForDate.map(message => renderMessage(message, message.message_type as MessageType))}
+              {messagesForDate.map(message => renderMessage(message))}
             </div>
           ))}
         </div>
