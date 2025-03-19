@@ -9,7 +9,7 @@ import { Spinner } from '@radix-ui/themes';
 
 export function MarketData() {
     const [searchQuery, setSearchQuery] = useState<string>('');
-    const {instruments, isLoading, error, maxInstruments, findInstrument, removeInstrument, getInstrumentLogoUrl, clearAllInstruments} = useMarketDataStore();
+    const {instruments, isLoading, error, findInstrument, removeInstrument, getInstrumentLogoUrl, clearAllInstruments} = useMarketDataStore();
 
     useEffect(() => {
         if (!isLoading) {
@@ -38,7 +38,7 @@ export function MarketData() {
                     <div className={styles['search-box']}>
                         <input
                            type='text'
-                           disabled={isLoading || maxInstruments}
+                           disabled={isLoading}
                            placeholder='Search Ticker/Company name or ask the AI Chatbot'
                            autoFocus={true}
                            autoComplete='on'

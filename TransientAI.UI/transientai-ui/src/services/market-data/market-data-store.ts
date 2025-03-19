@@ -19,6 +19,7 @@ export interface MarketDataStore {
 
 const MAX_INSTRUMENTS = 5;
 const REFRESH_INTERVAL = 30000;
+const MAX_INSTRUMENTS_REACHED = `Limit of ${MAX_INSTRUMENTS} charts, please delete some to proceed`;
 
 export const useMarketDataStore = create<MarketDataStore>()(
     persist((set, get) => ({
@@ -34,7 +35,7 @@ export const useMarketDataStore = create<MarketDataStore>()(
                     instrument.dispose();
                 }
             });
-            set({instruments: [], isLoading: false, maxInstruments: false});
+            set({instruments: [], isLoading: false, maxInstruments: false, error: ''});
         },
         loadInstrument: async (company_or_ticker: string, period: PeriodType, includeFinancials: boolean) => {
             const promises: Promise<any>[] = [
@@ -64,6 +65,11 @@ export const useMarketDataStore = create<MarketDataStore>()(
             try {
                 if (!manageLoadingExternally) {
                     set({isLoading: true});
+                }
+
+                if (get().maxInstruments) {
+                    set({error: MAX_INSTRUMENTS_REACHED});
+                    return;
                 }
 
                 const instruments = get().instruments;
@@ -123,7 +129,7 @@ export const useMarketDataStore = create<MarketDataStore>()(
                         instrument.dispose();
                     }
                 });
-                set({instruments: [...copy], maxInstruments: copy.length >= MAX_INSTRUMENTS});
+                set({instruments: [...copy], error: '', maxInstruments: copy.length >= MAX_INSTRUMENTS});
             }
         },
 
