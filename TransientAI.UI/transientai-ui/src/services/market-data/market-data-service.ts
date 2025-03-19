@@ -1,5 +1,14 @@
 import {webApihandler} from "../web-api-handler";
-import {FinancialData, GraphDataPoint, ImageType, Instrument, MarketData, PeriodType, Price, TraceData} from "./model";
+import {
+  FinancialData,
+  GraphDataPoint,
+  ImageType,
+  Instrument,
+  MarketData,
+  PeriodType,
+  Price,
+  TraceData
+} from "./model";
 import {isToday, parseLocalDate} from "@/lib/utility-functions/date-operations";
 
 class MarketDataService {
