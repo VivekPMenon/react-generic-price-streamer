@@ -1,5 +1,6 @@
 import { useMacroPanelDataStore } from "@/services/macro-panel-data/macro-panel-data-store";
 import {DataGrid} from "@/components/data-grid";
+import { SortDirection } from 'ag-grid-community';
 import {formatDecimal} from "@/lib/utility-functions";
 import styles from './macro-panel.module.scss';
 
@@ -15,7 +16,7 @@ const fxColumnDefs = [
             cellClass: styles['cell'],
             filter: false,
             floatingFilter: false,
-            pinned: 'left'
+            pinned: true
         },
         {
             field: 'price',
@@ -38,7 +39,7 @@ const fxColumnDefs = [
         {
             field: 'change_percentage',
             headerName: '1D % Chg',
-            sort: 'desc',
+            sort: 'desc' as SortDirection,
             cellClassRules: cellClassRules,
             valueFormatter: (params: any) => formatDecimal(params.data?.change_percentage, '-', 2) + '%',
             filter: false,
@@ -53,7 +54,7 @@ const treasuryColumnDefs = [
         cellClass: styles['cell'],
         filter: false,
         floatingFilter: false,
-        pinned: 'left'
+        pinned: true
     },
     {
         field: 'rate',
@@ -95,7 +96,7 @@ const cryptoColumnDefs = [
         cellClass: styles['cell'],
         filter: false,
         floatingFilter: false,
-        pinned: 'left'
+        pinned: true
     },
     {
         field: 'price',
@@ -118,7 +119,7 @@ const cryptoColumnDefs = [
     {
         field: 'change_percentage',
         headerName: '1D % Chg',
-        sort: 'desc',
+        sort: 'desc' as SortDirection,
         cellClassRules: cellClassRules,
         valueFormatter: (params: any) => formatDecimal(params.data?.change_percentage, '-', 2) + '%',
         filter: false,

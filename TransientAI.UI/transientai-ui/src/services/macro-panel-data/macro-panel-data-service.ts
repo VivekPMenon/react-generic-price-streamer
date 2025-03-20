@@ -32,7 +32,6 @@ class MacroPanelDataService {
           .map(([name, item]) => ({
         name: name.split('_').map(word => this.map(word)).join(' '), ...(item as object)
       } as TreasuryYield));
-      return yields;
     } catch (e: any) {
       return [];
     }
