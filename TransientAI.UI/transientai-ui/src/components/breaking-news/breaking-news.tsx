@@ -27,7 +27,6 @@ export function BreakingNews({ isExpanded }: BreakingNewsProps) {
     } else {
       setIsLoadingMore(true);
     }
-
     try {
       const response = await breakNewsDataService.getGroupMessages(
         selectedGroupId,
@@ -45,10 +44,24 @@ export function BreakingNews({ isExpanded }: BreakingNewsProps) {
       setTotalPages(totalPagesFromResponse);
       
       if (newMessages.length !== 0) {
-        if (!isInitial) {
-          setMessages(prevMessages => [...newMessages, ...prevMessages]);
-        } else {
+        if (isInitial) {
+          // For initial load, just set the messages
           setMessages(newMessages);
+        } else {
+          // For pagination, handle merging with existing messages
+          setMessages(prevMessages => {
+            // Create a Map to track unique messages by ID
+            const messageMap = new Map();
+            
+            // Add existing messages to the map
+            prevMessages.forEach(msg => messageMap.set(msg.id, msg));
+            
+            // Add new messages to the map (duplicates will be overwritten)
+            newMessages.forEach(msg => messageMap.set(msg.id, msg));
+            
+            // Convert back to array and return
+            return Array.from(messageMap.values());
+          });
         }
       }
     } catch (error) {
@@ -277,16 +290,17 @@ export function BreakingNews({ isExpanded }: BreakingNewsProps) {
   }
   
 
-  const renderMessage = (message: Message) => {
-    return (
-      <div key={message.id} className="mb-3 flex flex-col items-start">
-        <div className={`bg-[#2a2d30] text-white p-2 rounded-lg flex flex-col ${message.attachment ? 'w-[70%]' : 'max-w-lg'}`}>
-          <div className="flex-1">{getMessageType(message)}</div>
-          <span className="text-xs text-gray-400 whitespace-nowrap w-full text-end p-1">{formatTime(message.sender_time_info || '')}</span>
-        </div>
+// Update the renderMessage function to ensure unique keys
+const renderMessage = (message: Message) => {
+  return (
+    <div key={`message-${message.id}`} className="mb-3 flex flex-col items-start">
+      <div className={`bg-[#2a2d30] text-white p-2 rounded-lg flex flex-col ${message.attachment ? 'w-[70%]' : 'max-w-lg'}`}>
+        <div className="flex-1">{getMessageType(message)}</div>
+        <span className="text-xs text-gray-400 whitespace-nowrap w-full text-end p-1">{formatTime(message.sender_time_info || '')}</span>
       </div>
-    );
-  };
+    </div>
+  );
+};
   
   if(isLoading) {
     return <div className={`${styles['breaking-news']} height-vh-75`}>
@@ -320,9 +334,8 @@ export function BreakingNews({ isExpanded }: BreakingNewsProps) {
               </div>
             </div>
           )}
-                   
           {Object.entries(groupedMessages).map(([dateString, messagesForDate]) => (
-            <div key={dateString}>
+            <div key={`date-${dateString}`}>
               <div className="flex justify-center mb-3">
                 <div className={`text-xs px-2 py-1 rounded-full ${styles['message-item']}`}>
                   {formatDate(messagesForDate[0].sender_time_info || '')}
