@@ -14,12 +14,11 @@ export interface DashboardTabsProps {
 }
 
 export function DashboardTabs({ children }: DashboardTabsProps) {
-  const defaultTab = 'Macro Panel';
   const router = useRouter();
   const deviceType = useDeviceType();
 
   const { unseenItems: unseen, resetUnseenItems } = useUnseenItemsStore();
-  const { activeMenuList, selectedMenu, setActiveMenu, closeTab } = useMenuStore();
+  const { activeMenuList, selectedMenu, setActiveMenu, closeTab, defaultMenu } = useMenuStore();
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
 
   const tabs = useMemo<TabInfo[]>(() => calculateTabs(), [activeMenuList, selectedMenu]);
@@ -29,7 +28,7 @@ export function DashboardTabs({ children }: DashboardTabsProps) {
       resetUnseenItems(selectedMenu.id);
     }
   }, [selectedMenu?.id, unseen, resetUnseenItems]);
-  
+
   function calculateTabs() {
     if (!activeMenuList) return [];
 
@@ -54,13 +53,19 @@ export function DashboardTabs({ children }: DashboardTabsProps) {
 
   function handleCloseTab(event: React.MouseEvent, tab: TabInfo) {
     event.stopPropagation();
-    if (!tab.id) return
+    if (!tab.id) return;
+
     closeTab(tab.id);
+
+    if (selectedMenu?.id === tab.id) {
+      setActiveMenu(defaultMenu);
+      router.push(defaultMenu.route!);
+    }
   }
 
   return (
     <div className={`${styles['main-content']} widget ${isExpanded ? 'expanded' : ''}`}>
-      <Tabs.Root defaultValue={defaultTab} value={selectedMenu?.description || defaultTab} className="height-100p">
+      <Tabs.Root defaultValue={defaultMenu.description} value={selectedMenu?.description || defaultMenu.description} className="height-100p">
         <Tabs.List>
           {tabs.map(tab => {
             const unseenCount = unseen[tab.id || 0];
@@ -68,13 +73,13 @@ export function DashboardTabs({ children }: DashboardTabsProps) {
             return (
               <Tabs.Trigger
                 key={tab.id}
-                value={tab.description || 'Untitled'} 
+                value={tab.description || 'Untitled'}
                 onClick={() => selectTab(tab)}
                 className={unseenCount > 0 ? 'flash' : ''}
               >
                 {tab.description}
                 {unseenCount > 0 && <span className="ml-1 orange-color">({unseenCount})</span>}
-                {tab.description !== defaultTab && (
+                {tab.description !== defaultMenu.description && (
                   <i className={`${styles['close-button']} fa-solid fa-xmark`} onClick={(event) => handleCloseTab(event, tab)}></i>
                 )}
               </Tabs.Trigger>
