@@ -30,8 +30,9 @@ class MacroPanelDataService {
       return Object.entries(result)
           .filter(([key]) => key !== 'as_of_date')
           .map(([name, item]) => ({
-        name: name.split('_').map(word => this.map(word)).join(' '), ...(item as object)
-      } as TreasuryYield));
+                name: this.formatName(name),
+                ...(item as object)
+              } as TreasuryYield));
     } catch (e: any) {
       return [];
     }
@@ -61,11 +62,37 @@ class MacroPanelDataService {
 
   map(word: string): number|string {
     word = word.toLowerCase();
-    return this.wordMap[word] || this.properCase(word);
+    return this.wordMap[word] || word;
   }
 
   properCase(word: string): string {
     return word.charAt(0).toUpperCase() + word.slice(1);
+  }
+
+  formatName(name: string): string {
+    const parts = name.split('_');
+    let nameToUse: string;
+    switch (parts.length) {
+      case 0:
+        nameToUse = '';
+        break;
+      case 1:
+        nameToUse = name.toUpperCase();
+        break;
+      case 2:
+        nameToUse = `${this.map(parts[0])} ${this.formatSuffix(parts[1])}`;
+        break;
+      default:
+        const mapped = parts.map(part => this.map(part));
+        const prefix = mapped.slice(0, parts.length - 1).join('-');
+        nameToUse = `${prefix} ${this.formatSuffix(parts[parts.length - 1])}`;
+        break;
+    }
+    return nameToUse;
+  }
+
+  formatSuffix(word: string): string {
+    return this.properCase(word.replace(/[aeiou]/gi, ''));
   }
 }
 
