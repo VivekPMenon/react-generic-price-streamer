@@ -12,6 +12,7 @@ import { corpActionsDataService } from '@/services/corporate-actions/corporate-a
 import { useVirtualizer, VirtualItem } from "@tanstack/react-virtual";
 import { Spinner } from "@radix-ui/themes";
 import { formatDateString, tryParseAndFormat } from '@/lib/utility-functions/date-operations';
+import Toggle from 'react-toggle';
 
 export function CorporateActions() {
 
@@ -24,6 +25,7 @@ export function CorporateActions() {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [selectedEmailContent, setSelectedEmailContent] = useState<string>('');
   const [isLoadingEmail, setIsLoadingEmail] = useState<boolean>(false);
+  const [isCompactViewEnabled, setIsCompactViewEnabled] = useState(false);
 
   // const [emailContents, setEmailContents] = useState<any>({});
   const virtualizer = useVirtualizer({
@@ -171,7 +173,7 @@ export function CorporateActions() {
 
   const items = virtualizer.getVirtualItems();
 
-  const corpActionsListElement = userContext.roles?.includes(RoleType.Operations) ?
+  const corpActionsListElement = isCompactViewEnabled ?
     <DataGrid
       ref={gridApiRef}
       className='p-2'
@@ -307,6 +309,16 @@ export function CorporateActions() {
             onChange={event => onSearchQueryChange(event)}
             onKeyDown={onKeyDown}
             placeholder="Ask TransientAI anything about recent Corporate Actions. Include securities if you are looking for specific information" />
+
+          {
+            userContext.roles?.includes(RoleType.Operations) && <>
+              <Toggle
+                checked={isCompactViewEnabled}
+                onChange={(e) => setIsCompactViewEnabled(e.target.checked)}
+              />
+              <span className="whitespace-nowrap">Compact View</span>
+            </>
+          }
         </div>
         {
           corpActions?.length ? corpActionsListElement : <></>

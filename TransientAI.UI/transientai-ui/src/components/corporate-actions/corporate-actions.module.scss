@@ -44,7 +44,7 @@
       padding: 5px;
       gap: 10px;
 
-      .title{
+      .title {
         display: flex;
         flex-direction: column;
         padding-left: 10px;
@@ -94,7 +94,7 @@
       padding: 5px;
       gap: 10px;
 
-      & > span {
+      &>span {
         font-style: italic;
       }
     }
@@ -104,12 +104,12 @@
 .corporate-action-body {
   display: flex;
   margin-top: 10px;
-  
+
   @media screen and (max-width: $mobile-breakpoint-max) {
     flex-direction: column;
   }
-  
-  & > div {
+
+  &>div {
     flex: 1 1 50%;
     padding: 10px;
   }
@@ -138,6 +138,9 @@
 .search-bar {
   margin: 0 0;
   padding: 5px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
 }
 
 .search-bar input {
