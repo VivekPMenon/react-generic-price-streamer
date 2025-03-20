@@ -39,7 +39,7 @@ class MacroPanelDataService {
 
   async getFxRates(): Promise<FxRate[]> {
     try {
-      const result = await webApihandler.get('Fx_data', {}, {
+      const result = await webApihandler.get('FX_data', {}, {
         serviceName: this.serviceName
       });
       return Object.values(result);
