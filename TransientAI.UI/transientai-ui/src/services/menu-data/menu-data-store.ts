@@ -6,16 +6,32 @@ interface MenuState {
   activeMenuList: MenuInfo[];
   fullMenuList: MenuInfo[];
   selectedMenu: MenuInfo | null;
+  defaultMenu: MenuInfo;
   setActiveMenu: (menu: MenuInfo) => void;
   closeTab: (menuId: string) => void;
 }
 
-const defaultTab = menuInfoList.find(menu => menu.description === "Macro Panel");
+function calculateDefaultMenu() {
+  return menuInfoList
+    .find(menuInfo => menuInfo.description === 'Research Reports')!;
+}
+
+function calculateCurrentMenu() {
+  return menuInfoList
+    .find(menuInfo => menuInfo.route?.toLowerCase() === document.location.pathname?.toLowerCase())!;
+}
+
+function calculateActiveMenuList() {
+  const currentMenu = calculateCurrentMenu();
+  const defaultMenu = calculateDefaultMenu();
+  return currentMenu === defaultMenu ? [defaultMenu] : [defaultMenu, currentMenu];
+}
 
 export const useMenuStore = create<MenuState>((set) => ({
-  activeMenuList: defaultTab ? [defaultTab] : [],
+  activeMenuList: calculateActiveMenuList(),
   fullMenuList: menuInfoList,
-  selectedMenu: defaultTab || null,
+  selectedMenu: calculateCurrentMenu()!,
+  defaultMenu: calculateDefaultMenu(),
 
   setActiveMenu: (menu) =>
     set((state) => {

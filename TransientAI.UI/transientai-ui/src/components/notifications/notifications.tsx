@@ -81,11 +81,11 @@ function getPillClass(type: NotificationType) {
 
 const filterTypes = [
   NotificationType.All,
-  NotificationType.Macro,
   // NotificationType.Axes,
   // NotificationType.Clients,
   // NotificationType.Trades,
   NotificationType.Research,
+  NotificationType.Macro,
   NotificationType.RiskReport,
   NotificationType.CorpAct,
   NotificationType.Inquiries,
@@ -116,7 +116,7 @@ export function Notifications(props: NotificationsProps) {
 
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
-  const [selectedType, setSelectedType] = useState<string>(NotificationType.Macro);
+  const [selectedType, setSelectedType] = useState<string>(NotificationType.Research);
   const [selectedNotification, setSelectedNotification] = useState<Notification>({}); // todo..
 
   const showSpinner = isLoading || isRiskReportLoading || isCorpActionsLoading || isInquiriesLoading || isRiskDataLoading || isBreakingNewsLoading;
