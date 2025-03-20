@@ -17,8 +17,11 @@ function calculateDefaultMenu() {
 }
 
 function calculateCurrentMenu() {
+  if (typeof window === 'undefined') {
+    return {};
+  }
   return menuInfoList
-    .find(menuInfo => menuInfo.route?.toLowerCase() === document.location.pathname?.toLowerCase())!;
+    .find(menuInfo => menuInfo.route?.toLowerCase() === window.document.location.pathname?.toLowerCase())!;
 }
 
 function calculateActiveMenuList() {
