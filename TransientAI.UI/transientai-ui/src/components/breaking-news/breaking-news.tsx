@@ -88,7 +88,7 @@ export function BreakingNews({ isExpanded }: BreakingNewsProps) {
       if (currentPage < totalPages) {
         const nextPage = currentPage + 1;
         setCurrentPage(nextPage);
-        fetchMessages(nextPage);
+        // fetchMessages(nextPage); Temp remove 
       }
     }
   }, [fetchMessages, isLoadingMore, currentPage, totalPages]);
@@ -174,7 +174,7 @@ export function BreakingNews({ isExpanded }: BreakingNewsProps) {
     // Group messages by date
     const groupedMessages: { [key: string]: Message[] } = {};
     
-    sortedMessages.forEach(message => {
+    messages.forEach(message => { //Updated to no sort Temp
       if (!message.sender_time_info) {
         // Handle messages with no timestamp - put them in an "Unknown Date" group
         const dateString = "Unknown Date";
