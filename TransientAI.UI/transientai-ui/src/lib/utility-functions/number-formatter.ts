@@ -73,18 +73,17 @@ export function formatPercent(amount: number|undefined, defaultValue: string = '
     return defaultValue;
 }
 
-const decimalFormatter = new Intl.NumberFormat('en-US', {
-    style: 'decimal',
-    maximumFractionDigits: 2,
-});
-
-export function formatDecimal(amount: number|undefined, defaultValue: string = '') {
+export function formatDecimal(amount: number|undefined, defaultValue: string = '', decimalPlaces: number = 2) {
     if (amount) {
         if (Number.isNaN(amount)) {
             return defaultValue;
         }
 
-        return decimalFormatter.format(amount);
+        return new Intl.NumberFormat('en-US', {
+            style: 'decimal',
+            maximumFractionDigits: decimalPlaces,
+            minimumFractionDigits: decimalPlaces,
+        }).format(amount);
     }
     return defaultValue;
 }

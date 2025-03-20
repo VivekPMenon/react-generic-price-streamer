@@ -11,3 +11,17 @@ export interface TreasuryYield {
   one_day_change_bps: number
   ytd_change_bps: number;
 }
+
+export interface FxRate {
+  name: string;
+  price: number
+  change: number
+  change_percentage: number;
+}
+
+export interface Crypto {
+  name: string;
+  price: number
+  change: number
+  change_percentage: number;
+}
