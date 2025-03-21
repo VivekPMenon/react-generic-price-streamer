@@ -1,7 +1,9 @@
+import {useCallback} from 'react';
 import { useMacroPanelDataStore } from "@/services/macro-panel-data/macro-panel-data-store";
 import {DataGrid} from "@/components/data-grid";
-import { SortDirection } from 'ag-grid-community';
+import { SortDirection, GetRowIdParams } from 'ag-grid-community';
 import {formatDecimal, formatInteger} from "@/lib/utility-functions";
+import {CustomGroupCellRenderer} from "@/components/macro-panel/customGroupCellRenderer";
 import styles from './macro-panel.module.scss';
 
 const cellClassRules: {[key: string]: any} = {};
@@ -12,6 +14,7 @@ cellClassRules[`${styles["cell-negative"]}`] = (params: any) => params.value < 0
 const fxColumnDefs = [
         {
             field: 'group_name',
+            cellClass: styles['cell'],
             rowGroup: true,
             hide: true
         },
@@ -175,15 +178,27 @@ const groupRowRendererParams = {
 };
 
 function getRowHeight(params: any){
-    // if (params.node.group) {
-    //     return 30;
-    // }
+    if (params.node.group && !params.node.firstChild) {
+        return 60;
+    }
     return 30;
+}
+
+const fxGridOptions = {
+    getRowId: (params: GetRowIdParams) => String(params.data.name),
+}
+
+const treasuryGridOptions = {
+    getRowId: (params: GetRowIdParams) => String(params.data.name),
+}
+
+const cryptoGridOptions = {
+    getRowId: (params: GetRowIdParams) => String(params.data.name),
 }
 
 export function MacroPanel() {
   const { treasuryYields, fxRates, cryptos, isLoading } = useMacroPanelDataStore();
-
+  const groupRowRenderer = useCallback(CustomGroupCellRenderer, []);
   return (
       <div>
         <div className="sub-header">Morning Report: Generated {new Date().toLocaleDateString()} 06:00 AM </div>
@@ -195,11 +210,14 @@ export function MacroPanel() {
                     height={875}
                     isSummaryGrid={false}
                     suppressStatusBar={true}
+                    suppressFloatingFilter={true}
                     rowData={fxRates}
                     columnDefs={fxColumnDefs}
                     loading={isLoading}
+                    gridOptions={fxGridOptions}
                     groupDisplayType={'groupRows'}
                     groupRowRendererParams={groupRowRendererParams}
+                    groupRowRenderer={groupRowRenderer}
                     groupDefaultExpanded={1}
                     getRowHeight={getRowHeight}
                     onFirstDataRendered={handleDataRendered}
@@ -212,10 +230,12 @@ export function MacroPanel() {
                     height={500}
                     isSummaryGrid={false}
                     suppressStatusBar={true}
+                    suppressFloatingFilter={true}
                     rowData={treasuryYields}
                     columnDefs={treasuryColumnDefs}
                     loading={isLoading}
                     getRowHeight={getRowHeight}
+                    gridOptions={treasuryGridOptions}
                     onFirstDataRendered={handleDataRendered}
                 />
             </div>
@@ -226,10 +246,12 @@ export function MacroPanel() {
                     height={500}
                     isSummaryGrid={false}
                     suppressStatusBar={true}
+                    suppressFloatingFilter={true}
                     rowData={cryptos}
                     columnDefs={cryptoColumnDefs}
                     loading={isLoading}
                     getRowHeight={getRowHeight}
+                    gridOptions={cryptoGridOptions}
                     onFirstDataRendered={handleDataRendered}
                 />
             </div>

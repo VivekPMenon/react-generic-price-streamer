@@ -11,6 +11,7 @@ export interface IDataGridProps extends AgGridReactProps {
   height?: number;
   isSummaryGrid?: boolean;
   suppressStatusBar?: boolean;
+  suppressFloatingFilter?: boolean;
 }
 
 // Expose the Grid API via ref
@@ -67,7 +68,7 @@ export const DataGrid = forwardRef<GridApi | null, IDataGridProps>((props, ref) 
         onGridReady={onGridReady}
         rowHeight={props.isSummaryGrid ? 60 : 35}
         headerHeight={props.isSummaryGrid ? 60 : 35}
-        floatingFiltersHeight={props.isSummaryGrid ? 25 : 20}
+        floatingFiltersHeight={props.suppressFloatingFilter ? 0 : props.isSummaryGrid ? 25 : 20}
       />
     </div>
   );
