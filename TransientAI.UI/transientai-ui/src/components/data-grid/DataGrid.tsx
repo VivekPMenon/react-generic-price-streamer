@@ -10,6 +10,7 @@ export interface IDataGridProps extends AgGridReactProps {
   showGridTopSummary?: boolean;
   height?: number;
   isSummaryGrid?: boolean;
+  suppressStatusBar?: boolean;
 }
 
 // Expose the Grid API via ref
@@ -62,7 +63,7 @@ export const DataGrid = forwardRef<GridApi | null, IDataGridProps>((props, ref) 
       style={{ height: props.height }}>
       <AgGridReact
         {...finalProps}
-        statusBar={props.isSummaryGrid ? undefined : statusBar}
+        statusBar={props.suppressStatusBar ? undefined : props.isSummaryGrid ? undefined : statusBar}
         onGridReady={onGridReady}
         rowHeight={props.isSummaryGrid ? 60 : 35}
         headerHeight={props.isSummaryGrid ? 60 : 35}

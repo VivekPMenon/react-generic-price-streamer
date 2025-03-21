@@ -87,3 +87,20 @@ export function formatDecimal(amount: number|undefined, defaultValue: string = '
     }
     return defaultValue;
 }
+
+const integerFormatter = new Intl.NumberFormat('en-US', {
+    maximumFractionDigits: 0,
+    useGrouping: true,
+});
+
+export function formatInteger(amount: number|undefined, defaultValue: string = '') {
+    if (amount) {
+        if (Number.isNaN(amount)) {
+            return defaultValue;
+        }
+
+        return integerFormatter.format(amount);
+    }
+    return defaultValue;
+
+}
