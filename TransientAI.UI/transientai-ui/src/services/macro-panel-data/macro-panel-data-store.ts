@@ -1,21 +1,28 @@
 import { create } from 'zustand';
-import { BloombergEmailReport } from './model';
+import {BloombergEmailReport, FxRate, TreasuryYield} from './model';
 import { macroPanelDataService } from './macro-panel-data-service';
-import { useUnseenItemsStore } from '../unseen-items-store/unseen-items-store';
+import {useUnseenItemsStore} from "@/services/unseen-items-store/unseen-items-store";
 
 export const resourceName = 'bloomberg-email-reports';
 
 interface MacroPanelDataState {
   bloombergEmailReports: BloombergEmailReport[];
+  treasuryYields: TreasuryYield[];
+  fxRates: FxRate[];
+  cryptos: Crypto[];
   isLoading: boolean;
   loadBloombergEmailReports: () => Promise<void>;
   selectedReport?: BloombergEmailReport;
   setSelectedReport: (report: BloombergEmailReport) => void;
+  loadMacroPanelData: () => Promise<void>,
   startPolling: () => void;
 }
 
 export const useMacroPanelDataStore = create<MacroPanelDataState>((set, get) => ({
   bloombergEmailReports: [],
+  treasuryYields: [],
+  fxRates: [],
+  cryptos: [],
   isLoading: false,
 
   setSelectedReport: (report) => set({ selectedReport: report }),
@@ -33,11 +40,40 @@ export const useMacroPanelDataStore = create<MacroPanelDataState>((set, get) => 
     }
   },
 
+  loadMacroPanelData: async () => {
+    set({ isLoading: true });
+
+    try {
+      const results = await Promise.allSettled([
+        macroPanelDataService.getTreasuryYields(),
+        macroPanelDataService.getFxRates(),
+        macroPanelDataService.getCryptos(),
+      ]);
+      const values = results.map(result => result.status === 'fulfilled' ? result.value : []);
+
+      set({
+        treasuryYields: values[0] as TreasuryYield[],
+        fxRates: values[1] as FxRate[],
+        cryptos: values[2] as Crypto[]
+      });
+
+      const result = await macroPanelDataService.getBloombergReportEmails();
+      set({ bloombergEmailReports: result });
+      set({ selectedReport: result[0] });
+    } catch (error) {
+      console.error('Error loading macro panel data:', error);
+    } finally {
+      set({ isLoading: false });
+    }
+  },
+
   startPolling: () => {
     setInterval(async () => {
-      const prevCount = get().bloombergEmailReports.length;
+      const {loadMacroPanelData, bloombergEmailReports} = get();
 
-      await get().loadBloombergEmailReports;
+      const prevCount = bloombergEmailReports.length;
+
+      await loadMacroPanelData();
 
       // Use Zustand's `set` function to ensure the correct state is retrieved
       set((state) => {
@@ -50,11 +86,13 @@ export const useMacroPanelDataStore = create<MacroPanelDataState>((set, get) => 
 
         return {}; // No need to modify state here, just ensuring correctness
       });
+
     }, 12000000);
   },
+
 }));
 
-const { loadBloombergEmailReports: loadMacroPanelData, startPolling } = useMacroPanelDataStore.getState();
+const { loadMacroPanelData, startPolling } = useMacroPanelDataStore.getState();
 loadMacroPanelData();
 startPolling();
 

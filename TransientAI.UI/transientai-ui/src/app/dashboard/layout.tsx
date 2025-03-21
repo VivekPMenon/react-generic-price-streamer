@@ -59,11 +59,12 @@ export default function DashboardLayout({
   return (
     <MsalProvider instance={msalInstance}>
       {
-        isLoading || !isAuthenticated ? <div className='p-2 flex gap-2 items-center justify-center height-100p'>
-          <Spinner size={"3"}></Spinner>
-          Trying to authenticate you. Please wait...
-        </div> :
-
+        isLoading || !isAuthenticated ?
+          <div className='p-2 flex gap-2 items-center justify-center height-100p'>
+            <Spinner size={"3"}></Spinner>
+            Trying to authenticate you. Please wait...
+          </div>
+          :
           <div className={styles.home}>
             <Header isMenuVisible={isMenuVisible} onMenuToggle={onMenuToggle}></Header>
 

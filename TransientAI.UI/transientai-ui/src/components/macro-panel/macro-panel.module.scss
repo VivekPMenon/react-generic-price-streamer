@@ -3,21 +3,52 @@
 .macro-panel {
   display: flex;
   gap: 20px;
+  height: calc(100vh - 275px);
+  width: calc(100vw - 500px);
+  flex-direction: row;
   
   @media screen and (max-width: $mobile-breakpoint-max) {
     flex-direction: column;
+    height: 100%;
+    width: 100%;
   }
+}
 
-  .previous-reports {
-    flex: 1 1 40%;
+.yields-container {
+  //width: 50%;
+  height: 90%;
+  border: 1 solid $border-color;
+  flex: 1 1 400px;
+
+  @media screen and (max-width: $mobile-breakpoint-max) {
+    flex: 1 1 100%;
+    height: 100%;
   }
+}
 
+.fx-container {
+  @extend .yields-container;
+}
 
-  .bloomberg-report {
-    flex: 1 1 60%;
+.crypto-container {
+  @extend .yields-container;
+}
 
-    .email-viewer {
-      height: calc(100vh - 300px);
-    }
-  }
+.cell {
+  color: $yellow;
+}
+
+.cell-numeric {
+  @extend .cell;
+  justify-content: right;
+}
+
+.cell-positive {
+  @extend .cell-numeric;
+  color: $green;
+}
+
+.cell-negative {
+  @extend .cell-numeric;
+  color: $red;
 }
