@@ -14,6 +14,7 @@ export interface TreasuryYield {
 
 export interface FxRate {
   name: string;
+  group_name: string;
   price: number
   change: number
   change_percentage: number;

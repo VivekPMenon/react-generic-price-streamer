@@ -11,6 +11,11 @@ cellClassRules[`${styles["cell-negative"]}`] = (params: any) => params.value < 0
 
 const fxColumnDefs = [
         {
+            field: 'group_name',
+            rowGroup: true,
+            hide: true
+        },
+        {
             field: 'name',
             headerName: 'FX',
             cellClass: styles['cell'],
@@ -164,6 +169,18 @@ function handleDataRendered(params: any) {
     params.api.sizeColumnsToFit();
 }
 
+const groupRowRendererParams = {
+    suppressCount: true,
+    suppressPadding: true
+};
+
+function getRowHeight(params: any){
+    // if (params.node.group) {
+    //     return 30;
+    // }
+    return 30;
+}
+
 export function MacroPanel() {
   const { treasuryYields, fxRates, cryptos, isLoading } = useMacroPanelDataStore();
 
@@ -181,6 +198,10 @@ export function MacroPanel() {
                     rowData={fxRates}
                     columnDefs={fxColumnDefs}
                     loading={isLoading}
+                    groupDisplayType={'groupRows'}
+                    groupRowRendererParams={groupRowRendererParams}
+                    groupDefaultExpanded={1}
+                    getRowHeight={getRowHeight}
                     onFirstDataRendered={handleDataRendered}
                 />
             </div>
@@ -194,6 +215,7 @@ export function MacroPanel() {
                     rowData={treasuryYields}
                     columnDefs={treasuryColumnDefs}
                     loading={isLoading}
+                    getRowHeight={getRowHeight}
                     onFirstDataRendered={handleDataRendered}
                 />
             </div>
@@ -207,6 +229,7 @@ export function MacroPanel() {
                     rowData={cryptos}
                     columnDefs={cryptoColumnDefs}
                     loading={isLoading}
+                    getRowHeight={getRowHeight}
                     onFirstDataRendered={handleDataRendered}
                 />
             </div>
