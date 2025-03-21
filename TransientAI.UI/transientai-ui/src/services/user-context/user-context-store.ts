@@ -1,10 +1,11 @@
-import { create } from 'zustand';
-import { UserContext, RoleType } from './model';
-import msalInstance from '@/app/msal-config';
-import { endpointFinder } from '../web-api-handler/endpoint-finder-service';
-import { AccountInfo } from '@azure/msal-browser';
-import userGroupUsersJson from './user-group-users.json';
-
+import { create } from "zustand";
+import { UserContext, RoleType } from "./model";
+import msalInstance from "@/app/msal-config";
+import { endpointFinder } from "../web-api-handler/endpoint-finder-service";
+import { AccountInfo } from "@azure/msal-browser";
+import userGroupUsersJson from "./user-group-users.json";
+import axios from "axios";
+import { webApihandler } from "../web-api-handler";
 interface UserContextState {
   userContext: UserContext;
   authenticationError: string;
@@ -23,7 +24,10 @@ export const useUserContextStore = create<UserContextState>((set, get) => ({
 
   setUserContext: (userContext) => set({ userContext }),
 
-  clearUserContext: () => set({ userContext: {} }),
+  clearUserContext: () => {
+    sessionStorage.removeItem("bearerToken");
+    set({ userContext: {} })
+  },
 
   loadUserContext: async () => {
     const currentEnv = endpointFinder.getCurrentEnvInfo();
@@ -36,36 +40,68 @@ export const useUserContextStore = create<UserContextState>((set, get) => ({
 
       set({ isLoading: true });
 
+      // Skip login API call if a token is already stored in sessionStorage 
+      const existingToken = sessionStorage.getItem("bearerToken");
+      if (existingToken) {
+        webApihandler.setBearerToken(existingToken);
+        const accounts = msalInstance.getAllAccounts();
+        if (accounts.length > 0) {
+          const account = accounts[0];
+          const userContext = mapAccountToUser(account);
+          set({ userContext, isAuthenticated: true, isLoading: false });
+          return;
+        }
+      }
+
       await msalInstance.initialize();
 
       const response = await msalInstance.handleRedirectPromise();
-      if (response && response.account) {
-        const userContext = mapAccountToUser(response.account);
-        set({ userContext, isAuthenticated: true, isLoading: false });
+
+      let account = response?.account;
+      let idToken = response?.idToken;
+
+      if (!account) {
+        // Try sessionStorage cache first
+        const accounts = msalInstance.getAllAccounts();
+        if (accounts.length > 0) {
+          account = accounts[0];
+        }
+      }
+
+      if (!account) {
+        await msalInstance.loginRedirect({
+          scopes: [currentEnv.authInfo?.scope!],
+        });
         return;
       }
 
-      // Try sessionStorage cache first
-      const accounts = msalInstance.getAllAccounts();
-      if (accounts.length > 0) {
-        const userContext = mapAccountToUser(accounts[0]);
-        set({ userContext, isAuthenticated: true, isLoading: false });
-        return;
+      if (!idToken) {
+        // If idToken is missing, try acquiring it silently
+        const tokenResponse = await msalInstance.acquireTokenSilent({
+          scopes: [currentEnv.authInfo?.scope!],
+          account,
+        });
+        idToken = tokenResponse.idToken;
       }
 
-      const silentResponse = await msalInstance.ssoSilent({
-        scopes: [currentEnv.authInfo?.scope!],
-      });
+      if (!idToken) {
+        throw new Error("Failed to acquire ID token.");
+      }
 
-      const userContext = mapAccountToUser(silentResponse.account);
+      const bearerToken = await loginAndSetToken(idToken);
+      if (bearerToken) {
+        sessionStorage.setItem("bearerToken", bearerToken);
+        webApihandler.setBearerToken(bearerToken);
+      }
+
+      const userContext = mapAccountToUser(account!);
       set({ userContext, isAuthenticated: true, isLoading: false });
-      return;
     } catch (error) {
-      console.error('Authentication error:', error);
+      console.error("Authentication error:", error);
       set({ isLoading: false, authenticationError: (error as any).message });
 
       // Prevent infinite redirect loop by checking error type
-      if ((error as any).name !== 'InteractionRequiredAuthError') {
+      if ((error as any).name !== "InteractionRequiredAuthError") {
         return;
       }
 
@@ -79,6 +115,29 @@ export const useUserContextStore = create<UserContextState>((set, get) => ({
 
 const { loadUserContext } = useUserContextStore.getState();
 loadUserContext();
+
+async function loginAndSetToken(idToken: string) {
+  try {
+    const currentEnv = endpointFinder.getCurrentEnvInfo();
+    const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    const response = await axios.post(
+      `${currentEnv.httpsServices!["hurricane-api-2-0"]}/auth/login`,
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${idToken}`,
+          timezone: timezone,
+        },
+      }
+    );
+
+    const bearerToken = response.headers["authorization"].split(" ")[1];
+    return bearerToken;
+  } catch (error) {
+    console.error("Login API error:", error);
+    throw new Error("Invalid login response");
+  }
+}
 
 function mapAccountToUser(account: AccountInfo): UserContext {
   const parts = account.name?.split(' ') || [];
@@ -96,4 +155,3 @@ function mapAccountToUser(account: AccountInfo): UserContext {
     roles: roles as RoleType[],
   };
 }
-

@@ -30,7 +30,6 @@ export default function DashboardLayout({
 
   useEffect(() => {
     if (isAuthenticated) {
-      webApihandler.setBearerToken(userContext.token!);
       window.history.replaceState({}, document.title, window.location.pathname);
     }
   }, [isAuthenticated]);
