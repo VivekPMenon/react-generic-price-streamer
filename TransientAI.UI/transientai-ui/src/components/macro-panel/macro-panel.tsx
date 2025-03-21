@@ -1,6 +1,6 @@
 import { useMacroPanelDataStore } from "@/services/macro-panel-data/macro-panel-data-store";
 import {DataGrid} from "@/components/data-grid";
-import { SortDirection, SizeColumnsToContentStrategy } from 'ag-grid-community';
+import { SortDirection } from 'ag-grid-community';
 import {formatDecimal, formatInteger} from "@/lib/utility-functions";
 import styles from './macro-panel.module.scss';
 
@@ -8,13 +8,6 @@ const cellClassRules: {[key: string]: any} = {};
 cellClassRules[`${styles["cell-numeric"]}`] = (params: any) => params.value === 0.0;
 cellClassRules[`${styles["cell-positive"]}`] = (params: any) => params.value > 0.0;
 cellClassRules[`${styles["cell-negative"]}`] = (params: any) => params.value < 0.0;
-
-const gridOptions = {
-    autoSizeStrategy: {
-        type: 'fitCellContents',
-        // skipHeader: true
-    } as SizeColumnsToContentStrategy
-}
 
 const fxColumnDefs = [
         {
@@ -74,7 +67,9 @@ const treasuryColumnDefs = [
         pinned: true,
         wrapHeaderText: true,
         autoHeaderHeight: true,
-        width: 95
+        width: 95,
+        wrapText: true,
+        autoHeight: true,
     },
     {
         field: 'rate',
@@ -123,6 +118,8 @@ const cryptoColumnDefs = [
         width: 100,
         wrapHeaderText: true,
         autoHeaderHeight: true,
+        wrapText: true,
+        autoHeight: true,
     },
     {
         field: 'price',
@@ -163,6 +160,10 @@ const cryptoColumnDefs = [
     }
 ];
 
+function handleDataRendered(params: any) {
+    params.api.sizeColumnsToFit();
+}
+
 export function MacroPanel() {
   const { treasuryYields, fxRates, cryptos, isLoading } = useMacroPanelDataStore();
 
@@ -180,7 +181,7 @@ export function MacroPanel() {
                     rowData={fxRates}
                     columnDefs={fxColumnDefs}
                     loading={isLoading}
-                    gridOptions={gridOptions}
+                    onFirstDataRendered={handleDataRendered}
                 />
             </div>
             <div className={styles['yields-container']}>
@@ -193,7 +194,7 @@ export function MacroPanel() {
                     rowData={treasuryYields}
                     columnDefs={treasuryColumnDefs}
                     loading={isLoading}
-                    gridOptions={gridOptions}
+                    onFirstDataRendered={handleDataRendered}
                 />
             </div>
             <div className={styles['crypto-container']}>
@@ -206,7 +207,7 @@ export function MacroPanel() {
                     rowData={cryptos}
                     columnDefs={cryptoColumnDefs}
                     loading={isLoading}
-                    gridOptions={gridOptions}
+                    onFirstDataRendered={handleDataRendered}
                 />
             </div>
         </div>
