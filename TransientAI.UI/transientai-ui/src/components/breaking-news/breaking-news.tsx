@@ -17,6 +17,8 @@ export function BreakingNews({ isExpanded }: BreakingNewsProps) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
+  const [nextPage, setNextPage] = useState(1);
+  const [expandedMessages, setExpandedMessages] = useState<{ [key: string]: boolean }>({});
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const MESSAGES_PER_PAGE = 10;
 
@@ -27,41 +29,28 @@ export function BreakingNews({ isExpanded }: BreakingNewsProps) {
     } else {
       setIsLoadingMore(true);
     }
+  
     try {
       const response = await breakNewsDataService.getGroupMessages(
         selectedGroupId,
         pageNumber,
         MESSAGES_PER_PAGE
       );
-      
-      console.log('Fetched messages for page', pageNumber, response);
-      
-      // Extract messages and total pages from the response
+    
       const newMessages = response.data.records as Message[];
       const totalPagesFromResponse = response.data.pagination.total_pages || 0;
-      
-      // Update total pages
+      const nextPageFromResponse = response.data.pagination.current_page || 1;
+  
       setTotalPages(totalPagesFromResponse);
-      
+      setNextPage(nextPageFromResponse + 1);
+  
       if (newMessages.length !== 0) {
         if (isInitial) {
           // For initial load, just set the messages
           setMessages(newMessages);
         } else {
-          // For pagination, handle merging with existing messages
-          setMessages(prevMessages => {
-            // Create a Map to track unique messages by ID
-            const messageMap = new Map();
-            
-            // Add existing messages to the map
-            prevMessages.forEach(msg => messageMap.set(msg.id, msg));
-            
-            // Add new messages to the map (duplicates will be overwritten)
-            newMessages.forEach(msg => messageMap.set(msg.id, msg));
-            
-            // Convert back to array and return
-            return Array.from(messageMap.values());
-          });
+          // For pagination, prepend new messages to the existing list
+          setMessages(prevMessages => [...newMessages, ...prevMessages]);
         }
       }
     } catch (error) {
@@ -94,17 +83,17 @@ export function BreakingNews({ isExpanded }: BreakingNewsProps) {
   const handleScroll = useCallback(() => {
     const container = scrollContainerRef.current;
     if (!container || isLoadingMore) return;
-    
+  
     // Check if user has scrolled to the top (or very close to it)
-    if (container.scrollTop < 50) {
+    if (container.scrollTop < 45) {
       // Check if there are more pages to load
       if (currentPage < totalPages) {
-        const nextPage = currentPage + 1;
         setCurrentPage(nextPage);
-        // fetchMessages(nextPage); Temp remove 
+        fetchMessages(nextPage);
+        container.scrollTop = container.scrollHeight * 0.8;
       }
     }
-  }, [fetchMessages, isLoadingMore, currentPage, totalPages]);
+  }, [fetchMessages, isLoadingMore, currentPage, totalPages, nextPage]);
 
   // Add scroll event listener
   useEffect(() => {
@@ -119,25 +108,31 @@ export function BreakingNews({ isExpanded }: BreakingNewsProps) {
 
   // Maintain scroll position when adding older messages
   useEffect(() => {
-    if (isLoadingMore && scrollContainerRef.current) {
-      const scrollContainer = scrollContainerRef.current;
-      const scrollHeightBefore = scrollContainer.scrollHeight;
-      
+    const scrollContainer = scrollContainerRef.current;
+  
+    if (!scrollContainer) return;
+  
+    if (isLoadingMore) {
+      // Preserve scroll position when older messages load
+      const previousScrollHeight = scrollContainer.scrollHeight;
+      const previousScrollTop = scrollContainer.scrollTop;
+  
       // After messages are added and DOM is updated
       const timer = setTimeout(() => {
         const newScrollHeight = scrollContainer.scrollHeight;
-        const heightDifference = newScrollHeight - scrollHeightBefore;
-        
+        const heightDifference = newScrollHeight - previousScrollHeight;
+  
         // Set scroll position to maintain the same relative position
-        if (heightDifference > 0) {
-          scrollContainer.scrollTop = heightDifference;
-        }
-      }, 10); // Slightly longer timeout to ensure DOM is updated
-      
+        scrollContainer.scrollTop = previousScrollTop + heightDifference;
+      }, 10); // Adjust the timeout if needed
+  
       return () => clearTimeout(timer);
+    } else if (currentPage === 1) {
+      // Scroll to bottom only on initial load
+      scrollContainer.scrollTop = scrollContainer.scrollHeight;
     }
-  }, [messages, isLoadingMore]);
-
+  }, [messages, isLoadingMore, currentPage]);
+  
   // Format time to display only hours and minutes
   const formatTime = (timeString: string | undefined) => {
     if (!timeString) {
@@ -198,9 +193,7 @@ export function BreakingNews({ isExpanded }: BreakingNewsProps) {
         return;
       }
       
-      const date = new Date(message.sender_time_info);
-      const dateString = date.toDateString();
-      
+      const dateString = message.sender_time_info
       if (!groupedMessages[dateString]) {
         groupedMessages[dateString] = [];
       }
@@ -219,14 +212,37 @@ export function BreakingNews({ isExpanded }: BreakingNewsProps) {
     
     const imageExtensions = ["jpg", "jpeg", "png", "gif", "webp"];
     const videoExtensions = ["mp4", "webm", "ogg"];
+    const MAX_LENGTH = 1000;
     
     // Create the text component if message text exists
-    const textComponent = message.message ? (
-      <p className="text-sm max-w-xs md:max-w-sm lg:max-w-md mb-2">
-        {message.message}
-      </p>
-    ) : null;
-    
+    let textComponent = null;
+    const isExpanded = expandedMessages[message.id!] || false;
+    if (message.message) {
+      const shouldTruncate = message.message.length > MAX_LENGTH;
+      const displayText = isExpanded
+        ? message.message
+        : message.message.slice(0, MAX_LENGTH) + (shouldTruncate ? "..." : "");
+  
+      textComponent = (
+        <p className="text-sm max-w-xs md:max-w-sm lg:max-w-md mb-2">
+          {displayText.split("\n").map((line, index) => (
+            <span key={index}>
+              {line}
+              <br />
+            </span>
+          ))}
+          {shouldTruncate && (
+            <button
+              onClick={() => setExpandedMessages(prev => ({ ...prev, [message.id!]: !isExpanded }))}
+              className="text-blue-300 underline ml-1 cursor-pointer"
+            >
+              {isExpanded ? "Read Less" : "Read More"}
+            </button>
+          )}
+        </p>
+      );
+    }
+
     // Create the attachment component if attachment exists
     let attachmentComponent = null;
     
