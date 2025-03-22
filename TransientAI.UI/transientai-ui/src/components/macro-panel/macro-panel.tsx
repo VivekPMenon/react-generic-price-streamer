@@ -1,4 +1,3 @@
-import {useCallback} from 'react';
 import { useMacroPanelDataStore } from "@/services/macro-panel-data/macro-panel-data-store";
 import {DataGrid} from "@/components/data-grid";
 import { SortDirection, GetRowIdParams } from 'ag-grid-community';
@@ -66,6 +65,12 @@ const fxColumnDefs = [
         }
     ];
 const treasuryColumnDefs = [
+    {
+        field: 'group_name',
+        cellClass: styles['cell'],
+        rowGroup: true,
+        hide: true
+    },
     {
         field: 'name',
         headerName: 'US Treasuries',
@@ -198,7 +203,6 @@ const cryptoGridOptions = {
 
 export function MacroPanel() {
   const { treasuryYields, fxRates, cryptos, isLoading } = useMacroPanelDataStore();
-  const groupRowRenderer = useCallback(CustomGroupCellRenderer, []);
   return (
       <div>
         <div className="sub-header">Morning Report: Generated {new Date().toLocaleDateString()} 06:00 AM </div>
@@ -217,7 +221,7 @@ export function MacroPanel() {
                     gridOptions={fxGridOptions}
                     groupDisplayType={'groupRows'}
                     groupRowRendererParams={groupRowRendererParams}
-                    groupRowRenderer={groupRowRenderer}
+                    groupRowRenderer={CustomGroupCellRenderer}
                     groupDefaultExpanded={1}
                     getRowHeight={getRowHeight}
                     onFirstDataRendered={handleDataRendered}
@@ -234,8 +238,12 @@ export function MacroPanel() {
                     rowData={treasuryYields}
                     columnDefs={treasuryColumnDefs}
                     loading={isLoading}
-                    getRowHeight={getRowHeight}
                     gridOptions={treasuryGridOptions}
+                    groupDisplayType={'groupRows'}
+                    groupRowRendererParams={groupRowRendererParams}
+                    groupRowRenderer={CustomGroupCellRenderer}
+                    groupDefaultExpanded={1}
+                    getRowHeight={getRowHeight}
                     onFirstDataRendered={handleDataRendered}
                 />
             </div>

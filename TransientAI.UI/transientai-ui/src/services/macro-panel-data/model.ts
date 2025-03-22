@@ -7,6 +7,7 @@ export interface BloombergEmailReport {
 
 export interface TreasuryYield {
   name: string;
+  group_name: string;
   rate: number
   one_day_change_bps: number
   ytd_change_bps: number;
