@@ -69,7 +69,7 @@ class WebApihandler {
     }
   }
 
-  private async executeRequest<T>(config: AxiosRequestConfig): Promise<T> {
+  private async executeRequest(config: AxiosRequestConfig): Promise<any> {
     try {     
       const response = await axios(config);
       return response.data;
