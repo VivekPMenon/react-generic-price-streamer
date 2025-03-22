@@ -5,6 +5,8 @@ import "./globals.scss";
 import { ChatbotDataContextProvider } from "@/services/chatbot-data";
 import { SearchDataContextProvider } from "@/services/search-data";
 import {ToastProvider, ToastViewport} from "@radix-ui/react-toast";
+import {NextIntlClientProvider} from 'next-intl';
+import {getLocale} from 'next-intl/server';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -31,22 +33,26 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const locale = await getLocale();
+
   return (
-    <html lang="en">
+    <html lang={locale}>
       <head>
         <script src="https://kit.fontawesome.com/9a71b0f99c.js" crossOrigin="anonymous" async></script>
       </head>
       
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased font-sans dark`}>
         <Theme accentColor="teal" className="height-100p">
-          <ToastProvider>
-            <ChatbotDataContextProvider>
-              <SearchDataContextProvider>
-                {children}
-              </SearchDataContextProvider>
-            </ChatbotDataContextProvider>
-            <ToastViewport />
-         </ToastProvider>
+          <NextIntlClientProvider >
+              <ToastProvider>
+                <ChatbotDataContextProvider>
+                  <SearchDataContextProvider>
+                    {children}
+                  </SearchDataContextProvider>
+                </ChatbotDataContextProvider>
+                <ToastViewport />
+             </ToastProvider>
+         </NextIntlClientProvider>
         </Theme>
       </body>
     </html>

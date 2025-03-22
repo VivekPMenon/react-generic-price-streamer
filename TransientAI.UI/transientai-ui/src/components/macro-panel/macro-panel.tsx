@@ -1,3 +1,4 @@
+import {useTranslations} from 'next-intl';
 import { useMacroPanelDataStore } from "@/services/macro-panel-data/macro-panel-data-store";
 import {DataGrid} from "@/components/data-grid";
 import { SortDirection, GetRowIdParams } from 'ag-grid-community';
@@ -202,10 +203,12 @@ const cryptoGridOptions = {
 }
 
 export function MacroPanel() {
+  const t = useTranslations('macro-panel');
   const { treasuryYields, fxRates, cryptos, isLoading } = useMacroPanelDataStore();
   return (
       <div>
         <div className="sub-header">Morning Report: Generated {new Date(new Date().setHours(6, 0, 0)).toLocaleString()}</div>
+
         <div className={`${styles['macro-panel']}`}>
             <div className={styles['fx-container']}>
                 <div className="sub-header">FX Moves</div>
