@@ -4,7 +4,7 @@ export enum ReadStatus {
 }
 
 export interface Message {
-    id?: number;
+    id?: number | string;
     group_id?: number;
     group_name?: string;
     sender?: string;

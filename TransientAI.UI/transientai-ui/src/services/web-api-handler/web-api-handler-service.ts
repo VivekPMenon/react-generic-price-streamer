@@ -1,13 +1,15 @@
-import axios from "axios";
+import axios, { AxiosError, AxiosRequestConfig } from "axios";
 import { WebApihandlerOptions } from "./model";
 import { endpointFinder } from "./endpoint-finder-service";
-
+import { useUserContextStore } from '../user-context/user-context-store'
 class WebApihandler {
 
   private readonly bankId = 123;
   private readonly viewId = 101;
   readonly userId = 'e7e02b68-1234-4c7f-a0db-5fd57d688d4c';
   private bearerToken = '';
+  private isRefreshing = false;
+  private refreshPromise: Promise<string> | null = null;
 
   constructor() {
   }
@@ -15,12 +17,97 @@ class WebApihandler {
   setBearerToken(token: string) {
     this.bearerToken = token;
   }
+  
+  private async ensureToken(): Promise<void> {
+    while (!this.bearerToken) {
+      await new Promise(resolve => setTimeout(resolve, 100)); // Wait for token
+    }
+  }
+
+  private async refreshToken(): Promise<string> {
+    if (this.isRefreshing) {
+      return this.refreshPromise!;
+    }
+    
+    this.isRefreshing = true;
+    
+    try {
+      // Create a new promise for the token refresh
+      this.refreshPromise = new Promise(async (resolve, reject) => {
+        try {          
+          const currentEnv = endpointFinder.getCurrentEnvInfo();
+          const loginUrl = `${currentEnv.httpsServices!['hurricane-api-2-0']}/auth/login`;
+          const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+          const userContext = useUserContextStore.getState().userContext;
+          const response = await axios.post(
+            loginUrl,
+            {}, 
+            {
+              headers: {
+                Authorization: `Bearer ${userContext.token}`,
+                timezone: timezone,
+              },
+            }
+          );
+          
+          const newToken = response.headers["authorization"].split(" ")[1];
+          this.setBearerToken(newToken);
+          resolve(newToken);
+        } catch (error) {
+          reject(error);
+        } finally {
+          this.isRefreshing = false;
+          this.refreshPromise = null;
+        }
+      });
+      
+      return await this.refreshPromise;
+    } catch (error) {
+      this.isRefreshing = false;
+      this.refreshPromise = null;
+      throw error;
+    }
+  }
+
+  private async executeRequest(config: AxiosRequestConfig): Promise<any> {
+    try {     
+      const response = await axios(config);
+      return response.data;
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        const axiosError = error as AxiosError;
+        
+        if (axiosError.response?.status === 401) {
+          // Token expired, refresh and retry
+          try {
+            await this.refreshToken();
+            
+            // Update the config with the new token
+            if (config.headers) {
+              config.headers['Authorization'] = `Bearer ${this.bearerToken}`;
+            } else {
+              config.headers = { 'Authorization': `Bearer ${this.bearerToken}` };
+            }
+            
+            // Retry the request
+            const retryResponse = await axios(config);
+            return retryResponse.data;
+          } catch (error) {
+            console.error("Failed to refresh token:", error);
+            throw error;
+          }
+        }
+      }
+      throw error;
+    }
+  }
 
   async get(url: string, params: { [key: string]: any }, options?: WebApihandlerOptions) {
     // todo.. caching
+    await this.ensureToken();
     const finalUrl = this.getUrl(url, options);
 
-    const result = await axios({
+    const config: AxiosRequestConfig = {
       url: finalUrl,
       params: {
         bank_id: this.bankId,
@@ -33,30 +120,16 @@ class WebApihandler {
         'Authorization': `Bearer ${this.bearerToken}`,
         ...options?.headers
       }
-    });
+    };
 
-    return result.data;
-  }
-
-  async getStream(url: string, params: { [key: string]: any }, options?: WebApihandlerOptions) {
-    const currentEnv = endpointFinder.getCurrentEnvInfo();
-    const finalParams = { ...params, user_id: this.userId };
-    const finalUrl = `${currentEnv.httpsEndpoint}/${url}?${new URLSearchParams(finalParams).toString()}`;
-
-    return await fetch(finalUrl, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      }
-    });
+    return this.executeRequest(config);
   }
 
   async post(url: string, data: any, params?: { [key: string]: any }, options?: WebApihandlerOptions) {
+    await this.ensureToken();
     const finalUrl = this.getUrl(url, options);
-    console.log(finalUrl);
 
-
-    const result = await axios({
+    const config: AxiosRequestConfig = {
       url: finalUrl,
       params: {
         bank_id: this.bankId,
@@ -70,9 +143,22 @@ class WebApihandler {
       },
       data,
       method: 'POST'
-    });
+    };
 
-    return result.data;
+    return this.executeRequest(config);
+  }
+
+  async getStream(url: string, params: { [key: string]: any }, options?: WebApihandlerOptions) {
+    const currentEnv = endpointFinder.getCurrentEnvInfo();
+    const finalParams = { ...params, user_id: this.userId };
+    const finalUrl = `${currentEnv.httpsEndpoint}/${url}?${new URLSearchParams(finalParams).toString()}`;
+
+    return await fetch(finalUrl, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    });
   }
 
   async put(url: string, data: any, params?: { [key: string]: any }, webApiOptions?: WebApihandlerOptions) {
