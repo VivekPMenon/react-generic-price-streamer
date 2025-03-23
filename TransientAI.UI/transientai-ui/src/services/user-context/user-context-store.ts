@@ -4,7 +4,7 @@ import msalInstance from "@/app/msal-config";
 import { endpointFinder } from "../web-api-handler/endpoint-finder-service";
 import { AccountInfo } from "@azure/msal-browser";
 import userGroupUsersJson from "./user-group-users.json";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { webApihandler } from "../web-api-handler";
 interface UserContextState {
   userContext: UserContext;
@@ -134,7 +134,15 @@ async function loginAndSetToken(idToken: string) {
     const bearerToken = response.headers["authorization"].split(" ")[1];
     return bearerToken;
   } catch (error) {
+    const axiosError = error as AxiosError;
     console.error("Login API error:", error);
+    if (axiosError?.response?.status === 401) {
+      console.warn("Unauthorized - Redirecting to login...");
+      const currentEnv = endpointFinder.getCurrentEnvInfo();
+      await msalInstance.loginRedirect({
+        scopes: [currentEnv.authInfo?.scope!],
+      });
+    }
     throw new Error("Invalid login response");
   }
 }
