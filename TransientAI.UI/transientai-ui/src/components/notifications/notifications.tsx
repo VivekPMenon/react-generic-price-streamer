@@ -109,7 +109,7 @@ export function Notifications(props: NotificationsProps) {
   const { isLoading: isCorpActionsLoading, corpActions, selectedCorpAction, setSelectedCorpAction } = useCorpActionsStore();
   const { isLoading: isInquiriesLoading, inquiries } = useInvestorRelationsStore();
   const { isLoading: isRiskDataLoading, lastUpdatedTimestamp } = useRiskDataStore();
-  const { isLoading: isBreakingNewsLoading, breakNewsItems, setSelectedBreakNewsItem, setGroupId } = useBreakNewsDataStore();
+  // const { isLoading: isBreakingNewsLoading, breakNewsItems, setSelectedBreakNewsItem, setGroupId } = useBreakNewsDataStore();
   const { isLoading: isBloombergEmailReportsLoading, bloombergEmailReports, setSelectedReport } = useMacroPanelDataStore();
   const { resetUnseenItems, unseenItems } = useUnseenItemsStore();
   const { fullMenuList, activeMenuList, setActiveMenu } = useMenuStore();
@@ -119,7 +119,7 @@ export function Notifications(props: NotificationsProps) {
   const [selectedType, setSelectedType] = useState<string>(NotificationType.Research);
   const [selectedNotification, setSelectedNotification] = useState<Notification>({}); // todo..
 
-  const showSpinner = isLoading || isRiskReportLoading || isCorpActionsLoading || isInquiriesLoading || isRiskDataLoading || isBreakingNewsLoading;
+  const showSpinner = isLoading || isRiskReportLoading || isCorpActionsLoading || isInquiriesLoading || isRiskDataLoading;
 
   const visibleNotifications = useMemo<Notification[]>(() => notifications
     .filter(notification => selectedType === NotificationType.All || notification.type === selectedType), [
@@ -236,16 +236,16 @@ export function Notifications(props: NotificationsProps) {
           formatDate(lastUpdatedTimestamp)
         ]
       },
-      ...breakNewsItems
-        .map(news => ({
-          id: news.id?.toString(),
-          title: news.message,
-          sideTitle: 'WhatsApp',
-          type: NotificationType.BreakNews,
-          highlights: [
-            `${formatDate(news?.sender_time_info || '')}`,
-          ]
-        }))
+      // ...breakNewsItems
+      //   .map(news => ({
+      //     id: news.id?.toString(),
+      //     title: news.message,
+      //     sideTitle: 'WhatsApp',
+      //     type: NotificationType.BreakNews,
+      //     highlights: [
+      //       `${formatDate(news?.sender_time_info || '')}`,
+      //     ]
+      //   }))
     ];
 
     newNotifications.sort((x, y) => (y.timestamp ?? -1) - (x.timestamp ?? -1));
@@ -309,12 +309,12 @@ export function Notifications(props: NotificationsProps) {
         setSelectedReport(bloombergEmailReports.find(report => report.received_date === notification.id)!);
         break;
 
-      case NotificationType.BreakNews:
-        const selectedNewsItem = breakNewsItems.find((news) => news.id == notification.id);
-        setSelectedBreakNewsItem(selectedNewsItem!);
-        setGroupId(selectedNewsItem?.group_id || null);
-        router.push(newRoute = '/dashboard/breaking-news'); // todo.. remove the route hardcoding
-        break;
+      // case NotificationType.BreakNews:
+      //   const selectedNewsItem = breakNewsItems.find((news) => news.id == notification.id);
+      //   setSelectedBreakNewsItem(selectedNewsItem!);
+      //   setGroupId(selectedNewsItem?.group_id || null);
+      //   router.push(newRoute = '/dashboard/breaking-news'); // todo.. remove the route hardcoding
+      //   break;
     }
 
     const menuForRoute = fullMenuList.find(menu => menu.route === newRoute);
