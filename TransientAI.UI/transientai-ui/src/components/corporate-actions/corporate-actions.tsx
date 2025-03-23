@@ -234,10 +234,6 @@ export function CorporateActions() {
                   </div>
 
                   <div className={styles['corporate-action-body']}>
-                    {/* <ReactMarkdown className='markdown' remarkPlugins={[remarkGfm]}>
-                  {markdown}
-                </ReactMarkdown> */}
-
                     <div className={styles['basic-info']}>
                       <div className="grid grid-cols-[45%_55%] gap-3 fs-13">
                         <div className='font-bold'>Announcement Id</div>
@@ -251,12 +247,6 @@ export function CorporateActions() {
                         <div className='font-bold'>Position</div>
                         <div>{corpAction.accounts?.length ? corpAction.accounts[0].holdingQuantity : ''}</div>
                       </div>
-                      {/*<div className="grid grid-cols-[40%_60%] gap-3 fs-13">*/}
-                      {/*  <div className='font-bold'>Term Details</div>*/}
-                      {/*  <div>{corpAction.termsDetails?.length ? (*/}
-                      {/*      `Term: ${corpAction.termsDetails[0].termNumber} Rate: ${corpAction.termsDetails[0].type}`*/}
-                      {/*  ) : ''}</div>*/}
-                      {/*</div>*/}
                       <div className="grid grid-cols-[45%_55%] gap-3 fs-13">
                         <div className='font-bold'>Entitled Product Id</div>
                         <div>{corpAction.terms?.length ? corpAction.terms[0].security_details?.product_id : ''}</div>

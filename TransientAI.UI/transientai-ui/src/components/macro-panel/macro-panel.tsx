@@ -207,7 +207,7 @@ export function MacroPanel() {
   const { treasuryYields, fxRates, cryptos, isLoading } = useMacroPanelDataStore();
   return (
       <div>
-        <div className="sub-header">Morning Report: Generated {new Date(new Date().setHours(6, 0, 0)).toLocaleString()}</div>
+        <div className="sub-header">{`${t('heading')} ${new Date(new Date().setHours(6, 0, 0)).toLocaleString()}`}</div>
 
         <div className={`${styles['macro-panel']}`}>
             <div className={styles['fx-container']}>

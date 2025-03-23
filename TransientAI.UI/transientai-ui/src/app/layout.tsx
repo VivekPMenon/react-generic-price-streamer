@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Theme } from "@radix-ui/themes";
-import "./globals.scss";
 import { ChatbotDataContextProvider } from "@/services/chatbot-data";
 import { SearchDataContextProvider } from "@/services/search-data";
 import {ToastProvider, ToastViewport} from "@radix-ui/react-toast";
 import {NextIntlClientProvider} from 'next-intl';
 import {getLocale} from 'next-intl/server';
+import "./globals.scss";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -28,12 +28,13 @@ export const metadata: Metadata = {
   description: "AI Solution for your trading activities",
 };
 
+const locale = await getLocale();
+
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const locale = await getLocale();
 
   return (
     <html lang={locale}>

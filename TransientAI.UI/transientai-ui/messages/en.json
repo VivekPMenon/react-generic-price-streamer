@@ -1,5 +1,5 @@
 {
   "macro-panel": {
-//    "header": "Morning Report: Generated " + new Date().toLocaleDateString() + "06:00 AM"
+    "header": "Morning Report: Generated "
   }
 }
