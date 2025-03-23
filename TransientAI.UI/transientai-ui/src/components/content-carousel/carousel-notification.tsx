@@ -89,7 +89,19 @@ export function CarouselNotifications () {
 
     newNotifications.sort((x, y) => (y.timestamp ?? -1) - (x.timestamp ?? -1))
 
-    setNotifications(newNotifications)
+  setNotifications(prevNotifications => {
+    const hasChanged = JSON.stringify(prevNotifications) !== JSON.stringify(newNotifications);
+     if (hasChanged) {
+      // Update the state
+      const latestNotification = newNotifications[0];
+      if (window.location.pathname === "/dashboard/breaking-news" && latestNotification) {
+        onNotificationClick(latestNotification);
+      }
+      return newNotifications;
+    }
+
+    return prevNotifications;
+  });
   }
 
   function onNotificationClick (notification: Notification) {

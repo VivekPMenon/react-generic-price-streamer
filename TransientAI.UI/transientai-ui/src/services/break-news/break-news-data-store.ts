@@ -61,7 +61,7 @@ export const useBreakNewsDataStore = create<BreakNewsDataState>((set, get) => ({
         }
         return {}; // No need to modify state, just ensuring correctness
       });
-    }, 120000); // Polls every 2 minutes
+    }, 5000); // Polls every 2 minutes
   }
 }));
 
