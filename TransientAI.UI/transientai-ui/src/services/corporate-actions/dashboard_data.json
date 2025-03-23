@@ -1,0 +1,789 @@
+{
+  "Action Required": [
+    {
+      "event_id": "83215721",
+      "action_type": "Action Required",
+      "ticker": "HK960",
+      "security_name": "LONGFOR GROUP HOLDINGS LTD CMN",
+      "event_type": "Optional Optional Dividend",
+      "event_status": "Confirmed",
+      "event_classification": "Voluntary Event",
+      "security": {
+        "name": "LONGFOR GROUP HOLDINGS LTD CMN",
+        "ticker": "HK960",
+        "isin": "KYG5635P1090",
+        "cusip": "9H40MSF52",
+        "sedol": "B56KLY9",
+        "ric": "0960.HK"
+      },
+      "dates": {
+        "pay_date": "2025-04-08T00:00:00Z",
+        "record_date": "2025-02-25T00:00:00Z",
+        "ex_date": "2025-02-24T00:00:00Z",
+        "deadline": "2025-03-26T4:00:00Z"
+      },
+      "distribution": {
+        "rate": "0.2386 HKD per 1 of holding",
+        "currency": "HKD"
+      },
+      "accounts": [
+        {
+          "account_number": "065464984-06",
+          "holding_quantity": "500",
+          "gross_amount": "",
+          "net_amount": "",
+          "tax_withheld": ""
+        }
+      ],
+      "num_accounts": 1,
+      "country_of_issue": "HK",
+      "country_of_issuer": "KY",
+      "version_info": "Version: 3 | 2025-03-13T11:29:02Z",
+      "default_action": "ELECT TO RECEIVE CASH - HKD"
+    },
+    {
+      "event_id": "83941882",
+      "action_type": "Action Required",
+      "ticker": "",
+      "security_name": "RTS/ADDVISE GROUP AB EXP04/07/2025",
+      "event_type": "Optional Rights Exercise",
+      "event_status": "Confirmed",
+      "event_classification": "Voluntary Event",
+      "security": {
+        "name": "RTS/ADDVISE GROUP AB EXP04/07/2025",
+        "ticker": "",
+        "isin": "SE0024172589",
+        "cusip": "9EQ8TH9A7",
+        "sedol": "BMV71D3",
+        "ric": ""
+      },
+      "dates": {
+        "pay_date": "2025-04-07T00:00:00Z",
+        "record_date": "1900-01-01T00:00:00Z",
+        "ex_date": "1900-01-01T00:00:00Z",
+        "deadline": "2025-04-04T08:00:00Z"
+      },
+      "distribution": {
+        "rate": "4 new shares for every 2 rights held",
+        "currency": "SEK"
+      },
+      "accounts": [
+        {
+          "account_number": "064546831-06",
+          "holding_quantity": "1",
+          "gross_amount": "",
+          "net_amount": "",
+          "tax_withheld": ""
+        },
+        {
+          "account_number": "066164591-06",
+          "holding_quantity": "7,556",
+          "gross_amount": "",
+          "net_amount": "",
+          "tax_withheld": ""
+        }
+      ],
+      "num_accounts": 2,
+      "country_of_issue": "SE",
+      "country_of_issuer": "SE",
+      "version_info": "Version: 1 | 2025-03-20T08:00:43Z",
+      "default_action": "TAKE NO ACTION"
+    }
+  ],
+  "No Action Required": [
+    {
+      "event_id": "83983830",
+      "action_type": "No Action Required",
+      "ticker": "HVBVF",
+      "security_name": "HAVAS N.V. CMN",
+      "event_type": "Reverse Split - Mandatory",
+      "event_status": "Unconfirmed",
+      "event_classification": "Mandatory Event",
+      "security": {
+        "name": "HAVAS N.V. CMN",
+        "ticker": "HVBVF",
+        "isin": "NL0015002AH0",
+        "cusip": "9EQ8Q2Z48",
+        "sedol": "BT6MF41",
+        "ric": ""
+      },
+      "dates": {
+        "pay_date": "To be confirmedZ",
+        "record_date": "2025-03-07T08:57:52.453734Z",
+        "ex_date": "2025-03-07T08:57:52.453740Z",
+        "deadline": "2025-03-07T08:57:52.453742Z"
+      },
+      "distribution": {
+        "rate": "1 share distribution with removal of shares per 10 of holding",
+        "currency": ""
+      },
+      "accounts": [
+        {
+          "account_number": "066164591-06",
+          "holding_quantity": "1",
+          "gross_amount": "",
+          "net_amount": "",
+          "tax_withheld": ""
+        }
+      ],
+      "num_accounts": 1,
+      "country_of_issue": "NL",
+      "country_of_issuer": "NL",
+      "version_info": "Version: 1 | 2025-03-07T08:51:55Z",
+      "default_action": ""
+    },
+    {
+      "event_id": "84004062",
+      "action_type": "No Action Required",
+      "ticker": "ISHNF",
+      "security_name": "ISHARES NIKKEI 225 MUTUAL FUND",
+      "event_type": "Stock Split - Mandatory",
+      "event_status": "Unconfirmed",
+      "event_classification": "Mandatory Event",
+      "security": {
+        "name": "ISHARES NIKKEI 225 MUTUAL FUND",
+        "ticker": "ISHNF",
+        "isin": "JP3027710007",
+        "cusip": "9JE0092N4",
+        "sedol": "6397449",
+        "ric": ""
+      },
+      "dates": {
+        "pay_date": "2025-04-07T00:00:00Z",
+        "record_date": "2025-04-06T00:00:00Z",
+        "ex_date": "2025-04-03T00:00:00Z",
+        "deadline": "1900-01-01T00:00:00Z"
+      },
+      "distribution": {
+        "rate": "9 shares (distrib. only) per 1 of holding",
+        "currency": ""
+      },
+      "accounts": [
+        {
+          "account_number": "066218645-06",
+          "holding_quantity": "-57",
+          "gross_amount": "",
+          "net_amount": "",
+          "tax_withheld": ""
+        },
+        {
+          "account_number": "066189200-06",
+          "holding_quantity": "-2",
+          "gross_amount": "",
+          "net_amount": "",
+          "tax_withheld": ""
+        }
+      ],
+      "num_accounts": 2,
+      "country_of_issue": "JP",
+      "country_of_issuer": "JP",
+      "version_info": "Version: 1 | 2025-03-19T02:43:18Z",
+      "default_action": "Mandatory Event: No Responses Required for this event"
+    },
+    {
+      "event_id": "83570649",
+      "action_type": "No Action Required",
+      "ticker": "AJINF",
+      "security_name": "AJINOMOTO CO., INC. CMN",
+      "event_type": "Stock Split - Mandatory",
+      "event_status": "Unconfirmed",
+      "event_classification": "Mandatory Event",
+      "security": {
+        "name": "AJINOMOTO CO., INC. CMN",
+        "ticker": "AJINF",
+        "isin": "JP3119600009",
+        "cusip": "009707209",
+        "sedol": "6010906",
+        "ric": ""
+      },
+      "dates": {
+        "pay_date": "2025-04-01T00:00:00Z",
+        "record_date": "2025-03-31T00:00:00Z",
+        "ex_date": "2025-03-28T00:00:00Z",
+        "deadline": "2025-03-13T16:02:00.590488Z"
+      },
+      "distribution": {
+        "rate": "1 shares (distrib. only) per 1 of holding",
+        "currency": ""
+      },
+      "accounts": [
+        {
+          "account_number": "066164591-06",
+          "holding_quantity": "1,000",
+          "gross_amount": "",
+          "net_amount": "",
+          "tax_withheld": ""
+        }
+      ],
+      "num_accounts": 1,
+      "country_of_issue": "JP",
+      "country_of_issuer": "JP",
+      "version_info": "Version: 1 | 2025-03-13T15:31:26Z",
+      "default_action": "Mandatory event with no action required"
+    },
+    {
+      "event_id": "84004195",
+      "action_type": "No Action Required",
+      "ticker": "",
+      "security_name": "ZOZO CMN",
+      "event_type": "Stock Split - Mandatory",
+      "event_status": "Confirmed",
+      "event_classification": "Mandatory Event",
+      "security": {
+        "name": "ZOZO CMN",
+        "ticker": "",
+        "isin": "JP3399310006",
+        "cusip": "9JE033RT4",
+        "sedol": "B292RC1",
+        "ric": ""
+      },
+      "dates": {
+        "pay_date": "2025-04-01T00:00:00Z",
+        "record_date": "2025-03-31T00:00:00Z",
+        "ex_date": "2025-03-28T00:00:00Z",
+        "deadline": "2025-03-17T08:02:51.202488Z"
+      },
+      "distribution": {
+        "rate": "2 shares (distrib. only) per 1 of holding",
+        "currency": ""
+      },
+      "accounts": [
+        {
+          "account_number": "066164591-06",
+          "holding_quantity": "1,500",
+          "gross_amount": "",
+          "net_amount": "",
+          "tax_withheld": ""
+        }
+      ],
+      "num_accounts": 1,
+      "country_of_issue": "JP",
+      "country_of_issuer": "JP",
+      "version_info": "Version: 2 | 2025-03-17T07:10:56Z",
+      "default_action": ""
+    }
+  ],
+  "Expired": [
+    {
+      "event_id": "83836195",
+      "action_type": "No Action Required",
+      "ticker": "AIT",
+      "security_name": "APPLIED INDUSTRIAL TECHNOLOGY INC",
+      "event_type": "Cash Dividend - Mandatory",
+      "event_status": "Payment released",
+      "event_classification": "Mandatory Event",
+      "security": {
+        "name": "APPLIED INDUSTRIAL TECHNOLOGY INC",
+        "ticker": "AIT",
+        "isin": "US03820C1053",
+        "cusip": "03820C105",
+        "sedol": "2086309",
+        "ric": "AIT.MW"
+      },
+      "dates": {
+        "pay_date": "2025-02-28T00:00:00Z",
+        "record_date": "2025-02-14T00:00:00Z",
+        "ex_date": "2025-02-14T00:00:00Z",
+        "deadline": "2025-03-06T19:39:28.742878Z"
+      },
+      "distribution": {
+        "rate": "0.46 USD per 1 of holding",
+        "currency": "USD"
+      },
+      "accounts": [
+        {
+          "account_number": "065451106-06",
+          "holding_quantity": "3,781.00",
+          "gross_amount": "1,739.26",
+          "net_amount": "1,739.26",
+          "tax_withheld": "0.00"
+        },
+        {
+          "account_number": "065458556-06",
+          "holding_quantity": "469.00",
+          "gross_amount": "215.74",
+          "net_amount": "215.74",
+          "tax_withheld": "0.00"
+        }
+      ],
+      "num_accounts": 2,
+      "country_of_issue": "US",
+      "country_of_issuer": "US",
+      "version_info": "Version: 1 | 2025-02-28T17-54-13Z",
+      "default_action": "No Responses Required for this event"
+    },
+    {
+      "event_id": "83822495",
+      "action_type": "No Action Required",
+      "ticker": "PH",
+      "security_name": "PARKER-HANNIFIN CORP. CMN",
+      "event_type": "Cash Dividend - Mandatory",
+      "event_status": "Released",
+      "event_classification": "Mandatory Event",
+      "security": {
+        "name": "PARKER-HANNIFIN CORP. CMN",
+        "ticker": "PH",
+        "isin": "US7010941042",
+        "cusip": "701094104",
+        "sedol": "2671501",
+        "ric": "PH"
+      },
+      "dates": {
+        "pay_date": "2025-03-07T00:00:00Z",
+        "record_date": "2025-02-07T00:00:00Z",
+        "ex_date": "2025-02-07T00:00:00Z",
+        "deadline": "2025-03-08T06:40:18.265514Z"
+      },
+      "distribution": {
+        "rate": "1.63 USD per 1 of holding",
+        "currency": "USD"
+      },
+      "accounts": [
+        {
+          "account_number": "065451106-06",
+          "holding_quantity": "10,369.00",
+          "gross_amount": "16,901.47",
+          "net_amount": "16,901.47",
+          "tax_withheld": "0.00"
+        },
+        {
+          "account_number": "065458556-06",
+          "holding_quantity": "1,281.00",
+          "gross_amount": "2,088.03",
+          "net_amount": "2,088.03",
+          "tax_withheld": "0.00"
+        }
+      ],
+      "num_accounts": 2,
+      "country_of_issue": "US",
+      "country_of_issuer": "US",
+      "version_info": "Version: 1 | 2025-03-08T06:34:14Z",
+      "default_action": "No Responses Required for this event"
+    },
+    {
+      "event_id": "83872217",
+      "action_type": "No Action Required",
+      "ticker": "ROK",
+      "security_name": "ROCKWELL AUTOMATION INC CMN",
+      "event_type": "Cash Dividend - Mandatory",
+      "event_status": "Payment Released",
+      "event_classification": "Mandatory Event",
+      "security": {
+        "name": "ROCKWELL AUTOMATION INC CMN",
+        "ticker": "ROK",
+        "isin": "US7739031091",
+        "cusip": "773903109",
+        "sedol": "2754060",
+        "ric": "ROK.TH"
+      },
+      "dates": {
+        "pay_date": "2025-03-10T00:00:00Z",
+        "record_date": "2025-02-18T00:00:00Z",
+        "ex_date": "2025-02-18T00:00:00Z",
+        "deadline": "2025-03-11T09:23:55.604601Z"
+      },
+      "distribution": {
+        "rate": "1.31 USD per 1 of holding",
+        "currency": "USD"
+      },
+      "accounts": [
+        {
+          "account_number": "065451106-06",
+          "holding_quantity": "33,819.00",
+          "gross_amount": "44,302.89",
+          "net_amount": "44,302.89",
+          "tax_withheld": "0.00"
+        },
+        {
+          "account_number": "065458556-06",
+          "holding_quantity": "3,554.00",
+          "gross_amount": "4,655.74",
+          "net_amount": "4,655.74",
+          "tax_withheld": "0.00"
+        }
+      ],
+      "num_accounts": 2,
+      "country_of_issue": "US",
+      "country_of_issuer": "US",
+      "version_info": "Version: 2 | 2025-03-11T09:18:24Z",
+      "default_action": "No Responses Required for this event"
+    },
+    {
+      "event_id": "83902183",
+      "action_type": "No Action Required",
+      "ticker": "DOV",
+      "security_name": "DOVER CORPORATION CMN",
+      "event_type": "Cash Dividend - Mandatory",
+      "event_status": "",
+      "event_classification": "Mandatory Event",
+      "security": {
+        "name": "DOVER CORPORATION CMN",
+        "ticker": "DOV",
+        "isin": "US2600031080",
+        "cusip": "260003108",
+        "sedol": "2278407",
+        "ric": "DOV.TH"
+      },
+      "dates": {
+        "pay_date": "2025-03-14T00:00:00Z",
+        "record_date": "2025-02-28T00:00:00Z",
+        "ex_date": "2025-02-28T00:00:00Z",
+        "deadline": "2025-03-14T16:56:41.830932Z"
+      },
+      "distribution": {
+        "rate": "0.515 USD per 1 of holding",
+        "currency": "USD"
+      },
+      "accounts": [
+        {
+          "account_number": "065451106-06",
+          "holding_quantity": "5,915.00",
+          "gross_amount": "3,046.22",
+          "net_amount": "3,046.23",
+          "tax_withheld": "0.00"
+        },
+        {
+          "account_number": "065458556-06",
+          "holding_quantity": "585.00",
+          "gross_amount": "301.28",
+          "net_amount": "301.28",
+          "tax_withheld": "0.00"
+        }
+      ],
+      "num_accounts": 2,
+      "country_of_issue": "US",
+      "country_of_issuer": "US",
+      "version_info": "Version: 1 | 2025-03-14T16:00:35Z",
+      "default_action": "No Responses Required for this event"
+    },
+    {
+      "event_id": "83841709",
+      "action_type": "No Action Required",
+      "ticker": "HU93",
+      "security_name": "HUBBELL INCORPORATED CMN",
+      "event_type": "Cash Dividend - Mandatory",
+      "event_status": "Released",
+      "event_classification": "Mandatory Event",
+      "security": {
+        "name": "HUBBELL INCORPORATED CMN",
+        "ticker": "HU93",
+        "isin": "US4435106079",
+        "cusip": "443510607",
+        "sedol": "BDFG6S3",
+        "ric": "HU93.MW"
+      },
+      "dates": {
+        "pay_date": "2025-03-17T00:00:00Z",
+        "record_date": "2025-02-28T00:00:00Z",
+        "ex_date": "2025-02-28T00:00:00Z",
+        "deadline": "1900-01-01T00:00:00Z"
+      },
+      "distribution": {
+        "rate": "1.32 USD per 1 of holding",
+        "currency": "USD"
+      },
+      "accounts": [
+        {
+          "account_number": "065451106-06",
+          "holding_quantity": "4,095.00",
+          "gross_amount": "5,405.40",
+          "net_amount": "5,405.40",
+          "tax_withheld": "0.00"
+        },
+        {
+          "account_number": "065458556-06",
+          "holding_quantity": "405.00",
+          "gross_amount": "534.60",
+          "net_amount": "534.60",
+          "tax_withheld": "0.00"
+        }
+      ],
+      "num_accounts": 2,
+      "country_of_issue": "US",
+      "country_of_issuer": "US",
+      "version_info": "Version: 1 | 2025-03-17T16:44:10Z",
+      "default_action": "No Responses Required for this event"
+    },
+    {
+      "event_id": "83893840",
+      "action_type": "No Action Required",
+      "ticker": "LUCK",
+      "security_name": "LUCKY STRIKE ENTERTAINMENT CORPORATION CMN",
+      "event_type": "Cash Dividend - Mandatory",
+      "event_status": "Released",
+      "event_classification": "Mandatory Event",
+      "security": {
+        "name": "LUCKY STRIKE ENTERTAINMENT CORPORATION CMN",
+        "ticker": "LUCK",
+        "isin": "US10258P1021",
+        "cusip": "10258P102",
+        "sedol": "BPG5F19",
+        "ric": "LUCK.B"
+      },
+      "dates": {
+        "pay_date": "2025-03-07T00:00:00Z",
+        "record_date": "2025-02-21T00:00:00Z",
+        "ex_date": "2025-02-21T00:00:00Z",
+        "deadline": "2025-03-08T06:40:18.265469Z"
+      },
+      "distribution": {
+        "rate": "0.055 USD per 1 of holding",
+        "currency": "USD"
+      },
+      "accounts": [
+        {
+          "account_number": "065399941-07",
+          "holding_quantity": "-30,089.00",
+          "gross_amount": "-1,654.90",
+          "net_amount": "-1,654.90",
+          "tax_withheld": "0.00"
+        },
+        {
+          "account_number": "065464653-07",
+          "holding_quantity": "-1,921.00",
+          "gross_amount": "-105.66",
+          "net_amount": "-105.66",
+          "tax_withheld": "0.00"
+        }
+      ],
+      "num_accounts": 2,
+      "country_of_issue": "US",
+      "country_of_issuer": "US",
+      "version_info": "Version: 1 | 2025-03-08T06:34:14Z",
+      "default_action": "No Responses Required for this event"
+    },
+    {
+      "event_id": "83905680",
+      "action_type": "No Action Required",
+      "ticker": "HOG",
+      "security_name": "HARLEY-DAVIDSON INC CMN",
+      "event_type": "Cash Dividend - Mandatory",
+      "event_status": "Payment Released",
+      "event_classification": "Mandatory Event",
+      "security": {
+        "name": "HARLEY-DAVIDSON INC CMN",
+        "ticker": "HOG",
+        "isin": "US4128221086",
+        "cusip": "412822108",
+        "sedol": "2411053",
+        "ric": "HOG.P"
+      },
+      "dates": {
+        "pay_date": "2025-03-14T00:00:00Z",
+        "record_date": "2025-02-28T00:00:00Z",
+        "ex_date": "2025-02-28T00:00:00Z",
+        "deadline": "2025-03-14T15:47:29.175806Z"
+      },
+      "distribution": {
+        "rate": "0.18 USD per 1 of holding",
+        "currency": "USD"
+      },
+      "accounts": [
+        {
+          "account_number": "065399941-07",
+          "holding_quantity": "-4,541.00",
+          "gross_amount": "-817.38",
+          "net_amount": "-817.38",
+          "tax_withheld": "0.00"
+        },
+        {
+          "account_number": "065464653-07",
+          "holding_quantity": "-297.00",
+          "gross_amount": "-53.46",
+          "net_amount": "-53.46",
+          "tax_withheld": "0.00"
+        }
+      ],
+      "num_accounts": 2,
+      "country_of_issue": "US",
+      "country_of_issuer": "US",
+      "version_info": "Version: 1 | 2025-03-14T15:35:39Z",
+      "default_action": "No Responses Required"
+    },
+    {
+      "event_id": "83896402",
+      "action_type": "No Action Required",
+      "ticker": "MAS",
+      "security_name": "MASCO CORPORATION CMN",
+      "event_type": "Cash Dividend - Mandatory",
+      "event_status": "Payment Released",
+      "event_classification": "Mandatory Event",
+      "security": {
+        "name": "MASCO CORPORATION CMN",
+        "ticker": "MAS",
+        "isin": "US5745991068",
+        "cusip": "574599106",
+        "sedol": "2570200",
+        "ric": "MAS.A"
+      },
+      "dates": {
+        "pay_date": "2025-03-10T00:00:00Z",
+        "record_date": "2025-02-21T00:00:00Z",
+        "ex_date": "2025-02-21T00:00:00Z",
+        "deadline": "2025-03-10T15:12:53.829505Z"
+      },
+      "distribution": {
+        "rate": "0.31 USD per 1 of holding",
+        "currency": "USD"
+      },
+      "accounts": [
+        {
+          "account_number": "065464984-06",
+          "holding_quantity": "52.00",
+          "gross_amount": "16.12",
+          "net_amount": "16.12",
+          "tax_withheld": "0.00"
+        }
+      ],
+      "num_accounts": 1,
+      "country_of_issue": "US",
+      "country_of_issuer": "US",
+      "version_info": "Version: 1 | 2025-03-10T14:38:52Z",
+      "default_action": "No Responses Required for this event"
+    },
+    {
+      "event_id": "83840756",
+      "action_type": "No Action Required",
+      "ticker": "MTRN",
+      "security_name": "MATERION CORPORATION CMN",
+      "event_type": "Cash Dividend - Mandatory",
+      "event_status": "Released",
+      "event_classification": "Mandatory Event",
+      "security": {
+        "name": "MATERION CORPORATION CMN",
+        "ticker": "MTRN",
+        "isin": "US5766901012",
+        "cusip": "576690101",
+        "sedol": "2149622",
+        "ric": "MTRN.TH"
+      },
+      "dates": {
+        "pay_date": "2025-03-07T00:00:00Z",
+        "record_date": "2025-02-20T00:00:00Z",
+        "ex_date": "2025-02-20T00:00:00Z",
+        "deadline": "2025-03-08T06:40:18.265658Z"
+      },
+      "distribution": {
+        "rate": "0.135 USD per 1 of holding",
+        "currency": "USD"
+      },
+      "accounts": [
+        {
+          "account_number": "065466716-06",
+          "holding_quantity": "1,585.00",
+          "gross_amount": "213.98",
+          "net_amount": "213.98",
+          "tax_withheld": "0.00"
+        },
+        {
+          "account_number": "065471906-06",
+          "holding_quantity": "172.00",
+          "gross_amount": "23.22",
+          "net_amount": "23.22",
+          "tax_withheld": "0.00"
+        }
+      ],
+      "num_accounts": 2,
+      "country_of_issue": "US",
+      "country_of_issuer": "US",
+      "version_info": "Version: 1 | 2025-03-08T06:34:14Z",
+      "default_action": "No Responses Required for this event"
+    },
+    {
+      "event_id": "83808979",
+      "action_type": "No Action Required",
+      "ticker": "MSA",
+      "security_name": "MSA SAFETY INC CMN",
+      "event_type": "Cash Dividend - Mandatory",
+      "event_status": "Payment Released",
+      "event_classification": "Mandatory Event",
+      "security": {
+        "name": "MSA SAFETY INC CMN",
+        "ticker": "MSA",
+        "isin": "US5534981064",
+        "cusip": "553498106",
+        "sedol": "BKM4S16",
+        "ric": "MSA"
+      },
+      "dates": {
+        "pay_date": "2025-03-10T00:00:00Z",
+        "record_date": "2025-02-14T00:00:00Z",
+        "ex_date": "2025-02-14T00:00:00Z",
+        "deadline": "2025-03-10T15:12:53.829543Z"
+      },
+      "distribution": {
+        "rate": "0.51 USD per 1 of holding",
+        "currency": "USD"
+      },
+      "accounts": [
+        {
+          "account_number": "065466716-06",
+          "holding_quantity": "815.00",
+          "gross_amount": "415.65",
+          "net_amount": "415.65",
+          "tax_withheld": "0.00"
+        },
+        {
+          "account_number": "065471906-06",
+          "holding_quantity": "89.00",
+          "gross_amount": "45.39",
+          "net_amount": "45.39",
+          "tax_withheld": "0.00"
+        }
+      ],
+      "num_accounts": 2,
+      "country_of_issue": "US",
+      "country_of_issuer": "US",
+      "version_info": "Version: 1 | 2025-03-10T14:38:52Z",
+      "default_action": "No Responses Required for this event"
+    },
+    {
+      "event_id": "83835942",
+      "action_type": "Action Required",
+      "ticker": "",
+      "security_name": "BEACON ROOFING SUPPLY, INC. CMN",
+      "event_type": "Optional Tender Offer",
+      "event_status": "Deadline Approaching",
+      "event_classification": "Voluntary Event",
+      "security": {
+        "name": "BEACON ROOFING SUPPLY, INC. CMN",
+        "ticker": "",
+        "isin": "US0736851090",
+        "cusip": "073685109",
+        "sedol": "",
+        "ric": ""
+      },
+      "dates": {
+        "pay_date": "1900-01-01T00:00:00Z",
+        "record_date": "1900-01-01T00:00:00Z",
+        "ex_date": "1900-01-01T00:00:00Z",
+        "deadline": "2025-03-03T15:00:00Z"
+      },
+      "distribution": {
+        "rate": "",
+        "currency": ""
+      },
+      "accounts": [
+        {
+          "account_number": "065471906-06",
+          "holding_quantity": "63",
+          "gross_amount": "",
+          "net_amount": "",
+          "tax_withheld": ""
+        },
+        {
+          "account_number": "065466716-06",
+          "holding_quantity": "582",
+          "gross_amount": "",
+          "net_amount": "",
+          "tax_withheld": ""
+        }
+      ],
+      "num_accounts": 2,
+      "country_of_issue": "",
+      "country_of_issuer": "",
+      "version_info": "Version: 5 | 2025-03-01T04:07:33Z",
+      "default_action": "Default option will be applied if long holder does not respond by deadline"
+    }
+  ]
+}
