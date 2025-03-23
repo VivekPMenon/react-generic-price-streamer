@@ -4,7 +4,7 @@ import msalInstance from "@/app/msal-config";
 import { endpointFinder } from "../web-api-handler/endpoint-finder-service";
 import { AccountInfo } from "@azure/msal-browser";
 import userGroupUsersJson from "./user-group-users.json";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { webApihandler } from "../web-api-handler";
 interface UserContextState {
   userContext: UserContext;
