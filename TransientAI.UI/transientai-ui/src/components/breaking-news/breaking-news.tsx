@@ -21,6 +21,8 @@ export function BreakingNews({ isExpanded }: BreakingNewsProps) {
   const [expandedMessages, setExpandedMessages] = useState<{ [key: string]: boolean }>({});
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const MESSAGES_PER_PAGE = 10;
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
   // Function to fetch messages with pagination
   const fetchMessages = useCallback(async (pageNumber: number, isInitial: boolean = false) => {
@@ -209,7 +211,7 @@ export function BreakingNews({ isExpanded }: BreakingNewsProps) {
     
     // If there's no message content and no attachment, return null
     if (!message.message && !message.attachment) return null;
-    
+    const urlRegex = /(https?:\/\/[^\s]+)/g;
     const imageExtensions = ["jpg", "jpeg", "png", "gif", "webp"];
     const videoExtensions = ["mp4", "webm", "ogg"];
     const MAX_LENGTH = 1000;
@@ -227,13 +229,32 @@ export function BreakingNews({ isExpanded }: BreakingNewsProps) {
         <p className="text-sm max-w-xs md:max-w-sm lg:max-w-md mb-2">
           {displayText.split("\n").map((line, index) => (
             <span key={index}>
-              {line}
+              {line.split(urlRegex).map((part, partIndex) =>
+                urlRegex.test(part) ? (
+                  <a
+                    key={partIndex}
+                    href={part}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-500 underline"
+                  >
+                    {part}
+                  </a>
+                ) : (
+                  part
+                )
+              )}
               <br />
             </span>
           ))}
           {shouldTruncate && (
             <button
-              onClick={() => setExpandedMessages(prev => ({ ...prev, [message.id!]: !isExpanded }))}
+              onClick={() =>
+                setExpandedMessages((prev) => ({
+                  ...prev,
+                  [message.id!]: !isExpanded,
+                }))
+              }
               className="text-blue-300 underline ml-1 cursor-pointer"
             >
               {isExpanded ? "Read Less" : "Read More"}
@@ -245,7 +266,15 @@ export function BreakingNews({ isExpanded }: BreakingNewsProps) {
 
     // Create the attachment component if attachment exists
     let attachmentComponent = null;
-    
+    const openModal = (imageUrl: string) => {
+      setSelectedImage(imageUrl);
+      setIsModalOpen(true);
+    };
+  
+    const closeModal = () => {
+      setSelectedImage(null);
+      setIsModalOpen(false);
+    };
     if (message.attachment) {
       // Extract file extension from URL
       const urlParts = message.attachment.split(".");
@@ -254,11 +283,11 @@ export function BreakingNews({ isExpanded }: BreakingNewsProps) {
       if (imageExtensions.includes(extension)) {
         // Image attachment
         attachmentComponent = (
-          <div className="mt-1">
+          <div className="mt-1" onClick={() => openModal(message.attachment!)}>
             <img
               src={message.attachment}
               alt="Attachment"
-              className="w-full h-auto max-h-[300px] rounded-lg object-cover"
+              className="w-auto h-auto max-h-[300px] rounded-lg object-cover"
             />
           </div>
         );
@@ -268,7 +297,7 @@ export function BreakingNews({ isExpanded }: BreakingNewsProps) {
           <div className="mt-1">
             <video
               controls
-              className="w-full h-auto max-h-[300px] rounded-lg"
+              className="w-auto h-auto max-h-[300px] rounded-lg"
             >
               <source src={message.attachment} type={`video/${extension}`} />
               Your browser does not support the video tag.
@@ -295,11 +324,23 @@ export function BreakingNews({ isExpanded }: BreakingNewsProps) {
         );
       }
     }
-    
+    // Modal Component for displaying the image in full size
+    const modalComponent = isModalOpen ? (
+      <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50" onClick={closeModal}>
+        <button
+        className={`fixed ${styles['close-top']} right-5 text-white text-3xl font-bold bg-gray-800 hover:bg-gray-600 rounded-full w-10 h-10 flex items-center justify-center`}
+        onClick={closeModal}>&times;</button>
+        <div className="relative">
+          <img src={selectedImage!} alt="Full Size" className="max-w-full max-h-screen rounded-lg" />
+        </div>
+      </div>
+    ) : null;
     // Return both text and attachment in a container
     return (
       <div className="message-container">
         {attachmentComponent}
+        {modalComponent}
+        <br/>
         {textComponent}
       </div>
     );
