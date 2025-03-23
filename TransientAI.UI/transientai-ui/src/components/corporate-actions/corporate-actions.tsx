@@ -17,7 +17,7 @@ import Toggle from 'react-toggle';
 export function CorporateActions() {
 
   const { userContext } = useUserContextStore();
-  const { corpActions, selectedCorpAction, setSelectedCorpAction } = useCorpActionsStore();
+  const { corpActions, selectedCorpAction, setSelectedCorpAction, searchCorpActions } = useCorpActionsStore();
   const { scrollTargetRef, scrollToTarget } = useScrollTo<HTMLDivElement>();
   const divRef = useRef<HTMLDivElement>(null);
   const gridApiRef = useRef<GridApi | null>(null);
@@ -70,8 +70,7 @@ export function CorporateActions() {
       return;
     }
 
-    // const corpActions = await corpActionsDataService.getCorpActions();
-    // setCorpActions(corpActions);
+    searchCorpActions(searchQuery);
   }
 
   function onSelectEmail(corpAction: CorporateAction, version: number | undefined) {
@@ -309,7 +308,6 @@ export function CorporateActions() {
             onChange={event => onSearchQueryChange(event)}
             onKeyDown={onKeyDown}
             placeholder="Ask TransientAI anything about recent Corporate Actions. Include securities if you are looking for specific information" />
-
           {
             userContext.roles?.includes(RoleType.Operations) && <>
               <Toggle

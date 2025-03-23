@@ -46,6 +46,16 @@ class CorporateActionsDataService {
       });
   }
 
+  async searchCorpAction(query: string): Promise<string[]> {
+    const result = await webApihandler.get(
+        `corpaction-search`, {
+          query
+        }, {
+          serviceName: 'hurricane-api'
+        });
+    return result.event_ids ?? [];
+  }
+
   // async getCorpActions(): Promise<CorporateAction[]> {
   //   return [
   //     {
