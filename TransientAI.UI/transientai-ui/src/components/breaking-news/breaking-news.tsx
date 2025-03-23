@@ -78,7 +78,7 @@ export function BreakingNews({ isExpanded }: BreakingNewsProps) {
   useEffect(() => {
     setCurrentPage(1);
     fetchMessages(1, true);
-    messageStatus(selectedBreakNewsItem?.id || '');
+    //messageStatus(selectedBreakNewsItem?.id || '');
   }, [selectedGroupId, selectedBreakNewsItem, fetchMessages]);
 
   // Handle scroll to load more messages
