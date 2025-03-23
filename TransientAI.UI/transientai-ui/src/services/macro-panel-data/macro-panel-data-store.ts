@@ -69,11 +69,9 @@ export const useMacroPanelDataStore = create<MacroPanelDataState>((set, get) => 
 
   startPolling: () => {
     setInterval(async () => {
-      const {loadMacroPanelData, bloombergEmailReports} = get();
+      const {bloombergEmailReports} = get();
 
       const prevCount = bloombergEmailReports.length;
-
-      await loadMacroPanelData();
 
       // Use Zustand's `set` function to ensure the correct state is retrieved
       set((state) => {
