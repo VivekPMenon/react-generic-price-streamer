@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import { CorporateAction } from './model';
 import { corpActionsDataService } from './corporate-actions-data';
 import { useUnseenItemsStore } from '../unseen-items-store/unseen-items-store';
+import { areObjectsEqual } from '@/lib/utility-functions';
 
 export const resourceName = 'corporate-actions';
 
@@ -49,7 +50,8 @@ export const useCorpActionsStore = create<CorpActionsDataState>((set, get) => ({
         set({
           corpActions: filtered,
           loadedCorpActions: newCorpActions,
-          isLoading: false, });
+          isLoading: false,
+        });
       } else {
         set({
           corpActions: newCorpActions,
@@ -90,7 +92,13 @@ export const useCorpActionsStore = create<CorpActionsDataState>((set, get) => ({
     setInterval(async () => {
       const prevCount = get().corpActions.length;
 
-      await get().loadCorpActions();
+      const { corpActions } = get();
+      const newCorpActions = await corpActionsDataService.getCorpActions();
+      if (areObjectsEqual(corpActions, newCorpActions)) {
+        return;
+      }
+
+      set({ corpActions: newCorpActions });
 
       set((state) => {
         const newCount = state.corpActions.length;

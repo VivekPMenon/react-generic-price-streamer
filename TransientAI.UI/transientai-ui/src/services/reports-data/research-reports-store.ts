@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import { ResearchReport } from './model';
 import { researchReportsDataService } from './research-reports-data';
 import { useUnseenItemsStore } from '../unseen-items-store/unseen-items-store';
+import { areObjectsEqual } from '@/lib/utility-functions';
 
 export const resourceName = 'research-reports';
 
@@ -30,7 +31,7 @@ export const useResearchReportsStore = create<ResearchReportsState>((set, get) =
 
     try {
       const newReports = await researchReportsDataService.getReports();
-      
+
       set({ reports: newReports, isLoading: false });
     } catch (error) {
       console.error('Error loading reports:', error);
@@ -42,7 +43,13 @@ export const useResearchReportsStore = create<ResearchReportsState>((set, get) =
     setInterval(async () => {
       const prevCount = get().reports.length;
 
-      await get().loadReports();
+      const { reports } = get();
+      const newReports = await researchReportsDataService.getReports();
+      if (areObjectsEqual(reports, newReports)) {
+        return;
+      }
+
+      set({ reports: newReports });
 
       // Use Zustand's `set` function to ensure the correct state is retrieved
       set((state) => {
