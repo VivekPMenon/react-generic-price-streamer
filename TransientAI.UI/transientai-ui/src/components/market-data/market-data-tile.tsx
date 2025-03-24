@@ -9,7 +9,7 @@ import Highcharts from 'highcharts';
 import Highstock from 'highcharts/highstock';
 import "highcharts/modules/exporting";
 import styles from './market-data-tile.module.scss';
-import {formatDateTime, formatDateToHHMMSS, tryParseAndFormat} from "@/lib/utility-functions/date-operations";
+import {formatDateTime} from "@/lib/utility-functions/date-operations";
 
 export interface MarketDataTileProps {
     instrument: Instrument,
