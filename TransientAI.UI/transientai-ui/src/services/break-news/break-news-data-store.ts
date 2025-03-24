@@ -38,7 +38,7 @@ export const useBreakNewsDataStore = create<BreakNewsDataState>((set, get) => ({
     try {
       const result = await breakNewsDataService.getBreakNews();
       set({
-        breakNewsItems: result.data.records,
+        breakNewsItems: result.data.unread_messages,
         lastUpdatedTimestamp: '',
         isLoading: false
       });

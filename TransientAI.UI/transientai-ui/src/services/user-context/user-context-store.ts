@@ -134,15 +134,7 @@ async function loginAndSetToken(idToken: string) {
     const bearerToken = response.headers["authorization"].split(" ")[1];
     return bearerToken;
   } catch (error) {
-    const axiosError = error as AxiosError;
     console.error("Login API error:", error);
-    if (axiosError?.response?.status === 401) {
-      console.warn("Unauthorized - Redirecting to login...");
-      const currentEnv = endpointFinder.getCurrentEnvInfo();
-      await msalInstance.loginRedirect({
-        scopes: [currentEnv.authInfo?.scope!],
-      });
-    }
     throw new Error("Invalid login response");
   }
 }

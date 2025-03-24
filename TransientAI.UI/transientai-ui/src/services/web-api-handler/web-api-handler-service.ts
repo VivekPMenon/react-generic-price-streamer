@@ -2,6 +2,7 @@ import axios, { AxiosError, AxiosRequestConfig } from "axios";
 import { WebApihandlerOptions } from "./model";
 import { endpointFinder } from "./endpoint-finder-service";
 import { useUserContextStore } from '../user-context/user-context-store'
+import msalInstance from "@/app/msal-config";
 class WebApihandler {
 
   private readonly bankId = 123;
@@ -34,11 +35,12 @@ class WebApihandler {
     try {
       // Create a new promise for the token refresh
       this.refreshPromise = new Promise(async (resolve, reject) => {
+        const currentEnv = endpointFinder.getCurrentEnvInfo();
+        const loginUrl = `${currentEnv.httpsServices!['hurricane-api-2-0']}/auth/login`;
+        const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+        const { userContext, setUserContext } = useUserContextStore.getState();
+
         try {          
-          const currentEnv = endpointFinder.getCurrentEnvInfo();
-          const loginUrl = `${currentEnv.httpsServices!['hurricane-api-2-0']}/auth/login`;
-          const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-          const userContext = useUserContextStore.getState().userContext;
           const response = await axios.post(
             loginUrl,
             {}, 
@@ -54,7 +56,45 @@ class WebApihandler {
           this.setBearerToken(newToken);
           resolve(newToken);
         } catch (error) {
-          reject(error);
+          if(axios.isAxiosError(error) && error.response?.status === 401) {
+            try{
+              const account = msalInstance.getAllAccounts()[0];
+              if(!account){
+                throw new Error('No account found in MSAL');
+              }
+
+              const tokenResponse = await msalInstance.acquireTokenSilent({
+                scopes: [currentEnv.authInfo?.scope!],
+                account: account
+              })
+
+              const microsoftRefreshToken = tokenResponse.idToken;
+
+              const loginResponse = await axios.post(
+                loginUrl,
+                {}, 
+                {
+                  headers: {
+                    Authorization: `Bearer ${microsoftRefreshToken}`,
+                    timezone: timezone,
+                  },
+                }
+              )
+
+            const newToken = loginResponse.headers["authorization"].split(" ")[1];
+            this.setBearerToken(newToken);
+
+            // Update userContextStore with the new token
+            setUserContext({...userContext, token: newToken});
+            resolve(newToken);
+            } catch (msError) {
+              console.error('Failed to refresh token:', msError);
+              reject(msError);
+            }
+          } else {
+            reject(error);
+          } 
+
         } finally {
           this.isRefreshing = false;
           this.refreshPromise = null;
