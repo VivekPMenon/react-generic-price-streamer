@@ -81,9 +81,9 @@ export function CarouselNotifications () {
     const newNotifications: Notification[] = [
       ...breakNewsItems.map(news => ({
         id: news.id?.toString(),
-        title: news.message,
+        title: news.short_message,
         type: NotificationType.BreakNews,
-        highlights: [`${formatDate(news?.sender_time_info || '')}`]
+        highlights: [`${formatDate(news?.sender_time || '')}`]
       }))
     ]
 
