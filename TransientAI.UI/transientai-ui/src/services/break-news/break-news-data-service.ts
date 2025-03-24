@@ -5,7 +5,7 @@ class BreakNewsDataService {
   private serviceName = 'hurricane-api-2-0';
 
   async getBreakNews(): Promise<any> {
-    const results = await webApihandler.get('entity/whatsapp_notification/', {}, { serviceName: this.serviceName });
+    const results = await webApihandler.get('entity/whatsapp_notification', {}, { serviceName: this.serviceName });
     return results;
   }
   
