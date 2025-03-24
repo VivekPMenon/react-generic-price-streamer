@@ -72,6 +72,8 @@ export function MarketData() {
                             instrument={instrument}
                             removeInstrument={removeInstrument}
                             logoUrl={getInstrumentLogoUrl(instrument, ImageType.PNG, 100)}
+                            showFinancialData={true}
+                            showPriceSummary={true}
                         />
                     ))
                 }
