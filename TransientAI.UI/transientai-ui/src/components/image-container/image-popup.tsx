@@ -35,7 +35,7 @@ export function ImagePopup({children, url, title, description}: ImagePopupProps)
                         </div>
                         <div className={`${styles['dialog-content']} `}>
                             <Dialog.Title className={`DialogTitle ${styles['dialog-title']} `} >
-                                {title ?? 'Test'}
+                                {title ?? ''}
                             </Dialog.Title>
                             <img
                                 src={url}

@@ -13,8 +13,11 @@ import {formatDateTime} from "@/lib/utility-functions/date-operations";
 
 export interface MarketDataTileProps {
     instrument: Instrument,
-    logoUrl: string;
-    removeInstrument: (instrument: Instrument) => void;
+    logoUrl?: string;
+    removeInstrument?: (instrument: Instrument) => void;
+    showFinancialData?: boolean;
+    showPriceSummary?: boolean;
+    className?: string;
 }
 
 function getChartOptions(instrument: Instrument) {
@@ -173,7 +176,7 @@ function getChartOptions(instrument: Instrument) {
     return chartOptions;
   }
 
-export function MarketDataTile({instrument, logoUrl, removeInstrument}: MarketDataTileProps) {
+export function MarketDataTile({instrument, logoUrl, removeInstrument, showFinancialData, showPriceSummary, className}: MarketDataTileProps) {
     function handleError(e: any) {
         e.target.style.display = 'none';
     }
@@ -192,17 +195,22 @@ export function MarketDataTile({instrument, logoUrl, removeInstrument}: MarketDa
     }
 
     return (
-        <div className={`${styles['tile']}`}>
+        <div className={`${className ?? styles['tile']}`}>
             <div className={styles['remove-panel']}>
-                <i className={`fa-solid fa-x ${styles['remove-button']}`} onClick={() => removeInstrument(instrument)}></i>
+                {removeInstrument &&
+                    (<i className={`fa-solid fa-x ${styles['remove-button']}`} onClick={() => removeInstrument(instrument)}></i>)}
             </div>
             <div className={`${styles['company-details']} `}>
                 <div className={styles['logo']}>
-                    <img
-                        src={logoUrl}
-                        alt={instrument.company_name}
-                        onError={handleError}
-                    />
+                    {
+                        logoUrl && (
+                            <img
+                                src={logoUrl}
+                                alt={instrument.company_name}
+                                onError={handleError}
+                            />
+                        )
+                    }
                 </div>
                 <div className={styles['details']}>
                     <div className={styles['company-name']}>{instrument.company_name}</div>
@@ -217,6 +225,7 @@ export function MarketDataTile({instrument, logoUrl, removeInstrument}: MarketDa
                     <div className={styles['price-timestamp']}>As of {formatDateTime(instrument.timestamp)}</div>
                 </div>
             </div>
+            {showFinancialData && (
             <div className={styles['financial-details']}>
                 <div>Quarterly financials</div>
                 <div className={styles['financial-details-table']}>
@@ -268,8 +277,8 @@ export function MarketDataTile({instrument, logoUrl, removeInstrument}: MarketDa
                         <div className="blue-color">{`${instrument.financials?.revenue_beat ?? ''} ${formatDecimal(instrument.financials?.revenue_surprise, '-')}%`}</div>
                     </div>
                 </div>
-            </div>
-            <div className={styles['price-summary-table']}>
+            </div>)}
+            {showPriceSummary && (<div className={styles['price-summary-table']}>
                 <div className="grid grid-cols-4 gap-2">
                     <div className="">Open</div>
                     <div className="blue-color">{formatDecimal(instrument.lastMarketData?.open, '-')}</div>
@@ -284,8 +293,7 @@ export function MarketDataTile({instrument, logoUrl, removeInstrument}: MarketDa
                     <div className="">Low</div>
                     <div className="blue-color">{formatDecimal(instrument.lastMarketData?.low, '-')}</div>
                 </div>
-            </div>
-
+            </div>)}
             <div>
                 <HighchartsReact
                     highcharts={Highstock}
