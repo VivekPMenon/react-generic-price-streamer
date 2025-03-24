@@ -1,10 +1,9 @@
 'use client';
 
-import { forwardRef, useCallback, useImperativeHandle, useMemo, useRef } from 'react';
+import { forwardRef, useCallback, useMemo, useRef } from 'react';
 import { AgGridReact, AgGridReactProps } from 'ag-grid-react';
 import { GridApi, GridReadyEvent } from 'ag-grid-community';
 import 'ag-grid-enterprise';
-import styles from './datagrid.module.scss';
 
 export interface IDataGridProps extends AgGridReactProps {
   showGridTopSummary?: boolean;

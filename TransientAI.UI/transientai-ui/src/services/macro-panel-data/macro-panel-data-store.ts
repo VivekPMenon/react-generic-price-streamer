@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import {BloombergEmailReport, FxRate, TreasuryYield} from './model';
+import {BloombergEmailReport, EquityFuture, FxRate, TreasuryYield} from './model';
 import { macroPanelDataService } from './macro-panel-data-service';
 import {useUnseenItemsStore} from "@/services/unseen-items-store/unseen-items-store";
 
@@ -10,11 +10,16 @@ interface MacroPanelDataState {
   treasuryYields: TreasuryYield[];
   fxRates: FxRate[];
   cryptos: Crypto[];
+  equityFutures: EquityFuture[];
   isLoading: boolean;
+  isTreasuryLoading: boolean;
+  isFxLoading: boolean;
+  isCryptoLoading: boolean;
+  isEquityFuturesLoading: boolean;
   loadBloombergEmailReports: () => Promise<void>;
   selectedReport?: BloombergEmailReport;
   setSelectedReport: (report: BloombergEmailReport) => void;
-  loadMacroPanelData: () => Promise<void>,
+  loadMacroPanelData: () => void,
   startPolling: () => void;
 }
 
@@ -23,7 +28,12 @@ export const useMacroPanelDataStore = create<MacroPanelDataState>((set, get) => 
   treasuryYields: [],
   fxRates: [],
   cryptos: [],
+  equityFutures: [],
   isLoading: false,
+  isTreasuryLoading: false,
+  isFxLoading: false,
+  isCryptoLoading: false,
+  isEquityFuturesLoading: false,
 
   setSelectedReport: (report) => set({ selectedReport: report }),
   loadBloombergEmailReports: async () => {
@@ -40,31 +50,33 @@ export const useMacroPanelDataStore = create<MacroPanelDataState>((set, get) => 
     }
   },
 
-  loadMacroPanelData: async () => {
-    set({ isLoading: true });
-
-    try {
-      const results = await Promise.allSettled([
-        macroPanelDataService.getTreasuryYields(),
-        macroPanelDataService.getFxRates(),
-        macroPanelDataService.getCryptos(),
-      ]);
-      const values = results.map(result => result.status === 'fulfilled' ? result.value : []);
-
-      set({
-        treasuryYields: values[0] as TreasuryYield[],
-        fxRates: values[1] as FxRate[],
-        cryptos: values[2] as Crypto[]
-      });
-
-      const result = await macroPanelDataService.getBloombergReportEmails();
-      set({ bloombergEmailReports: result });
-      set({ selectedReport: result[0] });
-    } catch (error) {
-      console.error('Error loading macro panel data:', error);
-    } finally {
-      set({ isLoading: false });
-    }
+  loadMacroPanelData: () => {
+    set({
+      isTreasuryLoading: true,
+      isFxLoading: true,
+      isCryptoLoading: true,
+      isEquityFuturesLoading: true
+    });
+    macroPanelDataService.getTreasuryYields()
+        .then(values => set({treasuryYields: values as TreasuryYield[]}))
+        .catch(() => console.error('Error treasury yields'))
+        .finally(() => set({ isTreasuryLoading: false }));
+    macroPanelDataService.getFxRates()
+        .then(values => set({fxRates: values as FxRate[]}))
+        .catch(() => console.error('Error fx rates'))
+        .finally(() => set({ isFxLoading: false }));
+    macroPanelDataService.getCryptos()
+        .then(values => set({cryptos: values as Crypto[]}))
+        .catch(() => console.error('Error cryptos'))
+        .finally(() => set({ isCryptoLoading: false }));
+    macroPanelDataService.getGlobalEquityFutures()
+        .then(values => set({ equityFutures: values as EquityFuture[]}))
+        .catch(() => console.error('Error equity futures'))
+        .finally(() => set({ isEquityFuturesLoading: false }));
+    macroPanelDataService.getBloombergReportEmails()
+        .then(values => set({ bloombergEmailReports: values }))
+        .catch(() => console.error('Error bloomberge email reports'))
+        .finally(() => set({ isLoading: false }));
   },
 
   startPolling: () => {

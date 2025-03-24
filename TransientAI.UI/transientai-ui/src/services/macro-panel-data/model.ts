@@ -27,3 +27,12 @@ export interface Crypto {
   change: number
   change_percentage: number;
 }
+
+export interface EquityFuture {
+  name: string;
+  group_name: string;
+  symbol: string;
+  value: number;
+  net_change: number;
+  percent_change: number;
+}

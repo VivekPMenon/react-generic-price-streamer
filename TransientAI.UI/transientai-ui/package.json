@@ -46,6 +46,7 @@
     "react-alice-carousel": "^1.19.3",
     "react-dom": "^19.0.0",
     "react-markdown": "^9.0.3",
+    "react-responsive": "^10.0.1",
     "react-rnd": "^10.5.2",
     "react-select": "^5.10.1",
     "react-toggle": "^4.1.3",

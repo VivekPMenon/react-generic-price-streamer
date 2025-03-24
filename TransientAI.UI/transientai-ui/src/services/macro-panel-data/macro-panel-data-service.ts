@@ -1,5 +1,5 @@
 import { webApihandler } from "../web-api-handler";
-import {BloombergEmailReport, FxRate, TreasuryYield} from './model';
+import {BloombergEmailReport, EquityFuture, FxRate, TreasuryYield} from './model';
 
 class MacroPanelDataService {
   readonly serviceName = 'hurricane-api';
@@ -41,6 +41,21 @@ class MacroPanelDataService {
         serviceName: this.serviceName
       });
       return Object.values(result);
+    } catch (e: any) {
+      return [];
+    }
+  }
+
+  async getGlobalEquityFutures(): Promise<EquityFuture[]> {
+    try {
+      const result = await webApihandler.get('global-equity-futures', {}, {
+        serviceName: this.serviceName
+      });
+      return Object.entries(result)
+          .flatMap(([key, item]) => (item as object[]).map((i: object) => ({
+            group_name: key,
+            ...i
+          }) as EquityFuture));
     } catch (e: any) {
       return [];
     }

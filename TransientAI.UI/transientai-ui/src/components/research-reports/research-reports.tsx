@@ -185,7 +185,7 @@ export function ResearchReports({ isExpanded }: ResearchReportsProps) {
 
             <div className={`${styles['ai-summary']} ${isExpanded ? styles['expanded'] : ''}`}>
               <div className={styles['summary-title']}>
-                AI Summary
+                {summaryType}
               </div>
 
               <div className={`height-vh-67 justify-center scrollable-div `} ref={scrollTargetRef}>

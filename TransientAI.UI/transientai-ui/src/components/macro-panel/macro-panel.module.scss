@@ -11,6 +11,18 @@
     flex-direction: column;
     height: 100%;
     width: 100%;
+    gap: 10px;
+  }
+}
+
+.left_panel {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 400px;
+  gap: 20px;
+
+  @media screen and (max-width: $mobile-breakpoint-max) {
+    flex: 1 1 100%;
   }
 }
 
@@ -20,12 +32,26 @@
 
   @media screen and (max-width: $mobile-breakpoint-max) {
     flex: 1 1 100%;
-    height: 100%;
+  }
+}
+
+.equity-futures-container {
+  @extend .yields-container;
+  height: 100%;
+
+  @media screen and (max-width: $mobile-breakpoint-max) {
+    flex: 1 1 100%;
   }
 }
 
 .fx-container {
   @extend .yields-container;
+  height: 100%;
+
+  @media screen and (max-width: $mobile-breakpoint-max) {
+    flex: 1 1 100%;
+    min-height: 750px;
+  }
 }
 
 .crypto-container {
