@@ -81,7 +81,10 @@
 
   @media screen and (max-width: $mobile-breakpoint-max) {
     gap: 1px;
-    max-width: 3000vw;
+    width: calc(100vw - 35px);
+    max-width: calc(100vw - 35px);
+    height: 75vh;
+    max-height: 75vh;
   }
 }
 

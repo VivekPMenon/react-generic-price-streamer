@@ -8,7 +8,6 @@ import styles from './macro-panel.module.scss';
 import {Instrument, marketDataService} from "@/services/market-data";
 import * as Dialog from '@radix-ui/react-dialog';
 import {Cross1Icon} from "@radix-ui/react-icons";
-import {Spinner} from "@radix-ui/themes";
 import {MarketDataTile} from "@/components/market-data/market-data-tile";
 
 const cellClassRules: {[key: string]: any} = {};
@@ -212,6 +211,7 @@ export function MacroPanel() {
     const [instrument, setInstrument] = useState<Instrument|null>(null);
 
     function handleCellDoubleClicked(params: CellDoubleClickedEvent) {
+        console.log(params);
         if (params.colDef.field === 'name') {
             setOpen(true);
             marketDataService.getMarketData(params.data.name)
