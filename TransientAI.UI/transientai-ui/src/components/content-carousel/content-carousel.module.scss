@@ -1,7 +1,7 @@
 @import '../../assets/variables.scss';
 
 //local variable
-$tiles-width: 280px;
+$tiles-width: 200px;
 
 .main-content {
   display: flex;
@@ -35,9 +35,9 @@ $tiles-width: 280px;
 
   .tiles {
     display: flex;
-    max-width: ($tiles-width+$tiles-width);
+    max-width: calc(100vw - 540px); //($tiles-width+$tiles-width);
     overflow-x: hidden;
-    gap: 15px;  
+    gap: 10px;  
 
     @media screen and (max-width: $mobile-breakpoint-max) {
       max-width: calc(100vw - 60px);
@@ -51,12 +51,12 @@ $tiles-width: 280px;
   .tile {
     background-color: $gray-1000;
     border-radius: 5px;
-    padding: 10px;
-    width: $tiles-width;
-    min-width: $tiles-width;
+    padding: 5px;
+    width: $tiles-width + 50px;
+    min-width: $tiles-width + 50px;
     display: flex;
     flex-direction: column;
-    gap: 5px;
+    gap: 3px;
 
     .pnl-type {
       opacity: .7;
@@ -73,7 +73,7 @@ $tiles-width: 280px;
     }
 
     @media screen and (max-width: $mobile-breakpoint-max) {
-      min-width: $tiles-width + 50px;
+      min-width: $tiles-width - 25px;
     }
   }
 
@@ -102,12 +102,12 @@ $tiles-width: 280px;
 
 .notification-title {
   display: flex;
-  gap: 10px;
+  gap: 5px;
   align-items: baseline;
   // text-transform: uppercase;
 
   .name {
-    font-size: 14px;
+    font-size: 13px;
     color: $white;
     // white-space: pre-line;
   }
@@ -127,7 +127,7 @@ $tiles-width: 280px;
 .notification-content {
   display: flex;
   flex-direction: column;
-  padding: 5px 0;
+  padding: 0px;
 
   li {
     padding: 3px;
