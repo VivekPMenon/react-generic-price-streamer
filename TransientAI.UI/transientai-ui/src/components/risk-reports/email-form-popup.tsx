@@ -70,7 +70,10 @@ export function EmailFormPopup({children, file, sendEmail}: EmailPopupProps) {
             <Dialog.Portal>
                 <Dialog.Description />
                 <Dialog.Overlay className="DialogOverlay" />
-                <Dialog.Content className={styles['dialog-content']}>
+                <Dialog.Content
+                    className={styles['dialog-content']}
+                    onPointerDownOutside={(e: any) => e.preventDefault()}
+                >
                     <Form.Root className={styles['form-content']}>
                         <div className="space-y-3">
                             <Form.Field name="email">
