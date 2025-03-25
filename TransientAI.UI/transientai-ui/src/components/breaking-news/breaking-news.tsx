@@ -87,6 +87,13 @@ export function BreakingNews({ isExpanded }: BreakingNewsProps) {
     }
   }
 
+  //Scroll To Bottom for initial rendering
+  useEffect(() => {
+    setTimeout(() => {
+      scrollToBottom();
+    }, 500);
+  }, [messages]);
+
   // Initial load of messages
   useEffect(() => {
     setCurrentPage(1);
