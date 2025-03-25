@@ -1,5 +1,5 @@
 import { webApihandler } from "../web-api-handler";
-import {BloombergEmailReport, BondData, Bond, EquityFuture, FxRate, TreasuryYield} from './model';
+import {BloombergEmailReport, BondData, EquityFuture, FxRate, TreasuryYield} from './model';
 
 class MacroPanelDataService {
   private readonly serviceName = 'hurricane-api';
@@ -7,13 +7,6 @@ class MacroPanelDataService {
       ['JAPAN', 'JGBs'],
       ['GERMANY', 'Bunds']
   ]);
-  private readonly sortOrder: string[] = [
-      '1Y',
-      '2Y',
-      '5Y',
-      '10Y',
-      '30Y'
-  ];
   private readonly compareFunction = (a: TreasuryYield, b: TreasuryYield) => {
     const aType = a.group_name;
     const bType = b.group_name;
@@ -24,8 +17,8 @@ class MacroPanelDataService {
         return 0;
       }
       if (aMaturity && bMaturity) {
-        const aIndex = this.sortOrder.indexOf(aMaturity);
-        const bIndex = this.sortOrder.indexOf(bMaturity);
+        const aIndex = parseInt(aMaturity);
+        const bIndex = parseInt(bMaturity);
         return aIndex > bIndex ? 1 : -1;
       }
 
