@@ -10,7 +10,9 @@ class MacroPanelDataService {
   private readonly compareFunction = (a: TreasuryYield, b: TreasuryYield) => {
     const aType = a.group_name;
     const bType = b.group_name;
-    if (aType === bType) {
+
+    const comparison = aType.localeCompare(bType);
+    if (comparison === 0) {
       const aMaturity  = a.maturity;
       const bMaturity = b.maturity;
       if (aMaturity === bMaturity) {
@@ -19,24 +21,16 @@ class MacroPanelDataService {
       if (aMaturity && bMaturity) {
         const aIndex = parseInt(aMaturity);
         const bIndex = parseInt(bMaturity);
-        return aIndex > bIndex ? 1 : -1;
+        return aIndex - bIndex;
       }
 
       if (!aMaturity && !bMaturity) {
         return 0;
       }
-      return !aMaturity ? -1 : 1;
+      return !aMaturity ? 1 : -1;
     }
 
-    if (aType > bType) {
-      return 1;
-    }
-
-    if (aType < bType) {
-      return -1;
-    }
-
-    return 0;
+    return comparison;
   };
 
 
