@@ -37,7 +37,7 @@
 
 .equity-futures-container {
   @extend .yields-container;
-  height: 100%;
+  align-items: stretch;
 
   @media screen and (max-width: $mobile-breakpoint-max) {
     flex: 1 1 100%;
@@ -46,11 +46,11 @@
 
 .fx-container {
   @extend .yields-container;
-  height: 100%;
+  align-items: stretch;
 
   @media screen and (max-width: $mobile-breakpoint-max) {
     flex: 1 1 100%;
-    min-height: 750px;
+    min-height: 800px;
   }
 }
 

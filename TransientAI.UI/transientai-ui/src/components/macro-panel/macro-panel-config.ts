@@ -1,13 +1,24 @@
 import {formatDecimal, formatInteger} from "@/lib/utility-functions";
-import {GetRowIdParams, SortDirection} from "ag-grid-community";
+import {
+    FirstDataRenderedEvent,
+    GetRowIdParams,
+    GridSizeChangedEvent,
+    SortDirection,
+    ColDef,
+    RowHeightParams,
+    ValueFormatterParams,
+    CellClassRules,
+    CellClassParams, GridOptions
+} from "ag-grid-community";
 import styles from "@/components/macro-panel/macro-panel.module.scss";
+import {executeAsync} from "@/lib/utility-functions/async";
 
-const cellClassRules: {[key: string]: any} = {};
-cellClassRules[`${styles["cell-numeric"]}`] = (params: any) => params.value === 0.0;
-cellClassRules[`${styles["cell-positive"]}`] = (params: any) => params.value > 0.0;
-cellClassRules[`${styles["cell-negative"]}`] = (params: any) => params.value < 0.0;
+const cellClassRules: CellClassRules = {};
+cellClassRules[`${styles["cell-numeric"]}`] = (params: CellClassParams) => params.value === 0.0;
+cellClassRules[`${styles["cell-positive"]}`] = (params: CellClassParams) => params.value > 0.0;
+cellClassRules[`${styles["cell-negative"]}`] = (params: CellClassParams) => params.value < 0.0;
 
-export const equityFuturesColumnDefs = [
+export const equityFuturesColumnDefs: ColDef[] = [
     {
         field: 'group_name',
         cellClass: styles['cell'],
@@ -31,7 +42,7 @@ export const equityFuturesColumnDefs = [
         field: 'value',
         headerName: 'Value',
         cellClass: styles['cell-numeric'],
-        valueFormatter: (params: any) => formatDecimal(params.data?.value, '', 2),
+        valueFormatter: (params: ValueFormatterParams) => formatDecimal(params.data?.value, '', 2),
         filter: false,
         floatingFilter: false,
         headerClass: 'ag-right-aligned-header',
@@ -43,7 +54,7 @@ export const equityFuturesColumnDefs = [
         field: 'net_change',
         headerName: 'Net Chg',
         cellClassRules: cellClassRules,
-        valueFormatter: (params: any) => formatDecimal(params.data?.net_change, '', 3),
+        valueFormatter: (params: ValueFormatterParams) => formatDecimal(params.data?.net_change, '', 3),
         filter: false,
         floatingFilter: false,
         headerClass: 'ag-right-aligned-header',
@@ -56,7 +67,7 @@ export const equityFuturesColumnDefs = [
         headerName: '% Chg',
         sort: 'desc' as SortDirection,
         cellClassRules: cellClassRules,
-        valueFormatter: (params: any) => formatDecimal(params.data?.percent_change, '-', 2) + '%',
+        valueFormatter: (params: ValueFormatterParams) => formatDecimal(params.data?.percent_change, '-', 2) + '%',
         filter: false,
         floatingFilter: false,
         headerClass: 'ag-right-aligned-header',
@@ -66,7 +77,7 @@ export const equityFuturesColumnDefs = [
     }
 ];
 
-export const fxColumnDefs = [
+export const fxColumnDefs: ColDef[] = [
     {
         field: 'group_name',
         cellClass: styles['cell'],
@@ -86,7 +97,7 @@ export const fxColumnDefs = [
         field: 'price',
         headerName: 'Last Price',
         cellClass: styles['cell-numeric'],
-        valueFormatter: (params: any) => formatDecimal(params.data?.price, '', 3),
+        valueFormatter: (params: ValueFormatterParams) => formatDecimal(params.data?.price, '', 3),
         filter: false,
         floatingFilter: false,
         headerClass: 'ag-right-aligned-header',
@@ -98,7 +109,7 @@ export const fxColumnDefs = [
         field: 'change',
         headerName: '1D Chg',
         cellClassRules: cellClassRules,
-        valueFormatter: (params: any) => formatDecimal(params.data?.change, '', 3),
+        valueFormatter: (params: ValueFormatterParams) => formatDecimal(params.data?.change, '', 3),
         filter: false,
         floatingFilter: false,
         headerClass: 'ag-right-aligned-header',
@@ -111,7 +122,7 @@ export const fxColumnDefs = [
         headerName: '1D % Chg',
         sort: 'desc' as SortDirection,
         cellClassRules: cellClassRules,
-        valueFormatter: (params: any) => formatDecimal(params.data?.change_percentage, '-', 2) + '%',
+        valueFormatter: (params: ValueFormatterParams) => formatDecimal(params.data?.change_percentage, '-', 2) + '%',
         filter: false,
         floatingFilter: false,
         headerClass: 'ag-right-aligned-header',
@@ -121,7 +132,7 @@ export const fxColumnDefs = [
     }
 ];
 
-export const treasuryColumnDefs = [
+export const treasuryColumnDefs: ColDef[] = [
     {
         field: 'group_name',
         cellClass: styles['cell'],
@@ -135,8 +146,6 @@ export const treasuryColumnDefs = [
         filter: false,
         floatingFilter: false,
         pinned: true,
-        wrapHeaderText: true,
-        autoHeaderHeight: true,
         width: 95,
         wrapHeaderText: true,
         autoHeaderHeight: true,
@@ -147,7 +156,7 @@ export const treasuryColumnDefs = [
         field: 'rate',
         headerName: 'Yield',
         cellClass: styles['cell-numeric'],
-        valueFormatter: (params: any) => formatDecimal(params.data?.rate, '', 2),
+        valueFormatter: (params: ValueFormatterParams) => formatDecimal(params.data?.rate, '', 2),
         filter: false,
         floatingFilter: false,
         headerClass: 'ag-right-aligned-header',
@@ -157,7 +166,7 @@ export const treasuryColumnDefs = [
         field: 'one_day_change_bps',
         headerName: 'Yield 1D Chg (bps)',
         cellClassRules: cellClassRules,
-        valueFormatter: (params: any) => formatInteger(params.data?.one_day_change_bps, ''),
+        valueFormatter: (params: ValueFormatterParams) => formatInteger(params.data?.one_day_change_bps, ''),
         filter: false,
         floatingFilter: false,
         headerClass: 'ag-right-aligned-header',
@@ -169,7 +178,7 @@ export const treasuryColumnDefs = [
         field: 'ytd_change_bps',
         headerName: 'Yield YTD Chg (bps)',
         cellClassRules: cellClassRules,
-        valueFormatter: (params: any) => formatInteger(params.data?.ytd_change_bps, ''),
+        valueFormatter: (params: ValueFormatterParams) => formatInteger(params.data?.ytd_change_bps, ''),
         filter: false,
         floatingFilter: false,
         headerClass: 'ag-right-aligned-header',
@@ -179,7 +188,7 @@ export const treasuryColumnDefs = [
     }
 ];
 
-export const cryptoColumnDefs = [
+export const cryptoColumnDefs: ColDef[] = [
     {
         field: 'name',
         headerName: 'Coin',
@@ -190,12 +199,14 @@ export const cryptoColumnDefs = [
         width: 100,
         wrapHeaderText: true,
         autoHeaderHeight: true,
+        wrapText: true,
+        autoHeight: true,
     },
     {
         field: 'price',
         headerName: 'Last Price',
         cellClass: styles['cell-numeric'],
-        valueFormatter: (params: any) => formatDecimal(params.data?.price, '', 3),
+        valueFormatter: (params: ValueFormatterParams) => formatDecimal(params.data?.price, '', 3),
         filter: false,
         floatingFilter: false,
         headerClass: 'ag-right-aligned-header',
@@ -207,7 +218,7 @@ export const cryptoColumnDefs = [
         field: 'change',
         headerName: '1D Chg',
         cellClassRules: cellClassRules,
-        valueFormatter: (params: any) => formatDecimal(params.data?.change, '', 3),
+        valueFormatter: (params: ValueFormatterParams) => formatDecimal(params.data?.change, '', 3),
         filter: false,
         floatingFilter: false,
         headerClass: 'ag-right-aligned-header',
@@ -220,7 +231,7 @@ export const cryptoColumnDefs = [
         headerName: '1D % Chg',
         sort: 'desc' as SortDirection,
         cellClassRules: cellClassRules,
-        valueFormatter: (params: any) => formatDecimal(params.data?.change_percentage, '-', 2) + '%',
+        valueFormatter: (params: ValueFormatterParams) => formatDecimal(params.data?.change_percentage, '-', 2) + '%',
         filter: false,
         floatingFilter: false,
         headerClass: 'ag-right-aligned-header',
@@ -230,12 +241,16 @@ export const cryptoColumnDefs = [
     }
 ];
 
-export function handleDataRendered(params: any) {
-    if (params?.sizeColumnsToFit) {
-        params.sizeColumnsToFit();
-    } else if (params?.api?.sizeColumnsToFit) {
+export function handleFirstDataRendered(params: FirstDataRenderedEvent) {
+    params.api.resetRowHeights();
+    params.api.sizeColumnsToFit();
+}
+
+export function handleGridSizeChanged(params: GridSizeChangedEvent) {
+    params.api.resetRowHeights();
+    executeAsync(() => {
         params.api.sizeColumnsToFit();
-    }
+    }, 10);
 }
 
 export const groupRowRendererParams = {
@@ -243,32 +258,44 @@ export const groupRowRendererParams = {
     suppressPadding: true
 };
 
-export function getRowHeight(params: any){
+export function getRowHeight(params: RowHeightParams){
     if (params.node.group && !params.node.firstChild) {
         return 60;
     }
     return 30;
 }
 
-export function getEquityFuturesRowHeight(params: any){
+export function getLargerRowHeight(params: RowHeightParams){
     if (params.node.group && !params.node.firstChild) {
         return 60;
     }
     return 35;
 }
 
-export const fxGridOptions = {
+export const fxGridOptions: GridOptions = {
     getRowId: (params: GetRowIdParams) => String(params.data.name),
+    autoSizeStrategy: {
+        type: 'fitGridWidth',
+    }
 }
 
-export const treasuryGridOptions = {
+export const treasuryGridOptions: GridOptions = {
     getRowId: (params: GetRowIdParams) => String(params.data.name),
+    autoSizeStrategy: {
+        type: 'fitGridWidth',
+    }
 }
 
-export const cryptoGridOptions = {
+export const cryptoGridOptions : GridOptions= {
     getRowId: (params: GetRowIdParams) => String(params.data.name),
+    autoSizeStrategy: {
+        type: 'fitGridWidth',
+    }
 }
 
-export const equityFuturesGridOptions = {
+export const equityFuturesGridOptions: GridOptions = {
     getRowId: (params: GetRowIdParams) => String(params.data.name),
+    autoSizeStrategy: {
+        type: 'fitGridWidth',
+    }
 }
