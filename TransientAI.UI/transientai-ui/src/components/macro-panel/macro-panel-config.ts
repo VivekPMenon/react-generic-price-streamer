@@ -11,7 +11,7 @@ import {
     CellClassParams, GridOptions
 } from "ag-grid-community";
 import styles from "@/components/macro-panel/macro-panel.module.scss";
-import {executeAsync} from "@/lib/utility-functions/async";
+import {throttleRAF} from "@/lib/utility-functions/async";
 
 const cellClassRules: CellClassRules = {};
 cellClassRules[`${styles["cell-numeric"]}`] = (params: CellClassParams) => params.value === 0.0;
@@ -247,10 +247,11 @@ export function handleFirstDataRendered(params: FirstDataRenderedEvent) {
 }
 
 export function handleGridSizeChanged(params: GridSizeChangedEvent) {
-    params.api.resetRowHeights();
-    executeAsync(() => {
-        params.api.sizeColumnsToFit();
-    }, 10);
+    throttleRAF(() => {
+            params.api.resetRowHeights();
+            params.api.sizeColumnsToFit();
+        }
+    );
 }
 
 export const groupRowRendererParams = {

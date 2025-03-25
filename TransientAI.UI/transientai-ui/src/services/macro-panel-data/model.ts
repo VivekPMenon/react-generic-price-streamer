@@ -13,6 +13,22 @@ export interface TreasuryYield {
   ytd_change_bps: number;
 }
 
+export interface Bond {
+  Bond: string;
+  Country: string;
+  Maturity: string;
+  Bond_Yield: number;
+  Day_Chang: number;
+  Date: Date;
+  YTD: number;
+}
+
+export interface BondData {
+  country: string;
+  bonds: Bond[];
+  timestamp: Date;
+}
+
 export interface FxRate {
   name: string;
   group_name: string;

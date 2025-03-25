@@ -1,5 +1,5 @@
 import { webApihandler } from "../web-api-handler";
-import {BloombergEmailReport, EquityFuture, FxRate, TreasuryYield} from './model';
+import {BloombergEmailReport, BondData, EquityFuture, FxRate, TreasuryYield} from './model';
 
 class MacroPanelDataService {
   readonly serviceName = 'hurricane-api';
@@ -19,6 +19,25 @@ class MacroPanelDataService {
       return [new Date(new Date().setHours(6, 0, 0,0)), Object.entries(result)
           .filter(([key]) => key !== 'as_of_date')
           .map(([, item]) => item as TreasuryYield)];
+    } catch (e: any) {
+      return [null, []];
+    }
+  }
+
+  async getForeignTreasuryYields(): Promise<[Date|null, TreasuryYield[]]> {
+    try {
+      const result: BondData[] = await webApihandler.get('foreign-treasury-yields', {}, {
+        serviceName: this.serviceName
+      });
+
+      return [null, result.flatMap(value => Object.values(value.bonds)
+          .flatMap(bond => ({
+            name: this.toProperCase(bond.Bond),
+            group_name: this.toProperCase(bond.Country),
+            rate: bond.Bond_Yield,
+            one_day_change_bps: bond.Bond_Yield,
+            ytd_change_bps: bond.YTD
+          })))];
     } catch (e: any) {
       return [null, []];
     }
@@ -59,6 +78,16 @@ class MacroPanelDataService {
     } catch (e: any) {
       return [];
     }
+  }
+
+  private toProperCase(value: string|null|undefined): string {
+    if (value) {
+      if (value.length === 0) {
+        return value.toUpperCase();
+      }
+      return value[0].toUpperCase() + value.slice(1);
+    }
+    return '';
   }
 }
 

@@ -59,28 +59,41 @@ export const useMacroPanelDataStore = create<MacroPanelDataState>((set, get) => 
       isCryptoLoading: true,
       isEquityFuturesLoading: true
     });
-    macroPanelDataService.getTreasuryYields()
-        .then(values => set({
-          reportGenerationDate: values[0], treasuryYields: values[1] as TreasuryYield[]
-        }))
-        .catch(() => console.error('Error treasury yields'))
-        .finally(() => set({ isTreasuryLoading: false }));
+
+    Promise.allSettled([
+      macroPanelDataService.getTreasuryYields(),
+      macroPanelDataService.getForeignTreasuryYields()
+    ])
+        .then(results => {
+          const yields: [Date | null, TreasuryYield[]][] = results
+              .map(result => result.status === 'fulfilled'
+                  ? [result.value[0] as Date | null, result.value[1] as TreasuryYield[]]
+                  : [new Date(), [] as TreasuryYield[]]);
+          const [date, treasuries] = yields[0];
+          const [, foreign] = yields[1];
+          return set({
+            reportGenerationDate: date,
+            treasuryYields: treasuries.concat(foreign)}
+          );
+        })
+        .catch(() => console.error('Error treasury yields rates'))
+        .finally(() => set({isTreasuryLoading: false}));
     macroPanelDataService.getFxRates()
         .then(values => set({fxRates: values as FxRate[]}))
         .catch(() => console.error('Error fx rates'))
-        .finally(() => set({ isFxLoading: false }));
+        .finally(() => set({isFxLoading: false}));
     macroPanelDataService.getCryptos()
         .then(values => set({cryptos: values as Crypto[]}))
         .catch(() => console.error('Error cryptos'))
-        .finally(() => set({ isCryptoLoading: false }));
+        .finally(() => set({isCryptoLoading: false}));
     macroPanelDataService.getGlobalEquityFutures()
-        .then(values => set({ equityFutures: values as EquityFuture[]}))
+        .then(values => set({equityFutures: values as EquityFuture[]}))
         .catch(() => console.error('Error equity futures'))
-        .finally(() => set({ isEquityFuturesLoading: false }));
+        .finally(() => set({isEquityFuturesLoading: false}));
     macroPanelDataService.getBloombergReportEmails()
-        .then(values => set({ bloombergEmailReports: values }))
-        .catch(() => console.error('Error bloomberge email reports'))
-        .finally(() => set({ isLoading: false }));
+        .then(values => set({bloombergEmailReports: values}))
+        .catch(() => console.error('Error bloomberg email reports'))
+        .finally(() => set({isLoading: false}));
   },
 
   startPolling: () => {
