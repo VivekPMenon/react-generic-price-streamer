@@ -11,6 +11,7 @@ export interface TreasuryYield {
   rate: number
   one_day_change_bps: number
   ytd_change_bps: number;
+  maturity?: string;
 }
 
 export interface Bond {
