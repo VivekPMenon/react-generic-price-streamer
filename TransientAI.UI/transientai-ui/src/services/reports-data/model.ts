@@ -30,7 +30,7 @@ export interface ReportSummary {
 }
 
 export enum ReportType {
-  Abstract = 'Abstract',
+  Abstract = 'Full View',
   Detailed = 'Detailed',
   ExecutiveSummary = 'Executive Summary',
 }

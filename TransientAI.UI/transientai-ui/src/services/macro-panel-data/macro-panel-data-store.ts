@@ -11,6 +11,7 @@ interface MacroPanelDataState {
   fxRates: FxRate[];
   cryptos: Crypto[];
   equityFutures: EquityFuture[];
+  reportGenerationDate: Date|null;
   isLoading: boolean;
   isTreasuryLoading: boolean;
   isFxLoading: boolean;
@@ -34,6 +35,7 @@ export const useMacroPanelDataStore = create<MacroPanelDataState>((set, get) => 
   isFxLoading: false,
   isCryptoLoading: false,
   isEquityFuturesLoading: false,
+  reportGenerationDate: null,
 
   setSelectedReport: (report) => set({ selectedReport: report }),
   loadBloombergEmailReports: async () => {
@@ -58,7 +60,9 @@ export const useMacroPanelDataStore = create<MacroPanelDataState>((set, get) => 
       isEquityFuturesLoading: true
     });
     macroPanelDataService.getTreasuryYields()
-        .then(values => set({treasuryYields: values as TreasuryYield[]}))
+        .then(values => set({
+          reportGenerationDate: values[0], treasuryYields: values[1] as TreasuryYield[]
+        }))
         .catch(() => console.error('Error treasury yields'))
         .finally(() => set({ isTreasuryLoading: false }));
     macroPanelDataService.getFxRates()

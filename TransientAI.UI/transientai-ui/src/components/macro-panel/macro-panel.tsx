@@ -15,7 +15,7 @@ import {
 import styles from './macro-panel.module.scss';
 
 export function MacroPanel() {
-    const { treasuryYields, fxRates, cryptos, equityFutures, isTreasuryLoading, isFxLoading, isCryptoLoading, isEquityFuturesLoading } = useMacroPanelDataStore();
+    const { reportGenerationDate, treasuryYields, fxRates, cryptos, equityFutures, isTreasuryLoading, isFxLoading, isCryptoLoading, isEquityFuturesLoading } = useMacroPanelDataStore();
     const [open, setOpen] = useState(false);
     const [instrument, setInstrument] = useState<Instrument|null>(null);
 
@@ -40,7 +40,7 @@ export function MacroPanel() {
 
     return (
       <div>
-        <div className="sub-header">Morning Report: Generated {new Date(new Date().setHours(6, 0, 0)).toLocaleString()}</div>
+        <div className="sub-header">Morning Report: Generated {reportGenerationDate?.toLocaleString() ?? ''}</div>
         <div className={`${styles['macro-panel']}`}>
             <div className={styles['left_panel']}>
                 <div className={styles['equity-futures-container']}>
@@ -87,7 +87,7 @@ export function MacroPanel() {
             </div>
             <div className={styles['yields-container']}>
                 <div className="sub-header">Yield Curve Changes</div>
-                <div className="sub-header">Mid Yields</div>
+                <div className="sub-header">Closing Yields Delayed T-2</div>
                 <DataGrid
                     domLayout='autoHeight'
                     isSummaryGrid={false}

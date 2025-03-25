@@ -64,7 +64,7 @@ export function MarketData() {
                     >Clear All</button>
                 </div>
             </div>
-            <div className={`${styles['market-data-tiles-container']} horizontal-scrollable-div scrollable-div`}>
+            <div className={`horizontal-scrollable-div scrollable-div ${styles['market-data-tiles-container']}`}>
                 {
                     instruments.map(instrument => (
                         <MarketDataTile

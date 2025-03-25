@@ -11,16 +11,16 @@ class MacroPanelDataService {
     return result.reports;
   }
 
-  async getTreasuryYields(): Promise<TreasuryYield[]> {
+  async getTreasuryYields(): Promise<[Date|null, TreasuryYield[]]> {
     try {
       const result = await webApihandler.get('treasury-yields', {}, {
         serviceName: this.serviceName
       });
-      return Object.entries(result)
+      return [new Date(result.as_of_date), Object.entries(result)
           .filter(([key]) => key !== 'as_of_date')
-          .map(([, item]) => item as TreasuryYield);
+          .map(([, item]) => item as TreasuryYield)];
     } catch (e: any) {
-      return [];
+      return [null, []];
     }
   }
 

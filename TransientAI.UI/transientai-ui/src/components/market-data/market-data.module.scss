@@ -76,7 +76,8 @@
 
 .market-data-tiles-container {
   width: calc(100% - 400px);
-  max-height: calc(100vh - 400px);
+  height: calc(100vh - 200px);
+  max-height: calc(100vh - 25px);
   display: flex;
   flex-direction: row;
   align-items: flex-start;
