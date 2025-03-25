@@ -4,6 +4,7 @@
   display: flex;
   flex-wrap: wrap;
   padding: 0;
+  max-height: calc(100vh - 202px);
   justify-content: space-between;
   color: $font-color-100;
   // & > div {
@@ -20,7 +21,7 @@
 
 .whatsapp-cont{
   border-radius: 5px;
-  height: 72vh;
+  height: 100%;
   overflow-y: auto;
   // background-image: url('/images/whatsapp_bg.jpeg');
   // background-position: center;
@@ -51,4 +52,26 @@
 .message-item {
    background-color: $gray-1000;
    color: $font-color-100;
+}
+
+.scroll-to-bottom-btn {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  bottom: 4rem;
+  left: 90%;
+  background-color: $gray-1000; 
+  height: 2rem; 
+  width: 2rem; 
+  color: $font-color-100;
+  border-radius: 9999px; 
+  padding: 0.25rem; 
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); 
+  transition: background-color 0.2s ease-in-out;
+}
+
+.scroll-to-bottom-btn:hover {
+  background-color: $gray-300; 
 }

@@ -2,64 +2,64 @@
 
 import { useEffect, useState } from 'react'
 import styles from './content-carousel.module.scss'
-import { Notification, NotificationType } from '@/services/notifications'
 import { useMenuStore } from '@/services/menu-data'
 import { useRouter } from 'next/navigation'
-import { formatDate } from '@/lib/utility-functions/date-operations'
+import { formatDate, formatTime } from '@/lib/utility-functions/date-operations'
 import { useBreakNewsDataStore } from '@/services/break-news/break-news-data-store'
+import { CarouselNotification, CarouselNotificationType } from './model'
 
-function getIconClass (type: NotificationType) {
+function getIconClass (type: CarouselNotificationType) {
   switch (type) {
-    case NotificationType.Axes:
+    case CarouselNotificationType.Axes:
       return 'fa-solid fa-ban'
 
-    case NotificationType.Clients:
+    case CarouselNotificationType.Clients:
       return 'fa-solid fa-user'
 
-    case NotificationType.Trades:
+    case CarouselNotificationType.Trades:
       return 'fa-solid fa-newspaper'
 
-    case NotificationType.CorpAct:
+    case CarouselNotificationType.CorpAct:
       return 'fa-solid fa-microphone-lines'
 
-    case NotificationType.Research:
+    case CarouselNotificationType.Research:
       return 'fa-solid fa-book'
 
-    case NotificationType.RiskReport:
+    case CarouselNotificationType.RiskReport:
       return 'fa-solid fa-bolt'
 
-    case NotificationType.Inquiries:
+    case CarouselNotificationType.Inquiries:
       return 'fa-solid fa-handshake'
 
-    case NotificationType.BreakNews:
+    case CarouselNotificationType.BreakNews:
       return 'fa fa-whatsapp !text-green-600'
 
-    case NotificationType.Macro:
+    case CarouselNotificationType.Macro:
       return 'fa fa-list-check'
   }
 }
 
-function getPillClass (type: NotificationType) {
+function getPillClass (type: CarouselNotificationType) {
   switch (type) {
-    case NotificationType.Axes:
-    case NotificationType.Research:
+    case CarouselNotificationType.Axes:
+    case CarouselNotificationType.Research:
       return 'pill blue'
 
-    case NotificationType.Clients:
-    case NotificationType.Macro:
+    case CarouselNotificationType.Clients:
+    case CarouselNotificationType.Macro:
       return 'pill orange'
 
-    case NotificationType.Trades:
-    case NotificationType.RiskReport:
+    case CarouselNotificationType.Trades:
+    case CarouselNotificationType.RiskReport:
       return 'pill pink'
 
-    case NotificationType.CorpAct:
+    case CarouselNotificationType.CorpAct:
       return 'pill teal'
 
-    case NotificationType.Inquiries:
+    case CarouselNotificationType.Inquiries:
       return 'pill gold'
 
-    case NotificationType.BreakNews:
+    case CarouselNotificationType.BreakNews:
       return 'pill bg-green-600'
   }
 }
@@ -70,20 +70,21 @@ export function CarouselNotifications () {
     useBreakNewsDataStore()
   const { fullMenuList, setActiveMenu } = useMenuStore()
 
-  const [notifications, setNotifications] = useState<Notification[]>([])
+  const [notifications, setNotifications] = useState<CarouselNotification[]>([]);
   const [selectedNotification, setSelectedNotification] =
-    useState<Notification>({}) // todo..
+    useState<CarouselNotification>({}) // todo..
 
   // todo ... we will be fetching the entire notification types from an API instead of UI individually calling each categories and stitching
   useEffect(() => loadNotifications(), [breakNewsItems])
 
   function loadNotifications () {
-    const newNotifications: Notification[] = [
+    const newNotifications: CarouselNotification[] = [
       ...breakNewsItems.map(news => ({
-        id: news.id?.toString(),
+        id: `${news.id?.toString()}-${Math.random()}`,
         title: news.short_message,
-        type: NotificationType.BreakNews,
-        highlights: [`${formatDate(news?.sender_time || '')}`]
+        type: CarouselNotificationType.BreakNews,
+        time: `${formatTime(news?.sender_time || '')}`
+        // highlights: [`${formatDate(news?.sender_time || '')}`]
       }))
     ]
 
@@ -104,10 +105,10 @@ export function CarouselNotifications () {
   });
   }
 
-  function onNotificationClick (notification: Notification) {
+  function onNotificationClick (notification: CarouselNotification) {
     let newRoute = ''
     switch (notification.type) {
-      case NotificationType.BreakNews:
+      case CarouselNotificationType.BreakNews:
         const selectedNewsItem = breakNewsItems.find(
           news => news.id == notification.id
         )
@@ -137,19 +138,20 @@ export function CarouselNotifications () {
           <div className={styles['notification-title']}>
             <i className={getIconClass(item.type!)}></i>
             <span className={`${styles.name} truncate`}>{item.title}</span>
-            <div className={styles['notification-menu']}>
+            {/* <div className={`${styles['notification-menu']} max-sm:!hidden`}>
               <div className={getPillClass(item.type!)}>{item.type}</div>
-            </div>
+            </div> */}
           </div>
 
           <div className={styles['notification-content']}>
             <div className='blue-color'>{item.subTitle}</div>
-            <div className={styles['messages']}>
-              <ul className='list-disc pl-8 off-white-color-alt'>
+            <div className={'text-right float-left'}>
+              <span className='text-[11px]'>{item.time}</span>
+              {/* <ul className='list-disc pl-8 off-white-color-alt'>
                 {item.highlights?.map((i: any) => (
                   <li key={item.id + i}>{i}</li>
                 ))}
-              </ul>
+              </ul> */}
             </div>
           </div>
         </div>

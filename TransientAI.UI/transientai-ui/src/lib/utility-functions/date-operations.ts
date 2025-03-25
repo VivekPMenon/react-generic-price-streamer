@@ -277,3 +277,11 @@ export function parseLocalDate(value: string|null|undefined): Date|null {
   const [year, month, day] = value.split("-").map(Number);
   return new Date(year, month - 1, day);
 }
+
+export const formatTime = (timeString: string | undefined) => {
+  if (!timeString) {
+    return '';
+  }
+  const date = new Date(timeString);
+  return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+};

@@ -1,10 +1,11 @@
 import styles from './breaking-news.module.scss';
 import { useEffect, useState, useRef, useCallback } from 'react';
-import { Spinner } from '@radix-ui/themes';
+import { Button, Spinner } from '@radix-ui/themes';
 import { Message } from './models';
 import { useBreakNewsDataStore } from '@/services/break-news/break-news-data-store';
 import { breakNewsDataService } from '@/services/break-news/break-news-data-service';
 import WhatsAppGroupDropdown from './breaking-group';
+import { formatTime } from '@/lib/utility-functions/date-operations';
 
 export interface BreakingNewsProps {
   isExpanded: boolean;
@@ -23,6 +24,7 @@ export function BreakingNews({ isExpanded }: BreakingNewsProps) {
   const MESSAGES_PER_PAGE = 10;
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [isAtTop, setIsAtTop] = useState(false);
 
   // Function to fetch messages with pagination
   const fetchMessages = useCallback(async (pageNumber: number, isInitial: boolean = false) => {
@@ -51,8 +53,19 @@ export function BreakingNews({ isExpanded }: BreakingNewsProps) {
           // For initial load, just set the messages
           setMessages(newMessages);
         } else {
-          // For pagination, prepend new messages to the existing list
-          setMessages(prevMessages => [...newMessages, ...prevMessages]);
+          // For pagination, prepend new messages while removing duplicates
+          setMessages(prevMessages => {
+            // Create a Set of existing message IDs to check for duplicates
+            const existingMessageIds = new Set(prevMessages.map(msg => msg.id));
+            
+            // Filter out messages that already exist
+            const uniqueNewMessages = newMessages.filter(
+              newMsg => !existingMessageIds.has(newMsg.id)
+            );
+            
+            // Prepend unique new messages to existing messages
+            return [...uniqueNewMessages, ...prevMessages];
+          });
         }
       }
     } catch (error) {
@@ -85,7 +98,11 @@ export function BreakingNews({ isExpanded }: BreakingNewsProps) {
   const handleScroll = useCallback(() => {
     const container = scrollContainerRef.current;
     if (!container || isLoadingMore) return;
-  
+
+    const isNearBottom = 
+    container.scrollHeight - container.scrollTop - container.clientHeight > 300;
+
+  setIsAtTop(isNearBottom);
     // Check if user has scrolled to the top (or very close to it)
     if (container.scrollTop < 45) {
       // Check if there are more pages to load
@@ -96,6 +113,15 @@ export function BreakingNews({ isExpanded }: BreakingNewsProps) {
       }
     }
   }, [fetchMessages, isLoadingMore, currentPage, totalPages, nextPage]);
+
+
+    // Function to scroll to bottom
+    const scrollToBottom = () => {
+      if (scrollContainerRef.current) {
+        scrollContainerRef.current.scrollTop = scrollContainerRef.current.scrollHeight;
+      }
+    };
+
 
   // Add scroll event listener
   useEffect(() => {
@@ -135,15 +161,7 @@ export function BreakingNews({ isExpanded }: BreakingNewsProps) {
     }
   }, [messages, isLoadingMore, currentPage]);
   
-  // Format time to display only hours and minutes
-  const formatTime = (timeString: string | undefined) => {
-    if (!timeString) {
-      return '';
-    }
-    const date = new Date(timeString);
-    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-  };
-  
+    
   // Format date to display in a readable format
   const formatDate = (timeString: string | undefined) => {
     if (!timeString) {
@@ -195,7 +213,8 @@ export function BreakingNews({ isExpanded }: BreakingNewsProps) {
         return;
       }
       
-      const dateString = message.sender_time_info
+      // const dateString = message.sender_time_info
+      const dateString = message.sender_time_info.split(' ')[0];
       if (!groupedMessages[dateString]) {
         groupedMessages[dateString] = [];
       }
@@ -368,9 +387,10 @@ const renderMessage = (message: Message) => {
   // Group messages by date
   const groupedMessages = groupMessagesByDate();
 
+
   return (
-    <div className={`${styles['breaking-news']} scrollable-div height-vh-75`}>
-      <div className='sm:w-[60%] mr-4 max-sm:w-full border-r border-color-r'>
+    <div className={`${styles['breaking-news']} scrollable-div`}>
+      <div className='sm:w-[60%] mr-4 max-sm:w-full border-r border-color-r h-full'>
         <div 
           onScroll={handleScroll}
           className={`${styles['whatsapp-cont']} p-2 overflow-y-auto`}
@@ -402,6 +422,17 @@ const renderMessage = (message: Message) => {
             </div>
           ))}
         </div>
+
+        {/* Down Arrow Button */}
+        {isAtTop && (
+          <Button type='button' button-name='scroll to bottom'
+            onClick={scrollToBottom}
+            className={`${styles['scroll-to-bottom-btn']}`}
+          >
+            <i className="fa-solid fa-chevron-down"></i>
+          </Button>
+        )}
+
       </div>
 
       <div className='flex-grow'>
@@ -409,7 +440,7 @@ const renderMessage = (message: Message) => {
           <WhatsAppGroupDropdown></WhatsAppGroupDropdown>
         </div>
 
-        <div className={`${styles['whatsapp-cont']} p-2`}>
+        <div className={`p-2`}>
           {/* <BreakingNewaChatBot></BreakingNewaChatBot> */}
         </div>
       </div>
