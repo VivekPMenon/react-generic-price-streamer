@@ -72,7 +72,7 @@ class MacroPanelDataService {
           .sort(this.compareFunction)
       ];
     } catch (e: any) {
-      debugger;
+      console.error(e);
       return [null, []];
     }
   }
@@ -115,7 +115,8 @@ class MacroPanelDataService {
   }
 
   private convert(value: string): string {
-    return this.translations.get(value.toUpperCase()) ?? value;
+    const upper = value?.toUpperCase();
+    return upper ? (this.translations.get(upper) ?? upper) : '';
   }
 
   private toProperCase(value: string|null|undefined): string {
