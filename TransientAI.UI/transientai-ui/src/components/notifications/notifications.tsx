@@ -15,7 +15,7 @@ import { useVirtualizer, VirtualItem } from "@tanstack/react-virtual";
 import { resourceNameRiskMetrics, useRiskDataStore } from '@/services/risk-data/risk-data-store';
 import { formatDate } from '@/lib/utility-functions/date-operations';
 import { useUnseenItemsStore } from '@/services/unseen-items-store/unseen-items-store';
-import { useBreakNewsDataStore, resourceName as BreakNewsresourceName } from '@/services/break-news/break-news-data-store';
+import { resourceName as BreakNewsresourceName } from '@/services/break-news/break-news-data-store';
 import { resourceName as bloombergReportResourceName, useMacroPanelDataStore } from '@/services/macro-panel-data/macro-panel-data-store';
 
 export interface NotificationsProps {
@@ -118,6 +118,7 @@ export function Notifications(props: NotificationsProps) {
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
   const [selectedType, setSelectedType] = useState<string>(NotificationType.Research);
   const [selectedNotification, setSelectedNotification] = useState<Notification>({}); // todo..
+  const [resetUnseen, setResetUnseen] = useState<boolean>(false);
 
   const showSpinner = isLoading || isRiskReportLoading || isCorpActionsLoading || isInquiriesLoading || isRiskDataLoading;
 
@@ -146,6 +147,13 @@ export function Notifications(props: NotificationsProps) {
   ]);
 
   useEffect(() => {
+    console.log(resetUnseen);
+    if (!resetUnseen) {
+      return;
+    }
+
+    setResetUnseen(false);
+
     if (selectedType === NotificationType.All) {
       for (const key of Object.keys(unseenItems)) {
         if (unseenItems[key] > 0) {
@@ -162,7 +170,7 @@ export function Notifications(props: NotificationsProps) {
       resetUnseenItems(filterTypeToResourceMap[selectedType]);
       resetUnseenItems(additionalResourceToCheck);
     }
-  }, [resetUnseenItems, selectedType, unseenItems]);
+  }, [resetUnseen, resetUnseenItems, selectedType, unseenItems]);
 
   function loadNotifications() {
     const newNotifications: Notification[] = [
@@ -343,6 +351,7 @@ export function Notifications(props: NotificationsProps) {
   }
 
   function changeNotificationType(filterType: string) {
+    setResetUnseen(true);
     setSelectedType(filterType);
   }
 
