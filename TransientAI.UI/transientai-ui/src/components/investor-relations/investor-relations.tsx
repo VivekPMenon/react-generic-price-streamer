@@ -42,8 +42,13 @@ export function InvestorRelations() {
                 cellClass: 'date-cell',
             },
             {
-                field: 'assignee_name',
+                field: 'owner_name',
                 headerName: 'From',
+                width: 100,
+            },
+            {
+                field: 'assignee_name',
+                headerName: 'To',
                 width: 100,
             },
             {
