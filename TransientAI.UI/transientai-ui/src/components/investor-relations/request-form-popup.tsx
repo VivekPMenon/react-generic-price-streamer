@@ -222,7 +222,7 @@ export function RequestFormPopup({children, onSubmitted}: RequestPopupProps) {
                                             disabled={isSaving}
                                             required={true}
                                             onChange={handleFlagChange}
-                                            style={{ display: 'flex', flex: '1 1 50%' }}>
+                                            style={{ display: 'flex', flex: '1 1 50%', maxHeight: '150px', overflowY: 'auto' }}>
                                             {
                                                 Flags.map(flag => (
                                                     <option key={flag.value} value={flag.value}>{flag.key}</option>)
