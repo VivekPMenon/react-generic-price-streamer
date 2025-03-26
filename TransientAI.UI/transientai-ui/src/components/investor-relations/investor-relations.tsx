@@ -5,8 +5,9 @@ import React, {useCallback} from 'react';
 import {DataGrid} from "@/components/data-grid";
 import {RequestFormPopup} from "@/components/investor-relations/request-form-popup";
 import {useInvestorRelationsStore} from "@/services/investor-relations-data/investor-relations-store";
-import {tryParseAndFormat} from "@/lib/utility-functions/date-operations";
-// import {Toast} from '@/components/toast';
+import {tryParseAndFormatDateOnly} from "@/lib/utility-functions/date-operations";
+import {FirstDataRenderedEvent, GetRowIdParams, GridSizeChangedEvent} from "ag-grid-community";
+import {executeAsync} from "@/lib/utility-functions/async";
 
 function getFlagStyle(flag: string|undefined|null) {
     const style: any = { display: "flex" };
@@ -31,6 +32,16 @@ function getFlagStyle(flag: string|undefined|null) {
     return style;
 }
 
+function handleFirstDataRendered(params: FirstDataRenderedEvent) {
+    params.api.resetRowHeights();
+    params.api.sizeColumnsToFit();
+}
+
+function handleGridSizeChanged(params: GridSizeChangedEvent) {
+    params.api.resetRowHeights();
+    executeAsync(() => params.api.sizeColumnsToFit(), 10);
+}
+
 export function InvestorRelations() {
     const { inquiries, isLoading, changeStatus, updateStatusFromCompleted } = useInvestorRelationsStore();
     const getColumnDefs = useCallback(() => {
@@ -38,18 +49,23 @@ export function InvestorRelations() {
             {
                 field: 'date',
                 headerName: 'Date',
-                width: 100,
+                minWidth: 125,
+                autoHeight: true,
+                wrapText: true,
                 cellClass: 'date-cell',
+                valueFormatter: (params: any) => {
+                    return tryParseAndFormatDateOnly(params.value)
+                }
             },
             {
                 field: 'owner_name',
                 headerName: 'From',
-                width: 100,
+                minWidth: 100,
             },
             {
                 field: 'assignee_name',
                 headerName: 'To',
-                width: 100,
+                minWidth: 100,
             },
             {
                 field: 'subject',
@@ -94,23 +110,23 @@ export function InvestorRelations() {
             {
                 field: 'due_date',
                 headerName: 'Due',
-                width: 100,
+                minWidth: 125,
                 cellClass: 'date-cell',
                 autoHeight: true,
                 wrapText: true,
                 valueFormatter: (params: any) => {
-                    return tryParseAndFormat(params.value)
+                    return tryParseAndFormatDateOnly(params.value)
                 }
             },
             {
                 field: 'date_edited',
                 headerName: 'Date edited',
-                width: 100,
+                minWidth: 125,
                 cellClass: 'date-cell',
                 autoHeight: true,
                 wrapText: true,
                 valueFormatter: (params: any) => {
-                    return tryParseAndFormat(params.value)
+                    return tryParseAndFormatDateOnly(params.value)
                 }
             },
         ];
@@ -133,6 +149,11 @@ export function InvestorRelations() {
                     rowData={inquiries}
                     columnDefs={columnDefs}
                     loading={isLoading}
+                    gridOptions={{
+                        getRowId: (params: GetRowIdParams) => params.data.id,
+                    }}
+                    onFirstDataRendered={handleFirstDataRendered}
+                    onGridSizeChanged={handleGridSizeChanged}
                 />
             </div>
             {/*<Toast*/}
