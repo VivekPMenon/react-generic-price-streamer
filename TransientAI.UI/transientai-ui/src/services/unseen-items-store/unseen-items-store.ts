@@ -1,5 +1,4 @@
 import { create } from 'zustand';
-import {executeAsync} from "@/lib/utility-functions/async";
 
 interface UnseenItemsState {
   unseenItems: Record<string, number>;
@@ -19,12 +18,11 @@ export const useUnseenItemsStore = create<UnseenItemsState>((set) => ({
     })),
 
   resetUnseenItems: (storeId) => {
-      executeAsync(() =>
       set((state) => ({
           unseenItems: {
               ...state.unseenItems,
               [storeId]: 0
           }
-      })), 5000);
+      }))
   }
 }));

@@ -116,9 +116,9 @@ export function Notifications(props: NotificationsProps) {
 
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
-  const [selectedType, setSelectedType] = useState<string>(NotificationType.Research);
   const [selectedNotification, setSelectedNotification] = useState<Notification>({}); // todo..
-  const [resetUnseen, setResetUnseen] = useState<boolean>(false);
+  const [selectedType, setSelectedType] = useState<string>(NotificationType.Research);
+  const previousSelectedType = useRef<string|null>(null);
 
   const showSpinner = isLoading || isRiskReportLoading || isCorpActionsLoading || isInquiriesLoading || isRiskDataLoading;
 
@@ -147,12 +147,10 @@ export function Notifications(props: NotificationsProps) {
   ]);
 
   useEffect(() => {
-    console.log(resetUnseen);
-    if (!resetUnseen) {
+    const previousValue = previousSelectedType.current;
+    if (previousValue === null || previousValue === selectedType) {
       return;
     }
-
-    setResetUnseen(false);
 
     if (selectedType === NotificationType.All) {
       for (const key of Object.keys(unseenItems)) {
@@ -170,7 +168,7 @@ export function Notifications(props: NotificationsProps) {
       resetUnseenItems(filterTypeToResourceMap[selectedType]);
       resetUnseenItems(additionalResourceToCheck);
     }
-  }, [resetUnseen, resetUnseenItems, selectedType, unseenItems]);
+  }, [resetUnseenItems, selectedType, unseenItems]);
 
   function loadNotifications() {
     const newNotifications: Notification[] = [
@@ -351,7 +349,7 @@ export function Notifications(props: NotificationsProps) {
   }
 
   function changeNotificationType(filterType: string) {
-    setResetUnseen(true);
+    previousSelectedType.current = selectedType;
     setSelectedType(filterType);
   }
 
