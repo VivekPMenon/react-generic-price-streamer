@@ -152,7 +152,7 @@ export function Notifications(props: NotificationsProps) {
       return;
     }
 
-    if (selectedType === NotificationType.All) {
+    if (previousValue === NotificationType.All) {
       for (const key of Object.keys(unseenItems)) {
         if (unseenItems[key] > 0) {
           resetUnseenItems(key);
@@ -162,10 +162,10 @@ export function Notifications(props: NotificationsProps) {
       return;
     }
 
-    const additionalResourceToCheck = selectedType === NotificationType.RiskReport ? resourceNameRiskMetrics : '';
+    const additionalResourceToCheck = previousValue === NotificationType.RiskReport ? resourceNameRiskMetrics : '';
 
-    if (unseenItems[filterTypeToResourceMap[selectedType]] > 0 || unseenItems[additionalResourceToCheck] > 0) {
-      resetUnseenItems(filterTypeToResourceMap[selectedType]);
+    if (unseenItems[filterTypeToResourceMap[previousValue]] > 0 || unseenItems[additionalResourceToCheck] > 0) {
+      resetUnseenItems(filterTypeToResourceMap[previousValue]);
       resetUnseenItems(additionalResourceToCheck);
     }
   }, [resetUnseenItems, selectedType, unseenItems]);

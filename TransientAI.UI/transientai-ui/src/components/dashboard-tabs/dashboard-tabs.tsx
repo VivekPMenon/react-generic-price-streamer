@@ -3,7 +3,7 @@
 import styles from './dashboard-tabs.module.scss';
 import { Box, Tabs } from '@radix-ui/themes';
 import { TabInfo } from './model';
-import { ReactNode, useEffect, useMemo, useState } from 'react';
+import {ReactNode, useEffect, useMemo, useRef, useState} from 'react';
 import { useRouter } from 'next/navigation';
 import { useDeviceType } from '@/lib/hooks';
 import { useUnseenItemsStore } from '@/services/unseen-items-store/unseen-items-store';
@@ -20,12 +20,18 @@ export function DashboardTabs({ children }: DashboardTabsProps) {
   const { unseenItems: unseen, resetUnseenItems } = useUnseenItemsStore();
   const { activeMenuList, selectedMenu, setActiveMenu, closeTab, defaultMenu } = useMenuStore();
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
+  const previousSelectedMenu = useRef<string|undefined>(undefined);
 
   const tabs = useMemo<TabInfo[]>(() => calculateTabs(), [activeMenuList, selectedMenu]);
 
   useEffect(() => {
-    if (selectedMenu?.id && unseen[selectedMenu.id]) {
-      resetUnseenItems(selectedMenu.id);
+    const previousValue = previousSelectedMenu.current;
+    if (previousValue === undefined || previousValue === selectedMenu?.id) {
+      return;
+    }
+
+    if (previousValue && unseen[previousValue]) {
+      resetUnseenItems(previousValue);
     }
   }, [selectedMenu?.id, unseen, resetUnseenItems]);
 
@@ -47,6 +53,7 @@ export function DashboardTabs({ children }: DashboardTabsProps) {
 
   function selectTab(tab: TabInfo) {
     if (!tab.route) return;
+    previousSelectedMenu.current = selectedMenu?.id;
     setActiveMenu({ id: tab.id, description: tab.description, route: tab.route });
     router.push(tab.route);
   }
@@ -58,6 +65,7 @@ export function DashboardTabs({ children }: DashboardTabsProps) {
     closeTab(tab.id);
 
     if (selectedMenu?.id === tab.id) {
+      previousSelectedMenu.current = selectedMenu?.id;
       setActiveMenu(defaultMenu);
       router.push(defaultMenu.route!);
     }
