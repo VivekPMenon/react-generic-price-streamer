@@ -4,7 +4,7 @@ import { Theme } from "@radix-ui/themes";
 import "./globals.scss";
 import { ChatbotDataContextProvider } from "@/services/chatbot-data";
 import { SearchDataContextProvider } from "@/services/search-data";
-import {ToastProvider, ToastViewport} from "@radix-ui/react-toast";
+import {ToastContainer} from "react-toastify";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -36,17 +36,22 @@ export default function RootLayout({
       <head>
         <script src="https://kit.fontawesome.com/9a71b0f99c.js" crossOrigin="anonymous" async></script>
       </head>
-      
+
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased font-sans dark`}>
         <Theme accentColor="teal" className="height-100p">
-          <ToastProvider>
             <ChatbotDataContextProvider>
               <SearchDataContextProvider>
                 {children}
               </SearchDataContextProvider>
             </ChatbotDataContextProvider>
-            <ToastViewport />
-         </ToastProvider>
+            <ToastContainer
+                position="top-center"
+                autoClose={5000}
+                hideProgressBar={true}
+                newestOnTop={true}
+                closeOnClick={true}
+                theme="dark"
+            />
         </Theme>
       </body>
     </html>

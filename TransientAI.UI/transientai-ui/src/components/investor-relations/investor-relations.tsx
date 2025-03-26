@@ -1,13 +1,14 @@
 'use client'
 
 import styles from './investor-relations.module.scss';
-import React, {useCallback} from 'react';
+import React, {useCallback, useState} from 'react';
 import {DataGrid} from "@/components/data-grid";
 import {RequestFormPopup} from "@/components/investor-relations/request-form-popup";
 import {useInvestorRelationsStore} from "@/services/investor-relations-data/investor-relations-store";
 import {tryParseAndFormatDateOnly} from "@/lib/utility-functions/date-operations";
 import {FirstDataRenderedEvent, GetRowIdParams, GridSizeChangedEvent} from "ag-grid-community";
 import {executeAsync} from "@/lib/utility-functions/async";
+import { toast } from 'react-toastify';
 
 function getFlagStyle(flag: string|undefined|null) {
     const style: any = { display: "flex" };
@@ -133,14 +134,12 @@ export function InvestorRelations() {
     }, [changeStatus]);
 
     const columnDefs = getColumnDefs();
-    // const [open, setOpen] = useState(false);
-
     return (
         <div className={styles['investor-relations']}>
             <div className={styles['header']}>
                 <span>Investor Relations Inquiries</span>
-                <RequestFormPopup>
-                    <i className='fa-regular fa-3x fa-file cursor-pointer'/>
+                <RequestFormPopup onSubmitted={() => toast.success('Saved successfully')}>
+                    <i className='fa-regular fa-3x fa-file cursor-pointer' />
                 </RequestFormPopup>
             </div>
             <div className={styles['inquiries-grid']}>
@@ -156,14 +155,6 @@ export function InvestorRelations() {
                     onGridSizeChanged={handleGridSizeChanged}
                 />
             </div>
-            {/*<Toast*/}
-            {/*    altText='Saved successfully.'*/}
-            {/*    type='foreground'*/}
-            {/*    content='Saved successfully.'*/}
-            {/*    defaultOpen={false}*/}
-            {/*    open={open}*/}
-            {/*    onOpenChange={setOpen}*/}
-            {/*/>*/}
         </div>
     );
 }

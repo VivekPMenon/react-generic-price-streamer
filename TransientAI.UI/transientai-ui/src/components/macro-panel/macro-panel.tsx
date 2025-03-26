@@ -12,13 +12,16 @@ import {
     handleGridSizeChanged, handleFirstDataRendered, groupRowRendererParams, getRowHeight,
     getLargerRowHeight, fxGridOptions, treasuryGridOptions, equityFuturesGridOptions, cryptoGridOptions
 } from './macro-panel-config';
+import {useMediaQuery} from 'react-responsive';
 import styles from './macro-panel.module.scss';
 
 export function MacroPanel() {
     const { reportGenerationDate, treasuryYields, fxRates, cryptos, equityFutures, isTreasuryLoading, isFxLoading, isCryptoLoading, isEquityFuturesLoading } = useMacroPanelDataStore();
     const [open, setOpen] = useState(false);
     const [instrument, setInstrument] = useState<Instrument|null>(null);
-
+    const isMobile = useMediaQuery({
+        query: '(max-width: 768px)'
+    })
     function handleCellDoubleClicked(params: CellDoubleClickedEvent) {
         if (params.colDef.field === 'name') {
             setOpen(true);
@@ -37,7 +40,7 @@ export function MacroPanel() {
             setInstrument(null);
         }
     }
-
+console.log(isMobile);
     return (
       <div>
         <div className="sub-header">Morning Report: Generated {reportGenerationDate?.toLocaleString() ?? ''}</div>
@@ -66,7 +69,8 @@ export function MacroPanel() {
                     <div className="sub-header">FX Moves</div>
                     <div className="sub-header">Change from the close</div>
                     <DataGrid
-                        domLayout='autoHeight'
+                        domLayout={isMobile ? 'autoHeight' : 'normal'}
+                        height={isMobile ? 900 : 200}
                         isSummaryGrid={false}
                         suppressStatusBar={true}
                         suppressFloatingFilter={true}

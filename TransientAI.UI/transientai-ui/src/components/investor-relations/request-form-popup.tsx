@@ -7,7 +7,7 @@ import {InquiryFlag, InquiryStatus} from "@/services/investor-relations-data/mod
 
 export interface RequestPopupProps {
     children: ReactNode;
-    onSubmitted?: () => void;
+    onSubmitted?: (message: string) => void;
 }
 
 type KeyValuePair = { key: string, value: string|number };

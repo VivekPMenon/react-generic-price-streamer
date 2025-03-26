@@ -32,25 +32,23 @@
 
   @media screen and (max-width: $mobile-breakpoint-max) {
     flex: 1 1 100%;
+    min-height: 800px;
   }
 }
 
 .equity-futures-container {
   @extend .yields-container;
-  align-items: stretch;
-
   @media screen and (max-width: $mobile-breakpoint-max) {
     flex: 1 1 100%;
+    min-height: 300px;
   }
 }
 
 .fx-container {
   @extend .yields-container;
-  align-items: stretch;
-
   @media screen and (max-width: $mobile-breakpoint-max) {
     flex: 1 1 100%;
-    min-height: 800px;
+    min-height: 900px;
   }
 }
 
