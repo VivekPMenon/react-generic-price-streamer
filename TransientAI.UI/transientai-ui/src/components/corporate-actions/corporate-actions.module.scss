@@ -137,7 +137,6 @@
 
 .search-bar {
   margin: 0 0;
-  padding: 5px;
   display: flex;
   gap: 10px;
   align-items: center;
@@ -151,4 +150,17 @@
   border-radius: 5px;
   background-color: $gray-1000;
   box-sizing: border-box;
+}
+
+.corporate-filter-cont {
+  background-color: $gray-1000;
+  border-radius: 5px;
+  padding: 10px;
+}
+
+.search-filter-input input{
+  background-color: $body-bg;
+  border-radius: 5px;
+  padding: 3px 4px;
+  font-size: 12px;
 }
