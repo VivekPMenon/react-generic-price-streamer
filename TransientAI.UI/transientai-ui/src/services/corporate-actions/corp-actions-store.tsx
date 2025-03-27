@@ -105,7 +105,7 @@ export const useCorpActionsStore = create<CorpActionsDataState>((set, get) => ({
 
       useUnseenItemsStore.getState().addUnseenItems(resourceName, unseenDiff);
 
-    }, 2000); // Polls every 2 minutes
+    }, 120000); // Polls every 2 minutes
   }
 }));
 
