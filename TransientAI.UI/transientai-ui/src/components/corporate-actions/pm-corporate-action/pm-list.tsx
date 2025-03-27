@@ -2,19 +2,21 @@
 
 import styles from './pm.module.scss'
 
-import { useRef, useState } from 'react'
+import { useRef} from 'react'
 import { useVirtualizer, VirtualItem } from '@tanstack/react-virtual'
-import { CorporateAction } from './models'
+import { IPmCorporateAction } from './models'
 import { formatDateString } from '@/lib/utility-functions/date-operations'
+import { useCorpActionsStore } from '@/services/corporate-actions/corp-actions-store'
+import { CorporateAction } from '@/services/corporate-actions'
 
 interface PmListProps {
-  data: CorporateAction[]
+  data: IPmCorporateAction[];
+  actionRequired: boolean
 }
 
-export function PmList ({ data }: PmListProps) {
+export function PmList ({ data,actionRequired }: PmListProps) {
   const divRef = useRef<HTMLDivElement>(null)
-  const [selectedCorpAction, setSelectedCorpAction] =
-    useState<CorporateAction>()
+    const { selectedCorpAction, setSelectedCorpAction } = useCorpActionsStore<CorporateAction[]>();
 
   // const [emailContents, setEmailContents] = useState<any>({});
   const virtualizer = useVirtualizer({
@@ -74,7 +76,7 @@ export function PmList ({ data }: PmListProps) {
                       <i className='fa-solid fa-microphone-lines mr-2'></i>
                       Ticker: {corpAction.ticker}
                     </span>
-                    <span className='text-green-500'>
+                    <span className={`${ actionRequired ? 'text-red-500' : 'text-green-500'}`}>
                       {corpAction.event_type}
                     </span>
                     <span className='flex items-center gap-2'>

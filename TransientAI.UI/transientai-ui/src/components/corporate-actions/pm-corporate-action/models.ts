@@ -1,4 +1,4 @@
-export interface CorporateAction {
+export interface IPmCorporateAction {
     event_id: string;
     action_type: string;
     ticker: string;

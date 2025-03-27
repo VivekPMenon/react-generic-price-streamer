@@ -16,7 +16,7 @@ export function PmCorporateActions () {
         title: 'Action Required',
         titleTextStyle: 'text-red-500',
         content: (
-          <PmList data={PmData.data['Action Required'] as CorporateAction[]}/> 
+          <PmList actionRequired={true} data={PmData.data['Action Required'] as CorporateAction[]}/> 
           
         )
       },
@@ -25,7 +25,7 @@ export function PmCorporateActions () {
         title: 'No Action Required',
         titleTextStyle: 'text-green-500',
         content: (
-          <PmList data={PmData.data['No Action Required'] as CorporateAction[]}/> 
+          <PmList actionRequired={false} data={PmData.data['No Action Required'] as CorporateAction[]}/> 
         )
       }
     ]
