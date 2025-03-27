@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import { RiskMetricsItem } from './model';
 import { riskDataService } from './risk-data-service';
 import { useUnseenItemsStore } from '../unseen-items-store/unseen-items-store';
+import { useUserContextStore } from '@/services/user-context';
 
 export const resourceNameRiskMetrics = 'risk-metrics';
 
@@ -39,8 +40,15 @@ export const useRiskDataStore = create<RiskDataState>((set, get) => ({
       const [ibisAllItem] = result.margin_data.splice(ibisAllIndex, 1);
       result.margin_data.unshift(ibisAllItem);
 
+      const userId = useUserContextStore.getState().userContext?.userId;
+      console.log(userId);
+      let metrics = result.margin_data;
+      if (userId?.toLowerCase() === 'dkim@hurricanecap.com') {
+        metrics = result.margin_data.filter((item: RiskMetricsItem) => item.name === 'Chris Napoli');
+      }
+
       set({
-        riskMetricsItems: result?.margin_data,
+        riskMetricsItems: metrics,
         lastUpdatedTimestamp: result?.timestamp,
         isLoading: false,
         riskMetricsItemsFiltered: result?.margin_data?.filter((data: RiskMetricsItem) => {

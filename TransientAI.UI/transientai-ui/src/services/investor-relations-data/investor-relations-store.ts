@@ -23,92 +23,6 @@ export interface InvestorRelationsStore {
   startPolling: () => void;
 }
 
-interface Time {
-  hour: number;
-  minute: number;
-  seconds: number;
-}
-
-class PollManager {
-  private handle: any;
-
-  constructor(private readonly func: () => void,
-              private readonly defaultTimeout: number,
-              private readonly changeStart: Time,
-              private readonly changeEnd: Time,
-              private readonly timeout: number) {
-  }
-
-  public start(): void {
-    this.startCore(this.defaultTimeout);
-  }
-
-  private startCore(timeout: number): void {
-    this.handle = setTimeout(() => {
-
-      this.func();
-
-      if (this.handle) {
-        clearTimeout(this.handle);
-      }
-
-      const now = new Date();
-      const time: Time = {
-        hour: now.getHours(),
-        minute: now.getMinutes(),
-        seconds: now.getSeconds()
-      }
-
-      const newTimeout: any = (this.isAfter(time, this.changeStart) && this.isBefore(time, this.changeEnd))
-          ? this.timeout
-          : this.defaultTimeout;
-
-      this.startCore(newTimeout);
-
-    }, timeout);
-  }
-
-  private isAfter(time1: Time, time2: Time): boolean {
-    if (time1.hour < time2.hour) {
-      return false;
-    }
-
-    if (time1.hour > time2.hour) {
-      return true;
-    }
-
-    if (time1.minute < time2.minute) {
-      return false;
-    }
-
-    if (time1.minute > time2.minute) {
-      return true;
-    }
-
-    return time1.seconds > time2.seconds;
-  }
-
-  private isBefore(time1: Time, time2: Time): boolean {
-    if (time1.hour < time2.hour) {
-      return true;
-    }
-
-    if (time1.hour > time2.hour) {
-      return false;
-    }
-
-    if (time1.minute < time2.minute) {
-      return true;
-    }
-
-    if (time1.minute > time2.minute) {
-      return false;
-    }
-
-    return time1.seconds < time2.seconds;
-  }
-}
-
 export const useInvestorRelationsStore = create<InvestorRelationsStore>((set, get) => ({
   inquiries: [],
   assignees: [],
@@ -196,8 +110,7 @@ export const useInvestorRelationsStore = create<InvestorRelationsStore>((set, ge
   },
 
   startPolling: () => {
-    const pollManager = new PollManager(
-        async () => {
+    setInterval(async () => {
           const {inquiries, loadInquiries} = get();
 
           const prevCount = inquiries.length;
@@ -208,20 +121,8 @@ export const useInvestorRelationsStore = create<InvestorRelationsStore>((set, ge
           const unseenDiff = newCount - prevCount;
 
           useUnseenItemsStore.getState().addUnseenItems(resourceNameInvestorRelations, unseenDiff);
-        },
-        120000, {
-          hour: 10,
-          minute: 55,
-          seconds: 0,
-        }, {
-          hour: 12,
-          minute: 15,
-          seconds: 0,
-        },
-        2000
+        }, 120000
     );
-
-    pollManager.start();
   }
 }));
 
