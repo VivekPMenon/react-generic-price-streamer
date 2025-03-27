@@ -3,6 +3,7 @@ import { InquiryRequest, InquiryStatus } from './model';
 import { investorRelationsService } from '@/services/investor-relations-data/investor-relations-service';
 import { useUserContextStore } from '@/services/user-context';
 import { useUnseenItemsStore } from '../unseen-items-store/unseen-items-store';
+import {clearInterval} from "node:timers";
 
 export const resourceNameInvestorRelations = 'investor-relations';
 
@@ -20,6 +21,92 @@ export interface InvestorRelationsStore {
   loadAssignees: () => Promise<void>;
   updateStatusFromCompleted: (inquiry: InquiryRequest) => void;
   startPolling: () => void;
+}
+
+interface Time {
+  hour: number;
+  minute: number;
+  seconds: number;
+}
+
+class PollManager {
+  private handle: any;
+
+  constructor(private readonly func: () => void,
+              private readonly defaultTimeout: number,
+              private readonly changeStart: Time,
+              private readonly changeEnd: Time,
+              private readonly timeout: number) {
+  }
+
+  public start(): void {
+    this.startCore(this.defaultTimeout);
+  }
+
+  private startCore(timeout: number): void {
+    this.handle = setTimeout(() => {
+
+      this.func();
+
+      if (this.handle) {
+        clearTimeout(this.handle);
+      }
+
+      const now = new Date();
+      const time: Time = {
+        hour: now.getHours(),
+        minute: now.getMinutes(),
+        seconds: now.getSeconds()
+      }
+
+      const newTimeout: any = (this.isAfter(time, this.changeStart) && this.isBefore(time, this.changeEnd))
+          ? this.timeout
+          : this.defaultTimeout;
+
+      this.startCore(newTimeout);
+
+    }, timeout);
+  }
+
+  private isAfter(time1: Time, time2: Time): boolean {
+    if (time1.hour < time2.hour) {
+      return false;
+    }
+
+    if (time1.hour > time2.hour) {
+      return true;
+    }
+
+    if (time1.minute < time2.minute) {
+      return false;
+    }
+
+    if (time1.minute > time2.minute) {
+      return true;
+    }
+
+    return time1.seconds > time2.seconds;
+  }
+
+  private isBefore(time1: Time, time2: Time): boolean {
+    if (time1.hour < time2.hour) {
+      return true;
+    }
+
+    if (time1.hour > time2.hour) {
+      return false;
+    }
+
+    if (time1.minute < time2.minute) {
+      return true;
+    }
+
+    if (time1.minute > time2.minute) {
+      return false;
+    }
+
+    return time1.seconds < time2.seconds;
+  }
 }
 
 export const useInvestorRelationsStore = create<InvestorRelationsStore>((set, get) => ({
@@ -64,7 +151,7 @@ export const useInvestorRelationsStore = create<InvestorRelationsStore>((set, ge
     const userContext = useUserContextStore.getState().userContext;
     try {
       set({ isSaving: true });
-      inquiry.owner = userContext.userName;
+      inquiry.owner_name = userContext.userName;
       await investorRelationsService.submit(inquiry);
     } catch (e: any) {
       set({ error: 'Failed to save inquiry' });
@@ -109,23 +196,32 @@ export const useInvestorRelationsStore = create<InvestorRelationsStore>((set, ge
   },
 
   startPolling: () => {
-    setInterval(async () => {
-      const prevCount = get().inquiries.length;
+    const pollManager = new PollManager(
+        async () => {
+          const {inquiries, loadInquiries} = get();
 
-      await get().loadInquiries();
+          const prevCount = inquiries.length;
+          await loadInquiries();
 
-      // Ensure we fetch the latest count after the state is updated
-      set((state) => {
-        const newCount = state.inquiries.length;
-        const unseenDiff = Math.abs(newCount - prevCount);
+          // Ensure we fetch the latest count after the state is updated
+          const newCount = get().inquiries.length;
+          const unseenDiff = newCount - prevCount;
 
-        if (unseenDiff > 0) {
           useUnseenItemsStore.getState().addUnseenItems(resourceNameInvestorRelations, unseenDiff);
-        }
+        },
+        120000, {
+          hour: 10,
+          minute: 55,
+          seconds: 0,
+        }, {
+          hour: 12,
+          minute: 15,
+          seconds: 0,
+        },
+        2000
+    );
 
-        return {}; // No need to modify state, just ensuring correctness
-      });
-    }, 120000); // Polls every 2 minutes
+    pollManager.start();
   }
 }));
 
