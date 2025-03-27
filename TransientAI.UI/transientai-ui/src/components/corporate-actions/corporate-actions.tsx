@@ -14,41 +14,14 @@ export const CorporateActions = () => {
     searchCorpActions
   } = useCorpActionsStore()
 
-  const items = [
-    {
-      value: 'item-1',
-      title: 'What is an Accordion?',
-      titleTextStyle: 'text-red-500',
-      content: (
-        <PmCorporateActions/> 
-        
-      )
-    },
-    {
-      value: 'item-2',
-      title: 'Accessibility Features',
-      titleTextStyle: 'text-green-500',
-      content: (
-        <OpsCorporateActions/>
-      )
-    },
-    {
-      value: 'item-3',
-      title: 'Customization Options',
-      titleTextStyle: 'text-green-500',
-      content: (
-        <OpsCorporateActions/>
-      )
-    }
-  ]
-
   return (
     <div>
       <CorporateActionHeader />
       <section className={styles['corporate-actions']}>
         <div className={styles['chatbot']}>
-          <Accordion items={items} type='multiple' />
+          
           {/* <OpsCorporateActions/> */}
+          <PmCorporateActions/>
         </div>
 
         <div className={styles['email-content']}>
