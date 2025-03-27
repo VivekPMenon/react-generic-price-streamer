@@ -7,7 +7,7 @@ import 'ag-grid-enterprise';
 
 export interface IDataGridProps extends AgGridReactProps {
   showGridTopSummary?: boolean;
-  height?: number;
+  height?: number|string;
   isSummaryGrid?: boolean;
   suppressStatusBar?: boolean;
   suppressFloatingFilter?: boolean;

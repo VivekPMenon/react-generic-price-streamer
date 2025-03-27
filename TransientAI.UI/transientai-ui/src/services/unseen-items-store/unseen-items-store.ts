@@ -17,11 +17,12 @@ export const useUnseenItemsStore = create<UnseenItemsState>((set) => ({
       }
     })),
 
-  resetUnseenItems: (storeId) =>
-    set((state) => ({
-      unseenItems: {
-        ...state.unseenItems,
-        [storeId]: 0
-      }
-    }))
+  resetUnseenItems: (storeId) => {
+      set((state) => ({
+          unseenItems: {
+              ...state.unseenItems,
+              [storeId]: 0
+          }
+      }))
+  }
 }));

@@ -14,6 +14,16 @@ class InvestorRelationsService {
         }
     }
 
+    async deleteTask(task_id: string): Promise<InquiryRequest> {
+        try {
+            return await webApihandler.delete(`delete_task/${task_id}`, {
+                serviceName: this.serviceName
+            });
+        } catch (e: any) {
+            return {};
+        }
+    }
+
     async submit(inquiry: InquiryRequest): Promise<boolean> {
         try {
             const newForm = await this.getTaskForm();
