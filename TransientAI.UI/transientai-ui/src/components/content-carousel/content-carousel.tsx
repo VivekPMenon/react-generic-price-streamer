@@ -5,6 +5,7 @@ import React, { useRef, useState, useEffect } from 'react'
 import { EContentTypes } from './model'
 import { CarouselNotifications } from './carousel-notification'
 import { CarouselPnlMetrics } from './carousel-pnl-metrics'
+import { useBreakNewsDataStore } from '@/services/break-news/break-news-data-store'
 
 interface ContentCarouselProps {
   contentType: EContentTypes
@@ -15,7 +16,7 @@ export function ContentCarousel ({ title, contentType }: ContentCarouselProps) {
   const carouselRef = useRef<HTMLDivElement | null>(null)
   const [canScrollLeft, setCanScrollLeft] = useState(false)
   const [canScrollRight, setCanScrollRight] = useState(true)
-
+  const {breakNewsItems} = useBreakNewsDataStore()
   useEffect(() => {
     const ref = carouselRef.current;
     if (ref) {
@@ -39,7 +40,7 @@ export function ContentCarousel ({ title, contentType }: ContentCarouselProps) {
       }
       window.removeEventListener('resize', handleResize)
     }
-  }, [])
+  }, [breakNewsItems])
 
   function checkScroll () {
     if (!carouselRef.current) {
