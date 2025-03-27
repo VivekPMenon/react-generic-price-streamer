@@ -2,8 +2,8 @@
 
 .macro-panel {
   display: flex;
-  gap: 20px;
-  height: calc(100vh - 275px);
+  gap: 5px;
+  height: calc(100vh - 225px);
   width: calc(100vw - 500px);
   flex-direction: row;
   
@@ -19,43 +19,62 @@
   display: flex;
   flex-direction: column;
   flex: 1 1 400px;
-  gap: 20px;
+  gap: 5px;
+  align-items: stretch;
+  max-height: 100%;
 
   @media screen and (max-width: $mobile-breakpoint-max) {
     flex: 1 1 100%;
+    max-height: unset;
   }
 }
 
 .yields-container {
   border: 1 solid $border-color;
   flex: 1 1 400px;
+  max-height: 100%;
 
   @media screen and (max-width: $mobile-breakpoint-max) {
     flex: 1 1 100%;
+    align-items: stretch;
+    max-height: unset;
   }
 }
 
 .equity-futures-container {
-  @extend .yields-container;
-  align-items: stretch;
+  border: 1 solid $border-color;
+  flex: 1 1 400px;
+  max-height: 40%;
 
   @media screen and (max-width: $mobile-breakpoint-max) {
     flex: 1 1 100%;
+    align-items: stretch;
+    max-height: unset;
   }
 }
 
 .fx-container {
-  @extend .yields-container;
-  align-items: stretch;
+  border: 1 solid $border-color;
+  flex: 1 1 400px;
+  max-height: 60%;
 
   @media screen and (max-width: $mobile-breakpoint-max) {
     flex: 1 1 100%;
-    min-height: 800px;
+    align-items: stretch;
+    max-height: unset;
   }
 }
 
 .crypto-container {
-  @extend .yields-container;
+  border: 1 solid $border-color;
+  flex: 1 1 400px;
+  max-height: 100%;
+
+  @media screen and (max-width: $mobile-breakpoint-max) {
+    flex: 1 1 100%;
+    align-items: stretch;
+    max-height: unset;
+  }
 }
 
 .cell {

@@ -15,7 +15,7 @@ import { useVirtualizer, VirtualItem } from "@tanstack/react-virtual";
 import { resourceNameRiskMetrics, useRiskDataStore } from '@/services/risk-data/risk-data-store';
 import { formatDate } from '@/lib/utility-functions/date-operations';
 import { useUnseenItemsStore } from '@/services/unseen-items-store/unseen-items-store';
-import { useBreakNewsDataStore, resourceName as BreakNewsresourceName } from '@/services/break-news/break-news-data-store';
+import { resourceName as BreakNewsresourceName } from '@/services/break-news/break-news-data-store';
 import { resourceName as bloombergReportResourceName, useMacroPanelDataStore } from '@/services/macro-panel-data/macro-panel-data-store';
 
 export interface NotificationsProps {
@@ -116,8 +116,9 @@ export function Notifications(props: NotificationsProps) {
 
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
-  const [selectedType, setSelectedType] = useState<string>(NotificationType.Research);
   const [selectedNotification, setSelectedNotification] = useState<Notification>({}); // todo..
+  const [selectedType, setSelectedType] = useState<string>(NotificationType.Research);
+  const previousSelectedType = useRef<string|null>(null);
 
   const showSpinner = isLoading || isRiskReportLoading || isCorpActionsLoading || isInquiriesLoading || isRiskDataLoading;
 
@@ -146,7 +147,12 @@ export function Notifications(props: NotificationsProps) {
   ]);
 
   useEffect(() => {
-    if (selectedType === NotificationType.All) {
+    const previousValue = previousSelectedType.current;
+    if (previousValue === null || previousValue === selectedType) {
+      return;
+    }
+
+    if (previousValue === NotificationType.All) {
       for (const key of Object.keys(unseenItems)) {
         if (unseenItems[key] > 0) {
           resetUnseenItems(key);
@@ -156,10 +162,10 @@ export function Notifications(props: NotificationsProps) {
       return;
     }
 
-    const additionalResourceToCheck = selectedType === NotificationType.RiskReport ? resourceNameRiskMetrics : '';
+    const additionalResourceToCheck = previousValue === NotificationType.RiskReport ? resourceNameRiskMetrics : '';
 
-    if (unseenItems[filterTypeToResourceMap[selectedType]] > 0 || unseenItems[additionalResourceToCheck] > 0) {
-      resetUnseenItems(filterTypeToResourceMap[selectedType]);
+    if (unseenItems[filterTypeToResourceMap[previousValue]] > 0 || unseenItems[additionalResourceToCheck] > 0) {
+      resetUnseenItems(filterTypeToResourceMap[previousValue]);
       resetUnseenItems(additionalResourceToCheck);
     }
   }, [resetUnseenItems, selectedType, unseenItems]);
@@ -343,6 +349,7 @@ export function Notifications(props: NotificationsProps) {
   }
 
   function changeNotificationType(filterType: string) {
+    previousSelectedType.current = selectedType;
     setSelectedType(filterType);
   }
 

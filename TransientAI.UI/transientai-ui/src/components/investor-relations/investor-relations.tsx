@@ -5,8 +5,10 @@ import React, {useCallback} from 'react';
 import {DataGrid} from "@/components/data-grid";
 import {RequestFormPopup} from "@/components/investor-relations/request-form-popup";
 import {useInvestorRelationsStore} from "@/services/investor-relations-data/investor-relations-store";
-import {tryParseAndFormat} from "@/lib/utility-functions/date-operations";
-// import {Toast} from '@/components/toast';
+import {tryParseAndFormatDateOnly} from "@/lib/utility-functions/date-operations";
+import {ColDef, FirstDataRenderedEvent, GetRowIdParams, GridSizeChangedEvent} from "ag-grid-community";
+import {executeAsync} from "@/lib/utility-functions/async";
+import { toast } from 'react-toastify';
 
 function getFlagStyle(flag: string|undefined|null) {
     const style: any = { display: "flex" };
@@ -31,20 +33,76 @@ function getFlagStyle(flag: string|undefined|null) {
     return style;
 }
 
+function handleFirstDataRendered(params: FirstDataRenderedEvent) {
+    params.api.resetRowHeights();
+    params.api.sizeColumnsToFit();
+}
+
+function handleGridSizeChanged(params: GridSizeChangedEvent) {
+    params.api.resetRowHeights();
+    executeAsync(() => params.api.sizeColumnsToFit(), 10);
+}
+
+function DeleteButton(props: any) {
+    const [isDeleting, setIsDeleting] = React.useState(false);
+
+    const handleClick = () => {
+        setIsDeleting(true);
+
+        props.onDelete(props.data.id)
+            .then((result: boolean) => {
+                if (result) {
+                    props.api.applyTransaction({remove: [props.data]});
+                    return;
+                }
+                setIsDeleting(false);
+            })
+            .catch(() => {
+                setIsDeleting(false);
+            });
+    }
+
+    return (
+        <i className={`fa-solid ${isDeleting ? 'fa-spinner' : 'fa fa-trash' }`}
+           style={{cursor: (isDeleting ? 'none' : 'pointer')}}
+           onClick={handleClick}
+        ></i>);
+}
+
 export function InvestorRelations() {
-    const { inquiries, isLoading, changeStatus, updateStatusFromCompleted } = useInvestorRelationsStore();
-    const getColumnDefs = useCallback(() => {
+    const { inquiries, isLoading, changeStatus, deleteInquiry, updateStatusFromCompleted } = useInvestorRelationsStore();
+    const getColumnDefs= useCallback((): ColDef[] => {
         return [
+            {
+                maxWidth: 40,
+                editable: false,
+                sortable: false,
+                filter: false,
+                pinned: 'left',
+                lockPinned: true,
+                suppressNavigable: true,
+                cellRenderer: (props: any) => (<DeleteButton {...props} onDelete={deleteInquiry} />)
+            },
             {
                 field: 'date',
                 headerName: 'Date',
-                width: 100,
+                minWidth: 125,
+                autoHeight: true,
+                wrapText: true,
                 cellClass: 'date-cell',
+                valueFormatter: (params: any) => {
+                    return tryParseAndFormatDateOnly(params.value)
+                }
+            },
+            {
+                field: 'owner_name',
+                headerName: 'From',
+                minWidth: 100,
             },
             {
                 field: 'assignee_name',
-                headerName: 'From',
-                width: 100,
+                headerName: 'To',
+                minWidth: 100,
             },
             {
                 field: 'subject',
@@ -89,37 +147,35 @@ export function InvestorRelations() {
             {
                 field: 'due_date',
                 headerName: 'Due',
-                width: 100,
+                minWidth: 125,
                 cellClass: 'date-cell',
                 autoHeight: true,
                 wrapText: true,
                 valueFormatter: (params: any) => {
-                    return tryParseAndFormat(params.value)
+                    return tryParseAndFormatDateOnly(params.value)
                 }
             },
             {
                 field: 'date_edited',
                 headerName: 'Date edited',
-                width: 100,
+                minWidth: 125,
                 cellClass: 'date-cell',
                 autoHeight: true,
                 wrapText: true,
                 valueFormatter: (params: any) => {
-                    return tryParseAndFormat(params.value)
+                    return tryParseAndFormatDateOnly(params.value)
                 }
             },
         ];
     }, [changeStatus]);
 
     const columnDefs = getColumnDefs();
-    // const [open, setOpen] = useState(false);
-
     return (
         <div className={styles['investor-relations']}>
             <div className={styles['header']}>
                 <span>Investor Relations Inquiries</span>
-                <RequestFormPopup>
-                    <i className='fa-regular fa-3x fa-file cursor-pointer'/>
+                <RequestFormPopup onSubmitted={() => toast.success('Saved successfully')}>
+                    <i className='fa-regular fa-3x fa-file cursor-pointer' />
                 </RequestFormPopup>
             </div>
             <div className={styles['inquiries-grid']}>
@@ -128,16 +184,13 @@ export function InvestorRelations() {
                     rowData={inquiries}
                     columnDefs={columnDefs}
                     loading={isLoading}
+                    gridOptions={{
+                        getRowId: (params: GetRowIdParams) => params.data.id,
+                    }}
+                    onFirstDataRendered={handleFirstDataRendered}
+                    onGridSizeChanged={handleGridSizeChanged}
                 />
             </div>
-            {/*<Toast*/}
-            {/*    altText='Saved successfully.'*/}
-            {/*    type='foreground'*/}
-            {/*    content='Saved successfully.'*/}
-            {/*    defaultOpen={false}*/}
-            {/*    open={open}*/}
-            {/*    onOpenChange={setOpen}*/}
-            {/*/>*/}
         </div>
     );
 }

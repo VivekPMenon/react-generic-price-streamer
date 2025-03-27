@@ -169,6 +169,18 @@ export function tryParseAndFormat(isoString: string|undefined|null) {
   return '';
 }
 
+export function tryParseAndFormatDateOnly(isoString: string|undefined|null) {
+  const result = tryParseIsoDate(isoString);
+  if (result.valid && result.parsed) {
+    return new Intl.DateTimeFormat('en-US', {
+      month: 'short',  // "Mar"
+      day: '2-digit',  // "06"
+      year: 'numeric' // "PM"
+    }).format(result.parsed);
+  }
+  return '';
+}
+
 export function formatDate(isoString: string|undefined|null) {
   if (!isoString || isoString.length === 0) {
     return '';

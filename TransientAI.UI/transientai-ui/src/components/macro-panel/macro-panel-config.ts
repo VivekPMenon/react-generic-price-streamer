@@ -11,7 +11,7 @@ import {
     CellClassParams, GridOptions
 } from "ag-grid-community";
 import styles from "@/components/macro-panel/macro-panel.module.scss";
-import {executeAsync, throttleRAF} from "@/lib/utility-functions/async";
+import {executeAsync} from "@/lib/utility-functions/async";
 
 const cellClassRules: CellClassRules = {};
 cellClassRules[`${styles["cell-numeric"]}`] = (params: CellClassParams) => params.value === 0.0;
@@ -258,42 +258,29 @@ export const groupRowRendererParams = {
 
 export function getRowHeight(params: RowHeightParams){
     if (params.node.group && !params.node.firstChild) {
-        return 60;
+        return 40;
     }
     return 30;
 }
 
 export function getLargerRowHeight(params: RowHeightParams){
     if (params.node.group && !params.node.firstChild) {
-        return 60;
+        return 40;
     }
     return 35;
 }
 
-export const fxGridOptions: GridOptions = {
-    getRowId: (params: GetRowIdParams) => String(params.data.name),
+const defaultGridOptions: GridOptions = {
+    getRowId: (params: GetRowIdParams) => String(params.data.group_name) + String(params.data.name),
     autoSizeStrategy: {
         type: 'fitGridWidth',
     }
 }
 
-export const treasuryGridOptions: GridOptions = {
-    getRowId: (params: GetRowIdParams) => String(params.data.name),
-    autoSizeStrategy: {
-        type: 'fitGridWidth',
-    }
-}
+export const fxGridOptions: GridOptions = defaultGridOptions;
 
-export const cryptoGridOptions : GridOptions= {
-    getRowId: (params: GetRowIdParams) => String(params.data.name),
-    autoSizeStrategy: {
-        type: 'fitGridWidth',
-    }
-}
+export const treasuryGridOptions: GridOptions = defaultGridOptions;
 
-export const equityFuturesGridOptions: GridOptions = {
-    getRowId: (params: GetRowIdParams) => String(params.data.name),
-    autoSizeStrategy: {
-        type: 'fitGridWidth',
-    }
-}
+export const cryptoGridOptions : GridOptions = defaultGridOptions;
+
+export const equityFuturesGridOptions: GridOptions = defaultGridOptions;

@@ -14,6 +14,7 @@ export interface InquiryRequest {
     date?: string;
     owner?: string;
     assignee_name?: string;
+    owner_name?: string;
     subject?: string;
     inquiry?: string;
     status?: InquiryStatus;
