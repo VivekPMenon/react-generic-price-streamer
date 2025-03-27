@@ -1,0 +1,1018 @@
+{
+    "data": {
+        "Action Required": [
+            {
+                "event_id": "83941882",
+                "action_type": "Action Required",
+                "ticker": "*ADDVTR8",
+                "security_name": "RTS/ADDVISE GROUP AB EXP04/07/2025",
+                "event_type": "Optional Rights Exercise",
+                "event_status": "Confirmed",
+                "event_classification": "Voluntary Event",
+                "security": {
+                    "name": "RTS/ADDVISE GROUP AB EXP04/07/2025",
+                    "ticker": "*ADDVTR8",
+                    "isin": "SE0024172589",
+                    "cusip": "9EQ8TH9A7",
+                    "sedol": "BMV71D3",
+                    "ric": "ADDVrb.ST"
+                },
+                "dates": {
+                    "pay_date": "2025-04-07T00:00:00Z",
+                    "record_date": "1900-01-01T00:00:00Z",
+                    "ex_date": "1900-01-01T00:00:00Z",
+                    "deadline": "2025-04-04T08:00:00Z"
+                },
+                "distribution": {
+                    "rate": "4 new shares for every 2 rights held",
+                    "currency": "SEK"
+                },
+                "accounts": [
+                    {
+                        "account_number": "064546831-06",
+                        "holding_quantity": "1",
+                        "gross_amount": "",
+                        "net_amount": "",
+                        "tax_withheld": ""
+                    }
+                ],
+                "num_accounts": 1,
+                "country_of_issue": "SE",
+                "country_of_issuer": "SE",
+                "version_info": "Version: 2 | 2025-03-21T18:35:52Z",
+                "default_action": "Your instructions will be executed on the deadline date unless you explicitly instruct us otherwise",
+                "version": 2,
+                "emailRef": "AAMkADc4OTIxYTE3LWI2YzktNDAxZi05OWVmLTZhOWMyN2MzNGFmNABGAAAAAADiKQnPbt21TJZ-EdgHvFTbBwC4quNkbWKHTbbalqYg7uWyAAAEN95OAAC4quNkbWKHTbbalqYg7uWyAAATnrMbAAA=",
+                "emailDate": "2025-03-21T18:35:52Z",
+                "emailHtmlUrl": "https://corporateactionshcap.blob.core.windows.net/raw-emails/AAMkADc4OTIxYTE3LWI2YzktNDAxZi05OWVmLTZhOWMyN2MzNGFmNABGAAAAAADiKQnPbt21TJZ-EdgHvFTbBwC4quNkbWKHTbbalqYg7uWyAAAEN95OAAC4quNkbWKHTbbalqYg7uWyAAATnrMbAAA=.html",
+                "latestUpdateEmail": "AAMkADc4OTIxYTE3LWI2YzktNDAxZi05OWVmLTZhOWMyN2MzNGFmNABGAAAAAADiKQnPbt21TJZ-EdgHvFTbBwC4quNkbWKHTbbalqYg7uWyAAAEN95OAAC4quNkbWKHTbbalqYg7uWyAAATnrMbAAA=",
+                "latestUpdateDate": "2025-03-21T18:35:52Z",
+                "changedFields": [
+                    "security",
+                    "accounts",
+                    "requirements",
+                    "email_id",
+                    "received_date"
+                ],
+                "changeSummary": "Update from AAMkADc4OTIxYTE3LWI2YzktNDAxZi05OWVmLTZhOWMyN2MzNGFmNABGAAAAAADiKQnPbt21TJZ-EdgHvFTbBwC4quNkbWKHTbbalqYg7uWyAAAEN95OAAC4quNkbWKHTbbalqYg7uWyAAATnrMbAAA=",
+                "isUpdate": "true",
+                "originalDate": "Mar 20 2025 04:00",
+                "updateSequence": [
+                    "Mar 20 2025 04:00",
+                    "Mar 21 2025 14:35"
+                ],
+                "changesSummary": [
+                    "Amendment in the deadlines or terms of the offering",
+                    "March 05, 2025 HOLDERS ARE ADVISED THAT THE DEADLINE FOR THIS EVENT HAS BEEN AMENDED TO April 04, 2025"
+                ],
+                "versionsInfo": [
+                    {
+                        "versionId": 2,
+                        "emailRef": "AAMkADc4OTIxYTE3LWI2YzktNDAxZi05OWVmLTZhOWMyN2MzNGFmNABGAAAAAADiKQnPbt21TJZ-EdgHvFTbBwC4quNkbWKHTbbalqYg7uWyAAAEN95OAAC4quNkbWKHTbbalqYg7uWyAAATnrMbAAA=",
+                        "date": "2025-03-21T18:35:52Z",
+                        "emailHtmlUrl": "https://corporateactionshcap.blob.core.windows.net/raw-emails/AAMkADc4OTIxYTE3LWI2YzktNDAxZi05OWVmLTZhOWMyN2MzNGFmNABGAAAAAADiKQnPbt21TJZ-EdgHvFTbBwC4quNkbWKHTbbalqYg7uWyAAAEN95OAAC4quNkbWKHTbbalqYg7uWyAAATnrMbAAA=.html",
+                        "isCurrent": true,
+                        "changedFields": [
+                            "security",
+                            "accounts",
+                            "requirements",
+                            "email_id",
+                            "received_date"
+                        ],
+                        "changeSummary": "Update from AAMkADc4OTIxYTE3LWI2YzktNDAxZi05OWVmLTZhOWMyN2MzNGFmNABGAAAAAADiKQnPbt21TJZ-EdgHvFTbBwC4quNkbWKHTbbalqYg7uWyAAAEN95OAAC4quNkbWKHTbbalqYg7uWyAAATnrMbAAA="
+                    },
+                    {
+                        "versionId": 1,
+                        "emailRef": "AAMkADc4OTIxYTE3LWI2YzktNDAxZi05OWVmLTZhOWMyN2MzNGFmNABGAAAAAADiKQnPbt21TJZ-EdgHvFTbBwC4quNkbWKHTbbalqYg7uWyAAAEN95OAAC4quNkbWKHTbbalqYg7uWyAAATlPThAAA=",
+                        "date": "2025-03-20T08:00:43Z",
+                        "emailHtmlUrl": "https://corporateactionshcap.blob.core.windows.net/raw-emails/AAMkADc4OTIxYTE3LWI2YzktNDAxZi05OWVmLTZhOWMyN2MzNGFmNABGAAAAAADiKQnPbt21TJZ-EdgHvFTbBwC4quNkbWKHTbbalqYg7uWyAAAEN95OAAC4quNkbWKHTbbalqYg7uWyAAATlPThAAA=.html",
+                        "isCurrent": false,
+                        "changes": [],
+                        "receivedDate": "2025-03-20T08:00:43Z",
+                        "stateEmailId": "AAMkADc4OTIxYTE3LWI2YzktNDAxZi05OWVmLTZhOWMyN2MzNGFmNABGAAAAAADiKQnPbt21TJZ-EdgHvFTbBwC4quNkbWKHTbbalqYg7uWyAAAEN95OAAC4quNkbWKHTbbalqYg7uWyAAATlPThAAA=",
+                        "accounts": [
+                            {
+                                "accountNumber": "064546831-06",
+                                "accountReference": "SD9283735740AR",
+                                "holdingQuantity": "1"
+                            },
+                            {
+                                "accountNumber": "066164591-06",
+                                "accountReference": "SD9283735740BR",
+                                "holdingQuantity": "7,556"
+                            }
+                        ],
+                        "actionRequired": true,
+                        "responseOptions": [
+                            "EXERCISE RIGHTS",
+                            "SECURITIES DISTRIBUTION",
+                            "REMOVE SECURITIES",
+                            "OVERSUBSCRIBE-ELIGIBLE HOLDERS-SUBJECT TO PRORATION-STATE HOW MANY ADDITIONAL B SHARES TO RECEIVE",
+                            "OVERSUBSCRIBE-ELIGIBLE HOLDERS-SUBJECT TO PRORATION-STATE HOW MANY ADDITIONAL A SHARES TO RECEIVE",
+                            "TAKE NO ACTION"
+                        ],
+                        "defaultAction": "TAKE NO ACTION"
+                    }
+                ]
+            },
+            {
+                "event_id": "84046443",
+                "action_type": "Action Required",
+                "ticker": "CMRX",
+                "security_name": "CHIMERIX, INC. CMN",
+                "event_type": "Optional Tender Offer",
+                "event_status": "Confirmed",
+                "event_classification": "Voluntary Event",
+                "security": {
+                    "name": "CHIMERIX, INC. CMN",
+                    "ticker": "CMRX",
+                    "isin": "US16934W1062",
+                    "cusip": "16934W106",
+                    "sedol": "B8RLM49",
+                    "ric": "CMRX.B"
+                },
+                "dates": {
+                    "pay_date": "2025-04-21T00:00:00Z",
+                    "record_date": "1900-01-01T00:00:00Z",
+                    "ex_date": "1900-01-01T00:00:00Z",
+                    "deadline": "2025-04-17T14:00:00Z"
+                },
+                "distribution": {
+                    "rate": "8.55 USD per 1 of holding",
+                    "currency": "USD"
+                },
+                "accounts": [
+                    {
+                        "account_number": "065466716-06",
+                        "holding_quantity": "5,022",
+                        "gross_amount": "",
+                        "net_amount": "",
+                        "tax_withheld": ""
+                    },
+                    {
+                        "account_number": "065471906-06",
+                        "holding_quantity": "444",
+                        "gross_amount": "",
+                        "net_amount": "",
+                        "tax_withheld": ""
+                    }
+                ],
+                "num_accounts": 2,
+                "country_of_issue": "US",
+                "country_of_issuer": "US",
+                "version_info": "Version: 1 | 2025-03-24T20:23:48Z",
+                "default_action": "TAKE NO ACTION",
+                "version": 1,
+                "emailRef": "AAMkADc4OTIxYTE3LWI2YzktNDAxZi05OWVmLTZhOWMyN2MzNGFmNABGAAAAAADiKQnPbt21TJZ-EdgHvFTbBwC4quNkbWKHTbbalqYg7uWyAAAEN95OAAC4quNkbWKHTbbalqYg7uWyAAAVcuukAAA=",
+                "emailDate": "2025-03-24T20:23:48Z",
+                "emailHtmlUrl": "https://corporateactionshcap.blob.core.windows.net/raw-emails/AAMkADc4OTIxYTE3LWI2YzktNDAxZi05OWVmLTZhOWMyN2MzNGFmNABGAAAAAADiKQnPbt21TJZ-EdgHvFTbBwC4quNkbWKHTbbalqYg7uWyAAAEN95OAAC4quNkbWKHTbbalqYg7uWyAAAVcuukAAA=.html",
+                "latestUpdateEmail": "AAMkADc4OTIxYTE3LWI2YzktNDAxZi05OWVmLTZhOWMyN2MzNGFmNABGAAAAAADiKQnPbt21TJZ-EdgHvFTbBwC4quNkbWKHTbbalqYg7uWyAAAEN95OAAC4quNkbWKHTbbalqYg7uWyAAAVcuukAAA=",
+                "latestUpdateDate": "2025-03-24T20:23:48Z",
+                "changedFields": [],
+                "changeSummary": "Initial creation",
+                "isUpdate": "false",
+                "originalDate": "",
+                "updateSequence": [],
+                "changesSummary": [],
+                "versionsInfo": [
+                    {
+                        "versionId": 1,
+                        "emailRef": "AAMkADc4OTIxYTE3LWI2YzktNDAxZi05OWVmLTZhOWMyN2MzNGFmNABGAAAAAADiKQnPbt21TJZ-EdgHvFTbBwC4quNkbWKHTbbalqYg7uWyAAAEN95OAAC4quNkbWKHTbbalqYg7uWyAAAVcuukAAA=",
+                        "date": "2025-03-24T20:23:48Z",
+                        "emailHtmlUrl": "https://corporateactionshcap.blob.core.windows.net/raw-emails/AAMkADc4OTIxYTE3LWI2YzktNDAxZi05OWVmLTZhOWMyN2MzNGFmNABGAAAAAADiKQnPbt21TJZ-EdgHvFTbBwC4quNkbWKHTbbalqYg7uWyAAAEN95OAAC4quNkbWKHTbbalqYg7uWyAAAVcuukAAA=.html",
+                        "isCurrent": true,
+                        "changedFields": [],
+                        "changeSummary": "Initial creation"
+                    }
+                ]
+            }
+        ],
+        "No Action Required": [
+            {
+                "event_id": "84048916",
+                "action_type": "No Action Required",
+                "ticker": "CMRX",
+                "security_name": "CHIMERIX, INC. CMN",
+                "event_type": "Merger - Mandatory",
+                "event_status": "Unconfirmed",
+                "event_classification": "Mandatory Event",
+                "security": {
+                    "name": "CHIMERIX, INC. CMN",
+                    "ticker": "CMRX",
+                    "isin": "US16934W1062",
+                    "cusip": "16934W106",
+                    "sedol": "B8RLM49",
+                    "ric": ""
+                },
+                "dates": {
+                    "pay_date": "UnknownT00:00:00Z",
+                    "record_date": "1900-01-01T00:00:00Z",
+                    "ex_date": "1900-01-01T00:00:00Z",
+                    "deadline": "1900-01-01T00:00:00Z"
+                },
+                "distribution": {
+                    "rate": "8.55 USD per 1 of holding",
+                    "currency": "USD"
+                },
+                "accounts": [
+                    {
+                        "account_number": "065466716-06",
+                        "holding_quantity": "5,022",
+                        "gross_amount": "",
+                        "net_amount": "",
+                        "tax_withheld": ""
+                    }
+                ],
+                "num_accounts": 1,
+                "country_of_issue": "US",
+                "country_of_issuer": "US",
+                "version_info": "Version: 3 | 2025-03-25T21:46:53Z",
+                "default_action": "",
+                "version": 3,
+                "emailRef": "AAMkADc4OTIxYTE3LWI2YzktNDAxZi05OWVmLTZhOWMyN2MzNGFmNABGAAAAAADiKQnPbt21TJZ-EdgHvFTbBwC4quNkbWKHTbbalqYg7uWyAAAEN95OAAC4quNkbWKHTbbalqYg7uWyAAAWzLouAAA=",
+                "emailDate": "2025-03-25T21:46:53Z",
+                "emailHtmlUrl": "https://corporateactionshcap.blob.core.windows.net/raw-emails/AAMkADc4OTIxYTE3LWI2YzktNDAxZi05OWVmLTZhOWMyN2MzNGFmNABGAAAAAADiKQnPbt21TJZ-EdgHvFTbBwC4quNkbWKHTbbalqYg7uWyAAAEN95OAAC4quNkbWKHTbbalqYg7uWyAAAWzLouAAA=.html",
+                "latestUpdateEmail": "AAMkADc4OTIxYTE3LWI2YzktNDAxZi05OWVmLTZhOWMyN2MzNGFmNABGAAAAAADiKQnPbt21TJZ-EdgHvFTbBwC4quNkbWKHTbbalqYg7uWyAAAEN95OAAC4quNkbWKHTbbalqYg7uWyAAAWzLouAAA=",
+                "latestUpdateDate": "2025-03-25T21:46:53Z",
+                "changedFields": [
+                    "accounts",
+                    "requirements",
+                    "email_id",
+                    "received_date"
+                ],
+                "changeSummary": "Update from AAMkADc4OTIxYTE3LWI2YzktNDAxZi05OWVmLTZhOWMyN2MzNGFmNABGAAAAAADiKQnPbt21TJZ-EdgHvFTbBwC4quNkbWKHTbbalqYg7uWyAAAEN95OAAC4quNkbWKHTbbalqYg7uWyAAAWzLouAAA=",
+                "isUpdate": "true",
+                "originalDate": "Mar 24 2025 17:46 (GMT +00:00)",
+                "updateSequence": [
+                    "Mar 24 2025 17:46 (GMT +00:00)",
+                    "Mar 24 2025 18:49 (GMT +00:00)"
+                ],
+                "changesSummary": [
+                    "Amendment in the terms of the offering"
+                ],
+                "versionsInfo": [
+                    {
+                        "versionId": 3,
+                        "emailRef": "AAMkADc4OTIxYTE3LWI2YzktNDAxZi05OWVmLTZhOWMyN2MzNGFmNABGAAAAAADiKQnPbt21TJZ-EdgHvFTbBwC4quNkbWKHTbbalqYg7uWyAAAEN95OAAC4quNkbWKHTbbalqYg7uWyAAAWzLouAAA=",
+                        "date": "2025-03-25T21:46:53Z",
+                        "emailHtmlUrl": "https://corporateactionshcap.blob.core.windows.net/raw-emails/AAMkADc4OTIxYTE3LWI2YzktNDAxZi05OWVmLTZhOWMyN2MzNGFmNABGAAAAAADiKQnPbt21TJZ-EdgHvFTbBwC4quNkbWKHTbbalqYg7uWyAAAEN95OAAC4quNkbWKHTbbalqYg7uWyAAAWzLouAAA=.html",
+                        "isCurrent": true,
+                        "changedFields": [
+                            "accounts",
+                            "requirements",
+                            "email_id",
+                            "received_date"
+                        ],
+                        "changeSummary": "Update from AAMkADc4OTIxYTE3LWI2YzktNDAxZi05OWVmLTZhOWMyN2MzNGFmNABGAAAAAADiKQnPbt21TJZ-EdgHvFTbBwC4quNkbWKHTbbalqYg7uWyAAAEN95OAAC4quNkbWKHTbbalqYg7uWyAAAWzLouAAA="
+                    },
+                    {
+                        "versionId": 2,
+                        "emailRef": "AAMkADc4OTIxYTE3LWI2YzktNDAxZi05OWVmLTZhOWMyN2MzNGFmNABGAAAAAADiKQnPbt21TJZ-EdgHvFTbBwC4quNkbWKHTbbalqYg7uWyAAAEN95OAAC4quNkbWKHTbbalqYg7uWyAAAVcuugAAA=",
+                        "date": "2025-03-24T18:49:45Z",
+                        "emailHtmlUrl": "https://corporateactionshcap.blob.core.windows.net/raw-emails/AAMkADc4OTIxYTE3LWI2YzktNDAxZi05OWVmLTZhOWMyN2MzNGFmNABGAAAAAADiKQnPbt21TJZ-EdgHvFTbBwC4quNkbWKHTbbalqYg7uWyAAAEN95OAAC4quNkbWKHTbbalqYg7uWyAAAVcuugAAA=.html",
+                        "isCurrent": false,
+                        "changes": [
+                            "email_id",
+                            "received_date"
+                        ],
+                        "receivedDate": "2025-03-24T18:49:45Z",
+                        "stateEmailId": "AAMkADc4OTIxYTE3LWI2YzktNDAxZi05OWVmLTZhOWMyN2MzNGFmNABGAAAAAADiKQnPbt21TJZ-EdgHvFTbBwC4quNkbWKHTbbalqYg7uWyAAAEN95OAAC4quNkbWKHTbbalqYg7uWyAAAVcuugAAA=",
+                        "accounts": [
+                            {
+                                "accountNumber": "065466716-06",
+                                "accountReference": "",
+                                "holdingQuantity": "5,022"
+                            },
+                            {
+                                "accountNumber": "065471906-06",
+                                "accountReference": "",
+                                "holdingQuantity": "444"
+                            }
+                        ],
+                        "actionRequired": false,
+                        "responseOptions": [],
+                        "defaultAction": ""
+                    },
+                    {
+                        "versionId": 1,
+                        "emailRef": "AAMkADc4OTIxYTE3LWI2YzktNDAxZi05OWVmLTZhOWMyN2MzNGFmNABGAAAAAADiKQnPbt21TJZ-EdgHvFTbBwC4quNkbWKHTbbalqYg7uWyAAAEN95OAAC4quNkbWKHTbbalqYg7uWyAAAVcuuYAAA=",
+                        "date": "2025-03-24T17:46:47Z",
+                        "emailHtmlUrl": "https://corporateactionshcap.blob.core.windows.net/raw-emails/AAMkADc4OTIxYTE3LWI2YzktNDAxZi05OWVmLTZhOWMyN2MzNGFmNABGAAAAAADiKQnPbt21TJZ-EdgHvFTbBwC4quNkbWKHTbbalqYg7uWyAAAEN95OAAC4quNkbWKHTbbalqYg7uWyAAAVcuuYAAA=.html",
+                        "isCurrent": false,
+                        "changes": [],
+                        "receivedDate": "2025-03-24T17:46:47Z",
+                        "stateEmailId": "AAMkADc4OTIxYTE3LWI2YzktNDAxZi05OWVmLTZhOWMyN2MzNGFmNABGAAAAAADiKQnPbt21TJZ-EdgHvFTbBwC4quNkbWKHTbbalqYg7uWyAAAEN95OAAC4quNkbWKHTbbalqYg7uWyAAAVcuuYAAA="
+                    }
+                ]
+            },
+            {
+                "event_id": "84004062",
+                "action_type": "No Action Required",
+                "ticker": "ISHNF",
+                "security_name": "ISHARES NIKKEI 225 MUTUAL FUND",
+                "event_type": "Stock Split - Mandatory",
+                "event_status": "Unconfirmed",
+                "event_classification": "Mandatory Event",
+                "security": {
+                    "name": "ISHARES NIKKEI 225 MUTUAL FUND",
+                    "ticker": "ISHNF",
+                    "isin": "JP3027710007",
+                    "cusip": "9JE0092N4",
+                    "sedol": "6397449",
+                    "ric": ""
+                },
+                "dates": {
+                    "pay_date": "2025-04-07T00:00:00Z",
+                    "record_date": "2025-04-06T00:00:00Z",
+                    "ex_date": "2025-04-03T00:00:00Z",
+                    "deadline": "1900-01-01T00:00:00Z"
+                },
+                "distribution": {
+                    "rate": "9 shares (distrib. only) per 1 of holding",
+                    "currency": ""
+                },
+                "accounts": [
+                    {
+                        "account_number": "066218645-06",
+                        "holding_quantity": "-57",
+                        "gross_amount": "",
+                        "net_amount": "",
+                        "tax_withheld": ""
+                    }
+                ],
+                "num_accounts": 1,
+                "country_of_issue": "JP",
+                "country_of_issuer": "JP",
+                "version_info": "Version: 1 | 2025-03-19T02:43:18Z",
+                "default_action": "Mandatory Event: No Responses Required for this event",
+                "version": 1,
+                "emailRef": "AAMkADc4OTIxYTE3LWI2YzktNDAxZi05OWVmLTZhOWMyN2MzNGFmNABGAAAAAADiKQnPbt21TJZ-EdgHvFTbBwC4quNkbWKHTbbalqYg7uWyAAAEN95OAAC4quNkbWKHTbbalqYg7uWyAAAQqTUkAAA=",
+                "emailDate": "2025-03-19T02:43:18Z",
+                "emailHtmlUrl": "https://corporateactionshcap.blob.core.windows.net/raw-emails/AAMkADc4OTIxYTE3LWI2YzktNDAxZi05OWVmLTZhOWMyN2MzNGFmNABGAAAAAADiKQnPbt21TJZ-EdgHvFTbBwC4quNkbWKHTbbalqYg7uWyAAAEN95OAAC4quNkbWKHTbbalqYg7uWyAAAQqTUkAAA=.html",
+                "latestUpdateEmail": "AAMkADc4OTIxYTE3LWI2YzktNDAxZi05OWVmLTZhOWMyN2MzNGFmNABGAAAAAADiKQnPbt21TJZ-EdgHvFTbBwC4quNkbWKHTbbalqYg7uWyAAAEN95OAAC4quNkbWKHTbbalqYg7uWyAAAQqTUkAAA=",
+                "latestUpdateDate": "2025-03-19T02:43:18Z",
+                "changedFields": [],
+                "changeSummary": "Initial creation",
+                "isUpdate": "false",
+                "originalDate": "",
+                "updateSequence": [],
+                "changesSummary": [],
+                "versionsInfo": [
+                    {
+                        "versionId": 1,
+                        "emailRef": "AAMkADc4OTIxYTE3LWI2YzktNDAxZi05OWVmLTZhOWMyN2MzNGFmNABGAAAAAADiKQnPbt21TJZ-EdgHvFTbBwC4quNkbWKHTbbalqYg7uWyAAAEN95OAAC4quNkbWKHTbbalqYg7uWyAAAQqTUkAAA=",
+                        "date": "2025-03-19T02:43:18Z",
+                        "emailHtmlUrl": "https://corporateactionshcap.blob.core.windows.net/raw-emails/AAMkADc4OTIxYTE3LWI2YzktNDAxZi05OWVmLTZhOWMyN2MzNGFmNABGAAAAAADiKQnPbt21TJZ-EdgHvFTbBwC4quNkbWKHTbbalqYg7uWyAAAEN95OAAC4quNkbWKHTbbalqYg7uWyAAAQqTUkAAA=.html",
+                        "isCurrent": true,
+                        "changedFields": [],
+                        "changeSummary": "Initial creation"
+                    }
+                ]
+            }
+        ],
+        "Expired": [
+            {
+                "event_id": "83840756",
+                "action_type": "No Action Required",
+                "ticker": "MTRN",
+                "security_name": "MATERION CORPORATION CMN",
+                "event_type": "Cash Dividend - Mandatory",
+                "event_status": "Released",
+                "event_classification": "Mandatory Event",
+                "security": {
+                    "name": "MATERION CORPORATION CMN",
+                    "ticker": "MTRN",
+                    "isin": "US5766901012",
+                    "cusip": "576690101",
+                    "sedol": "2149622",
+                    "ric": "MTRN.TH"
+                },
+                "dates": {
+                    "pay_date": "2025-03-07T00:00:00Z",
+                    "record_date": "2025-02-20T00:00:00Z",
+                    "ex_date": "2025-02-20T00:00:00Z",
+                    "deadline": "2025-03-08T06:40:18.265658Z"
+                },
+                "distribution": {
+                    "rate": "0.135 USD per 1 of holding",
+                    "currency": "USD"
+                },
+                "accounts": [
+                    {
+                        "account_number": "065466716-06",
+                        "holding_quantity": "1,585.00",
+                        "gross_amount": "213.98",
+                        "net_amount": "213.98",
+                        "tax_withheld": "0.00"
+                    },
+                    {
+                        "account_number": "065471906-06",
+                        "holding_quantity": "172.00",
+                        "gross_amount": "23.22",
+                        "net_amount": "23.22",
+                        "tax_withheld": "0.00"
+                    }
+                ],
+                "num_accounts": 2,
+                "country_of_issue": "US",
+                "country_of_issuer": "US",
+                "version_info": "Version: 1 | 2025-03-08T06:34:14Z",
+                "default_action": "No Responses Required for this event",
+                "version": 1,
+                "emailRef": "AAMkADc4OTIxYTE3LWI2YzktNDAxZi05OWVmLTZhOWMyN2MzNGFmNABGAAAAAADiKQnPbt21TJZ-EdgHvFTbBwC4quNkbWKHTbbalqYg7uWyAAAEN95OAAC4quNkbWKHTbbalqYg7uWyAAAKUq9oAAA=",
+                "emailDate": "2025-03-08T06:34:14Z",
+                "emailHtmlUrl": "https://corporateactionshcap.blob.core.windows.net/raw-emails/AAMkADc4OTIxYTE3LWI2YzktNDAxZi05OWVmLTZhOWMyN2MzNGFmNABGAAAAAADiKQnPbt21TJZ-EdgHvFTbBwC4quNkbWKHTbbalqYg7uWyAAAEN95OAAC4quNkbWKHTbbalqYg7uWyAAAKUq9oAAA=.html",
+                "latestUpdateEmail": "AAMkADc4OTIxYTE3LWI2YzktNDAxZi05OWVmLTZhOWMyN2MzNGFmNABGAAAAAADiKQnPbt21TJZ-EdgHvFTbBwC4quNkbWKHTbbalqYg7uWyAAAEN95OAAC4quNkbWKHTbbalqYg7uWyAAAKUq9oAAA=",
+                "latestUpdateDate": "2025-03-08T06:34:14Z",
+                "changedFields": [],
+                "changeSummary": "Initial creation",
+                "isUpdate": "false",
+                "originalDate": "",
+                "updateSequence": [],
+                "changesSummary": [],
+                "versionsInfo": [
+                    {
+                        "versionId": 1,
+                        "emailRef": "AAMkADc4OTIxYTE3LWI2YzktNDAxZi05OWVmLTZhOWMyN2MzNGFmNABGAAAAAADiKQnPbt21TJZ-EdgHvFTbBwC4quNkbWKHTbbalqYg7uWyAAAEN95OAAC4quNkbWKHTbbalqYg7uWyAAAKUq9oAAA=",
+                        "date": "2025-03-08T06:34:14Z",
+                        "emailHtmlUrl": "https://corporateactionshcap.blob.core.windows.net/raw-emails/AAMkADc4OTIxYTE3LWI2YzktNDAxZi05OWVmLTZhOWMyN2MzNGFmNABGAAAAAADiKQnPbt21TJZ-EdgHvFTbBwC4quNkbWKHTbbalqYg7uWyAAAEN95OAAC4quNkbWKHTbbalqYg7uWyAAAKUq9oAAA=.html",
+                        "isCurrent": true,
+                        "changedFields": [],
+                        "changeSummary": "Initial creation"
+                    }
+                ]
+            },
+            {
+                "event_id": "83808979",
+                "action_type": "No Action Required",
+                "ticker": "MSA",
+                "security_name": "MSA SAFETY INC CMN",
+                "event_type": "Cash Dividend - Mandatory",
+                "event_status": "Payment Released",
+                "event_classification": "Mandatory Event",
+                "security": {
+                    "name": "MSA SAFETY INC CMN",
+                    "ticker": "MSA",
+                    "isin": "US5534981064",
+                    "cusip": "553498106",
+                    "sedol": "BKM4S16",
+                    "ric": "MSA"
+                },
+                "dates": {
+                    "pay_date": "2025-03-10T00:00:00Z",
+                    "record_date": "2025-02-14T00:00:00Z",
+                    "ex_date": "2025-02-14T00:00:00Z",
+                    "deadline": "2025-03-10T15:12:53.829543Z"
+                },
+                "distribution": {
+                    "rate": "0.51 USD per 1 of holding",
+                    "currency": "USD"
+                },
+                "accounts": [
+                    {
+                        "account_number": "065466716-06",
+                        "holding_quantity": "815.00",
+                        "gross_amount": "415.65",
+                        "net_amount": "415.65",
+                        "tax_withheld": "0.00"
+                    },
+                    {
+                        "account_number": "065471906-06",
+                        "holding_quantity": "89.00",
+                        "gross_amount": "45.39",
+                        "net_amount": "45.39",
+                        "tax_withheld": "0.00"
+                    }
+                ],
+                "num_accounts": 2,
+                "country_of_issue": "US",
+                "country_of_issuer": "US",
+                "version_info": "Version: 1 | 2025-03-10T14:38:52Z",
+                "default_action": "No Responses Required for this event",
+                "version": 1,
+                "emailRef": "AAMkADc4OTIxYTE3LWI2YzktNDAxZi05OWVmLTZhOWMyN2MzNGFmNABGAAAAAADiKQnPbt21TJZ-EdgHvFTbBwC4quNkbWKHTbbalqYg7uWyAAAEN95OAAC4quNkbWKHTbbalqYg7uWyAAAL8pL0AAA=",
+                "emailDate": "2025-03-10T14:38:52Z",
+                "emailHtmlUrl": "https://corporateactionshcap.blob.core.windows.net/raw-emails/AAMkADc4OTIxYTE3LWI2YzktNDAxZi05OWVmLTZhOWMyN2MzNGFmNABGAAAAAADiKQnPbt21TJZ-EdgHvFTbBwC4quNkbWKHTbbalqYg7uWyAAAEN95OAAC4quNkbWKHTbbalqYg7uWyAAAL8pL0AAA=.html",
+                "latestUpdateEmail": "AAMkADc4OTIxYTE3LWI2YzktNDAxZi05OWVmLTZhOWMyN2MzNGFmNABGAAAAAADiKQnPbt21TJZ-EdgHvFTbBwC4quNkbWKHTbbalqYg7uWyAAAEN95OAAC4quNkbWKHTbbalqYg7uWyAAAL8pL0AAA=",
+                "latestUpdateDate": "2025-03-10T14:38:52Z",
+                "changedFields": [],
+                "changeSummary": "Initial creation",
+                "isUpdate": "false",
+                "originalDate": "",
+                "updateSequence": [],
+                "changesSummary": [],
+                "versionsInfo": [
+                    {
+                        "versionId": 1,
+                        "emailRef": "AAMkADc4OTIxYTE3LWI2YzktNDAxZi05OWVmLTZhOWMyN2MzNGFmNABGAAAAAADiKQnPbt21TJZ-EdgHvFTbBwC4quNkbWKHTbbalqYg7uWyAAAEN95OAAC4quNkbWKHTbbalqYg7uWyAAAL8pL0AAA=",
+                        "date": "2025-03-10T14:38:52Z",
+                        "emailHtmlUrl": "https://corporateactionshcap.blob.core.windows.net/raw-emails/AAMkADc4OTIxYTE3LWI2YzktNDAxZi05OWVmLTZhOWMyN2MzNGFmNABGAAAAAADiKQnPbt21TJZ-EdgHvFTbBwC4quNkbWKHTbbalqYg7uWyAAAEN95OAAC4quNkbWKHTbbalqYg7uWyAAAL8pL0AAA=.html",
+                        "isCurrent": true,
+                        "changedFields": [],
+                        "changeSummary": "Initial creation"
+                    }
+                ]
+            },
+            {
+                "event_id": "83917668",
+                "action_type": "No Action Required",
+                "ticker": "EVTC",
+                "security_name": "EVERTEC INC CMN",
+                "event_type": "Cash Dividend - Mandatory",
+                "event_status": "",
+                "event_classification": "Mandatory Event",
+                "security": {
+                    "name": "EVERTEC INC CMN",
+                    "ticker": "EVTC",
+                    "isin": "PR30040P1032",
+                    "cusip": "30040P103",
+                    "sedol": "B7KY926",
+                    "ric": "EVTC.A"
+                },
+                "dates": {
+                    "pay_date": "2025-03-21T00:00:00Z",
+                    "record_date": "2025-03-03T00:00:00Z",
+                    "ex_date": "2025-03-03T00:00:00Z",
+                    "deadline": "1900-01-01T00:00:00Z"
+                },
+                "distribution": {
+                    "rate": "0.05 USD per 1 of holding",
+                    "currency": "USD"
+                },
+                "accounts": [
+                    {
+                        "account_number": "065466716-06",
+                        "holding_quantity": "5,288.00",
+                        "gross_amount": "264.40",
+                        "net_amount": "264.40",
+                        "tax_withheld": "0.00"
+                    },
+                    {
+                        "account_number": "065471906-06",
+                        "holding_quantity": "573.00",
+                        "gross_amount": "28.65",
+                        "net_amount": "28.65",
+                        "tax_withheld": "0.00"
+                    }
+                ],
+                "num_accounts": 2,
+                "country_of_issue": "US",
+                "country_of_issuer": "PR",
+                "version_info": "Version: 1 | 2025-03-21T21:01:01Z",
+                "default_action": "No Responses Required for this event",
+                "version": 1,
+                "emailRef": "AAMkADc4OTIxYTE3LWI2YzktNDAxZi05OWVmLTZhOWMyN2MzNGFmNABGAAAAAADiKQnPbt21TJZ-EdgHvFTbBwC4quNkbWKHTbbalqYg7uWyAAAEN95OAAC4quNkbWKHTbbalqYg7uWyAAATnrMlAAA=",
+                "emailDate": "2025-03-21T21:01:01Z",
+                "emailHtmlUrl": "https://corporateactionshcap.blob.core.windows.net/raw-emails/AAMkADc4OTIxYTE3LWI2YzktNDAxZi05OWVmLTZhOWMyN2MzNGFmNABGAAAAAADiKQnPbt21TJZ-EdgHvFTbBwC4quNkbWKHTbbalqYg7uWyAAAEN95OAAC4quNkbWKHTbbalqYg7uWyAAATnrMlAAA=.html",
+                "latestUpdateEmail": "AAMkADc4OTIxYTE3LWI2YzktNDAxZi05OWVmLTZhOWMyN2MzNGFmNABGAAAAAADiKQnPbt21TJZ-EdgHvFTbBwC4quNkbWKHTbbalqYg7uWyAAAEN95OAAC4quNkbWKHTbbalqYg7uWyAAATnrMlAAA=",
+                "latestUpdateDate": "2025-03-21T21:01:01Z",
+                "changedFields": [],
+                "changeSummary": "Initial creation",
+                "isUpdate": "false",
+                "originalDate": "",
+                "updateSequence": [],
+                "changesSummary": [],
+                "versionsInfo": [
+                    {
+                        "versionId": 1,
+                        "emailRef": "AAMkADc4OTIxYTE3LWI2YzktNDAxZi05OWVmLTZhOWMyN2MzNGFmNABGAAAAAADiKQnPbt21TJZ-EdgHvFTbBwC4quNkbWKHTbbalqYg7uWyAAAEN95OAAC4quNkbWKHTbbalqYg7uWyAAATnrMlAAA=",
+                        "date": "2025-03-21T21:01:01Z",
+                        "emailHtmlUrl": "https://corporateactionshcap.blob.core.windows.net/raw-emails/AAMkADc4OTIxYTE3LWI2YzktNDAxZi05OWVmLTZhOWMyN2MzNGFmNABGAAAAAADiKQnPbt21TJZ-EdgHvFTbBwC4quNkbWKHTbbalqYg7uWyAAAEN95OAAC4quNkbWKHTbbalqYg7uWyAAATnrMlAAA=.html",
+                        "isCurrent": true,
+                        "changedFields": [],
+                        "changeSummary": "Initial creation"
+                    }
+                ]
+            },
+            {
+                "event_id": "83835942",
+                "action_type": "Action Required",
+                "ticker": "",
+                "security_name": "BEACON ROOFING SUPPLY, INC. CMN",
+                "event_type": "Optional Tender Offer",
+                "event_status": "Deadline Approaching",
+                "event_classification": "Voluntary Event",
+                "security": {
+                    "name": "BEACON ROOFING SUPPLY, INC. CMN",
+                    "ticker": "",
+                    "isin": "US0736851090",
+                    "cusip": "073685109",
+                    "sedol": "",
+                    "ric": ""
+                },
+                "dates": {
+                    "pay_date": "1900-01-01T00:00:00Z",
+                    "record_date": "1900-01-01T00:00:00Z",
+                    "ex_date": "1900-01-01T00:00:00Z",
+                    "deadline": "2025-03-03T15:00:00Z"
+                },
+                "distribution": {
+                    "rate": "",
+                    "currency": ""
+                },
+                "accounts": [
+                    {
+                        "account_number": "065471906-06",
+                        "holding_quantity": "63",
+                        "gross_amount": "",
+                        "net_amount": "",
+                        "tax_withheld": ""
+                    },
+                    {
+                        "account_number": "065466716-06",
+                        "holding_quantity": "582",
+                        "gross_amount": "",
+                        "net_amount": "",
+                        "tax_withheld": ""
+                    }
+                ],
+                "num_accounts": 2,
+                "country_of_issue": "",
+                "country_of_issuer": "",
+                "version_info": "Version: 5 | 2025-03-01T04:07:33Z",
+                "default_action": "Default option will be applied if long holder does not respond by deadline",
+                "version": 5,
+                "emailRef": "AAMkADc4OTIxYTE3LWI2YzktNDAxZi05OWVmLTZhOWMyN2MzNGFmNABGAAAAAADiKQnPbt21TJZ-EdgHvFTbBwC4quNkbWKHTbbalqYg7uWyAAAEN95OAAC4quNkbWKHTbbalqYg7uWyAAAEOPmEAAA=",
+                "emailDate": "2025-03-01T04:07:33",
+                "emailHtmlUrl": "https://corporateactionshcap.blob.core.windows.net/raw-emails/AAMkADc4OTIxYTE3LWI2YzktNDAxZi05OWVmLTZhOWMyN2MzNGFmNABGAAAAAADiKQnPbt21TJZ-EdgHvFTbBwC4quNkbWKHTbbalqYg7uWyAAAEN95OAAC4quNkbWKHTbbalqYg7uWyAAAEOPmEAAA=.html",
+                "latestUpdateEmail": "AAMkADc4OTIxYTE3LWI2YzktNDAxZi05OWVmLTZhOWMyN2MzNGFmNABGAAAAAADiKQnPbt21TJZ-EdgHvFTbBwC4quNkbWKHTbbalqYg7uWyAAAEN95OAAC4quNkbWKHTbbalqYg7uWyAAAEOPmEAAA=",
+                "latestUpdateDate": "2025-03-01T04:07:33",
+                "changedFields": [
+                    "requirements",
+                    "received_date"
+                ],
+                "changeSummary": "Update from AAMkADc4OTIxYTE3LWI2YzktNDAxZi05OWVmLTZhOWMyN2MzNGFmNABGAAAAAADiKQnPbt21TJZ-EdgHvFTbBwC4quNkbWKHTbbalqYg7uWyAAAEN95OAAC4quNkbWKHTbbalqYg7uWyAAAEOPmEAAA=",
+                "isUpdate": "false",
+                "originalDate": "",
+                "updateSequence": [],
+                "changesSummary": [],
+                "versionsInfo": [
+                    {
+                        "versionId": 5,
+                        "emailRef": "AAMkADc4OTIxYTE3LWI2YzktNDAxZi05OWVmLTZhOWMyN2MzNGFmNABGAAAAAADiKQnPbt21TJZ-EdgHvFTbBwC4quNkbWKHTbbalqYg7uWyAAAEN95OAAC4quNkbWKHTbbalqYg7uWyAAAEOPmEAAA=",
+                        "date": "2025-03-01T04:07:33",
+                        "emailHtmlUrl": "https://corporateactionshcap.blob.core.windows.net/raw-emails/AAMkADc4OTIxYTE3LWI2YzktNDAxZi05OWVmLTZhOWMyN2MzNGFmNABGAAAAAADiKQnPbt21TJZ-EdgHvFTbBwC4quNkbWKHTbbalqYg7uWyAAAEN95OAAC4quNkbWKHTbbalqYg7uWyAAAEOPmEAAA=.html",
+                        "isCurrent": true,
+                        "changedFields": [
+                            "requirements",
+                            "received_date"
+                        ],
+                        "changeSummary": "Update from AAMkADc4OTIxYTE3LWI2YzktNDAxZi05OWVmLTZhOWMyN2MzNGFmNABGAAAAAADiKQnPbt21TJZ-EdgHvFTbBwC4quNkbWKHTbbalqYg7uWyAAAEN95OAAC4quNkbWKHTbbalqYg7uWyAAAEOPmEAAA="
+                    },
+                    {
+                        "versionId": 4,
+                        "emailRef": "AAMkADc4OTIxYTE3LWI2YzktNDAxZi05OWVmLTZhOWMyN2MzNGFmNABGAAAAAADiKQnPbt21TJZ-EdgHvFTbBwC4quNkbWKHTbbalqYg7uWyAAAEN95OAAC4quNkbWKHTbbalqYg7uWyAAAEOPmEAAA=",
+                        "date": "",
+                        "emailHtmlUrl": "https://corporateactionshcap.blob.core.windows.net/raw-emails/AAMkADc4OTIxYTE3LWI2YzktNDAxZi05OWVmLTZhOWMyN2MzNGFmNABGAAAAAADiKQnPbt21TJZ-EdgHvFTbBwC4quNkbWKHTbbalqYg7uWyAAAEN95OAAC4quNkbWKHTbbalqYg7uWyAAAEOPmEAAA=.html",
+                        "isCurrent": false,
+                        "changes": [
+                            "dates",
+                            "requirements",
+                            "received_date"
+                        ],
+                        "receivedDate": "2025-03-01T04-07-33Z",
+                        "stateEmailId": "AAMkADc4OTIxYTE3LWI2YzktNDAxZi05OWVmLTZhOWMyN2MzNGFmNABGAAAAAADiKQnPbt21TJZ-EdgHvFTbBwC4quNkbWKHTbbalqYg7uWyAAAEN95OAAC4quNkbWKHTbbalqYg7uWyAAAEOPmEAAA=",
+                        "actionRequired": true,
+                        "responseOptions": [
+                            "Submit elections via link: 83835942"
+                        ],
+                        "defaultAction": "Default option will be applied for long holders if no response provided"
+                    },
+                    {
+                        "versionId": 3,
+                        "emailRef": "AAMkADc4OTIxYTE3LWI2YzktNDAxZi05OWVmLTZhOWMyN2MzNGFmNABGAAAAAADiKQnPbt21TJZ-EdgHvFTbBwC4quNkbWKHTbbalqYg7uWyAAAEN95OAAC4quNkbWKHTbbalqYg7uWyAAAEOPmEAAA=",
+                        "date": "",
+                        "emailHtmlUrl": "https://corporateactionshcap.blob.core.windows.net/raw-emails/AAMkADc4OTIxYTE3LWI2YzktNDAxZi05OWVmLTZhOWMyN2MzNGFmNABGAAAAAADiKQnPbt21TJZ-EdgHvFTbBwC4quNkbWKHTbbalqYg7uWyAAAEN95OAAC4quNkbWKHTbbalqYg7uWyAAAEOPmEAAA=.html",
+                        "isCurrent": false,
+                        "changes": [
+                            "event_status",
+                            "event_type",
+                            "event_classification",
+                            "security",
+                            "dates",
+                            "accounts",
+                            "requirements",
+                            "email_id",
+                            "received_date"
+                        ],
+                        "receivedDate": "2025-02-28T17-02-52Z",
+                        "stateEmailId": "AAMkADc4OTIxYTE3LWI2YzktNDAxZi05OWVmLTZhOWMyN2MzNGFmNABGAAAAAADiKQnPbt21TJZ-EdgHvFTbBwC4quNkbWKHTbbalqYg7uWyAAAEN95OAAC4quNkbWKHTbbalqYg7uWyAAAEOPmEAAA=",
+                        "actionRequired": true,
+                        "responseOptions": [
+                            "Submit elections through link: 83835942",
+                            "View Asset Servicing Active Notifications and submit instructions through Asset Servicing Portal"
+                        ],
+                        "defaultAction": "For long holders, default option will be applied if no response by deadline. For short holders, must respond by deadline if intending to cover short position."
+                    },
+                    {
+                        "versionId": 2,
+                        "emailRef": "AAMkADc4OTIxYTE3LWI2YzktNDAxZi05OWVmLTZhOWMyN2MzNGFmNABGAAAAAADiKQnPbt21TJZ-EdgHvFTbBwC4quNkbWKHTbbalqYg7uWyAAAEN95OAAC4quNkbWKHTbbalqYg7uWyAAAEOPl3AAA=",
+                        "date": "2025-02-28T15-33-55Z",
+                        "emailHtmlUrl": "https://corporateactionshcap.blob.core.windows.net/raw-emails/AAMkADc4OTIxYTE3LWI2YzktNDAxZi05OWVmLTZhOWMyN2MzNGFmNABGAAAAAADiKQnPbt21TJZ-EdgHvFTbBwC4quNkbWKHTbbalqYg7uWyAAAEN95OAAC4quNkbWKHTbbalqYg7uWyAAAEOPl3AAA=.html",
+                        "isCurrent": false,
+                        "changes": [
+                            "dates",
+                            "requirements",
+                            "email_id",
+                            "received_date"
+                        ],
+                        "receivedDate": "2025-02-28T17-02-52Z",
+                        "stateEmailId": "AAMkADc4OTIxYTE3LWI2YzktNDAxZi05OWVmLTZhOWMyN2MzNGFmNABGAAAAAADiKQnPbt21TJZ-EdgHvFTbBwC4quNkbWKHTbbalqYg7uWyAAAEN95OAAC4quNkbWKHTbbalqYg7uWyAAAEOPl3AAA=",
+                        "accounts": [
+                            {
+                                "accountNumber": "065466716-06",
+                                "accountReference": "",
+                                "holdingQuantity": "582"
+                            },
+                            {
+                                "accountNumber": "065471906-06",
+                                "accountReference": "",
+                                "holdingQuantity": "63"
+                            }
+                        ],
+                        "actionRequired": true,
+                        "responseOptions": [
+                            "TENDER FOR CASH",
+                            "TAKE NO ACTION"
+                        ],
+                        "defaultAction": "TAKE NO ACTION"
+                    },
+                    {
+                        "versionId": 1,
+                        "emailRef": "AAMkADc4OTIxYTE3LWI2YzktNDAxZi05OWVmLTZhOWMyN2MzNGFmNABGAAAAAADiKQnPbt21TJZ-EdgHvFTbBwC4quNkbWKHTbbalqYg7uWyAAAEN95OAAC4quNkbWKHTbbalqYg7uWyAAAEOPlXAAA=",
+                        "date": "2025-02-28T06-56-20Z",
+                        "emailHtmlUrl": "https://corporateactionshcap.blob.core.windows.net/raw-emails/AAMkADc4OTIxYTE3LWI2YzktNDAxZi05OWVmLTZhOWMyN2MzNGFmNABGAAAAAADiKQnPbt21TJZ-EdgHvFTbBwC4quNkbWKHTbbalqYg7uWyAAAEN95OAAC4quNkbWKHTbbalqYg7uWyAAAEOPlXAAA=.html",
+                        "isCurrent": false,
+                        "changes": [],
+                        "receivedDate": "2025-02-28T15-33-55Z",
+                        "stateEmailId": "AAMkADc4OTIxYTE3LWI2YzktNDAxZi05OWVmLTZhOWMyN2MzNGFmNABGAAAAAADiKQnPbt21TJZ-EdgHvFTbBwC4quNkbWKHTbbalqYg7uWyAAAEN95OAAC4quNkbWKHTbbalqYg7uWyAAAEOPlXAAA=",
+                        "actionRequired": true,
+                        "responseOptions": [
+                            "TENDER FOR CASH",
+                            "TAKE NO ACTION (Default)"
+                        ],
+                        "defaultAction": "TAKE NO ACTION"
+                    }
+                ]
+            }
+        ]
+    },
+    "accounts": [
+        "064546831-06",
+        "066218645-06",
+        "065466716-06",
+        "065471906-06"
+    ],
+    "userInfo": {
+        "email": "gsaini@hurricanecap.com",
+        "first_name": "Gagan",
+        "last_name": "S",
+        "is_active": true,
+        "superadmin": null
+    },
+    "accountMapping": {
+        "064546831-06": {
+            "events": [
+                {
+                    "event_id": "83941882",
+                    "event_type": "RIGHTS EXERCISE",
+                    "security_name": "RTS/ADDVISE GROUP AB EXP04/07/2025",
+                    "ticker": "*ADDVTR8",
+                    "holding_quantity": "1",
+                    "net_amount": ""
+                }
+            ],
+            "event_count": 1,
+            "event_types": [
+                "RIGHTS EXERCISE"
+            ],
+            "total_holdings": 1.0,
+            "total_net_amount": 0
+        },
+        "065466716-06": {
+            "events": [
+                {
+                    "event_id": "83835942",
+                    "event_type": "Tender Offer",
+                    "security_name": "BEACON ROOFING SUPPLY, INC. CMN",
+                    "ticker": "",
+                    "holding_quantity": "582",
+                    "net_amount": ""
+                },
+                {
+                    "event_id": "83840756",
+                    "event_type": "CASH DIVIDEND",
+                    "security_name": "MATERION CORPORATION CMN",
+                    "ticker": "MTRN",
+                    "holding_quantity": "1,585.00",
+                    "net_amount": "213.98"
+                },
+                {
+                    "event_id": "83808979",
+                    "event_type": "CASH DIVIDEND",
+                    "security_name": "MSA SAFETY INC CMN",
+                    "ticker": "MSA",
+                    "holding_quantity": "815.00",
+                    "net_amount": "415.65"
+                },
+                {
+                    "event_id": "83917668",
+                    "event_type": "CASH DIVIDEND",
+                    "security_name": "EVERTEC INC CMN",
+                    "ticker": "EVTC",
+                    "holding_quantity": "5,288.00",
+                    "net_amount": "264.40"
+                },
+                {
+                    "event_id": "84048916",
+                    "event_type": "Merger",
+                    "security_name": "CHIMERIX, INC. CMN",
+                    "ticker": "CMRX",
+                    "holding_quantity": "5,022",
+                    "net_amount": ""
+                },
+                {
+                    "event_id": "84046443",
+                    "event_type": "TENDER OFFER",
+                    "security_name": "CHIMERIX, INC. CMN",
+                    "ticker": "CMRX",
+                    "holding_quantity": "5,022",
+                    "net_amount": ""
+                }
+            ],
+            "event_count": 6,
+            "event_types": [
+                "TENDER OFFER",
+                "Merger",
+                "Tender Offer",
+                "CASH DIVIDEND"
+            ],
+            "total_holdings": 18314.0,
+            "total_net_amount": 894.03
+        },
+        "066218645-06": {
+            "events": [
+                {
+                    "event_id": "84004062",
+                    "event_type": "Stock Split",
+                    "security_name": "ISHARES NIKKEI 225 MUTUAL FUND",
+                    "ticker": "ISHNF",
+                    "holding_quantity": "-57",
+                    "net_amount": ""
+                }
+            ],
+            "event_count": 1,
+            "event_types": [
+                "Stock Split"
+            ],
+            "total_holdings": -57.0,
+            "total_net_amount": 0
+        },
+        "065471906-06": {
+            "events": [
+                {
+                    "event_id": "83835942",
+                    "event_type": "Tender Offer",
+                    "security_name": "BEACON ROOFING SUPPLY, INC. CMN",
+                    "ticker": "",
+                    "holding_quantity": "63",
+                    "net_amount": ""
+                },
+                {
+                    "event_id": "83840756",
+                    "event_type": "CASH DIVIDEND",
+                    "security_name": "MATERION CORPORATION CMN",
+                    "ticker": "MTRN",
+                    "holding_quantity": "172.00",
+                    "net_amount": "23.22"
+                },
+                {
+                    "event_id": "83808979",
+                    "event_type": "CASH DIVIDEND",
+                    "security_name": "MSA SAFETY INC CMN",
+                    "ticker": "MSA",
+                    "holding_quantity": "89.00",
+                    "net_amount": "45.39"
+                },
+                {
+                    "event_id": "83917668",
+                    "event_type": "CASH DIVIDEND",
+                    "security_name": "EVERTEC INC CMN",
+                    "ticker": "EVTC",
+                    "holding_quantity": "573.00",
+                    "net_amount": "28.65"
+                },
+                {
+                    "event_id": "84046443",
+                    "event_type": "TENDER OFFER",
+                    "security_name": "CHIMERIX, INC. CMN",
+                    "ticker": "CMRX",
+                    "holding_quantity": "444",
+                    "net_amount": ""
+                }
+            ],
+            "event_count": 5,
+            "event_types": [
+                "TENDER OFFER",
+                "Tender Offer",
+                "CASH DIVIDEND"
+            ],
+            "total_holdings": 1341.0,
+            "total_net_amount": 97.25999999999999
+        }
+    },
+    "eventSummary": {
+        "83941882": {
+            "event_type": "RIGHTS EXERCISE",
+            "security_name": "RTS/ADDVISE GROUP AB EXP04/07/2025",
+            "ticker": "*ADDVTR8",
+            "accounts": [
+                "064546831-06"
+            ],
+            "total_holdings": 1.0,
+            "total_net_amount": 0
+        },
+        "84004062": {
+            "event_type": "Stock Split",
+            "security_name": "ISHARES NIKKEI 225 MUTUAL FUND",
+            "ticker": "ISHNF",
+            "accounts": [
+                "066218645-06"
+            ],
+            "total_holdings": -57.0,
+            "total_net_amount": 0
+        },
+        "83835942": {
+            "event_type": "Tender Offer",
+            "security_name": "BEACON ROOFING SUPPLY, INC. CMN",
+            "ticker": "",
+            "accounts": [
+                "065471906-06",
+                "065466716-06"
+            ],
+            "total_holdings": 645.0,
+            "total_net_amount": 0
+        },
+        "83840756": {
+            "event_type": "CASH DIVIDEND",
+            "security_name": "MATERION CORPORATION CMN",
+            "ticker": "MTRN",
+            "accounts": [
+                "065466716-06",
+                "065471906-06"
+            ],
+            "total_holdings": 1757.0,
+            "total_net_amount": 237.2
+        },
+        "83808979": {
+            "event_type": "CASH DIVIDEND",
+            "security_name": "MSA SAFETY INC CMN",
+            "ticker": "MSA",
+            "accounts": [
+                "065466716-06",
+                "065471906-06"
+            ],
+            "total_holdings": 904.0,
+            "total_net_amount": 461.03999999999996
+        },
+        "83917668": {
+            "event_type": "CASH DIVIDEND",
+            "security_name": "EVERTEC INC CMN",
+            "ticker": "EVTC",
+            "accounts": [
+                "065466716-06",
+                "065471906-06"
+            ],
+            "total_holdings": 5861.0,
+            "total_net_amount": 293.04999999999995
+        },
+        "84048916": {
+            "event_type": "Merger",
+            "security_name": "CHIMERIX, INC. CMN",
+            "ticker": "CMRX",
+            "accounts": [
+                "065466716-06"
+            ],
+            "total_holdings": 5022.0,
+            "total_net_amount": 0
+        },
+        "84046443": {
+            "event_type": "TENDER OFFER",
+            "security_name": "CHIMERIX, INC. CMN",
+            "ticker": "CMRX",
+            "accounts": [
+                "065466716-06",
+                "065471906-06"
+            ],
+            "total_holdings": 5466.0,
+            "total_net_amount": 0
+        }
+    },
+    "stats": {
+        "total_accounts": 4,
+        "total_events": 8,
+        "accounts_by_event_count": {},
+        "events_by_account_count": {}
+    },
+    "format": "dashboard"
+}
