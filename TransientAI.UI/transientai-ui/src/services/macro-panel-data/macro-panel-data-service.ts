@@ -3,36 +3,6 @@ import {BloombergEmailReport, BondData, EquityFuture, FxRate, TreasuryYield} fro
 
 class MacroPanelDataService {
   private readonly serviceName = 'hurricane-api';
-  private readonly translations = new Map<string, string>([
-      ['JAPAN', 'JGBs'],
-      ['GERMANY', 'Bunds']
-  ]);
-  private readonly compareFunction = (a: TreasuryYield, b: TreasuryYield) => {
-    const aType = a.group_name;
-    const bType = b.group_name;
-
-    const comparison = aType.localeCompare(bType);
-    if (comparison === 0) {
-      const aMaturity  = a.maturity;
-      const bMaturity = b.maturity;
-      if (aMaturity === bMaturity) {
-        return 0;
-      }
-      if (aMaturity && bMaturity) {
-        const aIndex = parseInt(aMaturity);
-        const bIndex = parseInt(bMaturity);
-        return aIndex - bIndex;
-      }
-
-      if (!aMaturity && !bMaturity) {
-        return 0;
-      }
-      return !aMaturity ? 1 : -1;
-    }
-
-    return comparison;
-  };
-
 
   async getBloombergReportEmails(): Promise<BloombergEmailReport[]> {
     const result = await webApihandler.get('latest-bloomberg-report', {}, {
@@ -50,6 +20,7 @@ class MacroPanelDataService {
           .filter(([key]) => key !== 'as_of_date')
           .map(([, item]) => item as TreasuryYield)];
     } catch (e: any) {
+      console.log(e)
       return [null, []];
     }
   }
@@ -60,19 +31,11 @@ class MacroPanelDataService {
         serviceName: this.serviceName
       });
 
-      return [null, result.flatMap(value => Object.values(value.bonds)
-          .flatMap(bond => ({
-            name: this.toProperCase(bond.Bond),
-            group_name: this.convert(bond.Country),
-            rate: bond.Bond_Yield,
-            one_day_change_bps: bond.Bond_Yield,
-            ytd_change_bps: bond.YTD,
-            maturity: bond.Maturity?.toUpperCase() ?? '',
-          })))
-          .sort(this.compareFunction)
+      return [null, result.flatMap(value => Object.entries(value)
+          .filter(([key]) => key === 'bonds')
+          .flatMap(([, value]) => Object.values(value)))
       ];
     } catch (e: any) {
-      console.error(e);
       return [null, []];
     }
   }
@@ -112,21 +75,6 @@ class MacroPanelDataService {
     } catch (e: any) {
       return [];
     }
-  }
-
-  private convert(value: string): string {
-    const upper = value?.toUpperCase();
-    return upper ? (this.translations.get(upper) ?? upper) : '';
-  }
-
-  private toProperCase(value: string|null|undefined): string {
-    if (value) {
-      if (value.length === 0) {
-        return value.toUpperCase();
-      }
-      return value[0].toUpperCase() + value.slice(1);
-    }
-    return '';
   }
 }
 

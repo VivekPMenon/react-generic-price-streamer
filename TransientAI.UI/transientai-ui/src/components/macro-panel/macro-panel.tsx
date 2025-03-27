@@ -47,7 +47,8 @@ export function MacroPanel() {
             <div className={styles['left_panel']}>
                 <div className={styles['equity-futures-container']}>
                     <DataGrid
-                        domLayout='autoHeight'
+                        domLayout={isMobile ? 'autoHeight' : 'normal'}
+                        height={isMobile ? undefined : '100%'}
                         isSummaryGrid={false}
                         suppressStatusBar={true}
                         suppressFloatingFilter={true}
@@ -69,7 +70,7 @@ export function MacroPanel() {
                     <div className="sub-header">Change from the close</div>
                     <DataGrid
                         domLayout={isMobile ? 'autoHeight' : 'normal'}
-                        height={isMobile ? 900 : 400}
+                        height={isMobile ? undefined : '80%'}
                         isSummaryGrid={false}
                         suppressStatusBar={true}
                         suppressFloatingFilter={true}
@@ -92,7 +93,8 @@ export function MacroPanel() {
                 <div className="sub-header">Yield Curve Changes</div>
                 <div className="sub-header">Closing Yields Delayed T-2</div>
                 <DataGrid
-                    domLayout='autoHeight'
+                    domLayout={isMobile ? 'autoHeight' : 'normal'}
+                    height={isMobile ? undefined : 575}
                     isSummaryGrid={false}
                     suppressStatusBar={true}
                     suppressFloatingFilter={true}
@@ -113,7 +115,8 @@ export function MacroPanel() {
                 <div className="sub-header">Crypto</div>
                 <div className="sub-header">Change from the close</div>
                 <DataGrid
-                    domLayout='autoHeight'
+                    domLayout={isMobile ? 'autoHeight' : 'normal'}
+                    height={isMobile ? undefined : 575}
                     isSummaryGrid={false}
                     suppressStatusBar={true}
                     suppressFloatingFilter={true}

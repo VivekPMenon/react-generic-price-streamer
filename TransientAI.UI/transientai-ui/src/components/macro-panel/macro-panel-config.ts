@@ -258,41 +258,41 @@ export const groupRowRendererParams = {
 
 export function getRowHeight(params: RowHeightParams){
     if (params.node.group && !params.node.firstChild) {
-        return 60;
+        return 40;
     }
     return 30;
 }
 
 export function getLargerRowHeight(params: RowHeightParams){
     if (params.node.group && !params.node.firstChild) {
-        return 60;
+        return 40;
     }
     return 35;
 }
 
 export const fxGridOptions: GridOptions = {
-    getRowId: (params: GetRowIdParams) => String(params.data.name),
+    getRowId: (params: GetRowIdParams) => String(params.data.group_name) + String(params.data.name),
     autoSizeStrategy: {
         type: 'fitGridWidth',
     }
 }
 
 export const treasuryGridOptions: GridOptions = {
-    getRowId: (params: GetRowIdParams) => String(params.data.name),
+    getRowId: (params: GetRowIdParams) => String(params.data.group_name) + String(params.data.name),
     autoSizeStrategy: {
         type: 'fitGridWidth',
     }
 }
 
 export const cryptoGridOptions : GridOptions= {
-    getRowId: (params: GetRowIdParams) => String(params.data.name),
+    getRowId: (params: GetRowIdParams) => String(params.data.group_name) + String(params.data.name),
     autoSizeStrategy: {
         type: 'fitGridWidth',
     }
 }
 
 export const equityFuturesGridOptions: GridOptions = {
-    getRowId: (params: GetRowIdParams) => String(params.data.name),
+    getRowId: (params: GetRowIdParams) => String(params.data.group_name) + String(params.data.name),
     autoSizeStrategy: {
         type: 'fitGridWidth',
     }
