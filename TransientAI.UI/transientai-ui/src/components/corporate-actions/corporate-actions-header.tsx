@@ -7,13 +7,31 @@ import { RoleType, useUserContextStore } from '@/services/user-context';
 import { FilterDropDown } from './filter-dropdown';
 import { useCorpActionsStore } from '@/services/corporate-actions';
 
+interface FilterActions {
+    actionType: boolean;
+    securityTicker: string | null;
+    securityidentifier: string | null;
+    dateRange: string | null;
+    corpActionId: string | null;
+    eventStatus: string | null;
+    eventType: string | null;
+    account: string | null;
+  }
+
+  interface FilterConfigItem {
+    key: keyof FilterActions; 
+    label?: string;
+    type?: any;
+    options?: { value: string; label: string }[];
+    isSearchable?: boolean;
+  }
+
 export const CorporateActionHeader = () => {
     const [searchQuery, setSearchQuery] = useState<string>('');
     const { userContext } = useUserContextStore();
-    const { corpActions } = useCorpActionsStore();
-    const [showDatePicker, setShowDatePicker] = useState(false);
     const [dateRange, setDateRange] = useState([null, null]);
     const [startDate, endDate] = dateRange;
+    const { corpActions, filterActions, sortByAction, setFilterActions, setSortByAction } = useCorpActionsStore();
 
     function onSearchQueryChange(event: any) {
         setSearchQuery(event.target.value);
@@ -48,14 +66,14 @@ export const CorporateActionHeader = () => {
         }
     }, [corpActions])
 
-    const filterConfig = [
+    const filterConfig: FilterConfigItem[] = [
         {
           key: "actionType",
           label: "Action Type",
           type: "dropdown",
           options: [
-            { value: "true", label: "Action Required" },
-            { value: "false", label: "No Action Required" },
+            { value: "Action Required", label: "Action Required" },
+            { value: "No Action Required", label: "No Action Required" },
           ]
         },
         {
@@ -66,7 +84,7 @@ export const CorporateActionHeader = () => {
           isSearchable: true
         },
         {
-          key: "isinCusip",
+          key: "securityidentifier",
           label: "ISIN/CUSIP",
           type: "dropdown",
           options: [
@@ -109,6 +127,26 @@ export const CorporateActionHeader = () => {
         },
       ];
 
+      const handleFilterChange = (key: string, value: any) => {
+    //   console.log(key, value)
+        let setValue = value.value;
+        // if (setValue === "true") {
+        //   setValue = true;
+        // } else if (setValue === "false") {
+        //   setValue = false;
+        // }
+        setFilterActions(key, setValue);
+      };
+
+      const handleDateFilter = (key: string, value: any) => {
+        const formattedDates = value.map((date: any) => 
+            date ? new Date(date).toISOString().split("T")[0] : null
+        );
+        setDateRange(value)
+        if(formattedDates.length > 1){
+            setFilterActions(key, formattedDates)
+        }
+      }
     return(
         <div>
             <section className='flex gap-[30px] items-center mb-3'>
@@ -135,8 +173,8 @@ export const CorporateActionHeader = () => {
                             <label htmlFor='sort-action'>Sort by Action Required</label>
                             <Toggle
                             id='sort-action'
-                            defaultChecked={true}
-                            onChange={() => null} 
+                            defaultChecked={sortByAction}
+                            onChange={() => setSortByAction(!sortByAction)} 
                             className={styles['custom-toggle']}
                             />
                         </div>
@@ -164,10 +202,13 @@ export const CorporateActionHeader = () => {
                         {filter.type === "dropdown" && (
                         <FilterDropDown
                             isSearchable={filter.isSearchable ? filter.isSearchable : false}
-                            value={null}
+                            value={
+                                filterActions[filter.key] 
+                                    ? { value: filterActions[filter.key], label: filterActions[filter.key] } 
+                                    : null
+                            }
                             options={filter.options || []}
-                            onChange={(value) => null}
-                            
+                            onChange={(value) => handleFilterChange(filter.key!, value)} 
                         />
                         )}
 
@@ -176,7 +217,7 @@ export const CorporateActionHeader = () => {
                             selectsRange={true}
                             startDate={startDate}
                             endDate={endDate}
-                            onChange={() => null}
+                            onChange={(update: any) => handleDateFilter(filter.key!, update)}
                             isClearable={true}
                             className="w-full"
                             wrapperClassName="w-full"

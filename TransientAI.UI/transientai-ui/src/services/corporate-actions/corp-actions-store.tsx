@@ -13,6 +13,19 @@ export interface CorpActionsDataState {
   selectedCorpAction: CorporateAction | null;
   isLoading: boolean;
   isSearching: boolean;
+  sortByAction: boolean;
+  filterActions: {
+    actionType: string | null;
+    securityTicker: string | null;
+    securityidentifier: string | null;
+    dateRange: string | null;
+    corpActionId: string | null;
+    eventStatus: string | null;
+    eventType: string | null;
+    account: string | null;
+  };
+  setSortByAction: (sortByAction: boolean) => void;
+  setFilterActions: (key: string, filters: Partial<CorpActionsDataState['filterActions']>) => void;
   searchCorpActions: (query: string) => void;
   setSelectedCorpAction: (corpAction: CorporateAction | null) => void;
   setCorpActions: (corpActionsData: CorporateAction[]) => void;
@@ -28,9 +41,28 @@ export const useCorpActionsStore = create<CorpActionsDataState>((set, get) => ({
   selectedCorpAction: null,
   isLoading: false,
   isSearching: false,
+  sortByAction: true,
+  reset: {},
+  filterActions: {
+    actionType: null,
+    securityTicker: null,
+    securityidentifier: null,
+    dateRange: null,
+    corpActionId: null,
+    eventStatus: null,
+    eventType: null,
+    account: null
+  },
 
   setCorpActions: (corpActions) => set({ corpActions }),
   setSelectedCorpAction: (corpAction) => set({ selectedCorpAction: corpAction }),
+  setSortByAction: (sortByAction) => set({ sortByAction }),
+  setFilterActions: (key, value) => set((state) => ({
+    filterActions: { 
+      ...state.filterActions,
+      [key]: value,
+    }
+  })),
 
   loadCorpActions: async () => {
     set({ isLoading: true });

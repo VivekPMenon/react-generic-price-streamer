@@ -78,7 +78,7 @@ const customStyles = {
 
   interface FilterDropDownProps {
     options: { value: string; label: string }[];
-    value: { value: string; label: string } | null;
+    value: { value: any; label: any } | null;
     onChange: (selectedOption: { value: string; label: string } | null) => void;
     placeholder?: string;
     isSearchable?: boolean;

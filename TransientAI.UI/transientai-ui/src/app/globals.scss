@@ -76,3 +76,7 @@ body {
   display: flex;
   justify-content: flex-end;
 }
+
+.react-toggle--checked .react-toggle-track {
+  background-color: $teal-100 !important;
+}

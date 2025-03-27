@@ -13,12 +13,15 @@ import { RoleType, useUserContextStore } from '@/services/user-context'
 import { DataGrid, getCurrencyColDefTemplate } from '../../data-grid'
 import { ColDef, GridApi, RowClickedEvent } from 'ag-grid-community'
 import { corpActionsDataService } from '@/services/corporate-actions/corporate-actions-data'
-import { useVirtualizer, VirtualItem } from '@tanstack/react-virtual'
-import { Spinner } from '@radix-ui/themes'
-import { formatDateString } from '@/lib/utility-functions/date-operations'
-import Toggle from 'react-toggle'
-import { CorporateActionHeader } from '../corporate-actions-header'
 import opsData from './ops_view_output.json'
+import { Accordion } from '@/components/accordion/accordion'
+import { OpsList } from './ops-list'
+
+interface SortedData {
+  acquired: any[];
+  no_action_acquired: any[];
+  expired: any[];
+}
 
 export function OpsCorporateActions () {
   const { userContext } = useUserContextStore()
@@ -29,24 +32,12 @@ export function OpsCorporateActions () {
     searchCorpActions
   } = useCorpActionsStore()
   const { scrollTargetRef, scrollToTarget } = useScrollTo<HTMLDivElement>()
-  const divRef = useRef<HTMLDivElement>(null)
   const gridApiRef = useRef<GridApi | null>(null)
 
   const [searchQuery, setSearchQuery] = useState<string>('')
   const [selectedEmailContent, setSelectedEmailContent] = useState<string>('')
   const [isLoadingEmail, setIsLoadingEmail] = useState<boolean>(false)
   const [isCompactViewEnabled, setIsCompactViewEnabled] = useState(false)
-
-  // const [emailContents, setEmailContents] = useState<any>({});
-  const virtualizer = useVirtualizer({
-    count: corpActions.length,
-    getScrollElement: () => divRef.current,
-    estimateSize: () => 200,
-    overscan: 5,
-    gap: 10,
-    paddingStart: 2,
-    paddingEnd: 5
-  })
 
   const colDefs = useMemo(() => getColumnDefs(), [])
 
@@ -71,23 +62,23 @@ export function OpsCorporateActions () {
       const selectedIndex = corpActions.findIndex(
         corpAction => selectedCorpAction?.eventId === corpAction.eventId
       )
-      virtualizer.scrollToIndex(selectedIndex)
+      // virtualizer.scrollToIndex(selectedIndex)
     }
 
     calculateSelectedEmailContent()
-  }, [corpActions, selectedCorpAction, virtualizer])
+  }, [corpActions, selectedCorpAction])
 
-  function onSearchQueryChange (event: any) {
-    setSearchQuery(event.target.value)
-  }
+  // function onSearchQueryChange (event: any) {
+  //   setSearchQuery(event.target.value)
+  // }
 
-  async function onKeyDown (event: any) {
-    if (event.key !== 'Enter') {
-      return
-    }
+  // async function onKeyDown (event: any) {
+  //   if (event.key !== 'Enter') {
+  //     return
+  //   }
 
-    searchCorpActions(searchQuery)
-  }
+  //   searchCorpActions(searchQuery)
+  // }
 
   function onSelectEmail (
     corpAction: CorporateAction,
@@ -189,7 +180,50 @@ export function OpsCorporateActions () {
     ]
   }
 
-  const items = virtualizer.getVirtualItems()
+  const today = new Date().toISOString().split('T')[0];
+  const sortedData: SortedData = opsData.data.reduce(
+    (acc: SortedData, item) => {
+      const payDate = item.dates.pay_date.split("T")[0];
+      if (payDate < today) {
+        acc.expired.push(item);
+      } else if(item.requirements.action_required) {
+        acc.acquired.push(item);
+      } else {
+        acc.no_action_acquired.push(item)
+      }
+
+      return acc;
+    },
+    { acquired: [], no_action_acquired: [], expired: [] }
+  )
+console.log(sortedData)
+  const items = [
+    {
+      value: 'item-1',
+      title: 'Action Required',
+      titleTextStyle: 'text-red-500',
+      content: (
+        <OpsList data={sortedData.acquired}/> 
+        
+      )
+    },
+    {
+      value: 'item-2',
+      title: 'No Action Required',
+      titleTextStyle: 'text-green-500',
+      content: (
+        <OpsList data={sortedData.no_action_acquired}/> 
+      )
+    },
+    {
+      value: 'item-3',
+      title: 'Expired',
+      titleTextStyle: 'text-gray-500',
+      content: (
+        <OpsList data={sortedData.expired}/> 
+      )
+    }
+  ]
 
   const corpActionsListElement = isCompactViewEnabled ? (
     <DataGrid
@@ -201,87 +235,8 @@ export function OpsCorporateActions () {
       onRowClicked={onRowClicked}
       rowSelection={'single'}
     ></DataGrid>
-  ) : (
-    <div
-      className={`${styles['corporate-actions-response']} scrollable-div`}
-      ref={divRef}
-    >
-      <div
-        style={{
-          height: `${virtualizer.getTotalSize()}px`,
-          width: '100%',
-          position: 'relative'
-        }}
-      >
-        {items
-          .map((item: VirtualItem) => ({
-            item,
-            corpAction: opsData.data[item.index]
-          }))
-          .map(({ item, corpAction }) => (
-            <div
-              key={item.index}
-              style={{
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                width: '100%',
-                transform: `translateY(${item.start}px)`
-              }}
-              className={`${styles['corporate-action']} ${
-                selectedCorpAction?.eventId === corpAction.eventId
-                  ? styles['active']
-                  : ''
-              }`}
-              ref={virtualizer.measureElement}
-              data-index={item.index}
-            >
-              <div
-                id={corpAction.eventId}
-                onClick={() => setSelectedCorpAction(corpAction)}
-              >
-                <div className='p-1'>
-                  <div className='flex justify-between'>
-                    <div className='flex items-center'>
-                    <i className='fa-solid fa-microphone-lines mr-2'></i>
-                      <span className='mr-2'>
-                        Ticker: {corpAction.security?.identifiers?.ticker}
-                      </span>
-                      <span className='text-green-500'>
-                        General Corp Action - Mandatory Confirmed
-                      </span>
-                    </div>
-                    <div className='text-gray-400'>
-                      Holding: {corpAction.holdingQuantity} | Version:{' '}
-                      {corpAction.version} | Jan 01 20XX 00:00 ET
-                    </div>
-                  </div>
-                  <div className='flex justify-between mt-1'>
-                    <div>
-                      <span>XYZ CORPORATION CMN</span>
-                    </div>
-                    <div className='text-right'>
-                      <span className='mr-4'>ISIN: {corpAction.isin}</span>
-                      <span className='mr-4'>ID: {corpAction.id}</span>
-                      <span>
-                        No. Accounts:{' '}
-                        {corpAction.accounts?.length
-                          ? corpAction.accounts.length
-                          : ''}
-                      </span>
-                      <span className='ml-4'>
-                        Pay Date: {formatDateString(corpAction.dates?.pay_date)}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          ))}
-      </div>
-    </div>
-  )
-  // console.log(userContext)
+  ) : <Accordion type='multiple' items={items}/>
+
   return (
     <>
       <div className={styles['corporate-actions']}>
