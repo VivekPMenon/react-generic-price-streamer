@@ -42,7 +42,7 @@ export function MacroPanel() {
 
     return (
       <div>
-        <div className="sub-header">Morning Report: Generated {reportGenerationDate?.toLocaleString() ?? ''}</div>
+        <div className="sub-header">Macro Report: Generated {reportGenerationDate?.toLocaleString() ?? ''}</div>
         <div className={`${styles['macro-panel']}`}>
             <div className={styles['left_panel']}>
                 <div className={styles['equity-futures-container']}>
