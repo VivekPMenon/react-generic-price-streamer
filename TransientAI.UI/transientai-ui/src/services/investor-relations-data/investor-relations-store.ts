@@ -52,6 +52,7 @@ export const useInvestorRelationsStore = create<InvestorRelationsStore>((set, ge
   deleteInquiry: async (id: string): Promise<boolean> => {
     try {
       await investorRelationsService.deleteTask(id);
+      await get().loadInquiries();
       return true;
     } catch (e: any) {
       set({ error: 'Failed to delete inquiry' });
