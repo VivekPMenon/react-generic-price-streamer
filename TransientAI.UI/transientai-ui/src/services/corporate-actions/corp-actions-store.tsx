@@ -90,27 +90,22 @@ export const useCorpActionsStore = create<CorpActionsDataState>((set, get) => ({
 
   startPolling: () => {
     setInterval(async () => {
-      const prevCount = get().corpActions.length;
+      const { loadedCorpActions } = get();
+      const prevCount = loadedCorpActions.length;
 
-      const { corpActions } = get();
       const newCorpActions = await corpActionsDataService.getCorpActions();
-      if (areObjectsEqual(corpActions, newCorpActions)) {
+      if (areObjectsEqual(loadedCorpActions, newCorpActions)) {
         return;
       }
 
-      set({ corpActions: newCorpActions });
+      set({ loadedCorpActions: newCorpActions });
 
-      set((state) => {
-        const newCount = state.corpActions.length;
-        const unseenDiff = Math.abs(newCount - prevCount);
+      const newCount = newCorpActions.length;
+      const unseenDiff = newCount - prevCount;
 
-        if (unseenDiff > 0) {
-          useUnseenItemsStore.getState().addUnseenItems(resourceName, unseenDiff);
-        }
+      useUnseenItemsStore.getState().addUnseenItems(resourceName, unseenDiff);
 
-        return {}; // No need to modify state here, just ensuring correctness
-      });
-    }, 120000); // Polls every 2 minutes
+    }, 2000); // Polls every 2 minutes
   }
 }));
 
