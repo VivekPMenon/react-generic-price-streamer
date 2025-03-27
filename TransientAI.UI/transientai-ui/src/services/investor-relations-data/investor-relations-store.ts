@@ -16,6 +16,7 @@ export interface InvestorRelationsStore {
   loadInquiries: () => Promise<void>;
   save: (inquiry: InquiryRequest) => Promise<void>;
   changeStatus: (id: string, status: InquiryStatus) => Promise<void>;
+  deleteInquiry: (id: string) => Promise<boolean>;
   loadAssignees: () => Promise<void>;
   updateStatusFromCompleted: (inquiry: InquiryRequest) => void;
   startPolling: () => void;
@@ -45,6 +46,16 @@ export const useInvestorRelationsStore = create<InvestorRelationsStore>((set, ge
       set({ inquiries: [], error: 'Failed to load inquiries' });
     } finally {
       set({ isLoading: false });
+    }
+  },
+
+  deleteInquiry: async (id: string): Promise<boolean> => {
+    try {
+      await investorRelationsService.deleteTask(id);
+      return true;
+    } catch (e: any) {
+      set({ error: 'Failed to delete inquiry' });
+      return false;
     }
   },
 

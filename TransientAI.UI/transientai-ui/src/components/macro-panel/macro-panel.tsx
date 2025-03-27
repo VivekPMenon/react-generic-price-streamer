@@ -38,7 +38,7 @@ export function MacroPanel() {
             setInstrument(null);
         }
     }
-    const isMobile = deviceType === 'mobile';
+    const isMobile = deviceType !== 'desktop';
 
     return (
       <div>
@@ -69,7 +69,7 @@ export function MacroPanel() {
                     <div className="sub-header">Change from the close</div>
                     <DataGrid
                         domLayout={isMobile ? 'autoHeight' : 'normal'}
-                        height={isMobile ? 900 : 200}
+                        height={isMobile ? 900 : 400}
                         isSummaryGrid={false}
                         suppressStatusBar={true}
                         suppressFloatingFilter={true}

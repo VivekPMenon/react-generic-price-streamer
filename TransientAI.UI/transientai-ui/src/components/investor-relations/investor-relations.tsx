@@ -1,12 +1,12 @@
 'use client'
 
 import styles from './investor-relations.module.scss';
-import React, {useCallback, useState} from 'react';
+import React, {useCallback} from 'react';
 import {DataGrid} from "@/components/data-grid";
 import {RequestFormPopup} from "@/components/investor-relations/request-form-popup";
 import {useInvestorRelationsStore} from "@/services/investor-relations-data/investor-relations-store";
 import {tryParseAndFormatDateOnly} from "@/lib/utility-functions/date-operations";
-import {FirstDataRenderedEvent, GetRowIdParams, GridSizeChangedEvent} from "ag-grid-community";
+import {ColDef, FirstDataRenderedEvent, GetRowIdParams, GridSizeChangedEvent} from "ag-grid-community";
 import {executeAsync} from "@/lib/utility-functions/async";
 import { toast } from 'react-toastify';
 
@@ -43,10 +43,46 @@ function handleGridSizeChanged(params: GridSizeChangedEvent) {
     executeAsync(() => params.api.sizeColumnsToFit(), 10);
 }
 
+function DeleteButton(props: any) {
+    const [isDeleting, setIsDeleting] = React.useState(false);
+
+    const handleClick = () => {
+        setIsDeleting(true);
+
+        props.onDelete(props.data.id)
+            .then((result: boolean) => {
+                if (result) {
+                    props.api.applyTransaction({remove: [props.data]});
+                    return;
+                }
+                setIsDeleting(false);
+            })
+            .catch(() => {
+                setIsDeleting(false);
+            });
+    }
+
+    return (
+        <i className={`fa-solid ${isDeleting ? 'fa-spinner' : 'fa fa-trash' }`}
+           style={{cursor: (isDeleting ? 'none' : 'pointer')}}
+           onClick={handleClick}
+        ></i>);
+}
+
 export function InvestorRelations() {
-    const { inquiries, isLoading, changeStatus, updateStatusFromCompleted } = useInvestorRelationsStore();
-    const getColumnDefs = useCallback(() => {
+    const { inquiries, isLoading, changeStatus, deleteInquiry, updateStatusFromCompleted } = useInvestorRelationsStore();
+    const getColumnDefs= useCallback((): ColDef[] => {
         return [
+            {
+                maxWidth: 40,
+                editable: false,
+                sortable: false,
+                filter: false,
+                pinned: 'left',
+                lockPinned: true,
+                suppressNavigable: true,
+                cellRenderer: (props: any) => (<DeleteButton {...props} onDelete={deleteInquiry} />)
+            },
             {
                 field: 'date',
                 headerName: 'Date',
