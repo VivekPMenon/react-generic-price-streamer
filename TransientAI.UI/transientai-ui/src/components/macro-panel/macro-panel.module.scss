@@ -96,11 +96,7 @@
 }
 
 .group-cell {
-  @extend .cell;
   text-decoration: underline;
-  position: absolute !important;;
-  bottom: 2px !important;
-  padding: 0px 11px;
   color: $yellow;
   font-weight: bold;
 }

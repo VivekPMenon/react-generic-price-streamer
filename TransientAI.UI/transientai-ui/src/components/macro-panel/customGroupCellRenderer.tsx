@@ -6,8 +6,8 @@ export function CustomGroupCellRenderer(props: CustomCellRendererProps) {
     node.setExpanded(true);
 
     return (
-        <div className={`${styles['group-cell']}`}>
-            {value}
-        </div>
+        <span className={`ag-cell-wrapper ag-row-group`}>
+            <span className={`ag-group-value ${styles['group-cell']}`}>{value}</span>
+        </span>
     );
 }
