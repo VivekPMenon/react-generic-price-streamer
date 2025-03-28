@@ -14,6 +14,10 @@
     gap: 10px;
   }
 }
+.header {
+  color: $yellow;
+  font-weight: bold;
+}
 
 .left_panel {
   display: flex;
@@ -81,12 +85,24 @@
   color: $white;
 }
 
+.bold-cell {
+  @extend .cell;
+  font-weight: bold;
+}
+
+.table-header {
+  @extend .bold-cell;
+  color: $yellow;
+}
+
 .group-cell {
   @extend .cell;
   text-decoration: underline;
   position: absolute !important;;
   bottom: 2px !important;
   padding: 0px 11px;
+  color: $yellow;
+  font-weight: bold;
 }
 
 .cell-numeric {

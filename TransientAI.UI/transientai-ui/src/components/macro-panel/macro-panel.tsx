@@ -42,7 +42,7 @@ export function MacroPanel() {
 
     return (
       <div>
-        <div className="sub-header">Macro Report: Generated {reportGenerationDate?.toLocaleString() ?? ''}</div>
+        <div className={`${styles['header']} sub-header`}>Macro Report: Generated {reportGenerationDate?.toLocaleString() ?? ''}</div>
         <div className={`${styles['macro-panel']}`}>
             <div className={styles['left_panel']}>
                 <div className={styles['equity-futures-container']}>
@@ -66,8 +66,8 @@ export function MacroPanel() {
                     />
                 </div>
                 <div className={styles['fx-container']}>
-                    <div className="sub-header">FX Moves</div>
-                    <div className="sub-header">Change from the close</div>
+                    <div className={`${styles['header']} sub-header`}>FX Moves</div>
+                    <div className={`${styles['header']} sub-header`}>Change from the close</div>
                     <DataGrid
                         domLayout={isMobile ? 'autoHeight' : 'normal'}
                         height={isMobile ? undefined : '80%'}
@@ -90,8 +90,8 @@ export function MacroPanel() {
                 </div>
             </div>
             <div className={styles['yields-container']}>
-                <div className="sub-header">Yield Curve Changes</div>
-                <div className="sub-header">Closing Yields Delayed T-2</div>
+                <div className={`${styles['header']} sub-header`}>Yield Curve Changes</div>
+                <div className={`${styles['header']} sub-header`}>Closing Yields Delayed T-2</div>
                 <DataGrid
                     domLayout={isMobile ? 'autoHeight' : 'normal'}
                     height={isMobile ? undefined : 575}
@@ -112,8 +112,8 @@ export function MacroPanel() {
                 />
             </div>
             <div className={styles['crypto-container']}>
-                <div className="sub-header">Crypto</div>
-                <div className="sub-header">Change from the close</div>
+                <div className={`${styles['header']} sub-header`}>Crypto</div>
+                <div className={`${styles['header']} sub-header`}>Change from the close</div>
                 <DataGrid
                     domLayout={isMobile ? 'autoHeight' : 'normal'}
                     height={isMobile ? undefined : 575}
