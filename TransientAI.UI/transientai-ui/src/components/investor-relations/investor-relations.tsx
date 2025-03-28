@@ -174,7 +174,7 @@ export function InvestorRelations() {
         <div className={styles['investor-relations']}>
             <div className={styles['header']}>
                 <span>Investor Relations Inquiries</span>
-                <RequestFormPopup onSubmitted={() => toast.success('Saved successfully')}>
+                <RequestFormPopup onSubmitted={(msg) => toast.success(msg)}>
                     <i className='fa-regular fa-3x fa-file cursor-pointer' />
                 </RequestFormPopup>
             </div>
