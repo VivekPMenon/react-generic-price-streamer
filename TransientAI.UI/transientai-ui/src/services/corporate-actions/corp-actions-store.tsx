@@ -3,6 +3,7 @@ import { CorporateAction } from './model';
 import { corpActionsDataService } from './corporate-actions-data';
 import { useUnseenItemsStore } from '../unseen-items-store/unseen-items-store';
 import { areObjectsEqual } from '@/lib/utility-functions';
+import { IPmCorporateAction } from '@/components/corporate-actions/pm-corporate-action/models';
 
 export const resourceName = 'corporate-actions';
 
@@ -30,6 +31,7 @@ export interface CorpActionsDataState {
   setSelectedCorpAction: (corpAction: CorporateAction | null) => void;
   setCorpActions: (corpActionsData: CorporateAction[]) => void;
   loadCorpActions: () => Promise<void>;
+  loadPmCorpActions: () => Promise<void>;
   loadCorpActionDetail: (eventId: string) => Promise<CorporateAction>;
   startPolling: () => void;
 }
@@ -71,6 +73,38 @@ export const useCorpActionsStore = create<CorpActionsDataState>((set, get) => ({
       const newCorpActions = await corpActionsDataService.getCorpActions();
 
       newCorpActions.sort((a: CorporateAction, b: CorporateAction) => {
+        const aDate = a?.receivedDate ? new Date(a.receivedDate).getTime() : -1;
+        const bDate = b?.receivedDate ? new Date(b.receivedDate).getTime() : -1;
+        return bDate - aDate;
+      });
+
+      const eventIds = get().searchedEventIds;
+      if (eventIds.size > 0) {
+        const filtered = newCorpActions.filter(ca => eventIds.has(ca.eventId));
+        set({
+          corpActions: filtered,
+          loadedCorpActions: newCorpActions,
+          isLoading: false,
+        });
+      } else {
+        set({
+          corpActions: newCorpActions,
+          loadedCorpActions: newCorpActions,
+          isLoading: false,
+        });
+      }
+    } catch (error) {
+      console.error('Error loading corporate actions:', error);
+      set({ isLoading: false });
+    }
+  },
+  loadPmCorpActions: async () => {
+    set({ isLoading: true });
+
+    try {
+      const newCorpActions = await corpActionsDataService.getPmCorpActions();
+
+      newCorpActions.sort((a: IPmCorporateAction, b: IPmCorporateAction) => {
         const aDate = a?.receivedDate ? new Date(a.receivedDate).getTime() : -1;
         const bDate = b?.receivedDate ? new Date(b.receivedDate).getTime() : -1;
         return bDate - aDate;
