@@ -2,38 +2,52 @@
 
 import { Accordion } from '@/components/accordion/accordion';
 import PmData from './portfolio_manager_output.json';
-import { PmList } from './pm-list'
+import { PmList } from './pm-list';
+import { CorporateAction, useCorpActionsStore } from '@/services/corporate-actions';
 
-export function PmCorporateActions () {
+type CorporateActionKey = 'Action Required' | 'No Action Required' | 'Expired';
+
+export function PmCorporateActions() {
+  const { sortByAction, pmCorpActions } = useCorpActionsStore();
  
+  const getCorporateActions = (key: CorporateActionKey): CorporateAction[] =>
+    (PmData.data[key] as CorporateAction[]) || [];
+  
+  
+  const items = [
+    {
+      value: '1',
+      title: 'Action Required',
+      titleTextStyle: 'text-red-500',
+      content: <PmList data={getCorporateActions('Action Required')} />,
+    },
+    {
+      value: '2',
+      title: 'No Action Required',
+      titleTextStyle: 'text-green-500',
+      content: <PmList data={getCorporateActions('No Action Required')} />,
+    },
+    {
+      value: '3',
+      title: 'Expired',
+      titleTextStyle: 'text-gray-500',
+      content: <PmList data={getCorporateActions("Expired")} />,
+    },
+  ];
 
-   const items = [
-      {
-        value: 'item-1',
-        title: 'Action Required',
-        titleTextStyle: 'text-red-500',
-        content: (
-          <PmList actionRequired={true} data={PmData.data['Action Required']}/> 
-          
-        )
-      },
-      {
-        value: 'item-2',
-        title: 'No Action Required',
-        titleTextStyle: 'text-green-500',
-        content: (
-          <PmList actionRequired={false} data={PmData.data['No Action Required']}/> 
-        )
-      },
-      {
-        value: 'item-3',
-        title: 'Expired',
-        titleTextStyle: 'text-gray-500',
-        content: (
-          <PmList actionRequired={false} data={PmData.data.Expired}/> 
-        )
-      }
-    ]
-
-  return <Accordion type='multiple' items={items}/>
+  return (
+    <>
+      {sortByAction ? (
+        <Accordion type="multiple" items={items} />
+      ) : (
+        <PmList
+          data={[
+            ...(PmData.data['Action Required'] || []),
+            ...(PmData.data['No Action Required'] || []),
+            ...(PmData.data['Expired'] || []),
+          ] as CorporateAction[]}
+        />
+      )}
+    </>
+  );
 }

@@ -1,7 +1,6 @@
 import { CorporateAction, CorporateActionFilterOptions } from "./model";
 import { webApihandler } from "@/services/web-api-handler";
 import { endpointFinder } from "../web-api-handler/endpoint-finder-service";
-import { IPmCorporateAction } from "@/components/corporate-actions/pm-corporate-action/models";
 
 class CorporateActionsDataService {
   private serviceName = 'corp-actions-api';
@@ -37,7 +36,7 @@ class CorporateActionsDataService {
     }
   }
 
-  async getPmCorpActions(filterOptions?: CorporateActionFilterOptions): Promise<IPmCorporateAction[]> {
+  async getPmCorpActions(filterOptions?: CorporateActionFilterOptions): Promise<{ [key: string]: CorporateAction[] }> {
     try {
       const result = await webApihandler.get(
         'events',
@@ -46,17 +45,32 @@ class CorporateActionsDataService {
           serviceName: this.serviceName,
           headers: this.headers
         });
-
-      // Merge corporate actions from different sections
-      const mergedCorpActions: IPmCorporateAction[] = [
-        ...(result.data['Action Required'] || []),
-        ...(result.data['No Action Required'] || []),
-        ...(result.data['Expired'] || [])
-      ];
-
-      return mergedCorpActions.filter((corpAction: CorporateAction) => corpAction.isin || corpAction.ticker);
+      
+      // Apply filter to each section separately while keeping them distinct
+      const filteredResults: { [key: string]: CorporateAction[] } = {};
+      
+      // Process each section separately
+      if (result.data['Action Required']) {
+        filteredResults['Action Required'] = result.data['Action Required'].filter(
+          (corpAction: CorporateAction) => corpAction.isin || corpAction.ticker
+        );
+      }
+      
+      if (result.data['No Action Required']) {
+        filteredResults['No Action Required'] = result.data['No Action Required'].filter(
+          (corpAction: CorporateAction) => corpAction.isin || corpAction.ticker
+        );
+      }
+      
+      if (result.data['Expired']) {
+        filteredResults['Expired'] = result.data['Expired'].filter(
+          (corpAction: CorporateAction) => corpAction.isin || corpAction.ticker
+        );
+      }
+      
+      return filteredResults;
     } catch (e) {
-      return [];
+      return {};
     }
   }
 

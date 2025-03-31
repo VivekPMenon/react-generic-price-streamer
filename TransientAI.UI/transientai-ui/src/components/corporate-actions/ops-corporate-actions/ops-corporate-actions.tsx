@@ -5,22 +5,19 @@ import styles from './ops.module.scss'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { CorporateAction, useCorpActionsStore } from '@/services/corporate-actions'
 import { useScrollTo } from '@/lib/hooks'
-import { useUserContextStore } from '@/services/user-context'
 import { DataGrid, getCurrencyColDefTemplate } from '../../data-grid'
 import { ColDef, GridApi, RowClickedEvent } from 'ag-grid-community'
 import { corpActionsDataService } from '@/services/corporate-actions/corporate-actions-data'
 import opsData from './ops_view_output.json'
 import { Accordion } from '@/components/accordion/accordion'
 import { OpsList } from './ops-list'
-import { SortedData, useFilteredCorporateActions } from './use-filtered-corporate-action'
+import { useFilteredCorporateActions } from './use-filtered-corporate-action'
 
 export function OpsCorporateActions () {
-  const { userContext } = useUserContextStore()
   const {
     corpActions,
     selectedCorpAction,
     setSelectedCorpAction,
-    searchCorpActions,
     filterActions,
     sortByAction,
   } = useCorpActionsStore()

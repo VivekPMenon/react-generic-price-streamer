@@ -49,12 +49,13 @@ export const CorporateActions = () => {
             }
           })()}
         </div>
+        
 
         <div className={styles['email-content']}>
           <EmailViewer
             className={styles['email-viewer'] + ' height-vh-90'}
             emailHtml={selectedEmailContent}
-            scrollToSearchTerm={selectedCorpAction?.eventId || ''}
+            scrollToSearchTerm={selectedCorpAction?.eventId || ''} // selectedCorpAction?.accounts && selectedCorpAction?.accounts[0].accountNumber 
           />
         </div>
       </section>

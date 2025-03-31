@@ -6,14 +6,14 @@ import { useRef} from 'react'
 import { useVirtualizer, VirtualItem } from '@tanstack/react-virtual'
 import { formatDateString } from '@/lib/utility-functions/date-operations'
 import { useCorpActionsStore } from '@/services/corporate-actions/corp-actions-store'
-import { IPmCorporateAction } from './models'
+import { CorporateAction } from '@/services/corporate-actions/model'
 
 interface PmListProps {
-  data: IPmCorporateAction[];
-  actionRequired: boolean;
+  data: CorporateAction[] | [];
 }
 
-export function PmList ({ data,actionRequired }: PmListProps) {
+
+export function PmList ({ data }: PmListProps) {
   const divRef = useRef<HTMLDivElement>(null)
     const { selectedCorpAction, setSelectedCorpAction } = useCorpActionsStore();
 
@@ -75,7 +75,7 @@ export function PmList ({ data,actionRequired }: PmListProps) {
                       <i className='fa-solid fa-microphone-lines mr-2'></i>
                       Ticker: {corpAction.ticker}
                     </span>
-                    <span className={`${ actionRequired ? 'text-red-500' : 'text-green-500'}`}>
+                    <span className={`${ corpAction.actionRequired ? 'text-red-500' : 'text-green-500'}`}>
                       {corpAction.eventType}
                     </span>
                     <span className='flex items-center gap-2'>
@@ -112,9 +112,9 @@ export function PmList ({ data,actionRequired }: PmListProps) {
                     </div>
                     <div className='grid grid-cols-1'>
                         {
-                            corpAction.versionsInfo && corpAction.versionsInfo.map((vers)=>
-                                <span key={vers.date} className=''>
-                        Version: {vers.versionId} &nbsp;|&nbsp; {formatDateString(vers.date)}
+                            corpAction.versionHistory && corpAction.versionHistory.map((vers)=>
+                                <span key={vers.changedDate} className=''>
+                        Version: {vers.version} &nbsp;|&nbsp; {formatDateString(vers.changedDate)}
                       </span>
                             )
                         }

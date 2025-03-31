@@ -1,18 +1,18 @@
 'use client'
 
-import { useRef, useState } from 'react'
+import { useRef} from 'react'
 import { useVirtualizer, VirtualItem } from '@tanstack/react-virtual'
 import { formatDateString } from '@/lib/utility-functions/date-operations'
 import styles from './ops.module.scss'
-import { useCorpActionsStore } from '@/services/corporate-actions'
+import { CorporateAction, useCorpActionsStore } from '@/services/corporate-actions'
 
 interface OpsListProps {
-  data: any[]
+  data: CorporateAction[]
 }
 
 export function OpsList ({ data }: OpsListProps) {
  const divRef = useRef<HTMLDivElement>(null)
- const { corpActions, selectedCorpAction, setSelectedCorpAction, searchCorpActions } = useCorpActionsStore();
+ const { selectedCorpAction, setSelectedCorpAction} = useCorpActionsStore();
 
   // const [emailContents, setEmailContents] = useState<any>({});
   const virtualizer = useVirtualizer({
@@ -84,7 +84,7 @@ export function OpsList ({ data }: OpsListProps) {
                   </div>
                   <div className='flex justify-between mt-1'>
                     <div>
-                      <span>{corpAction.security.name}</span>
+                      <span>{corpAction?.security && corpAction?.security.name}</span>
                     </div>
                     <div className='text-right'>
                       <span className='mr-4'>ISIN: {corpAction.isin}</span>
