@@ -2,6 +2,7 @@ import {ReactNode, useState} from "react";
 import {File} from "@/services/file-manager";
 import * as Dialog from "@radix-ui/react-dialog";
 import * as Form from '@radix-ui/react-form';
+import { TextArea } from "@radix-ui/themes";
 import styles from './email-form-popup.module.scss';
 
 export interface EmailPopupProps {
@@ -100,11 +101,11 @@ export function EmailFormPopup({children, file, sendEmail}: EmailPopupProps) {
                             </Form.Field>
                             <Form.Field name="message">
                                 <Form.Control asChild>
-                                    <textarea
+                                    <TextArea
                                         placeholder="Message"
                                         value={body}
                                         onChange={handleBodyChange}
-                                        className="w-full border rounded-md p-2 h-32"
+                                        className={`w-full rounded-md h-32`}
                                     />
                                 </Form.Control>
                             </Form.Field>

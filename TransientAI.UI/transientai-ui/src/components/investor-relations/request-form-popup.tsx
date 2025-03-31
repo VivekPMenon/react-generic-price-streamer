@@ -1,6 +1,7 @@
 import React, {ReactNode, useEffect, useState} from "react";
 import * as Dialog from '@radix-ui/react-dialog';
 import * as Form from '@radix-ui/react-form';
+import { TextArea } from "@radix-ui/themes";
 import styles from './request-form-popup.module.scss';
 import {useInvestorRelationsStore} from "@/services/investor-relations-data/investor-relations-store";
 import {InquiryFlag, InquiryStatus} from "@/services/investor-relations-data/model";
@@ -167,12 +168,13 @@ export function RequestFormPopup({children, onSubmitted}: RequestPopupProps) {
                             <Form.Field name="inquiry">
                                 <div className="flex space-x-2 mt-4">
                                     <Form.Control asChild>
-                                        <textarea
+                                        <TextArea
                                             disabled={isSaving}
                                             placeholder='Inquiry'
                                             required={true}
                                             value={inquiry}
                                             onChange={handleInquiryChange}
+                                            className={`w-full rounded-md h-32 `}
                                             aria-invalid={!!inquiryError}
                                         />
                                     </Form.Control>
@@ -187,6 +189,7 @@ export function RequestFormPopup({children, onSubmitted}: RequestPopupProps) {
                                             disabled={isSaving}
                                             onChange={handleAssigneeChange}
                                             required={true}
+                                            className={`${styles['assignees']} rounded-md `}
                                             style={{ display: 'flex', flex: '1 1 50%' }}>
                                             {
                                                 selectableAssignees.map(assignee => (
@@ -205,9 +208,9 @@ export function RequestFormPopup({children, onSubmitted}: RequestPopupProps) {
                                         <input
                                             disabled={isSaving}
                                             type="date"
-                                            className={styles['date']}
                                             required={true}
                                             value={dueDate}
+                                            className={`${styles['date']} rounded-md `}
                                             onChange={handleDueDateChange}
                                         />
                                     </Form.Control>
