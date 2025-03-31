@@ -11,7 +11,7 @@ interface OpsListProps {
 }
 
 export function OpsList ({ data }: OpsListProps) {
-  const divRef = useRef<HTMLDivElement>(null)
+ const divRef = useRef<HTMLDivElement>(null)
  const { corpActions, selectedCorpAction, setSelectedCorpAction, searchCorpActions } = useCorpActionsStore();
 
   // const [emailContents, setEmailContents] = useState<any>({});

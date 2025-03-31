@@ -21,8 +21,8 @@ export interface CorpActionsDataState {
     dateRange: string | null;
     corpActionId: string | null;
     eventStatus: string | null;
-    eventType: string | null;
     account: string | null;
+    eventType: string | null;
   };
   setSortByAction: (sortByAction: boolean) => void;
   setFilterActions: (key: string, filters: Partial<CorpActionsDataState['filterActions']>) => void;
@@ -32,6 +32,7 @@ export interface CorpActionsDataState {
   loadCorpActions: () => Promise<void>;
   loadCorpActionDetail: (eventId: string) => Promise<CorporateAction>;
   startPolling: () => void;
+  reset: () => void;
 }
 
 export const useCorpActionsStore = create<CorpActionsDataState>((set, get) => ({
@@ -42,7 +43,6 @@ export const useCorpActionsStore = create<CorpActionsDataState>((set, get) => ({
   isLoading: false,
   isSearching: false,
   sortByAction: true,
-  reset: {},
   filterActions: {
     actionType: null,
     securityTicker: null,
@@ -62,6 +62,19 @@ export const useCorpActionsStore = create<CorpActionsDataState>((set, get) => ({
       ...state.filterActions,
       [key]: value,
     }
+  })),
+  reset: () => set((state) => ({
+    filterActions: {
+      actionType: null,
+      securityTicker: null,
+      securityidentifier: null,
+      dateRange: null,
+      corpActionId: null,
+      eventStatus: null,
+      eventType: null,
+      account: null
+    },
+    sortByAction: true
   })),
 
   loadCorpActions: async () => {

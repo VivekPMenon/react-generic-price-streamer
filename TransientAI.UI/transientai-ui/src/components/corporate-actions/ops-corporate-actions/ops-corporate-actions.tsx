@@ -3,25 +3,16 @@
 import styles from './ops.module.scss'
 
 import { useEffect, useMemo, useRef, useState } from 'react'
-import {
-  CorporateAction,
-  useCorpActionsStore
-} from '@/services/corporate-actions'
-import EmailViewer from '../../email-parser/email-viewer'
+import { CorporateAction, useCorpActionsStore } from '@/services/corporate-actions'
 import { useScrollTo } from '@/lib/hooks'
-import { RoleType, useUserContextStore } from '@/services/user-context'
+import { useUserContextStore } from '@/services/user-context'
 import { DataGrid, getCurrencyColDefTemplate } from '../../data-grid'
 import { ColDef, GridApi, RowClickedEvent } from 'ag-grid-community'
 import { corpActionsDataService } from '@/services/corporate-actions/corporate-actions-data'
 import opsData from './ops_view_output.json'
 import { Accordion } from '@/components/accordion/accordion'
 import { OpsList } from './ops-list'
-
-interface SortedData {
-  acquired: any[];
-  no_action_acquired: any[];
-  expired: any[];
-}
+import { SortedData, useFilteredCorporateActions } from './use-filtered-corporate-action'
 
 export function OpsCorporateActions () {
   const { userContext } = useUserContextStore()
@@ -29,12 +20,13 @@ export function OpsCorporateActions () {
     corpActions,
     selectedCorpAction,
     setSelectedCorpAction,
-    searchCorpActions
+    searchCorpActions,
+    filterActions,
+    sortByAction,
   } = useCorpActionsStore()
   const { scrollTargetRef, scrollToTarget } = useScrollTo<HTMLDivElement>()
   const gridApiRef = useRef<GridApi | null>(null)
 
-  const [searchQuery, setSearchQuery] = useState<string>('')
   const [selectedEmailContent, setSelectedEmailContent] = useState<string>('')
   const [isLoadingEmail, setIsLoadingEmail] = useState<boolean>(false)
   const [isCompactViewEnabled, setIsCompactViewEnabled] = useState(false)
@@ -67,18 +59,6 @@ export function OpsCorporateActions () {
 
     calculateSelectedEmailContent()
   }, [corpActions, selectedCorpAction])
-
-  // function onSearchQueryChange (event: any) {
-  //   setSearchQuery(event.target.value)
-  // }
-
-  // async function onKeyDown (event: any) {
-  //   if (event.key !== 'Enter') {
-  //     return
-  //   }
-
-  //   searchCorpActions(searchQuery)
-  // }
 
   function onSelectEmail (
     corpAction: CorporateAction,
@@ -180,23 +160,8 @@ export function OpsCorporateActions () {
     ]
   }
 
-  const today = new Date().toISOString().split('T')[0];
-  const sortedData: SortedData = opsData.data.reduce(
-    (acc: SortedData, item) => {
-      const payDate = item.dates.pay_date.split("T")[0];
-      if (payDate < today) {
-        acc.expired.push(item);
-      } else if(item.requirements.action_required) {
-        acc.acquired.push(item);
-      } else {
-        acc.no_action_acquired.push(item)
-      }
-
-      return acc;
-    },
-    { acquired: [], no_action_acquired: [], expired: [] }
-  )
-console.log(sortedData)
+  const sortedData = useFilteredCorporateActions(opsData, filterActions, sortByAction);
+  
   const items = [
     {
       value: 'item-1',
@@ -235,7 +200,12 @@ console.log(sortedData)
       onRowClicked={onRowClicked}
       rowSelection={'single'}
     ></DataGrid>
-  ) : <Accordion type='multiple' items={items}/>
+  ) : sortByAction ? (
+      <Accordion type='multiple' items={items}/>
+  ) : (
+      <OpsList data={sortedData.acquired || []} />
+  )
+  
 
   return (
     <>

@@ -74,6 +74,16 @@ const customStyles = {
         ...provided,
         padding: '0px 4px', 
     }),
+    clearIndicator: (provided: any) => ({
+      ...provided,
+      color: '#9CA3AF',
+      padding: '0px',
+      cursor: 'pointer',
+      transform: 'scale(0.8)',
+      '&:hover': {
+        color: 'white',
+      },
+    }),
   };
 
   interface FilterDropDownProps {
@@ -94,6 +104,7 @@ export const FilterDropDown = ({
     return(
         <Select
             unstyled
+            isClearable={true}
             options={options}
             styles={customStyles}
             placeholder={placeholder}

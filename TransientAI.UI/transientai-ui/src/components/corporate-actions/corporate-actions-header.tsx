@@ -6,6 +6,7 @@ import Toggle from 'react-toggle';
 import { RoleType, useUserContextStore } from '@/services/user-context';
 import { FilterDropDown } from './filter-dropdown';
 import { useCorpActionsStore } from '@/services/corporate-actions';
+import OpsList from '@/components/corporate-actions/ops-corporate-actions/ops_view_output.json'
 
 interface FilterActions {
     actionType: boolean;
@@ -27,14 +28,21 @@ interface FilterActions {
   }
 
 export const CorporateActionHeader = () => {
-    const [searchQuery, setSearchQuery] = useState<string>('');
+    const [searchQuery, setSearchQuery] = useState<string>("");
     const { userContext } = useUserContextStore();
     const [dateRange, setDateRange] = useState([null, null]);
     const [startDate, endDate] = dateRange;
-    const { corpActions, filterActions, sortByAction, setFilterActions, setSortByAction } = useCorpActionsStore();
+    const {
+      corpActions,
+      filterActions,
+      sortByAction,
+      reset,
+      setFilterActions,
+      setSortByAction,
+    } = useCorpActionsStore();
 
     function onSearchQueryChange(event: any) {
-        setSearchQuery(event.target.value);
+      setSearchQuery(event.target.value);
     }
 
     const uniqueFilters = useMemo(() => {
@@ -43,17 +51,19 @@ export const CorporateActionHeader = () => {
         const accountSet = new Set<string>();
         const securitySet = new Set<string>();
         const corpActionId = new Set<string>();
+        const isinSet = new Set<string>();
 
-        corpActions.forEach((item) => {
+        OpsList.data.forEach((item) => {
             if (item.eventType) eventTypeSet.add(item.eventType);
             if (item.eventStatus) eventStatusSet.add(item.eventStatus);
-            if (item.eventId) corpActionId.add(item.eventId)
+            if (item.eventId) corpActionId.add(item.eventId);
+            if (item.isin) isinSet.add(item.isin);
             if (item.accounts) {
                 item.accounts.forEach((acc) => {
                     if (acc.accountNumber) accountSet.add(acc.accountNumber);
                 });
             }
-            const securityTicker = item.security?.identifiers?.ticker || item.security?.name;
+            const securityTicker = item.ticker || item.security?.name;
             if (securityTicker) securitySet.add(securityTicker);
         });
 
@@ -63,6 +73,7 @@ export const CorporateActionHeader = () => {
             corpActionIdOptions: Array.from(corpActionId).map((value) => ({ label: value, value })),
             accountOptions: Array.from(accountSet).map((value) => ({ label: value, value })),
             securityOptions: Array.from(securitySet).map((value) => ({ label: value, value })),
+            isinOptions: Array.from(isinSet).map((value) => ({ label: value, value }))
         }
     }, [corpActions])
 
@@ -87,10 +98,7 @@ export const CorporateActionHeader = () => {
           key: "securityidentifier",
           label: "ISIN/CUSIP",
           type: "dropdown",
-          options: [
-            { value: "cusip", label: "CUSIP" },
-            { value: "isin", label: "ISIN" },
-          ],
+          options: uniqueFilters.isinOptions
         },
         {
           key: "dateRange",
@@ -128,25 +136,27 @@ export const CorporateActionHeader = () => {
       ];
 
       const handleFilterChange = (key: string, value: any) => {
-    //   console.log(key, value)
-        let setValue = value.value;
-        // if (setValue === "true") {
-        //   setValue = true;
-        // } else if (setValue === "false") {
-        //   setValue = false;
-        // }
-        setFilterActions(key, setValue);
+        let setValue = value ? value.value : null;
+        if (key !== "dateRange") {
+          setFilterActions(key, setValue);
+        }
       };
 
       const handleDateFilter = (key: string, value: any) => {
-        const formattedDates = value.map((date: any) => 
-            date ? new Date(date).toISOString().split("T")[0] : null
+        const formattedDates = value.map((date: any) =>
+          date ? new Date(date).toISOString().split("T")[0] : null
         );
-        setDateRange(value)
-        if(formattedDates.length > 1){
-            setFilterActions(key, formattedDates)
+        setDateRange(value);
+        if (formattedDates.length > 1) {
+          setFilterActions(key, formattedDates);
         }
-      }
+      };
+
+      const handleReset = () => {
+        reset();
+        setDateRange([null, null]);
+      };
+
     return(
         <div>
             <section className='flex gap-[30px] items-center mb-3'>
@@ -174,12 +184,17 @@ export const CorporateActionHeader = () => {
                             <Toggle
                             id='sort-action'
                             defaultChecked={sortByAction}
+                            checked={sortByAction}
                             onChange={() => setSortByAction(!sortByAction)} 
                             className={styles['custom-toggle']}
                             />
                         </div>
 
-                        <button className='button !py-1 !px-2'>Reset</button>
+                        <button className='button !py-1 !px-2'
+                        onClick={handleReset}
+                        >
+                          Reset
+                        </button>
                     </div>
                 </div>
             </section>
