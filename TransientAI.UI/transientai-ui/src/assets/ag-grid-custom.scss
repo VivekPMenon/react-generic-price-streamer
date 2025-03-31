@@ -16,7 +16,33 @@
   --ag-balham-active-color: #00b2ac;
   --ag-odd-row-background-color: #{$body-bg};
 
-  
+
+  ::-webkit-scrollbar {
+    width: 7px;
+  }
+
+  ::-webkit-scrollbar:hover {
+    width: 7px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: $body-bg;
+  }
+
+  ::-webkit-scrollbar-track-piece {
+    background: $body-bg;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: $scrollbar-thumb-bg;
+    border-radius: 5px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: $scrollbar-hover-bg;
+    display: block;
+  }
+
   @media screen and (max-width: $mobile-breakpoint-max) {
     min-height: 400px;
   }

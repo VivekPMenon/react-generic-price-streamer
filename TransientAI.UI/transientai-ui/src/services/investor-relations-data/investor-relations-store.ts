@@ -3,6 +3,7 @@ import { InquiryRequest, InquiryStatus } from './model';
 import { investorRelationsService } from '@/services/investor-relations-data/investor-relations-service';
 import { useUserContextStore } from '@/services/user-context';
 import { useUnseenItemsStore } from '../unseen-items-store/unseen-items-store';
+import {clearInterval} from "node:timers";
 
 export const resourceNameInvestorRelations = 'investor-relations';
 
@@ -64,7 +65,7 @@ export const useInvestorRelationsStore = create<InvestorRelationsStore>((set, ge
     const userContext = useUserContextStore.getState().userContext;
     try {
       set({ isSaving: true });
-      inquiry.owner = userContext.userName;
+      inquiry.owner_name = userContext.userName;
       await investorRelationsService.submit(inquiry);
     } catch (e: any) {
       set({ error: 'Failed to save inquiry' });
@@ -110,22 +111,18 @@ export const useInvestorRelationsStore = create<InvestorRelationsStore>((set, ge
 
   startPolling: () => {
     setInterval(async () => {
-      const prevCount = get().inquiries.length;
+          const {inquiries, loadInquiries} = get();
 
-      await get().loadInquiries();
+          const prevCount = inquiries.length;
+          await loadInquiries();
 
-      // Ensure we fetch the latest count after the state is updated
-      set((state) => {
-        const newCount = state.inquiries.length;
-        const unseenDiff = Math.abs(newCount - prevCount);
+          // Ensure we fetch the latest count after the state is updated
+          const newCount = get().inquiries.length;
+          const unseenDiff = newCount - prevCount;
 
-        if (unseenDiff > 0) {
           useUnseenItemsStore.getState().addUnseenItems(resourceNameInvestorRelations, unseenDiff);
-        }
-
-        return {}; // No need to modify state, just ensuring correctness
-      });
-    }, 120000); // Polls every 2 minutes
+        }, 120000
+    );
   }
 }));
 

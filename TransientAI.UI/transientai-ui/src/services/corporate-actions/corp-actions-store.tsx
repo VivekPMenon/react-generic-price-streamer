@@ -3,6 +3,7 @@ import { CorporateAction } from './model';
 import { corpActionsDataService } from './corporate-actions-data';
 import { useUnseenItemsStore } from '../unseen-items-store/unseen-items-store';
 import { areObjectsEqual } from '@/lib/utility-functions';
+import { IPmCorporateAction } from '@/components/corporate-actions/pm-corporate-action/models';
 
 export const resourceName = 'corporate-actions';
 
@@ -30,6 +31,7 @@ export interface CorpActionsDataState {
   setSelectedCorpAction: (corpAction: CorporateAction | null) => void;
   setCorpActions: (corpActionsData: CorporateAction[]) => void;
   loadCorpActions: () => Promise<void>;
+  loadPmCorpActions: () => Promise<void>;
   loadCorpActionDetail: (eventId: string) => Promise<CorporateAction>;
   startPolling: () => void;
   reset: () => void;
@@ -109,6 +111,38 @@ export const useCorpActionsStore = create<CorpActionsDataState>((set, get) => ({
       set({ isLoading: false });
     }
   },
+  loadPmCorpActions: async () => {
+    set({ isLoading: true });
+
+    try {
+      const newCorpActions = await corpActionsDataService.getPmCorpActions();
+
+      newCorpActions.sort((a: IPmCorporateAction, b: IPmCorporateAction) => {
+        const aDate = a?.receivedDate ? new Date(a.receivedDate).getTime() : -1;
+        const bDate = b?.receivedDate ? new Date(b.receivedDate).getTime() : -1;
+        return bDate - aDate;
+      });
+
+      const eventIds = get().searchedEventIds;
+      if (eventIds.size > 0) {
+        const filtered = newCorpActions.filter(ca => eventIds.has(ca.eventId));
+        set({
+          corpActions: filtered,
+          loadedCorpActions: newCorpActions,
+          isLoading: false,
+        });
+      } else {
+        set({
+          corpActions: newCorpActions,
+          loadedCorpActions: newCorpActions,
+          isLoading: false,
+        });
+      }
+    } catch (error) {
+      console.error('Error loading corporate actions:', error);
+      set({ isLoading: false });
+    }
+  },
 
   searchCorpActions: async (query: string) => {
     set({ isSearching: true });
@@ -135,26 +169,21 @@ export const useCorpActionsStore = create<CorpActionsDataState>((set, get) => ({
 
   startPolling: () => {
     setInterval(async () => {
-      const prevCount = get().corpActions.length;
+      const { loadedCorpActions } = get();
+      const prevCount = loadedCorpActions.length;
 
-      const { corpActions } = get();
       const newCorpActions = await corpActionsDataService.getCorpActions();
-      if (areObjectsEqual(corpActions, newCorpActions)) {
+      if (areObjectsEqual(loadedCorpActions, newCorpActions)) {
         return;
       }
 
-      set({ corpActions: newCorpActions });
+      set({ loadedCorpActions: newCorpActions });
 
-      set((state) => {
-        const newCount = state.corpActions.length;
-        const unseenDiff = Math.abs(newCount - prevCount);
+      const newCount = newCorpActions.length;
+      const unseenDiff = newCount - prevCount;
 
-        if (unseenDiff > 0) {
-          useUnseenItemsStore.getState().addUnseenItems(resourceName, unseenDiff);
-        }
+      useUnseenItemsStore.getState().addUnseenItems(resourceName, unseenDiff);
 
-        return {}; // No need to modify state here, just ensuring correctness
-      });
     }, 120000); // Polls every 2 minutes
   }
 }));

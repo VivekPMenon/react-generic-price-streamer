@@ -4,19 +4,18 @@ import styles from './pm.module.scss'
 
 import { useRef} from 'react'
 import { useVirtualizer, VirtualItem } from '@tanstack/react-virtual'
-import { IPmCorporateAction } from './models'
 import { formatDateString } from '@/lib/utility-functions/date-operations'
 import { useCorpActionsStore } from '@/services/corporate-actions/corp-actions-store'
-import { CorporateAction } from '@/services/corporate-actions'
+import { IPmCorporateAction } from './models'
 
 interface PmListProps {
   data: IPmCorporateAction[];
-  actionRequired: boolean
+  actionRequired: boolean;
 }
 
 export function PmList ({ data,actionRequired }: PmListProps) {
   const divRef = useRef<HTMLDivElement>(null)
-    const { selectedCorpAction, setSelectedCorpAction } = useCorpActionsStore<CorporateAction[]>();
+    const { selectedCorpAction, setSelectedCorpAction } = useCorpActionsStore();
 
   // const [emailContents, setEmailContents] = useState<any>({});
   const virtualizer = useVirtualizer({
@@ -59,7 +58,7 @@ export function PmList ({ data,actionRequired }: PmListProps) {
                 transform: `translateY(${item.start}px)`
               }}
               className={`${styles['corporate-action']} ${
-                selectedCorpAction?.event_id === corpAction?.event_id
+                selectedCorpAction?.eventId === corpAction?.eventId
                   ? styles['active']
                   : ''
               }`}
@@ -67,7 +66,7 @@ export function PmList ({ data,actionRequired }: PmListProps) {
               data-index={item.index}
             >
               <div
-                id={corpAction.event_id}
+                id={corpAction.eventId}
                 onClick={() => setSelectedCorpAction(corpAction)}
               >
                 <div className='p-2 w-full font-sans'>
@@ -77,10 +76,10 @@ export function PmList ({ data,actionRequired }: PmListProps) {
                       Ticker: {corpAction.ticker}
                     </span>
                     <span className={`${ actionRequired ? 'text-red-500' : 'text-green-500'}`}>
-                      {corpAction.event_type}
+                      {corpAction.eventType}
                     </span>
                     <span className='flex items-center gap-2'>
-                      Deadline: {formatDateString(corpAction.dates.deadline)}
+                      Deadline: {formatDateString(corpAction?.dates && corpAction?.dates.deadline)}
                       <div className={styles['action-buttons']}>
                         <div className={styles['button-container']}>
                           <i className='fa-regular fa-envelope'></i>
@@ -90,31 +89,31 @@ export function PmList ({ data,actionRequired }: PmListProps) {
                   </div>
 
                   <div className='mb-2'>
-                    <div className=''>{corpAction.security_name}</div>
+                    <div className=''>{corpAction.security?.name}</div>
                   </div>
 
                   <div className='grid grid-cols-3 justify-between items-start gap-2'>
                     <div className='col-span-2 grid grid-cols-2 items-start'>
                       <div className='grid grid-cols-1'>
-                        <span>{corpAction.event_status}</span>
-                        <span>ISIN : {corpAction.security.isin}</span>
-                        <span className=''>ID: {corpAction.event_id}</span>
+                        <span>{corpAction.eventStatus}</span>
+                        <span>ISIN : {corpAction.isin}</span>
+                        <span className=''>ID: {corpAction.eventId}</span>
                         <span className=''>
-                          No. Accounts: {corpAction.num_accounts}
+                          No. Accounts: {corpAction.accounts?.length}
                         </span>
                       </div>
                       <div className='grid grid-cols-1'>
-                        {corpAction.accounts.map(acc => (
-                          <span key={acc.account_number} className=''>
-                            Account: {acc.account_number} &nbsp; Holding : {acc.holding_quantity}
+                        {corpAction.accounts && corpAction.accounts.map(acc => (
+                          <span key={acc?.accountNumber} className=''>
+                            Account: {acc.accountNumber} &nbsp; Holding : {acc.holdingQuantity}
                           </span>
                         ))}
                       </div>
                     </div>
                     <div className='grid grid-cols-1'>
                         {
-                            corpAction.versionsInfo.map((vers)=>
-                                <span key={vers.versionId} className=''>
+                            corpAction.versionsInfo && corpAction.versionsInfo.map((vers)=>
+                                <span key={vers.date} className=''>
                         Version: {vers.versionId} &nbsp;|&nbsp; {formatDateString(vers.date)}
                       </span>
                             )

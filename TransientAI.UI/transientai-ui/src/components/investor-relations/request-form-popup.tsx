@@ -105,7 +105,7 @@ export function RequestFormPopup({children, onSubmitted}: RequestPopupProps) {
                 .then(() => {
                     resetAndClose();
                     if (onSubmitted) {
-                        onSubmitted();
+                        onSubmitted('Saved successfully');
                     }
                 });
         }

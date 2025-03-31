@@ -106,7 +106,7 @@ export function Notifications(props: NotificationsProps) {
   const divRef = useRef<HTMLDivElement>(null);
   const { isLoading, reports: researchReports, setSelectedReport: setSelectedResearchReport } = useResearchReportsStore();
   const { isLoading: isRiskReportLoading, riskReports, setSelectedReport: setSelectedRiskReport } = useRiskReportsSlice();
-  const { isLoading: isCorpActionsLoading, corpActions, selectedCorpAction, setSelectedCorpAction } = useCorpActionsStore();
+  const { isLoading: isCorpActionsLoading, loadedCorpActions, corpActions, selectedCorpAction, setSelectedCorpAction } = useCorpActionsStore();
   const { isLoading: isInquiriesLoading, inquiries } = useInvestorRelationsStore();
   const { isLoading: isRiskDataLoading, lastUpdatedTimestamp } = useRiskDataStore();
   // const { isLoading: isBreakingNewsLoading, breakNewsItems, setSelectedBreakNewsItem, setGroupId } = useBreakNewsDataStore();
@@ -141,7 +141,7 @@ export function Notifications(props: NotificationsProps) {
     researchReports,
     riskReports,
     inquiries,
-    corpActions,
+    loadedCorpActions,
     lastUpdatedTimestamp,
     bloombergEmailReports
   ]);
@@ -206,7 +206,7 @@ export function Notifications(props: NotificationsProps) {
             `Date: ${riskReport.uploaded!}`
           ]
         })),
-      ...corpActions
+      ...loadedCorpActions
         .map(corpAction => ({
           id: corpAction.eventId,
           resourceName: corpActionResourceName,

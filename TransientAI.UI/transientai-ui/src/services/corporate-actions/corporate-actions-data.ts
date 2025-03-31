@@ -1,6 +1,7 @@
 import { CorporateAction, CorporateActionFilterOptions } from "./model";
 import { webApihandler } from "@/services/web-api-handler";
 import { endpointFinder } from "../web-api-handler/endpoint-finder-service";
+import { IPmCorporateAction } from "@/components/corporate-actions/pm-corporate-action/models";
 
 class CorporateActionsDataService {
   private serviceName = 'corp-actions-api';
@@ -31,6 +32,29 @@ class CorporateActionsDataService {
           headers: this.headers
         });
       return result.data.filter((corpAction: CorporateAction) => corpAction.isin || corpAction.ticker);
+    } catch (e) {
+      return [];
+    }
+  }
+
+  async getPmCorpActions(filterOptions?: CorporateActionFilterOptions): Promise<IPmCorporateAction[]> {
+    try {
+      const result = await webApihandler.get(
+        'events',
+        filterOptions as { [key: string]: any },
+        {
+          serviceName: this.serviceName,
+          headers: this.headers
+        });
+
+      // Merge corporate actions from different sections
+      const mergedCorpActions: IPmCorporateAction[] = [
+        ...(result.data['Action Required'] || []),
+        ...(result.data['No Action Required'] || []),
+        ...(result.data['Expired'] || [])
+      ];
+
+      return mergedCorpActions.filter((corpAction: CorporateAction) => corpAction.isin || corpAction.ticker);
     } catch (e) {
       return [];
     }
