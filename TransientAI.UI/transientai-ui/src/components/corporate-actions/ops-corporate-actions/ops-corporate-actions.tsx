@@ -8,7 +8,6 @@ import { useScrollTo } from '@/lib/hooks'
 import { DataGrid, getCurrencyColDefTemplate } from '../../data-grid'
 import { ColDef, GridApi, RowClickedEvent } from 'ag-grid-community'
 import { corpActionsDataService } from '@/services/corporate-actions/corporate-actions-data'
-import opsData from './ops_view_output.json'
 import { Accordion } from '@/components/accordion/accordion'
 import { OpsList } from './ops-list'
 import { useFilteredCorporateActions } from './use-filtered-corporate-action'
@@ -157,7 +156,7 @@ export function OpsCorporateActions () {
     ]
   }
 
-  const sortedData = useFilteredCorporateActions(opsData, filterActions, sortByAction);
+  const sortedData = useFilteredCorporateActions(corpActions, filterActions, sortByAction);
   
   const items = [
     {

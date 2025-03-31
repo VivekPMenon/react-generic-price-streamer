@@ -10,9 +10,9 @@ export const useFilteredCorporateActions = (opsData: any, filterActions: any, so
 
     const today = new Date().toISOString().split('T')[0];
     const filteredAndSortedData: SortedData = useMemo(() => {
-      if (!opsData?.data) return { acquired: [], no_action_acquired: [], expired: [] };
+      if (!opsData) return { acquired: [], no_action_acquired: [], expired: [] };
 
-      return opsData.data.reduce(
+      return opsData.reduce(
         (acc: SortedData, item: any) => {  
           const payDate = item.dates.pay_date.split("T")[0];
   

@@ -30,6 +30,10 @@ export const CorporateActions = () => {
   
     }, [selectedCorpAction]);
 
+    const searchValue = userContext.roles?.includes(RoleType.PM)
+      ? selectedCorpAction?.accounts && selectedCorpAction?.accounts[0].accountNumber
+      : selectedCorpAction?.eventId;
+
   return (
     <div>
       <CorporateActionHeader />
@@ -55,7 +59,7 @@ export const CorporateActions = () => {
           <EmailViewer
             className={styles['email-viewer'] + ' height-vh-90'}
             emailHtml={selectedEmailContent}
-            scrollToSearchTerm={selectedCorpAction?.eventId || ''} // selectedCorpAction?.accounts && selectedCorpAction?.accounts[0].accountNumber 
+            scrollToSearchTerm={searchValue || ''} // selectedCorpAction?.accounts && selectedCorpAction?.accounts[0].accountNumber 
           />
         </div>
       </section>
