@@ -74,6 +74,7 @@ export function MarketData() {
                             logoUrl={getInstrumentLogoUrl(instrument, ImageType.PNG, 100)}
                             showFinancialData={true}
                             showPriceSummary={true}
+                            ignoreNegative={true}
                         />
                     ))
                 }
