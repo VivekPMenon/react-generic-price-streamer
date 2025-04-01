@@ -38,6 +38,7 @@ export function MacroPanel() {
             setInstrument(null);
         }
     }
+
     const isMobile = deviceType !== 'desktop';
 
     return (

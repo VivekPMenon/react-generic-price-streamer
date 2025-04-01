@@ -18,15 +18,36 @@ export interface MarketDataTileProps {
     showFinancialData?: boolean;
     showPriceSummary?: boolean;
     className?: string;
+    isNegative?: boolean;
+    ignoreNegative?: boolean;
 }
 
-function getChartOptions(instrument: Instrument) {
+function getChartOptions(instrument: Instrument, isNegative: boolean = false, ignoreNegative: boolean = false) {
     let seriesData: any[] = [];
     if (instrument.marketData?.length) {
       seriesData = instrument.marketData.map(data => {
         const date = new Date(data.date!);
         return [date.getTime(), data.open, data.high, data.low, data.close];
       });
+    }
+
+    let gradientStart: string;
+    let gradientEnd: string;
+    let areaStart: string;
+    let areaEnd: string;
+    let line: string;
+    if (ignoreNegative && !isNegative) {
+        gradientStart = 'rgba(25, 135, 84, 0.4)';
+        gradientEnd = 'rgba(25, 135, 84, 0)';
+        areaStart = 'rgba(0, 255, 0, 0.4)';
+        areaEnd = 'rgba(0, 255, 0, 0)';
+        line = '#28a745';
+    } else {
+        gradientStart = 'rgba(135,25,25,0.4)';
+        gradientEnd = 'rgba(135, 25, 25, 0)';
+        areaStart = 'rgba(255,0,0,0.4)';
+        areaEnd = 'rgba(255,0,0,0)';
+        line = '#a82929';
     }
   
     const chartOptions: Highcharts.Options = {
@@ -122,11 +143,11 @@ function getChartOptions(instrument: Instrument) {
           fillColor: {
             linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
             stops: [
-              [0, 'rgba(25, 135, 84, 0.4)'], // Green at top
-              [1, 'rgba(25, 135, 84, 0)'],   // Transparent at bottom
+              [0, areaStart], // Green at top
+              [1, areaEnd],   // Transparent at bottom
             ],
           },
-          lineColor: '#28a745', // Bright green line
+          lineColor: line, // Bright green line
           lineWidth: 2,
           marker: { enabled: false },
           threshold: null,
@@ -148,11 +169,11 @@ function getChartOptions(instrument: Instrument) {
           fillColor: {
             linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
             stops: [
-              [0, 'rgba(0, 255, 0, 0.4)'], // Bright green at top
-              [1, 'rgba(0, 255, 0, 0)'],   // Fully transparent at bottom
+              [0, gradientStart], // Bright green at top
+              [1, gradientEnd],   // Fully transparent at bottom
             ],
           },
-          lineColor: '#28a745', // Bright green line
+          lineColor: line, // Bright green line
           lineWidth: 2,
           marker: { enabled: false },
           threshold: null,
@@ -176,7 +197,7 @@ function getChartOptions(instrument: Instrument) {
     return chartOptions;
   }
 
-export function MarketDataTile({instrument, logoUrl, removeInstrument, showFinancialData, showPriceSummary, className}: MarketDataTileProps) {
+export function MarketDataTile({instrument, logoUrl, removeInstrument, showFinancialData, showPriceSummary, className, ignoreNegative, isNegative}: MarketDataTileProps) {
     function handleError(e: any) {
         e.target.style.display = 'none';
     }
@@ -298,7 +319,7 @@ export function MarketDataTile({instrument, logoUrl, removeInstrument, showFinan
                 <HighchartsReact
                     highcharts={Highstock}
                     constructorType={'stockChart'}
-                    options={getChartOptions(instrument)}
+                    options={getChartOptions(instrument, isNegative, ignoreNegative)}
                 />
             </div>
         </div>

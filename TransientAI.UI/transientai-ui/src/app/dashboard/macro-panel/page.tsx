@@ -2,6 +2,7 @@
 
 import { MacroPanel } from "@/components/macro-panel/macro-panel";
 import ProtectedRoute from "@/components/route-guards/protected-route";
+import {MacroPanelTabs} from "@/components/macro-panel/macro-panel-tabs";
 
 export default function Page() {
   // return <ProtectedRoute resourceName="risk-metrics">
@@ -9,6 +10,6 @@ export default function Page() {
   // </ProtectedRoute>;
 
   return <ProtectedRoute>
-    <MacroPanel></MacroPanel>
+    <MacroPanelTabs></MacroPanelTabs>
   </ProtectedRoute>;
 }
