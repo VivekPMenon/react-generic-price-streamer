@@ -30,7 +30,7 @@ export const CorporateActions = () => {
   
     }, [selectedCorpAction]);
 
-    const searchValue = userContext.roles?.includes(RoleType.PM)
+    const searchValue = (userContext.role == RoleType.PM)
       ? selectedCorpAction?.accounts && selectedCorpAction?.accounts[0].accountNumber
       : selectedCorpAction?.eventId;
 
@@ -40,11 +40,11 @@ export const CorporateActions = () => {
       <section className={styles['corporate-actions']}>
         <div className={styles['chatbot']}>
           {(() => {
-            switch (true) {
-              case userContext.roles?.includes(RoleType.PM): {
+            switch (userContext.role) {
+              case RoleType.PM: {
                 return <PmCorporateActions />;
               }
-              case userContext.roles?.includes(RoleType.Operations): {
+              case RoleType.Operations: {
                 return <OpsCorporateActions />;
               }
               default: {

@@ -3,6 +3,7 @@ import { CorporateAction } from './model';
 import { corpActionsDataService } from './corporate-actions-data';
 import { useUnseenItemsStore } from '../unseen-items-store/unseen-items-store';
 import { areObjectsEqual } from '@/lib/utility-functions';
+import { RoleType, useUserContextStore } from '../user-context';
 
 
 export const resourceName = 'corporate-actions';
@@ -202,6 +203,7 @@ export const useCorpActionsStore = create<CorpActionsDataState>((set, get) => ({
 }));
 
 // Initial Load and Start Polling
-const { loadCorpActions, startPolling } = useCorpActionsStore.getState();
-loadCorpActions();
+const { loadCorpActions, startPolling, loadPmCorpActions } = useCorpActionsStore.getState();
+const { userContext } = useUserContextStore.getState();
+userContext.role === RoleType.PM ? loadPmCorpActions() : loadCorpActions();
 startPolling();

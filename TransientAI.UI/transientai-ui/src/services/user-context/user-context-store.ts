@@ -42,12 +42,13 @@ export const useUserContextStore = create<UserContextState>((set, get) => ({
 
       // Skip login API call if a token is already stored in sessionStorage 
       const existingToken = sessionStorage.getItem("bearerToken");
-      if (existingToken) {
+      const existingRole = sessionStorage.getItem("role") as RoleType;
+      if (existingToken && existingRole) {
         webApihandler.setBearerToken(existingToken);
         const accounts = msalInstance.getAllAccounts();
         if (accounts.length > 0) {
           const account = accounts[0];
-          const userContext = mapAccountToUser(account);
+          const userContext = mapAccountToUser(account, existingRole);
           set({ userContext, isAuthenticated: true, isLoading: false });
           return;
         }
@@ -88,13 +89,15 @@ export const useUserContextStore = create<UserContextState>((set, get) => ({
         throw new Error("Failed to acquire ID token.");
       }
 
-      const bearerToken = await loginAndSetToken(idToken);
-      if (bearerToken) {
-        sessionStorage.setItem("bearerToken", bearerToken);
-        webApihandler.setBearerToken(bearerToken);
+      const bearerTokenRes = await loginAndSetToken(idToken);
+      const role = bearerTokenRes.loginResponse.user_info.role
+      if (bearerTokenRes) {
+        sessionStorage.setItem("bearerToken", bearerTokenRes.bearerToken);
+        sessionStorage.setItem("role", role)
+        webApihandler.setBearerToken(bearerTokenRes.bearerToken);
       }
 
-      const userContext = mapAccountToUser(account!);
+      const userContext = mapAccountToUser(account!, role);
       set({ userContext, isAuthenticated: true, isLoading: false });
     } catch (error) {
       console.error("Authentication error:", error);
@@ -132,26 +135,25 @@ async function loginAndSetToken(idToken: string) {
     );
 
     const bearerToken = response.headers["authorization"].split(" ")[1];
-    return bearerToken;
+    return {
+      bearerToken,
+      loginResponse: response.data
+    };
   } catch (error) {
     console.error("Login API error:", error);
     throw new Error("Invalid login response");
   }
 }
 
-function mapAccountToUser(account: AccountInfo): UserContext {
+function mapAccountToUser(account: AccountInfo, role: RoleType): UserContext {
   const parts = account.name?.split(' ') || [];
   const initials = parts[0]?.[0]?.toUpperCase() + (parts.at(-1)?.[0]?.toUpperCase() || '');
-
-  const roles = userGroupUsersJson
-    .filter(userGroupUser => userGroupUser.UserId?.toLowerCase() === account?.username?.toLowerCase())
-    .map(userGroupUser => userGroupUser.GroupId);
 
   return {
     userName: account.name,
     token: account.idToken,
     userId: account.username,
     userInitials: initials,
-    roles: roles as RoleType[],
+    role: role,
   };
 }

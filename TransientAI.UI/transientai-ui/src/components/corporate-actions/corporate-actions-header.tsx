@@ -200,7 +200,7 @@ export const CorporateActionHeader = () => {
             </section>
 
             {/* Show only for OPS view filter */}
-           {!userContext.roles?.includes(RoleType.PM) && <section>
+           {!(userContext.role == RoleType.PM) && <section>
                 <div className={`${styles['corporate-filter-cont']} mb-3 grid lg:grid-cols-8 md:grid-cols-2 gap-4`}>
                     {filterConfig.map((filter) => (
                     <div key={filter.key} className={`${styles['search-filter-input']} `}>

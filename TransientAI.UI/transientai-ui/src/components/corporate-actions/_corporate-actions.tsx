@@ -312,7 +312,7 @@ export function CorporateActions() {
               onKeyDown={onKeyDown}
               placeholder="Ask TransientAI anything about recent Corporate Actions. Include securities if you are looking for specific information" />
             {
-              userContext.roles?.includes(RoleType.Operations) && <>
+              userContext.role == RoleType.Operations && <>
                 <Toggle
                   checked={isCompactViewEnabled}
                   onChange={(e) => setIsCompactViewEnabled(e.target.checked)}
