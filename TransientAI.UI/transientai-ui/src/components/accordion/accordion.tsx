@@ -1,6 +1,6 @@
 import React from 'react';
 import * as AccordionPrimitive from '@radix-ui/react-accordion';
-import { DoubleArrowDownIcon } from '@radix-ui/react-icons'
+import { DoubleArrowRightIcon } from '@radix-ui/react-icons'
 
 // Type definition for accordion items
 interface AccordionItem {
@@ -39,9 +39,9 @@ const Accordion: React.FC<AccordionProps> = ({
               className="group flex flex-1 items-center justify-start p-4 text-left 
                          hover:bg-gray-800 focus:outline-none"
             >
-               <DoubleArrowDownIcon
+               <DoubleArrowRightIcon
                 className={`h-5 w-5 mr-2 transition-transform duration-300 
-                           group-data-[state=open]:rotate-180 
+                           group-data-[state=open]:rotate-90 
                           `}
               />
               <span className="text-base font-medium">{item.title}</span>

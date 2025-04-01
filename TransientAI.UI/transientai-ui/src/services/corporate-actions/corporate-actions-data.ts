@@ -39,10 +39,10 @@ class CorporateActionsDataService {
   async getPmCorpActions(filterOptions?: CorporateActionFilterOptions): Promise<{ [key: string]: CorporateAction[] }> {
     try {
       const result = await webApihandler.get(
-        'events',
+        'corp_actions/portfolio-events',
         filterOptions as { [key: string]: any },
         {
-          serviceName: this.serviceName,
+          serviceName: 'hurricane-api-2-0',//this.serviceName,
           headers: this.headers
         });
       

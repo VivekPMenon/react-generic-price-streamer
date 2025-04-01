@@ -7,7 +7,7 @@ import { RoleType, useUserContextStore } from '../user-context';
 
 
 export const resourceName = 'corporate-actions';
-
+const { userContext } = useUserContextStore.getState();
 export interface CorpActionsDataState {
   corpActions: CorporateAction[] ;
   pmCorpActions:{ [key: string]: CorporateAction[] };
@@ -185,8 +185,18 @@ export const useCorpActionsStore = create<CorpActionsDataState>((set, get) => ({
     setInterval(async () => {
       const { loadedCorpActions } = get();
       const prevCount = loadedCorpActions.length;
-
-      const newCorpActions = await corpActionsDataService.getCorpActions();
+      let  newCorpActions: CorporateAction[] = [];
+      if(userContext.role == RoleType.PM){
+        const pmResponse = await corpActionsDataService.getPmCorpActions();
+        newCorpActions = [
+          ...(pmResponse['Action Required'] || []),
+          ...(pmResponse['No Action Required'] || []),
+          ...(pmResponse['Expired'] || [])
+        ];
+      }else{
+        newCorpActions = await corpActionsDataService.getCorpActions();
+      }
+      
       if (areObjectsEqual(loadedCorpActions, newCorpActions)) {
         return;
       }
@@ -204,6 +214,9 @@ export const useCorpActionsStore = create<CorpActionsDataState>((set, get) => ({
 
 // Initial Load and Start Polling
 const { loadCorpActions, startPolling, loadPmCorpActions } = useCorpActionsStore.getState();
-const { userContext } = useUserContextStore.getState();
-userContext.role === RoleType.PM ? loadPmCorpActions() : loadCorpActions();
+if (userContext.role === RoleType.PM) {
+  loadPmCorpActions();
+} else {
+  loadCorpActions();
+}
 startPolling();

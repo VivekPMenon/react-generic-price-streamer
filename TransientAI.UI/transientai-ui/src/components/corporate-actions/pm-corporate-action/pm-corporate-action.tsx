@@ -11,7 +11,7 @@ export function PmCorporateActions() {
   const { sortByAction, pmCorpActions } = useCorpActionsStore();
  
   const getCorporateActions = (key: CorporateActionKey): CorporateAction[] =>
-    (PmData.data[key] as CorporateAction[]) || [];
+    (pmCorpActions[key] as CorporateAction[]) || [];
   
   
   const items = [
@@ -42,9 +42,9 @@ export function PmCorporateActions() {
       ) : (
         <PmList
           data={[
-            ...(PmData.data['Action Required'] || []),
-            ...(PmData.data['No Action Required'] || []),
-            ...(PmData.data['Expired'] || []),
+            ...(pmCorpActions['Action Required'] || []),
+            ...(pmCorpActions['No Action Required'] || []),
+            ...(pmCorpActions['Expired'] || []),
           ] as CorporateAction[]}
         />
       )}
