@@ -24,8 +24,7 @@ const Accordion: React.FC<AccordionProps> = ({
 }) => {
   return (
     <AccordionPrimitive.Root 
-      type={type} 
-      collapsible 
+      type={type}
       className={`w-full ${className}`}
     >
       {items.map((item) => (

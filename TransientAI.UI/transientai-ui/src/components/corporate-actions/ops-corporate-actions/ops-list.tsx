@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef} from 'react'
+import { useEffect, useRef} from 'react'
 import { useVirtualizer, VirtualItem } from '@tanstack/react-virtual'
 import { formatDateString } from '@/lib/utility-functions/date-operations'
 import styles from './ops.module.scss'
@@ -25,7 +25,13 @@ export function OpsList ({ data }: OpsListProps) {
     paddingEnd: 5
   })
 
-  const items = virtualizer.getVirtualItems()
+  const items = virtualizer.getVirtualItems();
+  
+    useEffect(() => {
+      const selectedIndex = data.findIndex(data => selectedCorpAction?.eventId === data.eventId);
+      virtualizer.scrollToIndex(selectedIndex);
+  
+    }, [data, selectedCorpAction, virtualizer]);
 
   const corpActionsListElement = (
     <div

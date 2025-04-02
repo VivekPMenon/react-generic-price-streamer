@@ -214,7 +214,7 @@ export const useCorpActionsStore = create<CorpActionsDataState>((set, get) => ({
 
 // Initial Load and Start Polling
 const { loadCorpActions, startPolling, loadPmCorpActions } = useCorpActionsStore.getState();
-if (userContext.role === RoleType.PM) {
+if (userContext.role == RoleType.PM) {
   loadPmCorpActions();
 } else {
   loadCorpActions();

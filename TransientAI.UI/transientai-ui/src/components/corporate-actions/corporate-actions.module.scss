@@ -7,6 +7,7 @@
 
   &>div {
     flex: 1 1 50%;
+    width: 50%;
   }
 
   @media screen and (max-width: $mobile-breakpoint-max) {
@@ -19,6 +20,8 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
+  height: calc(100vh - 260px);
+  overflow-y: auto;
 }
 
 .corporate-actions-response {
@@ -127,7 +130,7 @@
   padding: 0 10px;
 
   .email-viewer {
-    height: calc(100vh - 350px);
+    height: calc(100vh - 306px);
 
     @media screen and (max-width: $mobile-breakpoint-max) {
       height: 50vh;

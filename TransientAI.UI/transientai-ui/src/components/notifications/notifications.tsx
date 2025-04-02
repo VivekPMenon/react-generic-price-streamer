@@ -106,7 +106,7 @@ export function Notifications(props: NotificationsProps) {
   const divRef = useRef<HTMLDivElement>(null);
   const { isLoading, reports: researchReports, setSelectedReport: setSelectedResearchReport } = useResearchReportsStore();
   const { isLoading: isRiskReportLoading, riskReports, setSelectedReport: setSelectedRiskReport } = useRiskReportsSlice();
-  const { isLoading: isCorpActionsLoading, loadedCorpActions, corpActions, selectedCorpAction, setSelectedCorpAction } = useCorpActionsStore();
+  const { isLoading: isCorpActionsLoading, loadedCorpActions, selectedCorpAction, setSelectedCorpAction } = useCorpActionsStore();
   const { isLoading: isInquiriesLoading, inquiries } = useInvestorRelationsStore();
   const { isLoading: isRiskDataLoading, lastUpdatedTimestamp } = useRiskDataStore();
   // const { isLoading: isBreakingNewsLoading, breakNewsItems, setSelectedBreakNewsItem, setGroupId } = useBreakNewsDataStore();
@@ -304,7 +304,7 @@ export function Notifications(props: NotificationsProps) {
         break;
 
       case NotificationType.CorpAct:
-        setSelectedCorpAction(corpActions.find(corpAction => corpAction.eventId === notification.id)!);
+        setSelectedCorpAction(loadedCorpActions.find(corpAction => corpAction.eventId === notification.id)!);
         router.push(newRoute = '/dashboard/corporate-actions'); // todo.. remove the route hardcoding
         break;
 

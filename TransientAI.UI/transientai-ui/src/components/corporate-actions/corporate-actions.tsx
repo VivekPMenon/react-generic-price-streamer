@@ -38,7 +38,7 @@ export const CorporateActions = () => {
     <div>
       <CorporateActionHeader />
       <section className={styles['corporate-actions']}>
-        <div className={styles['chatbot']}>
+        <div className={styles['chatbot'] + ' scrollable-div'}>
           {(() => {
             switch (userContext.role) {
               case RoleType.PM: {
@@ -57,7 +57,7 @@ export const CorporateActions = () => {
 
         <div className={styles['email-content']}>
           <EmailViewer
-            className={styles['email-viewer'] + ' height-vh-90'}
+            className={styles['email-viewer']}
             emailHtml={selectedEmailContent}
             scrollToSearchTerm={searchValue || ''} // selectedCorpAction?.accounts && selectedCorpAction?.accounts[0].accountNumber 
           />

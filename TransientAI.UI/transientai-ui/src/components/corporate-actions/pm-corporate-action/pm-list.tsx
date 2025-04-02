@@ -2,7 +2,7 @@
 
 import styles from './pm.module.scss'
 
-import { useRef} from 'react'
+import { useEffect, useRef} from 'react'
 import { useVirtualizer, VirtualItem } from '@tanstack/react-virtual'
 import { formatDateString } from '@/lib/utility-functions/date-operations'
 import { useCorpActionsStore } from '@/services/corporate-actions/corp-actions-store'
@@ -17,6 +17,7 @@ export function PmList ({ data }: PmListProps) {
   const divRef = useRef<HTMLDivElement>(null)
     const { selectedCorpAction, setSelectedCorpAction } = useCorpActionsStore();
 
+
   // const [emailContents, setEmailContents] = useState<any>({});
   const virtualizer = useVirtualizer({
     count: data.length,
@@ -29,6 +30,12 @@ export function PmList ({ data }: PmListProps) {
   })
 
   const items = virtualizer.getVirtualItems()
+
+  useEffect(() => {
+    const selectedIndex = data.findIndex(data => selectedCorpAction?.eventId === data.eventId);
+    virtualizer.scrollToIndex(selectedIndex);
+
+  }, [data, selectedCorpAction, virtualizer]);
 
   const corpActionsListElement = (
     <div
