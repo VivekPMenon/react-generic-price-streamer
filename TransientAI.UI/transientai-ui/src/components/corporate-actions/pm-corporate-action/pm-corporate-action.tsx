@@ -3,15 +3,19 @@
 import { Accordion } from '@/components/accordion/accordion';
 import { PmList } from './pm-list';
 import { CorporateAction, useCorpActionsStore } from '@/services/corporate-actions';
+import { useEffect } from 'react';
 
 type CorporateActionKey = 'Action Required' | 'No Action Required' | 'Expired';
 
 export function PmCorporateActions() {
-  const { sortByAction, pmCorpActions } = useCorpActionsStore();
+  const { sortByAction, pmCorpActions, loadPmCorpActions} = useCorpActionsStore();
  
   const getCorporateActions = (key: CorporateActionKey): CorporateAction[] =>
     (pmCorpActions[key] as CorporateAction[]) || [];
   
+  useEffect(() => {
+    loadPmCorpActions();
+  }, []);
   
   const items = [
     {

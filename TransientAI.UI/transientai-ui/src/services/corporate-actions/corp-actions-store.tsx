@@ -7,7 +7,6 @@ import { RoleType, useUserContextStore } from '../user-context';
 
 
 export const resourceName = 'corporate-actions';
-const { userContext } = useUserContextStore.getState();
 export interface CorpActionsDataState {
   corpActions: CorporateAction[] ;
   pmCorpActions:{ [key: string]: CorporateAction[] };
@@ -186,6 +185,8 @@ export const useCorpActionsStore = create<CorpActionsDataState>((set, get) => ({
       const { loadedCorpActions } = get();
       const prevCount = loadedCorpActions.length;
       let  newCorpActions: CorporateAction[] = [];
+      const { userContext } = useUserContextStore.getState();
+
       if(userContext.role == RoleType.PM){
         const pmResponse = await corpActionsDataService.getPmCorpActions();
         newCorpActions = [
@@ -213,10 +214,5 @@ export const useCorpActionsStore = create<CorpActionsDataState>((set, get) => ({
 }));
 
 // Initial Load and Start Polling
-const { loadCorpActions, startPolling, loadPmCorpActions } = useCorpActionsStore.getState();
-if (userContext.role == RoleType.PM) {
-  loadPmCorpActions();
-} else {
-  loadCorpActions();
-}
+const { startPolling } = useCorpActionsStore.getState();
 startPolling();

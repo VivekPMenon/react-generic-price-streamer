@@ -19,6 +19,7 @@ export function OpsCorporateActions () {
     setSelectedCorpAction,
     filterActions,
     sortByAction,
+    loadCorpActions
   } = useCorpActionsStore()
   const { scrollTargetRef, scrollToTarget } = useScrollTo<HTMLDivElement>()
   const gridApiRef = useRef<GridApi | null>(null)
@@ -28,6 +29,10 @@ export function OpsCorporateActions () {
   const [isCompactViewEnabled, setIsCompactViewEnabled] = useState(false)
 
   const colDefs = useMemo(() => getColumnDefs(), [])
+
+  useEffect(() => {
+    loadCorpActions();
+  }, []);
 
   useEffect(() => {
     async function calculateSelectedEmailContent () {
