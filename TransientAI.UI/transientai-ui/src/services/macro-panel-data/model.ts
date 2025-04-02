@@ -5,7 +5,7 @@ export interface BloombergEmailReport {
   html_content?: string;
 }
 
-export interface TreasuryYield {
+export interface TreasuryYield extends IInstrument {
   name: string;
   group_name: string;
   rate: number
@@ -29,26 +29,37 @@ export interface BondData {
   timestamp: Date;
 }
 
-export interface FxRate {
+export interface FxRate extends IInstrument {
   name: string;
+  ticker: string;
   group_name: string;
   price: number
   change: number
   change_percentage: number;
 }
 
-export interface Crypto {
+export interface CryptoCurrency extends IInstrument{
   name: string;
+  ticker: string;
   price: number
   change: number
   change_percentage: number;
 }
 
-export interface EquityFuture {
+export interface EquityFuture extends IInstrument {
   name: string;
   group_name: string;
   symbol: string;
   value: number;
   net_change: number;
   percent_change: number;
+}
+
+export interface IInstrument {
+  name: string;
+  group_name: string;
+  symbol: string;
+  value?: number;
+  change?: number;
+  percent?: number;
 }

@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import {BloombergEmailReport, EquityFuture, FxRate, TreasuryYield} from './model';
+import {BloombergEmailReport, CryptoCurrency, EquityFuture, FxRate, TreasuryYield} from './model';
 import { macroPanelDataService } from './macro-panel-data-service';
 import {useUnseenItemsStore} from "@/services/unseen-items-store/unseen-items-store";
 
@@ -9,7 +9,7 @@ interface MacroPanelDataState {
   bloombergEmailReports: BloombergEmailReport[];
   treasuryYields: TreasuryYield[];
   fxRates: FxRate[];
-  cryptos: Crypto[];
+  cryptos: CryptoCurrency[];
   equityFutures: EquityFuture[];
   reportGenerationDate: Date|null;
   isLoading: boolean;
@@ -83,7 +83,7 @@ export const useMacroPanelDataStore = create<MacroPanelDataState>((set, get) => 
         .catch(() => console.error('Error fx rates'))
         .finally(() => set({isFxLoading: false}));
     macroPanelDataService.getCryptos()
-        .then(values => set({cryptos: values as Crypto[]}))
+        .then(values => set({cryptos: values as CryptoCurrency[]}))
         .catch(() => console.error('Error cryptos'))
         .finally(() => set({isCryptoLoading: false}));
     macroPanelDataService.getGlobalEquityFutures()

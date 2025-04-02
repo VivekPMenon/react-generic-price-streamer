@@ -80,3 +80,7 @@ body {
 .react-toggle--checked .react-toggle-track {
   background-color: $teal-100 !important;
 }
+.highcharts-title,
+.highcharts-credits {
+  display: none;
+}
