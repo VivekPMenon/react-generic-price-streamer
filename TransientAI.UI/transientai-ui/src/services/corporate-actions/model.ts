@@ -1,22 +1,3 @@
-
-// export interface AccountDetail {
-//   accountNumber?: string;
-//   accountReference?: string;
-//   holdingQuantity?: string;
-//   deadline?: string;
-//   grossAmount?: string;
-//   taxWithheld?: string;
-//   netAmount?: string;
-// }
-// export interface TermsDetail {
-//   termNumber?: string;
-//   type?: string;
-//   payDate?: string;
-//   rate?: string;
-//   currency?: string;
-//   isDefault: boolean;
-// }
-
 export interface SecurityIdentifier {
   isin?: string;
   ticker?: string;
@@ -169,51 +150,6 @@ export interface CorporateAction {
   versionHistory?: VersionDetails[];
   latest_update?: VersionDetails;
 }
-
-// export interface CorporateAction {
-//   action?: string;
-//   isin?: string;
-//   id?: string;
-//   security?: string;
-//   keyDates?: string;
-//   version?: string;
-//   actionRequired?: string;
-//   deadlineDate?: string;
-//   accountDetails?: AccountDetail[];
-//   termsDetails?: TermsDetail[];
-//
-//   eventId?: string;//
-//   eventType?: string;//
-//   eventStatus?: string;//
-//   // eventDate?: string;
-//   // securityId?: string;
-//   ticker?: string;//
-//   // securityName?: string;
-//   // eventDescription?: string;
-//   // accountId?: string;
-//   // termDetails?: string;
-//   // entitledProductId?: string;
-//   // paydate?: string;
-//   holdingQuantity?: number;//
-//   // updateHistory?: UpdateHistory[];
-//   // latestVersion?: number;
-// }
-
-// export interface UpdateHistory {
-//   type?: any;
-//   date?: string;
-//   email?: string;
-//   alert?: string;
-// }
-
-// export interface CorpActionsData {
-//   corpActions?: CorporateAction[];
-// }
-
-// export interface CorpActionsDataContextType {
-//   corpActionsData: CorpActionsData;
-//   setCorpActionsData: (data: CorpActionsData) => void;
-// }
 
 export interface CorporateActionFilterOptions {
   eventStatus?: string;

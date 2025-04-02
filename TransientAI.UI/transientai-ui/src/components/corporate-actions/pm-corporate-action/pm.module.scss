@@ -1,13 +1,12 @@
-@import '../../assets/variables.scss';
+@import '../../../assets/variables.scss';
 
 .corporate-actions {
   display: flex;
   flex: 1 1 100%;
-  gap: 10px;
+  gap: 30px;
 
   &>div {
     flex: 1 1 50%;
-    width: 50%;
   }
 
   @media screen and (max-width: $mobile-breakpoint-max) {
@@ -20,8 +19,6 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
-  height: calc(100vh - 260px);
-  overflow-y: auto;
 }
 
 .corporate-actions-response {
@@ -30,12 +27,13 @@
   flex: 1 1 100%;
   gap: 10px;
   padding: 0 5px;
-  max-height: calc(100vh - 350px);
+  max-height: calc(100vh - 260px);
 
   .corporate-action {
     background-color: $gray-1000;
-    padding: 5px;
-    border-radius: 5px;
+    padding: 10px;
+    border-radius: 30px;
+    font-size: 10px;
 
     &.active {
       box-shadow: 0 0 5px $teal;
@@ -69,7 +67,6 @@
     }
 
     .action-buttons {
-      margin-left: auto;
       display: flex;
       justify-content: flex-end;
 
@@ -130,7 +127,7 @@
   padding: 0 10px;
 
   .email-viewer {
-    height: calc(100vh - 306px);
+    height: calc(100vh - 350px);
 
     @media screen and (max-width: $mobile-breakpoint-max) {
       height: 50vh;
@@ -140,6 +137,7 @@
 
 .search-bar {
   margin: 0 0;
+  padding: 5px;
   display: flex;
   gap: 10px;
   align-items: center;
@@ -153,17 +151,4 @@
   border-radius: 5px;
   background-color: $gray-1000;
   box-sizing: border-box;
-}
-
-.corporate-filter-cont {
-  background-color: $gray-1000;
-  border-radius: 5px;
-  padding: 10px;
-}
-
-.search-filter-input input{
-  background-color: $body-bg;
-  border-radius: 5px;
-  padding: 3px 4px;
-  font-size: 12px;
 }

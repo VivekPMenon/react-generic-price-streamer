@@ -36,6 +36,44 @@ class CorporateActionsDataService {
     }
   }
 
+  async getPmCorpActions(filterOptions?: CorporateActionFilterOptions): Promise<{ [key: string]: CorporateAction[] }> {
+    try {
+      const result = await webApihandler.get(
+        'corp_actions/portfolio-events',
+        filterOptions as { [key: string]: any },
+        {
+          serviceName: 'hurricane-api-2-0',//this.serviceName,
+          headers: this.headers
+        });
+      
+      // Apply filter to each section separately while keeping them distinct
+      const filteredResults: { [key: string]: CorporateAction[] } = {};
+      
+      // Process each section separately
+      if (result.data['Action Required']) {
+        filteredResults['Action Required'] = result.data['Action Required'].filter(
+          (corpAction: CorporateAction) => corpAction.isin || corpAction.ticker
+        );
+      }
+      
+      if (result.data['No Action Required']) {
+        filteredResults['No Action Required'] = result.data['No Action Required'].filter(
+          (corpAction: CorporateAction) => corpAction.isin || corpAction.ticker
+        );
+      }
+      
+      if (result.data['Expired']) {
+        filteredResults['Expired'] = result.data['Expired'].filter(
+          (corpAction: CorporateAction) => corpAction.isin || corpAction.ticker
+        );
+      }
+      
+      return filteredResults;
+    } catch (e) {
+      return {};
+    }
+  }
+
   async getCorpActionDetail(eventId: string): Promise<CorporateAction> {
     return await webApihandler.get(
       `events/${eventId}`,

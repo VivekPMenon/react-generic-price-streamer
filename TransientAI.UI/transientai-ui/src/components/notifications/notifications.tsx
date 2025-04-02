@@ -106,7 +106,7 @@ export function Notifications(props: NotificationsProps) {
   const divRef = useRef<HTMLDivElement>(null);
   const { isLoading, reports: researchReports, setSelectedReport: setSelectedResearchReport } = useResearchReportsStore();
   const { isLoading: isRiskReportLoading, riskReports, setSelectedReport: setSelectedRiskReport } = useRiskReportsSlice();
-  const { isLoading: isCorpActionsLoading, loadedCorpActions, corpActions, selectedCorpAction, setSelectedCorpAction } = useCorpActionsStore();
+  const { isLoading: isCorpActionsLoading, loadedCorpActions, selectedCorpAction, setSelectedCorpAction } = useCorpActionsStore();
   const { isLoading: isInquiriesLoading, inquiries } = useInvestorRelationsStore();
   const { isLoading: isRiskDataLoading, lastUpdatedTimestamp } = useRiskDataStore();
   // const { isLoading: isBreakingNewsLoading, breakNewsItems, setSelectedBreakNewsItem, setGroupId } = useBreakNewsDataStore();
@@ -210,13 +210,15 @@ export function Notifications(props: NotificationsProps) {
         .map(corpAction => ({
           id: corpAction.eventId,
           resourceName: corpActionResourceName,
-          title: `TICKER: ${corpAction.ticker} \n ${corpAction.security?.name} \n ${corpAction.eventType} \n ${corpAction.eventStatus}`,
+          title: `TICKER: ${corpAction.ticker} \n ${corpAction.security?.name}`,
           type: NotificationType.CorpAct,
-          subTitle: `${corpAction.accounts?.length ? ('Account No: ' + corpAction.accounts[0].accountNumber + ', Holding Capacity: ' + corpAction.accounts[0].holdingQuantity) : ''}`,
+          subTitle: `<span class=${corpAction.actionRequired ? 'text-red-500' :'text-green-500'}>${corpAction.eventType} - ${corpAction.eventStatus}<span/>`,
           timestamp: corpAction?.receivedDate ? new Date(corpAction.receivedDate).getTime() : new Date().getTime(),
           highlights: [
             `ISIN: ${corpAction.isin!}, ID: ${corpAction.eventId}`,
-            `Key Date: ${corpAction.keyDates!}`,
+            `No Accounts: ${corpAction.accounts?.length ? (corpAction.accounts?.length +' '+'Account: ' + corpAction.accounts[0].accountNumber): ''} ${corpAction.accounts && corpAction.accounts?.length > 1 ? ' +'+(corpAction.accounts?.length-1)+'More accts' : ''}`,
+            `Pay Date: ${formatDate(corpAction.dates?.pay_date)}`,
+            `Holding: ${corpAction.holdingQuantity}`,
             `Version: ${corpAction.version}`,
           ]
         })),
@@ -302,7 +304,7 @@ export function Notifications(props: NotificationsProps) {
         break;
 
       case NotificationType.CorpAct:
-        setSelectedCorpAction(corpActions.find(corpAction => corpAction.eventId === notification.id)!);
+        setSelectedCorpAction(loadedCorpActions.find(corpAction => corpAction.eventId === notification.id)!);
         router.push(newRoute = '/dashboard/corporate-actions'); // todo.. remove the route hardcoding
         break;
 
@@ -442,7 +444,11 @@ export function Notifications(props: NotificationsProps) {
                       </div>
 
                       <div className={styles['notification-content']}>
-                        <div className='blue-color'>{visibleNotifications[item.index].subTitle}</div>
+                        {
+                          visibleNotifications[item.index].type == NotificationType.CorpAct ? 
+                          <div className='pl-5' dangerouslySetInnerHTML={{ __html: visibleNotifications[item.index].subTitle || '' }}></div> : <div className='blue-color'>{visibleNotifications[item.index].subTitle}</div>
+                        }
+                        
                         <div className={styles['messages']}>
                           <ul className="list-disc pl-8 off-white-color-alt">
                             {
