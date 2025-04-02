@@ -24,7 +24,8 @@ class MacroPanelDataService {
       const result = await webApihandler.get('treasury-yields', {}, {
         serviceName: this.serviceName
       });
-      return [new Date(new Date().setHours(6, 0, 0,0)), Object.entries(result)
+
+      return [new Date(result.as_of_date), Object.entries(result)
           .filter(([key]) => key !== 'as_of_date')
           .map(([, item]) => {
             const t = item as TreasuryYield;
@@ -36,7 +37,6 @@ class MacroPanelDataService {
             };
           })];
     } catch (e: any) {
-      console.log(e)
       return [null, []];
     }
   }

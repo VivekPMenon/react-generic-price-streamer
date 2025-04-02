@@ -20,6 +20,21 @@
   font-weight: bold;
 }
 
+.section-header {
+  @extend .header;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background-color: $border-alt;
+
+  @media screen and (max-width: $mobile-breakpoint-max) {
+    flex-direction: row;
+    position: unset;
+    top: unset;
+    z-index: unset;
+  }
+}
+
 .macro-tab {
   width: 100%;
   height: 100%;
@@ -87,7 +102,7 @@
 }
 
 .divider {
-  border-color: $white
+  border-color: $white;
 }
 
 .instrument-group-tab {

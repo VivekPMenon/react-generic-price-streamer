@@ -41,7 +41,6 @@ export const useRiskDataStore = create<RiskDataState>((set, get) => ({
       result.margin_data.unshift(ibisAllItem);
 
       const userId = useUserContextStore.getState().userContext?.userId;
-      console.log(userId);
       let metrics = result.margin_data;
       if (userId?.toLowerCase() === 'dkim@hurricanecap.com') {
         metrics = result.margin_data.filter((item: RiskMetricsItem) => item.name === 'Chris Napoli');

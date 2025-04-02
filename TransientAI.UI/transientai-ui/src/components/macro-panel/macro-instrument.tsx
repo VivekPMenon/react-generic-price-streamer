@@ -152,7 +152,7 @@ export function MacroInstrument({symbol, name, value, change, percent, type, sho
         } else {
             setIsLoading(false);
         }
-    }, [symbol]);
+    }, [symbol, type]);
 
     const isNegative = inverseChange === true
         ? ((change ?? 0.0) > 0.0)

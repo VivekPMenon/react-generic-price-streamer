@@ -5,6 +5,10 @@ import {useUnseenItemsStore} from "@/services/unseen-items-store/unseen-items-st
 
 export const resourceName = 'bloomberg-email-reports';
 
+const REFRESH_INTERVAL = 60000;
+const BBG_REFRESH_INTERVAL = 1200000;
+let lastRefreshMillis: number = 0;
+
 interface MacroPanelDataState {
   bloombergEmailReports: BloombergEmailReport[];
   treasuryYields: TreasuryYield[];
@@ -20,7 +24,7 @@ interface MacroPanelDataState {
   loadBloombergEmailReports: () => Promise<void>;
   selectedReport?: BloombergEmailReport;
   setSelectedReport: (report: BloombergEmailReport) => void;
-  loadMacroPanelData: () => void,
+  loadMacroPanelData: (showLoading: boolean, loadBloombergReports: boolean) => void,
   startPolling: () => void;
 }
 
@@ -36,6 +40,7 @@ export const useMacroPanelDataStore = create<MacroPanelDataState>((set, get) => 
   isCryptoLoading: false,
   isEquityFuturesLoading: false,
   reportGenerationDate: null,
+  lastRefreshMillis: 0,
 
   setSelectedReport: (report) => set({ selectedReport: report }),
   loadBloombergEmailReports: async () => {
@@ -52,14 +57,17 @@ export const useMacroPanelDataStore = create<MacroPanelDataState>((set, get) => 
     }
   },
 
-  loadMacroPanelData: () => {
-    set({
-      isTreasuryLoading: true,
-      isFxLoading: true,
-      isCryptoLoading: true,
-      isEquityFuturesLoading: true
-    });
+  loadMacroPanelData: (showLoading: boolean, loadBloombergReports: boolean) => {
+    if (showLoading) {
+      set({
+        isTreasuryLoading: true,
+        isFxLoading: true,
+        isCryptoLoading: true,
+        isEquityFuturesLoading: true
+      });
+    }
 
+    const now = new Date();
     Promise.allSettled([
       macroPanelDataService.getTreasuryYields(),
       macroPanelDataService.getForeignTreasuryYields()
@@ -68,7 +76,7 @@ export const useMacroPanelDataStore = create<MacroPanelDataState>((set, get) => 
           const yields: [Date | null, TreasuryYield[]][] = results
               .map(result => result.status === 'fulfilled'
                   ? [result.value[0] as Date | null, result.value[1] as TreasuryYield[]]
-                  : [new Date(), [] as TreasuryYield[]]);
+                  : [now, [] as TreasuryYield[]]);
           const [date, treasuries] = yields[0];
           const [, foreign] = yields[1];
           return set({
@@ -90,36 +98,45 @@ export const useMacroPanelDataStore = create<MacroPanelDataState>((set, get) => 
         .then(values => set({equityFutures: values as EquityFuture[]}))
         .catch(() => console.error('Error equity futures'))
         .finally(() => set({isEquityFuturesLoading: false}));
-    macroPanelDataService.getBloombergReportEmails()
-        .then(values => set({bloombergEmailReports: values}))
-        .catch(() => console.error('Error bloomberg email reports'))
-        .finally(() => set({isLoading: false}));
+
+    if (loadBloombergReports) {
+      const prevCount = get().bloombergEmailReports.length;
+      macroPanelDataService.getBloombergReportEmails()
+          .then(values => {
+            // Use Zustand's `set` function to ensure the correct state is retrieved
+            set(() => {
+              const newCount = values.length;
+              const unseenDiff = Math.abs(newCount - prevCount);
+
+              if (unseenDiff > 0) {
+                useUnseenItemsStore.getState().addUnseenItems(resourceName, unseenDiff);
+              }
+
+              return { bloombergEmailReports: values }; // No need to modify state here, just ensuring correctness
+            });
+          })
+          .catch(() => console.error('Error bloomberg email reports'))
+          .finally(() => set({isLoading: false}));
+    }
   },
 
   startPolling: () => {
     setInterval(async () => {
-      const {bloombergEmailReports} = get();
+      lastRefreshMillis += REFRESH_INTERVAL;
+      if (lastRefreshMillis === Number.MAX_SAFE_INTEGER) {
+        lastRefreshMillis = REFRESH_INTERVAL;
+      }
+      const {loadMacroPanelData} = get();
 
-      const prevCount = bloombergEmailReports.length;
+      const loadBloombergReports = lastRefreshMillis % BBG_REFRESH_INTERVAL === 0;
+      loadMacroPanelData(false, loadBloombergReports);
 
-      // Use Zustand's `set` function to ensure the correct state is retrieved
-      set((state) => {
-        const newCount = state.bloombergEmailReports.length;
-        const unseenDiff = Math.abs(newCount - prevCount);
-
-        if (unseenDiff > 0) {
-          useUnseenItemsStore.getState().addUnseenItems(resourceName, unseenDiff);
-        }
-
-        return {}; // No need to modify state here, just ensuring correctness
-      });
-
-    }, 12000000);
+    }, REFRESH_INTERVAL);
   },
 
 }));
 
 const { loadMacroPanelData, startPolling } = useMacroPanelDataStore.getState();
-loadMacroPanelData();
+loadMacroPanelData(true, true);
 startPolling();
 

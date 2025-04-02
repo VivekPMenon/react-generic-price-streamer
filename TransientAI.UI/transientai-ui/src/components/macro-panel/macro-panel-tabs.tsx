@@ -29,9 +29,7 @@ export function MacroPanelTabs() {
         }
     }
 
-
     const isMobile = deviceType !== 'desktop';
-
     const groupedEquityFutures = useMemo(() => [...Map.groupBy(equityFutures, item => item.group_name).entries()], [equityFutures]);
     const groupedYields = useMemo(() => [...Map.groupBy(treasuryYields, item => item.group_name).entries()], [treasuryYields]);
     const groupedFx = useMemo(() => [...Map.groupBy(fxRates, item => item.group_name).entries()], [fxRates]);
@@ -43,7 +41,7 @@ export function MacroPanelTabs() {
             <div className={`${styles['macro-panel']} scrollable-div`}>
                 <div className={styles['equity-futures-container']}>
                     <hr className={styles['divider']} />
-                    <div className={`${styles['header']} sub-header`}>Global Equity Index Futures and Indices</div>
+                    <div className={`${styles['section-header']} sub-header`}>Global Equity Index Futures and Indices</div>
                     {
                         isEquityFuturesLoading
                             ? <Spinner />
@@ -78,7 +76,7 @@ export function MacroPanelTabs() {
                 </div>
                 <div className={styles['yields-container']}>
                     <hr className={styles['divider']} />
-                    <div className={`${styles['header']} sub-header`}>Rates (Yield)</div>
+                    <div className={`${styles['section-header']} sub-header`}>Rates (Yield)</div>
                     {
                         isTreasuryLoading
                         ? <Spinner />
@@ -114,7 +112,7 @@ export function MacroPanelTabs() {
                 </div>
                 <div className={styles['fx-container']}>
                     <hr className={styles['divider']} />
-                    <div className={`${styles['header']} sub-header`}>FX</div>
+                    <div className={`${styles['section-header']} sub-header`}>FX</div>
                     {
                         isFxLoading
                         ? <Spinner />
@@ -149,7 +147,7 @@ export function MacroPanelTabs() {
                 </div>
                 <div className={styles['crypto-container']}>
                     <hr className={styles['divider']} />
-                    <div className={`${styles['header']} sub-header`}>Crypto</div>
+                    <div className={`${styles['section-header']} sub-header`}>Crypto</div>
                     {
                         isCryptoLoading
                             ? <Spinner />
