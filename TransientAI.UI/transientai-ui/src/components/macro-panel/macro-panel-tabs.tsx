@@ -102,7 +102,7 @@ export function MacroPanelTabs() {
                                 >
                                     <MacroPanelTab
                                         instruments={y[1]}
-                                        showCharts={false}
+                                        showCharts={true}
                                         showPopupAction={showPopup}
                                         changeSuffix={' bps'}
                                         inverseChange={true}

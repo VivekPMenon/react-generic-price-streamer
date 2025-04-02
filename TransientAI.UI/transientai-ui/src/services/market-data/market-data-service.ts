@@ -1,15 +1,7 @@
 import {webApihandler} from "../web-api-handler";
-import {
-  FinancialData,
-  GraphDataPoint,
-  ImageType,
-  Instrument,
-  MarketData,
-  PeriodType,
-  Price,
-  TraceData
-} from "./model";
+import {FinancialData, GraphDataPoint, ImageType, Instrument, MarketData, PeriodType, Price, TraceData} from "./model";
 import {isToday, parseLocalDate} from "@/lib/utility-functions/date-operations";
+import {MarketDataType} from "@/services/macro-panel-data/model";
 
 class MarketDataService {
   readonly serviceName = 'hurricane-api';
@@ -34,13 +26,19 @@ class MarketDataService {
     return result.trace_data;
   }
 
-  async getMarketData(company_or_ticker : string, period: PeriodType = PeriodType.ONE_YEAR): Promise<Instrument|null> {
+  async getMarketData(company_or_ticker : string, period: PeriodType = PeriodType.ONE_YEAR, type: MarketDataType = MarketDataType.DOMESTIC): Promise<Instrument|null> {
     try {
+      const params = type === undefined || type === MarketDataType.DOMESTIC ? {
+        period,
+        company_or_ticker
+      } : {
+        period,
+        foreign_treasury_ticker: company_or_ticker
+      }
+
       const result = await webApihandler
           .get(
-              `market-data/${company_or_ticker}`, {
-                period
-              }, {
+              `market-data/`, params, {
                 serviceName: this.serviceName
               });
 

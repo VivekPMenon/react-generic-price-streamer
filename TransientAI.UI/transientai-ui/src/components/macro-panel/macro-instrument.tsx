@@ -1,15 +1,16 @@
 'use client';
 
 import dynamic from 'next/dynamic';
-
-const HighchartsReact = dynamic(() => import('highcharts-react-official'), { ssr: false });
 import Highcharts from 'highcharts';
 import Highstock from 'highcharts/highstock';
 import React, {useEffect, useState} from 'react';
-import {Instrument, marketDataService} from "@/services/market-data";
+import {Instrument, marketDataService, PeriodType} from "@/services/market-data";
 import {Spinner} from "@radix-ui/themes";
 import styles from './macro-panel-tabs.module.scss';
 import {formatDecimal} from "@/lib/utility-functions";
+import {MarketDataType} from "@/services/macro-panel-data/model";
+
+const HighchartsReact = dynamic(() => import('highcharts-react-official'), { ssr: false });
 
 function getChartOptions(instrument: Instrument, isNegative: boolean = false, ignoreNegative: boolean = false) {
     let seriesData: any[] = [];
@@ -129,16 +130,17 @@ export interface MacroInstrumentProps {
     showPopupAction: (instrument: Instrument) => void;
     changeSuffix?: string
     inverseChange?: boolean;
+    type?: MarketDataType;
 }
 
-export function MacroInstrument({symbol, name, value, change, percent, showCharts, showPopupAction, changeSuffix, inverseChange}: MacroInstrumentProps) {
+export function MacroInstrument({symbol, name, value, change, percent, type, showCharts, showPopupAction, changeSuffix, inverseChange}: MacroInstrumentProps) {
     const [instrument, setInstrument] = useState<Instrument|null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(true);
 
     useEffect(() => {
         if (symbol) {
             setIsLoading(true);
-            marketDataService.getMarketData(symbol)
+            marketDataService.getMarketData(symbol, PeriodType.ONE_YEAR, type)
                 .then(data => {
                     if (data) {
                         setInstrument(data);

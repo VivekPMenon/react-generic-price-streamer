@@ -2,6 +2,7 @@ import {create} from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import {FinancialData, ImageType, Instrument, PeriodType} from "@/services/market-data/model";
 import {marketDataService} from "@/services/market-data/market-data-service";
+import {MarketDataType} from "@/services/macro-panel-data/model";
 
 export interface MarketDataStore {
     tickers: string[];
@@ -14,7 +15,7 @@ export interface MarketDataStore {
     removeInstrument: (instrument: Instrument) => void;
     getInstrumentLogoUrl: (instrument: Instrument, format: ImageType, size: number) => string;
     maxInstruments: boolean;
-    loadInstrument: (company_or_ticker: string, period: PeriodType, includeFinancials: boolean) => Promise<Instrument|null>;
+    loadInstrument: (company_or_ticker: string, type: MarketDataType, period: PeriodType, includeFinancials: boolean) => Promise<Instrument|null>;
 }
 
 const MAX_INSTRUMENTS = 5;
@@ -37,9 +38,9 @@ export const useMarketDataStore = create<MarketDataStore>()(
             });
             set({instruments: [], isLoading: false, maxInstruments: false, error: ''});
         },
-        loadInstrument: async (company_or_ticker: string, period: PeriodType, includeFinancials: boolean) => {
+        loadInstrument: async (company_or_ticker: string, type: MarketDataType, period: PeriodType, includeFinancials: boolean) => {
             const promises: Promise<any>[] = [
-                marketDataService.getMarketData(company_or_ticker, period)
+                marketDataService.getMarketData(company_or_ticker, period, type)
             ];
 
             if (includeFinancials) {
@@ -79,7 +80,7 @@ export const useMarketDataStore = create<MarketDataStore>()(
                     return;
                 }
 
-                const instrument = await get().loadInstrument(search, period, true);
+                const instrument = await get().loadInstrument(search, MarketDataType.DOMESTIC, period, true);
                 if (!instrument) {
                     set({error: `Could not find ${search}`});
                     return;
@@ -92,7 +93,7 @@ export const useMarketDataStore = create<MarketDataStore>()(
                         .findIndex(i => instrument.ticker.toUpperCase() === i.ticker.toUpperCase());
 
                     if (index >= 0) {
-                        const refreshed = await loadInstrument(instrument.ticker, period, false);
+                        const refreshed = await loadInstrument(instrument.ticker, MarketDataType.DOMESTIC, period, false);
                         if (refreshed) {
                             refreshed.dispose = instrument.dispose;
                             refreshed.financials = instrument.financials;

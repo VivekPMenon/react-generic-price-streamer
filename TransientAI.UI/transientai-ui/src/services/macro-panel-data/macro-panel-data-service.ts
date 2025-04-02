@@ -1,5 +1,13 @@
-import { webApihandler } from "../web-api-handler";
-import {BloombergEmailReport, BondData, CryptoCurrency, EquityFuture, FxRate, TreasuryYield} from './model';
+import {webApihandler} from "../web-api-handler";
+import {
+  BloombergEmailReport,
+  BondData,
+  CryptoCurrency,
+  EquityFuture,
+  FxRate,
+  MarketDataType,
+  TreasuryYield
+} from './model';
 
 class MacroPanelDataService {
   private readonly serviceName = 'hurricane-api';
@@ -47,7 +55,9 @@ class MacroPanelDataService {
               ...t,
               value: t.rate,
               change: t.one_day_change_bps,
-              percent: t.ytd_change_bps
+              percent: t.ytd_change_bps,
+              symbol: t.ticker ?? '',
+              type: MarketDataType.FOREIGN_TREASURY
             };
           })))
       ];
