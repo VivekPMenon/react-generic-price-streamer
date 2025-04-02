@@ -127,9 +127,11 @@ export interface MacroInstrumentProps {
     percent?: number;
     showCharts: boolean;
     showPopupAction: (instrument: Instrument) => void;
+    changeSuffix?: string
+    inverseChange?: boolean;
 }
 
-export function MacroInstrument({symbol, name, value, change, percent, showCharts, showPopupAction}: MacroInstrumentProps) {
+export function MacroInstrument({symbol, name, value, change, percent, showCharts, showPopupAction, changeSuffix, inverseChange}: MacroInstrumentProps) {
     const [instrument, setInstrument] = useState<Instrument|null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(true);
 
@@ -150,14 +152,18 @@ export function MacroInstrument({symbol, name, value, change, percent, showChart
         }
     }, [symbol]);
 
-    const isNegative = (change ?? 0.0) < 0.0;
+    const isNegative = inverseChange === true
+        ? ((change ?? 0.0) > 0.0)
+        : ((change ?? 0.0) < 0.0);
+
+    const isNegativeChange = ((change ?? 0.0) < 0.0);
 
     return (
         <div className={styles['market-data' + (showCharts ? '' : '-no-chart')]}>
             <div className={styles['market-data-name']}>{name}</div>
             <div className={styles['market-data-value']}>{formatDecimal(value, '', 3)}</div>
-            <div className={styles['market-data-change' + (isNegative ? '-negative' : '')]}>{formatDecimal(change, '', 3)}</div>
-            <div className={styles['market-data-percent' + (isNegative ? '-negative' : '')]}>({(isNegative ? '' : '+') + formatDecimal(percent, '-', 2)}%)</div>
+            <div className={styles['market-data-change' + (isNegative ? '-negative' : '')]}>{(isNegativeChange ? '' : '+') + formatDecimal(change, '', 3) + (changeSuffix ?? '')}</div>
+            <div className={styles['market-data-percent' + (isNegative ? '-negative' : '')]}>({(isNegativeChange ? '' : '+') + formatDecimal(percent, '-', 2)}%)</div>
             {
                 showCharts && (
                     <div

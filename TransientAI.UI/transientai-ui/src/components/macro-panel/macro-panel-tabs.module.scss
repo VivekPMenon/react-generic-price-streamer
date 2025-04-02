@@ -29,7 +29,7 @@
   padding-top: 20px;
 
   @media screen and (max-width: $mobile-breakpoint-max) {
-    flex-direction: column;
+    flex-direction: row;
     height: 100%;
     width: 100%;
     gap: 10px;
@@ -62,7 +62,7 @@
   @media screen and (max-width: $mobile-breakpoint-max) {
     flex-direction: column;
     height: 100%;
-    width: 365px;
+    width: 175px;
     gap: 10px;
   }
 }
@@ -79,9 +79,13 @@
 
   @media screen and (max-width: $mobile-breakpoint-max) {
     height: 100%;
-    width: 365px;
+    width: 175px;
     gap: 10px;
   }
+}
+
+.divider {
+  border-color: $white
 }
 
 .instrument-group-tab {
@@ -120,7 +124,7 @@
 
   @media screen and (max-width: $mobile-breakpoint-max) {
     gap: 1px;
-    max-width: 350px;
+    max-width: 165px;
     height: 100%;
   }
 }

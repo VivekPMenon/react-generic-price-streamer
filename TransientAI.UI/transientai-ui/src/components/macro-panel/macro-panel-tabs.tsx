@@ -42,6 +42,7 @@ export function MacroPanelTabs() {
             <div className={`${styles['header']} sub-header`}>Macro Report: Generated {reportGenerationDate?.toLocaleString() ?? ''}</div>
             <div className={`${styles['macro-panel']} scrollable-div`}>
                 <div className={styles['equity-futures-container']}>
+                    <hr className={styles['divider']} />
                     <div className={`${styles['header']} sub-header`}>Global Equity Index Futures and Indices</div>
                     {
                         isEquityFuturesLoading
@@ -52,7 +53,6 @@ export function MacroPanelTabs() {
                                                 <Tabs.Trigger
                                                     key={ef[0]}
                                                     value={ef[0] || 'Untitled'}
-
                                                 >
                                                     <span className={styles['instrument-group-tab']}>{ef[0]}</span>
                                                 </Tabs.Trigger>
@@ -68,6 +68,7 @@ export function MacroPanelTabs() {
                                                 instruments={ef[1]}
                                                 showCharts={true}
                                                 showPopupAction={showPopup}
+                                                inverseChange={false}
                                             />
                                         </Tabs.Content>
                                     ))}
@@ -76,6 +77,7 @@ export function MacroPanelTabs() {
                     }
                 </div>
                 <div className={styles['yields-container']}>
+                    <hr className={styles['divider']} />
                     <div className={`${styles['header']} sub-header`}>Rates (Yield)</div>
                     {
                         isTreasuryLoading
@@ -102,6 +104,8 @@ export function MacroPanelTabs() {
                                         instruments={y[1]}
                                         showCharts={false}
                                         showPopupAction={showPopup}
+                                        changeSuffix={' bps'}
+                                        inverseChange={true}
                                     />
                                 </Tabs.Content>
                             ))}
@@ -109,6 +113,7 @@ export function MacroPanelTabs() {
                     }
                 </div>
                 <div className={styles['fx-container']}>
+                    <hr className={styles['divider']} />
                     <div className={`${styles['header']} sub-header`}>FX</div>
                     {
                         isFxLoading
@@ -135,6 +140,7 @@ export function MacroPanelTabs() {
                                             instruments={fx[1]}
                                             showCharts={true}
                                             showPopupAction={showPopup}
+                                            inverseChange={true}
                                         />
                                     </Tabs.Content>
                                 ))}
@@ -142,6 +148,7 @@ export function MacroPanelTabs() {
                     }
                 </div>
                 <div className={styles['crypto-container']}>
+                    <hr className={styles['divider']} />
                     <div className={`${styles['header']} sub-header`}>Crypto</div>
                     {
                         isCryptoLoading

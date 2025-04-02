@@ -8,9 +8,11 @@ export interface MacroPanelTabProps {
     instruments: IInstrument[];
     showCharts: boolean;
     showPopupAction: (instrument: Instrument) => void;
+    changeSuffix?: string
+    inverseChange?: boolean;
 }
 
-export function MacroPanelTab({instruments, showCharts, showPopupAction} : MacroPanelTabProps) {
+export function MacroPanelTab({instruments, showCharts, showPopupAction, changeSuffix, inverseChange} : MacroPanelTabProps) {
     return (
         <div className={`${styles['macro-tab']}`}>
             {
@@ -19,6 +21,8 @@ export function MacroPanelTab({instruments, showCharts, showPopupAction} : Macro
                         key={instrument.name}
                         showCharts={showCharts}
                         showPopupAction={showPopupAction}
+                        changeSuffix={changeSuffix}
+                        inverseChange={inverseChange}
                         {...instrument}
                     />
                 ))
