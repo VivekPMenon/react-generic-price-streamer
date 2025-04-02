@@ -1,11 +1,16 @@
 import {webApihandler} from '../web-api-handler';
+import { useUserContextStore } from '@/services/user-context';
 import {ReportSummary, ReportType, ResearchReport} from './model';
 
 class ResearchReportsDataService {
   private serviceName = 'hurricane-api';
 
   async getReports(): Promise<ResearchReport[]> {
-    const results = await webApihandler.get('latest-emails', {}, { serviceName: this.serviceName });
+    const {userContext} = useUserContextStore.getState()
+    const results = await webApihandler.get('latest-emails', {
+      userName: userContext.userName,
+      userId: userContext.userId
+    }, { serviceName: this.serviceName });
     return results?.map((result: any) => ({
       id: result.id,
       name: result.subject,
