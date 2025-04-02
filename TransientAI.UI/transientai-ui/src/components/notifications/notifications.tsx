@@ -17,6 +17,7 @@ import { formatDate } from '@/lib/utility-functions/date-operations';
 import { useUnseenItemsStore } from '@/services/unseen-items-store/unseen-items-store';
 import { resourceName as BreakNewsresourceName } from '@/services/break-news/break-news-data-store';
 import { resourceName as bloombergReportResourceName, useMacroPanelDataStore } from '@/services/macro-panel-data/macro-panel-data-store';
+import { RoleType, useUserContextStore } from '@/services/user-context';
 
 export interface NotificationsProps {
   onExpandCollapse?: (state: boolean) => void;
@@ -106,13 +107,14 @@ export function Notifications(props: NotificationsProps) {
   const divRef = useRef<HTMLDivElement>(null);
   const { isLoading, reports: researchReports, setSelectedReport: setSelectedResearchReport } = useResearchReportsStore();
   const { isLoading: isRiskReportLoading, riskReports, setSelectedReport: setSelectedRiskReport } = useRiskReportsSlice();
-  const { isLoading: isCorpActionsLoading, loadedCorpActions, selectedCorpAction, setSelectedCorpAction } = useCorpActionsStore();
+  const { isLoading: isCorpActionsLoading, loadedCorpActions, selectedCorpAction, setSelectedCorpAction, loadCorpActions, loadPmCorpActions } = useCorpActionsStore();
   const { isLoading: isInquiriesLoading, inquiries } = useInvestorRelationsStore();
   const { isLoading: isRiskDataLoading, lastUpdatedTimestamp } = useRiskDataStore();
   // const { isLoading: isBreakingNewsLoading, breakNewsItems, setSelectedBreakNewsItem, setGroupId } = useBreakNewsDataStore();
   const { isLoading: isBloombergEmailReportsLoading, bloombergEmailReports, setSelectedReport } = useMacroPanelDataStore();
   const { resetUnseenItems, unseenItems } = useUnseenItemsStore();
   const { fullMenuList, activeMenuList, setActiveMenu } = useMenuStore();
+  const { userContext } = useUserContextStore();
 
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
@@ -145,6 +147,14 @@ export function Notifications(props: NotificationsProps) {
     lastUpdatedTimestamp,
     bloombergEmailReports
   ]);
+
+  useEffect(() => {
+    if(userContext.role == RoleType.PM) {
+      loadPmCorpActions();
+    } else {
+      loadCorpActions();
+    }
+  }, [userContext.role]);
 
   useEffect(() => {
     const previousValue = previousSelectedType.current;
