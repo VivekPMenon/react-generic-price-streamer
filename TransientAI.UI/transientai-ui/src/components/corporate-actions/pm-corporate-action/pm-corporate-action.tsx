@@ -1,7 +1,6 @@
 'use client'
 
 import { Accordion } from '@/components/accordion/accordion';
-import PmData from './portfolio_manager_output.json';
 import { PmList } from './pm-list';
 import { CorporateAction, useCorpActionsStore } from '@/services/corporate-actions';
 
