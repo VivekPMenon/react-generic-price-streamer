@@ -20,11 +20,14 @@ export function BreakingNews({ isExpanded }: BreakingNewsProps) {
   const [totalPages, setTotalPages] = useState(0);
   const [nextPage, setNextPage] = useState(1);
   const [expandedMessages, setExpandedMessages] = useState<{ [key: string]: boolean }>({});
-  const scrollContainerRef = useRef<HTMLDivElement>(null);
-  const MESSAGES_PER_PAGE = 10;
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
-  const [isAtTop, setIsAtTop] = useState(false);
+  const [isAtBottom, setIsAtBottom] = useState(false);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const loadingTriggerRef = useRef<HTMLDivElement>(null);
+  const prevScrollHeightRef = useRef(0);
+  const MESSAGES_PER_PAGE = 20;
+  const hasMoreMessages = currentPage < totalPages;
 
   // Function to fetch messages with pagination
   const fetchMessages = useCallback(async (pageNumber: number, isInitial: boolean = false) => {
@@ -32,6 +35,9 @@ export function BreakingNews({ isExpanded }: BreakingNewsProps) {
       setIsLoading(true);
     } else {
       setIsLoadingMore(true);
+      if (scrollContainerRef.current) {
+        prevScrollHeightRef.current = scrollContainerRef.current.scrollHeight;
+      }
     }
   
     try {
@@ -49,126 +55,98 @@ export function BreakingNews({ isExpanded }: BreakingNewsProps) {
       setNextPage(nextPageFromResponse + 1);
   
       if (newMessages.length !== 0) {
+        setMessages(prevMessages => {
+          // Prevent duplicates
+          const existingMessageIds = new Set(prevMessages.map(msg => msg.id));
+          const uniqueNewMessages = newMessages.filter(newMsg => !existingMessageIds.has(newMsg.id));
+  
+          return isInitial ? uniqueNewMessages : [...uniqueNewMessages, ...prevMessages];
+        });
+  
         if (isInitial) {
-          // For initial load, just set the messages
-          setMessages(newMessages);
+          setTimeout(scrollToBottom, 100);
         } else {
-          // For pagination, prepend new messages while removing duplicates
-          setMessages(prevMessages => {
-            // Create a Set of existing message IDs to check for duplicates
-            const existingMessageIds = new Set(prevMessages.map(msg => msg.id));
-            
-            // Filter out messages that already exist
-            const uniqueNewMessages = newMessages.filter(
-              newMsg => !existingMessageIds.has(newMsg.id)
-            );
-            
-            // Prepend unique new messages to existing messages
-            return [...uniqueNewMessages, ...prevMessages];
+          requestAnimationFrame(() => {
+            if (scrollContainerRef.current) {
+              const newScrollHeight = scrollContainerRef.current.scrollHeight;
+              const heightDifference = newScrollHeight - prevScrollHeightRef.current;
+              scrollContainerRef.current.scrollTop += heightDifference;
+            }
           });
         }
       }
     } catch (error) {
       console.error('Error loading messages:', error);
     } finally {
-      if (isInitial) {
-        setIsLoading(false);
-      } else {
-        setIsLoadingMore(false);
-      }
+      setIsLoading(false);
+      setIsLoadingMore(false);
     }
   }, [selectedGroupId]);
 
-  const messageStatus = async (messageId: string | number) => {
-    try {
-      await breakNewsDataService.updateMessageStatus(messageId);
-    } catch (error) {
-      console.error('Error updating message status:', error);
+  // Function to scroll to bottom
+  const scrollToBottom = () => {
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.scrollTo({
+        top: scrollContainerRef.current.scrollHeight,
+        behavior: 'smooth'
+      });
+      setIsAtBottom(false);
     }
-  }
-
-  //Scroll To Bottom for initial rendering
-  useEffect(() => {
-    setTimeout(() => {
-      scrollToBottom();
-    }, 500);
-  }, [messages]);
+  };
 
   // Initial load of messages
   useEffect(() => {
     setCurrentPage(1);
     fetchMessages(1, true);
-    //messageStatus(selectedBreakNewsItem?.id || '');
   }, [selectedGroupId, selectedBreakNewsItem, fetchMessages]);
+  
+  // Set up Intersection Observer for loading previous messages
+  useEffect(() => {
+    const options = {
+      root: scrollContainerRef.current,
+      rootMargin: '0px',
+      threshold: 0.1
+    };
 
-  // Handle scroll to load more messages
+    const handleIntersection = (entries: IntersectionObserverEntry[]) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting && hasMoreMessages && !isLoadingMore) {
+          setCurrentPage(nextPage);
+          fetchMessages(nextPage);
+        }
+      });
+    };
+
+    const observer = new IntersectionObserver(handleIntersection, options);
+    if (loadingTriggerRef.current) {
+      observer.observe(loadingTriggerRef.current);
+    }
+
+    return () => {
+      if (loadingTriggerRef.current) {
+        observer.unobserve(loadingTriggerRef.current);
+      }
+      observer.disconnect();
+    };
+  }, [fetchMessages, hasMoreMessages, isLoadingMore, nextPage]);
+
   const handleScroll = useCallback(() => {
     const container = scrollContainerRef.current;
     if (!container || isLoadingMore) return;
+    const isNearBottom = container.scrollHeight - container.scrollTop - container.clientHeight > 300;
+    setIsAtBottom(isNearBottom);
+  }, [isLoadingMore]);
 
-    const isNearBottom = 
-    container.scrollHeight - container.scrollTop - container.clientHeight > 300;
-
-  setIsAtTop(isNearBottom);
-    // Check if user has scrolled to the top (or very close to it)
-    if (container.scrollTop < 45) {
-      // Check if there are more pages to load
-      if (currentPage < totalPages) {
-        setCurrentPage(nextPage);
-        fetchMessages(nextPage);
-        container.scrollTop = container.scrollHeight * 0.8;
-      }
-    }
-  }, [fetchMessages, isLoadingMore, currentPage, totalPages, nextPage]);
-
-
-    // Function to scroll to bottom
-    const scrollToBottom = () => {
-      if (scrollContainerRef.current) {
-        scrollContainerRef.current.scrollTop = scrollContainerRef.current.scrollHeight;
-      }
-    };
-
-
-  // Add scroll event listener
+   // Add scroll event listener
   useEffect(() => {
     const container = scrollContainerRef.current;
     if (!container) return;
-    
     container.addEventListener('scroll', handleScroll);
     return () => {
       container.removeEventListener('scroll', handleScroll);
     };
   }, [handleScroll]);
 
-  // Maintain scroll position when adding older messages
-  useEffect(() => {
-    const scrollContainer = scrollContainerRef.current;
-  
-    if (!scrollContainer) return;
-  
-    if (isLoadingMore) {
-      // Preserve scroll position when older messages load
-      const previousScrollHeight = scrollContainer.scrollHeight;
-      const previousScrollTop = scrollContainer.scrollTop;
-  
-      // After messages are added and DOM is updated
-      const timer = setTimeout(() => {
-        const newScrollHeight = scrollContainer.scrollHeight;
-        const heightDifference = newScrollHeight - previousScrollHeight;
-  
-        // Set scroll position to maintain the same relative position
-        scrollContainer.scrollTop = previousScrollTop + heightDifference;
-      }, 10); // Adjust the timeout if needed
-  
-      return () => clearTimeout(timer);
-    } else if (currentPage === 1) {
-      // Scroll to bottom only on initial load
-      scrollContainer.scrollTop = scrollContainer.scrollHeight;
-    }
-  }, [messages, isLoadingMore, currentPage]);
-  
-    
   // Format date to display in a readable format
   const formatDate = (timeString: string | undefined) => {
     if (!timeString) {
@@ -199,13 +177,6 @@ export function BreakingNews({ isExpanded }: BreakingNewsProps) {
   };
   
   const groupMessagesByDate = () => {
-    // Sort messages by sender_time_info
-    const sortedMessages = [...messages].sort((a, b) => {
-      const timeA = a.sender_time_info ? new Date(a.sender_time_info).getTime() : 0;
-      const timeB = b.sender_time_info ? new Date(b.sender_time_info).getTime() : 0;
-      return timeA - timeB;
-    });
-    
     // Group messages by date
     const groupedMessages: { [key: string]: Message[] } = {};
     
@@ -290,7 +261,6 @@ export function BreakingNews({ isExpanded }: BreakingNewsProps) {
       );
     }
 
-    // Create the attachment component if attachment exists
     let attachmentComponent = null;
     const openModal = (imageUrl: string) => {
       setSelectedImage(imageUrl);
@@ -314,6 +284,7 @@ export function BreakingNews({ isExpanded }: BreakingNewsProps) {
               src={message.attachment}
               alt="Attachment"
               className="w-auto h-auto max-h-[300px] rounded-lg object-cover"
+              loading="lazy"
             />
           </div>
         );
@@ -371,22 +342,20 @@ export function BreakingNews({ isExpanded }: BreakingNewsProps) {
       </div>
     );
   }
-  
 
-// Update the renderMessage function to ensure unique keys
-const renderMessage = (message: Message) => {
-  return (
-    <div key={`message-${message.id}`} className="mb-3 flex flex-col items-start">
-      <div className={`bg-[#2a2d30] text-white p-2 rounded-lg flex flex-col ${message.attachment ? 'w-[70%]' : 'max-w-lg'}`}>
-        <div className="flex-1">{getMessageType(message)}</div>
-        <span className="text-xs text-gray-400 whitespace-nowrap w-full text-end p-1">{formatTime(message.sender_time_info || '')}</span>
+  const renderMessage = (message: Message) => {
+    return (
+      <div key={`message-${message.id}`} className="mb-3 flex flex-col items-start">
+        <div className={`bg-[#2a2d30] text-white p-2 rounded-lg flex flex-col ${message.attachment ? 'w-[70%]' : 'max-w-lg'}`}>
+          <div className="flex-1">{getMessageType(message)}</div>
+          <span className="text-xs text-gray-400 whitespace-nowrap w-full text-end p-1">{formatTime(message.sender_time_info || '')}</span>
+        </div>
       </div>
-    </div>
-  );
-};
+    );
+  };
   
   if(isLoading) {
-    return <div className={`${styles['breaking-news']} height-vh-75`}>
+    return <div className={`${styles['breaking-news']} height-vh-75 flex justify-center items-center`}>
       <Spinner size='3' className='text-center'></Spinner>
     </div>;
   }
@@ -399,25 +368,19 @@ const renderMessage = (message: Message) => {
     <div className={`${styles['breaking-news']} scrollable-div`}>
       <div className='sm:w-[60%] mr-4 max-sm:w-full border-r border-color-r h-full'>
         <div 
-          onScroll={handleScroll}
           className={`${styles['whatsapp-cont']} p-2 overflow-y-auto`}
           ref={scrollContainerRef}
         >
-          {/* Loading indicator for previous messages */}
-          {isLoadingMore && (
-            <div className="flex justify-center mb-3">
-              <Spinner size='1' className='text-center'></Spinner>
-            </div>
-          )}
-          
-          {/* Pagination info - optional */}
-          {currentPage < totalPages && !isLoadingMore && (
-            <div className="flex justify-center mb-3">
-              <div className="bg-gray-800 text-xs text-gray-400 px-2 py-1 rounded-full">
-                Scroll to load more messages
+          {/* Loading trigger at the top - this is observed by the Intersection Observer */}
+          <div ref={loadingTriggerRef} className="h-10 -mt-5 flex justify-center">
+            {isLoadingMore && (
+              <div className="flex justify-center items-end h-full">
+                <Spinner size='1' className='text-center'></Spinner>
               </div>
-            </div>
-          )}
+            )}
+          </div>
+          
+          {/* Messages grouped by date */}
           {Object.entries(groupedMessages).map(([dateString, messagesForDate]) => (
             <div key={`date-${dateString}`}>
               <div className="flex justify-center mb-3">
@@ -431,7 +394,7 @@ const renderMessage = (message: Message) => {
         </div>
 
         {/* Down Arrow Button */}
-        {isAtTop && (
+        {isAtBottom && (
           <Button type='button' button-name='scroll to bottom'
             onClick={scrollToBottom}
             className={`${styles['scroll-to-bottom-btn']}`}
