@@ -6,7 +6,6 @@ import Toggle from 'react-toggle';
 import { RoleType, useUserContextStore } from '@/services/user-context';
 import { FilterDropDown } from './filter-dropdown';
 import { useCorpActionsStore } from '@/services/corporate-actions';
-import OpsList from '@/components/corporate-actions/ops-corporate-actions/ops_view_output.json'
 
 interface FilterActions {
     actionType: boolean;
@@ -53,7 +52,7 @@ export const CorporateActionHeader = () => {
         const corpActionId = new Set<string>();
         const isinSet = new Set<string>();
 
-        OpsList.data.forEach((item) => {
+        corpActions.forEach((item) => {
             if (item.eventType) eventTypeSet.add(item.eventType);
             if (item.eventStatus) eventStatusSet.add(item.eventStatus);
             if (item.eventId) corpActionId.add(item.eventId);
