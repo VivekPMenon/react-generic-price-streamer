@@ -105,6 +105,11 @@
   border-color: $white;
 }
 
+.tab-list {
+  @extend .rt-BaseTabList !optional;
+  border-color: $white;
+}
+
 .instrument-group-tab {
   color: $yellow;
 }
@@ -145,6 +150,18 @@
     max-width: 165px;
     height: 100%;
     padding: 0;
+  }
+}
+
+.market-data-graph-popup {
+  gap: 10px;
+  padding: 10px;
+  height: 100%;
+  width: 100%;
+
+  @media screen and (max-width: $mobile-breakpoint-max) {
+    width: calc(100vw - 35px);
+    vertical-align: center;
   }
 }
 

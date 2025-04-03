@@ -195,8 +195,8 @@ export function PriceGraph(props: PriceGraphProps) {
           <div className="blue-color">157.47</div>
           <div className="">Mkt Cap</div>
           <div className="blue-color">115.06</div>
-          <div className="">GDP Score</div>
-          <div className="blue-color">8</div>
+          <div className=""></div>
+          <div className="blue-color"></div>
         </div>
 
         <div className="grid grid-cols-6 gap-2 fs-13">

@@ -35,7 +35,7 @@ export function Traces() {
       { field: 'isin', headerName: 'ISIN' },
       { field: 'date', headerName: 'Date', width: 90 },
       { field: 'side', headerName: 'Side', width: 70 },
-      { field: 'size_m', headerName: 'Size (M)', width: 90, ...getNumberColDefTemplate(0) },
+      { field: 'size_m', headerName: 'Size (K)', width: 90, ...getNumberColDefTemplate(0) },
       { field: 'spread_change', headerName: 'Spread Change', width: 90, ...getNumberColDefTemplate(2) },
       { field: 'time', headerName: 'Time', width: 90 },
       { field: 'traded_price', headerName: 'Traded Price', width: 100, ...getNumberColDefTemplate(2) },

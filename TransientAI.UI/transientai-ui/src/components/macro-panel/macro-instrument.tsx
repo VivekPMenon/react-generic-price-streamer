@@ -164,8 +164,8 @@ export function MacroInstrument({symbol, name, value, change, percent, type, sho
         <div className={styles['market-data' + (showCharts ? '' : '-no-chart')]}>
             <div className={styles['market-data-name']}>{name}</div>
             <div className={styles['market-data-value']}>{formatDecimal(value, '', 3)}</div>
-            <div className={styles['market-data-change' + (isNegative ? '-negative' : '')]}>{(isNegativeChange ? '' : '+') + formatDecimal(change, '', 3) + (changeSuffix ?? '')}</div>
-            <div className={styles['market-data-percent' + (isNegative ? '-negative' : '')]}>({(isNegativeChange ? '' : '+') + formatDecimal(percent, '-', 2)}%)</div>
+            <div className={styles['market-data-change' + (isNegative ? '-negative' : '')]}>{(isNegativeChange ? '-' : '+') + formatDecimal(Math.abs(change ?? 0.0), '', 3) + (changeSuffix ?? '')}</div>
+            <div className={styles['market-data-percent' + (isNegative ? '-negative' : '')]}>({(isNegativeChange ? '-' : '+') + formatDecimal(Math.abs(percent ?? 0.0), '-', 2)}%)</div>
             {
                 showCharts && (
                     <div

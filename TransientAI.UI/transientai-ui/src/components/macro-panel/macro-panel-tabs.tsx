@@ -46,7 +46,7 @@ export function MacroPanelTabs() {
                         isEquityFuturesLoading
                             ? <Spinner />
                             : (<Tabs.Root defaultValue={groupedEquityFutures?.length ? groupedEquityFutures[0][0] : undefined}>
-                                    <Tabs.List className={isMobile ? 'horizontal-scrollable-div' : ''}>
+                                    <Tabs.List className={`${styles['tab-list']} ${isMobile ? 'horizontal-scrollable-div' : ''}`}>
                                         {groupedEquityFutures.map(ef => (
                                                 <Tabs.Trigger
                                                     key={ef[0]}
@@ -81,7 +81,7 @@ export function MacroPanelTabs() {
                         isTreasuryLoading
                         ? <Spinner />
                         : (<Tabs.Root defaultValue={groupedYields?.length ? groupedYields[0][0] : undefined}>
-                            <Tabs.List className={isMobile ? 'horizontal-scrollable-div' : ''}>
+                                <Tabs.List className={`${styles['tab-list']} ${isMobile ? 'horizontal-scrollable-div' : ''}`}>
                                 {
                                     groupedYields.map(y => (
                                             <Tabs.Trigger
@@ -117,7 +117,7 @@ export function MacroPanelTabs() {
                         isFxLoading
                         ? <Spinner />
                             : (<Tabs.Root defaultValue={groupedFx?.length ? groupedFx[0][0] : undefined}>
-                                <Tabs.List className={isMobile ? 'horizontal-scrollable-div' : ''}>
+                                <Tabs.List className={`${styles['tab-list']} ${isMobile ? 'horizontal-scrollable-div' : ''}`}>
                                     {
                                         groupedFx.map(fx => (
                                             <Tabs.Trigger
@@ -138,7 +138,7 @@ export function MacroPanelTabs() {
                                             instruments={fx[1]}
                                             showCharts={true}
                                             showPopupAction={showPopup}
-                                            inverseChange={true}
+                                            inverseChange={false}
                                         />
                                     </Tabs.Content>
                                 ))}
@@ -152,7 +152,7 @@ export function MacroPanelTabs() {
                         isCryptoLoading
                             ? <Spinner />
                             : (<Tabs.Root defaultValue={groupedCrypto?.length ? groupedCrypto[0][0] : undefined}>
-                                <Tabs.List className={isMobile ? 'horizontal-scrollable-div' : ''}>
+                                <Tabs.List className={`${styles['tab-list']} ${isMobile ? 'horizontal-scrollable-div' : ''}`}>
                                     {
                                         groupedCrypto.map(c => (
                                             <Tabs.Trigger
@@ -178,6 +178,7 @@ export function MacroPanelTabs() {
                                 ))}
                             </Tabs.Root>)
                     }
+                    <hr className={styles['divider']} />
                 </div>
             </div>
             <Dialog.Root open={open} onOpenChange={handleOpenChange}>
@@ -193,7 +194,7 @@ export function MacroPanelTabs() {
                                         instrument={instrument}
                                         showFinancialData={false}
                                         showPriceSummary={false}
-                                        className={styles['market-data-graph']}
+                                        className={styles['market-data-graph-popup']}
                                         ignoreNegative={false}
                                         isNegative={instrument.change < 0.0}
                                     />

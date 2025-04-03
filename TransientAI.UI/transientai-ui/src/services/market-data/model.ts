@@ -64,14 +64,12 @@ export interface FinancialData {
 
 export enum PeriodType {
   ONE_DAY = '1d',
-  FIVE_DAY = '5d',
+  THREE_DAY = '3d',
+  ONE_WEEK = '1w',
   ONE_MONTH = '1mo',
   THREE_MONTH = '3mo',
   SIX_MONTH = '6mo',
   ONE_YEAR = '1y',
-  TWO_YEAR = '2y',
-  FIVE_YEAR = '5y',
-  TEN_YEAR = '10y',
   YEAR_TO_DATE = 'ytd',
   MAX = 'max'
 }
