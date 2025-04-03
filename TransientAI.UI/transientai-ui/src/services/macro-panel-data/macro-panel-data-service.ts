@@ -100,7 +100,7 @@ class MacroPanelDataService {
           percent: t.change_percentage,
           symbol: t.ticker,
         };
-      });
+      }).sort((a, b) => (b.percent ?? 0.0) - (a.percent ?? 0.0));
     } catch (e: any) {
       return [];
     }
