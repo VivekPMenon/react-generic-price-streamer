@@ -33,7 +33,8 @@ class MacroPanelDataService {
               ...t,
               value: t.rate,
               change: t.one_day_change_bps,
-              percent: t.ytd_change_bps
+              percent: t.ytd_change_bps,
+              symbol: t.ticker ?? '',
             };
           })];
     } catch (e: any) {
