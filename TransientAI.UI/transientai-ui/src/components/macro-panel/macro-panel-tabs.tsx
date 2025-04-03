@@ -56,7 +56,7 @@ export function MacroPanelTabs() {
 
     return (
         <div>
-            <div className={`${styles['header']} sub-header`}>Macro Report: Generated {reportGenerationDate?.toLocaleString() ?? ''}</div>
+            <div className={`${styles['header']} sub-header`}>{`Macro Report: Generated ${reportGenerationDate?.toLocaleString() ?? ''}`}</div>
             <div className={`${styles['macro-panel']} scrollable-div`}>
                 <div className={styles['equity-futures-container']}>
                     <hr className={styles['divider']} />

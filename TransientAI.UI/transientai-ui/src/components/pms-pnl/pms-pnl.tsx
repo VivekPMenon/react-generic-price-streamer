@@ -1,5 +1,3 @@
-'use client'
-
 import React from 'react';
 import {useDeviceType} from "@/lib/hooks";
 import {usePmsPnlDataStore} from "@/services/pms-pnl-data/pms-pnl-data-store";
@@ -16,7 +14,7 @@ export function PmsPnl() {
 
     return (
     <div>
-        <div className={`${styles['header']} sub-header`}>P&L Dashboard for {reportDate?.toLocaleString() ?? ''}</div>
+        <div className={`${styles['header']} sub-header`}>{`P&L Dashboard for ${reportDate?.toLocaleString() ?? ''}`}</div>
         <div className={`${styles['pms-panel']}`}>
             <DataGrid
                 domLayout={'normal'}
