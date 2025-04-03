@@ -135,9 +135,9 @@ class MarketDataService {
       change: result.change,
       percent_change: result.percent_change,
       timestamp: new Date(
-          result.timestamp.endsWith('Z')
-              ? result.timestamp
-              : result.timestamp + 'Z'
+          result.timestamp.endsWith('T00:00:00')
+              ? result.timestamp + 'Z'
+              : result.timestamp 
       ),
       dispose: null
     };

@@ -25,9 +25,9 @@ export const usePmsPnlDataStore = create<PmsPnlDataState>((set) => ({
                 const lastUpdated = result[0].last_updated;
                 set({
                     report: [result[0].data, result[1]],
-                    reportDate: new Date(lastUpdated.endsWith('Z')
-                        ? lastUpdated
-                        : lastUpdated + 'Z'),
+                    reportDate: new Date(lastUpdated.endsWith('T00:00:00')
+                        ? lastUpdated + 'Z'
+                        : lastUpdated),
                 })
             }
         })
