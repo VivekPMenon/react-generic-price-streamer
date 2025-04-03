@@ -72,7 +72,7 @@ function getChartOptions(instrument: Instrument, isNegative: boolean = false, ig
     let seriesData: any[] = [];
     if (instrument.marketData?.length) {
       seriesData = instrument.marketData.map(data => {
-        const date = new Date(data.date!);
+        const date = new Date(data.timestamp!);
         return [date.getTime(), data.open, data.high, data.low, data.close];
       });
     }

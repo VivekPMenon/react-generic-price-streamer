@@ -28,54 +28,26 @@ class MarketDataService {
 
   async getMarketData(company_or_ticker : string, period: PeriodType = PeriodType.ONE_YEAR, type: MarketDataType = MarketDataType.DOMESTIC): Promise<Instrument|null> {
     try {
-      const params = type === undefined || type === MarketDataType.DOMESTIC ? {
-        period,
+      const fieldName = type === undefined || type === MarketDataType.DOMESTIC
+          ? 'company_or_ticker'
+          : 'foreign_treasury_ticker';
+      const params: Record<string, string> = { period };
+      params[fieldName] = company_or_ticker;
+
+      return await this.getMarketDataCore('market-data', params);
+
+    } catch (e) {
+      return null;
+    }
+  }
+
+  async getIntradayData(company_or_ticker : string): Promise<Instrument|null> {
+    try {
+      const params: Record<string, string> = {
         company_or_ticker
-      } : {
-        period,
-        foreign_treasury_ticker: company_or_ticker
-      }
-
-      const result = await webApihandler
-          .get(
-              `market-data/`, params, {
-                serviceName: this.serviceName
-              });
-
-      const marketData = result.data;
-      let previousClose: number|undefined = undefined;
-      let latest: MarketData|undefined = undefined;
-      if (marketData && marketData.length) {
-        marketData.forEach((market: any) => {
-          market.date = parseLocalDate(market.date);
-        });
-
-        latest = marketData[marketData.length - 1];
-        if (isToday(latest?.date) && marketData[marketData.length - 2]) {
-          previousClose = marketData[marketData.length - 2]?.close;
-        } else {
-          previousClose = latest?.close;
-        }
-      }
-
-      const timestamp = new Date(
-          result.timestamp.endsWith('Z')
-              ? result.timestamp
-              : result.timestamp + 'Z'
-      );
-
-      return {
-        ticker: result.ticker,
-        company_name: result.company_name,
-        marketData: marketData,
-        lastMarketData: latest,
-        current_price: result.current_price,
-        previous_close: previousClose,
-        change: result.change,
-        percent_change: result.percent_change,
-        timestamp: new Date(timestamp),
-        dispose: null
       };
+
+      return await this.getMarketDataCore('intraday-data', params);
     } catch (e) {
       return null;
     }
@@ -122,6 +94,50 @@ class MarketDataService {
       format,
       size
     });
+  }
+
+  private async getMarketDataCore(url: string, params: Record<string, string>) {
+    const result = await webApihandler
+        .get(
+            url, params, {
+              serviceName: this.serviceName
+            });
+
+    const marketData = result.data;
+    let previousClose: number|undefined = undefined;
+    let latest: MarketData|undefined = undefined;
+    if (marketData && marketData.length) {
+      marketData.forEach((market: any) => {
+        market.date = parseLocalDate(market.date);
+        market.timestamp = market.timestamp
+            ? new Date(market.timestamp)
+            : market.date;
+      });
+
+      latest = marketData[marketData.length - 1];
+      if (isToday(latest?.date) && marketData[marketData.length - 2]) {
+        previousClose = marketData[marketData.length - 2]?.close;
+      } else {
+        previousClose = latest?.close;
+      }
+    }
+
+    return {
+      ticker: result.ticker,
+      company_name: result.company_name,
+      marketData: marketData,
+      lastMarketData: latest,
+      current_price: result.current_price,
+      previous_close: previousClose,
+      change: result.change,
+      percent_change: result.percent_change,
+      timestamp: new Date(
+          result.timestamp.endsWith('Z')
+              ? result.timestamp
+              : result.timestamp + 'Z'
+      ),
+      dispose: null
+    };
   }
 }
 

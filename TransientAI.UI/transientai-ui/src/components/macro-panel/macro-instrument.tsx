@@ -1,10 +1,8 @@
-'use client';
-
 import dynamic from 'next/dynamic';
 import Highcharts from 'highcharts';
 import Highstock from 'highcharts/highstock';
 import React, {useEffect, useState} from 'react';
-import {Instrument, marketDataService, PeriodType} from "@/services/market-data";
+import {Instrument, marketDataService} from "@/services/market-data";
 import {Spinner} from "@radix-ui/themes";
 import styles from './macro-panel-tabs.module.scss';
 import {formatDecimal} from "@/lib/utility-functions";
@@ -16,7 +14,7 @@ function getChartOptions(instrument: Instrument, isNegative: boolean = false, ig
     let seriesData: any[] = [];
     if (instrument.marketData?.length) {
         seriesData = instrument.marketData.map(data => {
-            const date = new Date(data.date!);
+            const date = new Date(data.timestamp!);
             return [date.getTime(), data.open, data.high, data.low, data.close];
         });
     }
@@ -127,20 +125,20 @@ export interface MacroInstrumentProps {
     change?: number;
     percent?: number;
     showCharts: boolean;
-    showPopupAction: (instrument: Instrument) => void;
+    showPopupAction: (symbol: string, type?: MarketDataType, instrument?: Instrument) => void;
     changeSuffix?: string
     inverseChange?: boolean;
     type?: MarketDataType;
 }
 
-export function MacroInstrument({symbol, name, value, change, percent, type, showCharts, showPopupAction, changeSuffix, inverseChange}: MacroInstrumentProps) {
+export function MacroInstrument({symbol, type, name, value, change, percent, showCharts, showPopupAction, changeSuffix, inverseChange}: MacroInstrumentProps) {
     const [instrument, setInstrument] = useState<Instrument|null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(true);
 
     useEffect(() => {
         if (symbol) {
             setIsLoading(true);
-            marketDataService.getMarketData(symbol, PeriodType.ONE_YEAR, type)
+            marketDataService.getIntradayData(symbol)
                 .then(data => {
                     if (data) {
                         setInstrument(data);
@@ -152,7 +150,7 @@ export function MacroInstrument({symbol, name, value, change, percent, type, sho
         } else {
             setIsLoading(false);
         }
-    }, [symbol, type]);
+    }, [symbol]);
 
     const isNegative = inverseChange === true
         ? ((change ?? 0.0) > 0.0)
@@ -171,8 +169,8 @@ export function MacroInstrument({symbol, name, value, change, percent, type, sho
                     <div
                         className={styles['market-data-graph']}
                         onDoubleClick={()=> {
-                            if (instrument) {
-                                showPopupAction(instrument);
+                            if (symbol) {
+                                showPopupAction(symbol, type, instrument || undefined);
                             }
                         }}
                     >

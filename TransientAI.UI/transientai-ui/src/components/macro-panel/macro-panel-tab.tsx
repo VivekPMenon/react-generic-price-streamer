@@ -1,5 +1,5 @@
 import React from 'react';
-import {IInstrument} from "@/services/macro-panel-data/model";
+import {IInstrument, MarketDataType} from "@/services/macro-panel-data/model";
 import {MacroInstrument} from "@/components/macro-panel/macro-instrument";
 import styles from './macro-panel-tabs.module.scss';
 import {Instrument} from "@/services/market-data";
@@ -7,7 +7,7 @@ import {Instrument} from "@/services/market-data";
 export interface MacroPanelTabProps {
     instruments: IInstrument[];
     showCharts: boolean;
-    showPopupAction: (instrument: Instrument) => void;
+    showPopupAction: (symbol: string, type?: MarketDataType, instrument?: Instrument) => void;
     changeSuffix?: string
     inverseChange?: boolean;
 }

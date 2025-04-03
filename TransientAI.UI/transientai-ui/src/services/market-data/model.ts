@@ -39,6 +39,7 @@ export interface TraceData {
 
 export interface MarketData {
   date?: Date;
+  timestamp?: Date;
   open?: number;
   high?: number;
   low?: number;

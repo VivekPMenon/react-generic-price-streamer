@@ -1,13 +1,14 @@
 import React, {useMemo, useState} from 'react';
 import {Spinner, Tabs} from '@radix-ui/themes';
-import { useMacroPanelDataStore } from "@/services/macro-panel-data/macro-panel-data-store";
+import {useMacroPanelDataStore} from "@/services/macro-panel-data/macro-panel-data-store";
 import styles from './macro-panel-tabs.module.scss';
 import {MacroPanelTab} from "@/components/macro-panel/macro-panel-tab";
 import * as Dialog from "@radix-ui/react-dialog";
 import {MarketDataTile} from "@/components/market-data/market-data-tile";
 import {Cross1Icon} from "@radix-ui/react-icons";
-import {Instrument} from "@/services/market-data";
+import {Instrument, marketDataService, PeriodType} from "@/services/market-data";
 import {useDeviceType} from "@/lib/hooks";
+import {MarketDataType} from "@/services/macro-panel-data/model";
 
 export function MacroPanelTabs() {
     const { reportGenerationDate, treasuryYields, fxRates, cryptos, equityFutures, isTreasuryLoading, isFxLoading, isCryptoLoading, isEquityFuturesLoading } = useMacroPanelDataStore();
@@ -15,10 +16,28 @@ export function MacroPanelTabs() {
     const [instrument, setInstrument] = useState<Instrument|null>(null);
     const deviceType = useDeviceType();
 
-    function showPopup(instrument_: Instrument) {
-        if (instrument_) {
+    function showPopup(symbol: string, type?: MarketDataType, instrument_?: Instrument) {
+        if (symbol) {
             setOpen(true);
-            setInstrument(instrument_);
+            marketDataService
+                .getMarketData(symbol, PeriodType.ONE_YEAR, type)
+                .then(data => {
+                    if (data) {
+                        if (instrument_ && instrument_.marketData?.length) {
+                            if (data.marketData) {
+                                data.marketData.push(...instrument_.marketData);
+                                data.marketData.sort((a, b) => (a.timestamp?.getTime() ?? 0) - (b.timestamp?.getTime() ?? 0));
+                            } else {
+                                data.marketData = [];
+                            }
+                        }
+                        setInstrument(data);
+                    }
+                })
+                .catch(() => {
+                    setInstrument(instrument_ ?? null);
+                    setOpen(false);
+                });
         }
     }
 
@@ -189,16 +208,16 @@ export function MacroPanelTabs() {
                         <Dialog.Description />
                         <div className={styles['dialog-content']}>
                             {
-                                instrument && (
-                                    <MarketDataTile
-                                        instrument={instrument}
-                                        showFinancialData={false}
-                                        showPriceSummary={false}
-                                        className={styles['market-data-graph-popup']}
-                                        ignoreNegative={false}
-                                        isNegative={instrument.change < 0.0}
-                                    />
-                                )
+                                instrument
+                                    ? <MarketDataTile
+                                            instrument={instrument}
+                                            showFinancialData={false}
+                                            showPriceSummary={false}
+                                            className={styles['market-data-graph-popup']}
+                                            ignoreNegative={false}
+                                            isNegative={instrument.change < 0.0}
+                                        />
+                                    : <div className={styles['dialog-loading']}>Loading...</div>
                             }
                         </div>
                         <div className={styles['dialog-close']}>
