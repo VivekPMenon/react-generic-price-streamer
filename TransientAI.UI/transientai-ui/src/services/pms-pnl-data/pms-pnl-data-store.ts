@@ -6,15 +6,15 @@ import {ReportItem} from "@/services/pms-pnl-data/model";
 
 interface PmsPnlDataState {
   isLoading: boolean;
-  report: [ReportItem[], ReportItem]|null;
-  reportDate: Date;
+  report: [ReportItem[], ReportItem|null]|null;
+  reportDate: Date|null;
   getReport: () => void;
 }
 
 export const usePmsPnlDataStore = create<PmsPnlDataState>((set) => ({
   isLoading: false,
   report: null,
-  reportDate: new Date(),
+  reportDate: null,
 
   getReport: () => {
     set({ isLoading: true });

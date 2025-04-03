@@ -264,7 +264,7 @@ export function Notifications(props: NotificationsProps) {
       },
       {
         id: 'pms-pnl-notification',
-        title: `P&L Dashboard for ${reportDate.toLocaleDateString()}`,
+        title: `P&L Dashboard for ${reportDate?.toLocaleDateString()}`,
         type: NotificationType.PmsPnl,
         timestamp: reportDate ? reportDate.getTime() : 0,
         highlights: [

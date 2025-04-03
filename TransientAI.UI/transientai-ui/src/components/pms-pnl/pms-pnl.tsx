@@ -5,7 +5,7 @@ import {useDeviceType} from "@/lib/hooks";
 import {usePmsPnlDataStore} from "@/services/pms-pnl-data/pms-pnl-data-store";
 import {DataGrid} from "@/components/data-grid";
 import {
-    columnDefs, handleGridSizeChanged, handleFirstDataRendered, getGridOptions
+    columnDefs, handleGridSizeChanged, handleFirstDataRendered, defaultGridOptions
 } from './pms-pnl-config';
 import styles from './pms-pnl.module.scss';
 
@@ -27,7 +27,7 @@ export function PmsPnl() {
                 rowData={report?.length && report[0]}
                 columnDefs={columnDefs}
                 loading={isLoading}
-                gridOptions={getGridOptions(isMobile)}
+                gridOptions={defaultGridOptions}
                 onGridSizeChanged={handleGridSizeChanged}
                 onFirstDataRendered={handleFirstDataRendered}
                 suppressStickyTotalRow={false}

@@ -135,9 +135,9 @@ export function handleGridSizeChanged(params: GridSizeChangedEvent) {
     executeAsync(() => params.api.sizeColumnsToFit(), 10);
 }
 
-export const getGridOptions = (isMobile: boolean): GridOptions => ({
+export const defaultGridOptions: GridOptions = {
     getRowId: (params: GetRowIdParams) => String(params.data.manager),
     autoSizeStrategy: {
-        type: isMobile ? 'fitCellContents'  : 'fitGridWidth',
+        type: 'fitCellContents',
     },
-})
+};

@@ -43,14 +43,15 @@ class MarketDataService {
 
   async getIntradayData(company_or_ticker : string, type: MarketDataType = MarketDataType.DOMESTIC): Promise<Instrument|null> {
     try {
-      const fieldName = type === undefined || type === MarketDataType.DOMESTIC
-          ? 'company_or_ticker'
-          : 'foreign_treasury_ticker';
+      const fieldName = //type === undefined || type === MarketDataType.DOMESTIC
+          //?
+          'company_or_ticker'
+          //: 'foreign_treasury_ticker';
       const params: Record<string, string> = {};
       params[fieldName] = company_or_ticker;
 
       return await this.getMarketDataCore('intraday-data', params);
-    } catch (e) {
+    } catch (e: any) {
       return null;
     }
   }
