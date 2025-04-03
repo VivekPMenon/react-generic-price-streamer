@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { pmsPnlPanelDataService } from './pms-pnl-data-service';
 import {ReportItem} from "@/services/pms-pnl-data/model";
+import {parseIsoDate} from "@/lib/utility-functions/date-operations";
 
 // export const resourceName = 'pms-pnl-report';
 
@@ -22,12 +23,9 @@ export const usePmsPnlDataStore = create<PmsPnlDataState>((set) => ({
     pmsPnlPanelDataService.getReport()
         .then(result => {
             if (result) {
-                const lastUpdated = result[0].last_updated;
                 set({
                     report: [result[0].data, result[1]],
-                    reportDate: new Date(lastUpdated.endsWith('T00:00:00')
-                        ? lastUpdated + 'Z'
-                        : lastUpdated),
+                    reportDate: parseIsoDate(result[0].last_updated) || new Date()
                 })
             }
         })

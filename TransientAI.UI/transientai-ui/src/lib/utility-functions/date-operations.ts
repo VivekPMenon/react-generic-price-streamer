@@ -297,3 +297,12 @@ export const formatTime = (timeString: string | undefined) => {
   const date = new Date(timeString);
   return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 };
+
+export function parseIsoDate(value: string|null|undefined): Date|null {
+  if (!value) {
+    return null;
+  }
+  return new Date(value.endsWith('T00:00:00')
+      ? value + 'Z'
+      : value);
+}

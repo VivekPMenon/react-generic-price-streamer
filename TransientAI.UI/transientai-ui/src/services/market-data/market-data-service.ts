@@ -1,6 +1,6 @@
 import {webApihandler} from "../web-api-handler";
 import {FinancialData, GraphDataPoint, ImageType, Instrument, MarketData, PeriodType, Price, TraceData} from "./model";
-import {isToday, parseLocalDate} from "@/lib/utility-functions/date-operations";
+import {isToday, parseIsoDate, parseLocalDate} from "@/lib/utility-functions/date-operations";
 import {MarketDataType} from "@/services/macro-panel-data/model";
 
 class MarketDataService {
@@ -134,11 +134,7 @@ class MarketDataService {
       previous_close: previousClose,
       change: result.change,
       percent_change: result.percent_change,
-      timestamp: new Date(
-          result.timestamp.endsWith('T00:00:00')
-              ? result.timestamp + 'Z'
-              : result.timestamp 
-      ),
+      timestamp: parseIsoDate(result.timestamp) || new Date(),
       dispose: null
     };
   }
