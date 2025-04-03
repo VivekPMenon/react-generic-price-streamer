@@ -138,7 +138,7 @@ export function MacroInstrument({symbol, type, name, value, change, percent, sho
     useEffect(() => {
         if (symbol) {
             setIsLoading(true);
-            marketDataService.getIntradayData(symbol)
+            marketDataService.getIntradayData(symbol, type)
                 .then(data => {
                     if (data) {
                         setInstrument(data);
@@ -150,7 +150,7 @@ export function MacroInstrument({symbol, type, name, value, change, percent, sho
         } else {
             setIsLoading(false);
         }
-    }, [symbol]);
+    }, [symbol, type]);
 
     const isNegative = inverseChange === true
         ? ((change ?? 0.0) > 0.0)

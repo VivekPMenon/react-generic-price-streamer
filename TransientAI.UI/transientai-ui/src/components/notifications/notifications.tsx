@@ -18,6 +18,7 @@ import { useUnseenItemsStore } from '@/services/unseen-items-store/unseen-items-
 import { resourceName as BreakNewsresourceName } from '@/services/break-news/break-news-data-store';
 import { resourceName as bloombergReportResourceName, useMacroPanelDataStore } from '@/services/macro-panel-data/macro-panel-data-store';
 import { RoleType, useUserContextStore } from '@/services/user-context';
+import {usePmsPnlDataStore} from "@/services/pms-pnl-data/pms-pnl-data-store";
 
 export interface NotificationsProps {
   onExpandCollapse?: (state: boolean) => void;
@@ -52,6 +53,9 @@ function getIconClass(type: NotificationType) {
 
     case NotificationType.Macro:
       return 'fa fa-list-check';
+
+    case NotificationType.PmsPnl:
+      return 'fa-solid fa-briefcase';
   }
 }
 
@@ -70,6 +74,7 @@ function getPillClass(type: NotificationType) {
       return 'pill pink';
 
     case NotificationType.CorpAct:
+    case NotificationType.PmsPnl:
       return 'pill teal';
 
     case NotificationType.Inquiries:
@@ -90,6 +95,7 @@ const filterTypes = [
   NotificationType.RiskReport,
   NotificationType.CorpAct,
   NotificationType.Inquiries,
+  NotificationType.PmsPnl,
   // NotificationType.BreakNews
 ];
 
@@ -110,6 +116,7 @@ export function Notifications(props: NotificationsProps) {
   const { isLoading: isCorpActionsLoading, loadedCorpActions, selectedCorpAction, setSelectedCorpAction, loadCorpActions, loadPmCorpActions } = useCorpActionsStore();
   const { isLoading: isInquiriesLoading, inquiries } = useInvestorRelationsStore();
   const { isLoading: isRiskDataLoading, lastUpdatedTimestamp } = useRiskDataStore();
+  const { isLoading: isPmsPnlReportLoading, reportDate } = usePmsPnlDataStore();
   // const { isLoading: isBreakingNewsLoading, breakNewsItems, setSelectedBreakNewsItem, setGroupId } = useBreakNewsDataStore();
   const { isLoading: isBloombergEmailReportsLoading, bloombergEmailReports, setSelectedReport } = useMacroPanelDataStore();
   const { resetUnseenItems, unseenItems } = useUnseenItemsStore();
@@ -122,7 +129,7 @@ export function Notifications(props: NotificationsProps) {
   const [selectedType, setSelectedType] = useState<string>(NotificationType.Research);
   const previousSelectedType = useRef<string|null>(null);
 
-  const showSpinner = isLoading || isRiskReportLoading || isCorpActionsLoading || isInquiriesLoading || isRiskDataLoading;
+  const showSpinner = isLoading || isRiskReportLoading || isCorpActionsLoading || isInquiriesLoading || isRiskDataLoading || isPmsPnlReportLoading;
 
   const visibleNotifications = useMemo<Notification[]>(() => notifications
     .filter(notification => selectedType === NotificationType.All || notification.type === selectedType), [
@@ -145,6 +152,7 @@ export function Notifications(props: NotificationsProps) {
     inquiries,
     loadedCorpActions,
     lastUpdatedTimestamp,
+    reportDate,
     bloombergEmailReports
   ]);
 
@@ -254,6 +262,15 @@ export function Notifications(props: NotificationsProps) {
           formatDate(lastUpdatedTimestamp)
         ]
       },
+      {
+        id: 'pms-pnl-notification',
+        title: `P&L Dashboard for ${reportDate.toLocaleDateString()}`,
+        type: NotificationType.PmsPnl,
+        timestamp: reportDate ? reportDate.getTime() : 0,
+        highlights: [
+          formatDate(reportDate?.toISOString())
+        ]
+      },
       // ...breakNewsItems
       //   .map(news => ({
       //     id: news.id?.toString(),
@@ -327,6 +344,10 @@ export function Notifications(props: NotificationsProps) {
         setSelectedReport(bloombergEmailReports.find(report => report.received_date === notification.id)!);
         break;
 
+      case NotificationType.PmsPnl:
+        router.push(newRoute = '/dashboard/pms-pnl');
+        break;
+
       // case NotificationType.BreakNews:
       //   const selectedNewsItem = breakNewsItems.find((news) => news.id == notification.id);
       //   setSelectedBreakNewsItem(selectedNewsItem!);
@@ -345,10 +366,6 @@ export function Notifications(props: NotificationsProps) {
   }
 
   function onReadMoreClick() {
-    // setCorpActionsData({
-    //   corpActions: [selectedCorpAction]
-    // });
-
     if (activeMenuList.length > 0) {
       setActiveMenu(activeMenuList[0]);
     }

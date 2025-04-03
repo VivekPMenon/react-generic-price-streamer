@@ -68,6 +68,13 @@ const menuInfoList: MenuInfo[] = [
     icon: 'fa-solid fa-chart-column',
     route: '/dashboard/risk-metrics',
   },
+  {
+    id: 'pms-pnl',
+    description: 'PMS',
+    badgeCount: 1,
+    icon: 'fa-solid fa-briefcase',
+    route: '/dashboard/pms-pnl',
+  },
   // {
   //   description: 'Term Sheets',
   //   badgeCount: 5,
