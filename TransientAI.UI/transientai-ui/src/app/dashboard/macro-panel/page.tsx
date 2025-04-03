@@ -1,8 +1,7 @@
 'use client'
 
-import { MacroPanel } from "@/components/macro-panel/macro-panel";
 import ProtectedRoute from "@/components/route-guards/protected-route";
-import {MacroPanelTabs} from "@/components/macro-panel/macro-panel-tabs";
+import MacroPanelTabs from "@/components/macro-panel/macro-panel-tabs";
 
 export default function Page() {
   // return <ProtectedRoute resourceName="risk-metrics">

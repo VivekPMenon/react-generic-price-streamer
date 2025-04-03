@@ -1,4 +1,4 @@
-import React, {useMemo, useState} from 'react';
+import React, {useMemo, useState, memo} from 'react';
 import {Spinner, Tabs} from '@radix-ui/themes';
 import {useMacroPanelDataStore} from "@/services/macro-panel-data/macro-panel-data-store";
 import styles from './macro-panel-tabs.module.scss';
@@ -10,7 +10,7 @@ import {Instrument, marketDataService, PeriodType} from "@/services/market-data"
 import {useDeviceType} from "@/lib/hooks";
 import {MarketDataType} from "@/services/macro-panel-data/model";
 
-export function MacroPanelTabs() {
+function MacroPanelTabs() {
     const { reportGenerationDate, treasuryYields, fxRates, cryptos, equityFutures, isTreasuryLoading, isFxLoading, isCryptoLoading, isEquityFuturesLoading } = useMacroPanelDataStore();
     const [open, setOpen] = useState(false);
     const [instrument, setInstrument] = useState<Instrument|null>(null);
@@ -231,3 +231,5 @@ export function MacroPanelTabs() {
         </div>
     );
 }
+
+export default memo(MacroPanelTabs);

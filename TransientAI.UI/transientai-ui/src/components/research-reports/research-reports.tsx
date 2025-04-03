@@ -14,7 +14,7 @@ import {
 import EmailViewer from '../email-parser/email-viewer';
 import Tags from "@/components/tags/tags";
 import ImageContainer from "@/components/image-container/image-container";
-import { useDeviceType, useScrollTo, useScrollToElementId } from '@/lib/hooks';
+import { useScrollTo, useScrollToElementId } from '@/lib/hooks';
 import { Spinner } from '@radix-ui/themes';
 
 export interface ResearchReportsProps {
@@ -23,10 +23,9 @@ export interface ResearchReportsProps {
 
 export function ResearchReports({ isExpanded }: ResearchReportsProps) {
 
-  const { scrollTargetRef, scrollToTarget } = useScrollTo<HTMLDivElement>();
+  const { scrollTargetRef } = useScrollTo<HTMLDivElement>();
   const { scrollToElementId } = useScrollToElementId();
   const { isLoading, reports, selectedReport, setSelectedReport } = useResearchReportsStore();
-  const deviceType = useDeviceType();
 
   const [searchedReports, setSearchedReports] = useState<ResearchReport[]>([]);
   const [isSummaryVisible, setIsSummaryVisible] = useState<boolean>(false);
@@ -213,8 +212,6 @@ export function ResearchReports({ isExpanded }: ResearchReportsProps) {
             </div>
           </> : <></>
       }
-
-
     </div>
   );
 }

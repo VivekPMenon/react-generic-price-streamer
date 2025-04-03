@@ -20,6 +20,6 @@ export enum NotificationType {
   RiskReport = 'Risk Report',
   Inquiries = 'Inquiries',
   Macro = 'Macro',
-  PmsPnl = 'PmsPnl',
+  PmsPnl = 'PMS',
   All = 'All',
 }

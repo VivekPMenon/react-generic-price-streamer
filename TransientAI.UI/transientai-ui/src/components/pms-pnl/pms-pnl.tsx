@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {memo} from 'react';
 import {useDeviceType} from "@/lib/hooks";
 import {usePmsPnlDataStore} from "@/services/pms-pnl-data/pms-pnl-data-store";
 import {DataGrid} from "@/components/data-grid";
@@ -7,7 +7,7 @@ import {
 } from './pms-pnl-config';
 import styles from './pms-pnl.module.scss';
 
-export function PmsPnl() {
+function PmsPnl() {
     const { reportDate, isLoading, report } = usePmsPnlDataStore();
     const deviceType = useDeviceType();
     const isMobile = deviceType !== 'desktop';
@@ -34,3 +34,5 @@ export function PmsPnl() {
         </div>
     </div>);
 }
+
+export default memo(PmsPnl);
