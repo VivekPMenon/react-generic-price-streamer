@@ -27,7 +27,6 @@ function getFilterButtons(): RangeSelectorButtonsOptions[] {
     const keyValuePairs = enumToKeyValuePair(PeriodType);
     return keyValuePairs.map((value: KeyValuePair): RangeSelectorButtonsOptions|null => {
         const key = (value.value as string).toUpperCase();
-        console.log(key)
         switch (key) {
             case 'YTD':
                 return {
