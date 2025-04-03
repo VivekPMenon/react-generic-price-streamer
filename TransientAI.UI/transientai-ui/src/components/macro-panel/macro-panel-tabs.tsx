@@ -80,7 +80,7 @@ export function MacroPanelTabs() {
                     {
                         isTreasuryLoading
                         ? <Spinner />
-                        : (<Tabs.Root defaultValue={groupedYields?.find(groups => groups[0] === 'Notes/Bonds')?.[0] ?? undefined}>
+                        : (<Tabs.Root defaultValue={groupedYields?.find(groups => groups[0] === 'Notes/Bonds')?.[0] ?? (groupedYields?.length ? groupedYields[0][0] : undefined)}>
                                 <Tabs.List className={`${styles['tab-list']} ${isMobile ? 'horizontal-scrollable-div' : ''}`}>
                                 {
                                     groupedYields.map(y => (
