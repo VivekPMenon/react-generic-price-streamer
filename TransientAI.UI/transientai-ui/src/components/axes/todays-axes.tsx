@@ -1,13 +1,17 @@
 'use client';
 
 import { useState, useEffect, useContext, useMemo } from 'react';
-import { ColDef, RowDoubleClickedEvent } from 'ag-grid-community';
+import {CellClassParams, CellClassRules, ColDef, RowDoubleClickedEvent} from 'ag-grid-community';
 import { DataGrid, getNumberColDefTemplate } from '../data-grid';
 import { BondInfo, productBrowserDataService } from '@/services/product-browser-data';
 import styles from './todays-axes.module.scss';
 import { TopClients } from './top-clients';
 import { Holdings } from './holdings';
 import { SearchData, SearchDataContext } from '@/services/search-data';
+
+const cellClassRules: CellClassRules = {};
+cellClassRules[`${styles["axe"]}`] = (params: CellClassParams) => params.data.is_golden !== true;
+cellClassRules[`${styles["golden-axe"]}`] = (params: CellClassParams) => params.data.is_golden === true;
 
 export function TodaysAxes() {
 

@@ -82,7 +82,7 @@ export function TradingActivity() {
         width: 100,
       },
       {
-        ...getNumberColDefTemplate(2),
+        ...getNumberColDefTemplate(2, false, '-'),
         field: 'yield_',
         headerName: 'Yield',
         width: 100,

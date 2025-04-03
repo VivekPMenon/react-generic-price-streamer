@@ -3,6 +3,8 @@ export function numberFormatter(value: any, decimal: number) {
     "en-US",
     {
       useGrouping: true,
+      maximumFractionDigits: decimal,
+      minimumFractionDigits: decimal,
     }
   );
 }
