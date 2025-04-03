@@ -22,9 +22,12 @@ export const usePmsPnlDataStore = create<PmsPnlDataState>((set) => ({
     pmsPnlPanelDataService.getReport()
         .then(result => {
             if (result) {
+                const lastUpdated = result[0].last_updated;
                 set({
                     report: [result[0].data, result[1]],
-                    reportDate: new Date(result[0].last_updated)
+                    reportDate: new Date(lastUpdated.endsWith('Z')
+                        ? lastUpdated
+                        : lastUpdated + 'Z'),
                 })
             }
         })
