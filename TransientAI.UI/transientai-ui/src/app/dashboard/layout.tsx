@@ -1,19 +1,19 @@
 'use client';
 
-import { Explorer } from '@/components/explorer/explorer';
-import { Header } from '../../components/header/header'
+import {Explorer} from '@/components/explorer/explorer';
+import {Header} from '@/components/header/header'
 import styles from './layout.module.scss';
-import { Notifications } from '@/components/notifications';
-import { useEffect, useState } from 'react';
-import { DashboardTabs } from '@/components/dashboard-tabs/dashboard-tabs';
-import { useDeviceType } from '@/lib/hooks';
-import { useUserContextStore } from '@/services/user-context';
-import { MsalProvider } from '@azure/msal-react';
+import {Notifications} from '@/components/notifications';
+import {useEffect, useState} from 'react';
+import {DashboardTabs} from '@/components/dashboard-tabs/dashboard-tabs';
+import {useDeviceType} from '@/lib/hooks';
+import {useUserContextStore} from '@/services/user-context';
+import {MsalProvider} from '@azure/msal-react';
 import msalInstance from '../msal-config';
-import { Spinner } from '@radix-ui/themes';
-import { webApihandler } from '@/services/web-api-handler';
-import { ContentCarousel } from '@/components/content-carousel/content-carousel';
-import { EContentTypes } from '@/components/content-carousel/model';
+import {Spinner} from '@radix-ui/themes';
+import {ContentCarousel} from '@/components/content-carousel/content-carousel';
+import {EContentTypes} from '@/components/content-carousel/model';
+import {Mode} from "@/services/menu-data";
 
 export default function DashboardLayout({
   children,
@@ -21,8 +21,8 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }>) {
 
-  // todo.. unabel to add this to the root of the app, as it is server side rendered, create an intermediate layout that wil act as root for all client dashbaords
-  const { loadUserContext, isLoading, isAuthenticated, userContext } = useUserContextStore();
+  // todo.. unable to add this to the root of the app, as it is server side rendered, create an intermediate layout that wil act as root for all client dashbaords
+  const { loadUserContext, isLoading, isAuthenticated } = useUserContextStore();
 
   useEffect(() => {
     loadUserContext();
@@ -73,6 +73,7 @@ export default function DashboardLayout({
                 {
                   !expandedPanels.includes('notifications') ?
                     <Explorer
+                      mode={Mode.BUY}
                       onExpandCollapse={isExpanded => onExpandCollapse('explorer', isExpanded)}
                       onNavigate={() => setIsMenuVisible(false)}>
                     </Explorer> : <></>
@@ -80,7 +81,7 @@ export default function DashboardLayout({
                 {
                   !expandedPanels.includes('explorer') ?
                     <Notifications onExpandCollapse={isExpanded => onExpandCollapse('notifications', isExpanded)}
-                      notificationClicked={notification => setIsMenuVisible(false)}>
+                      notificationClicked={() => setIsMenuVisible(false)}>
                     </Notifications> : <></>
                 }
               </div>

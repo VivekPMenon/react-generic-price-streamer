@@ -1,43 +1,11 @@
 import { MenuInfo } from "./model";
 
-export const menuInfoList: MenuInfo[] = [
-  // {
-  //   description: 'Today',
-  //   badgeCount: 5,
-  //   icon: 'fa-regular fa-snowflake'
-  // },
-  // {
-  //   description: `Today's Axes`,
-  //   badgeCount: 4,
-  //   icon: 'fa-solid fa-book-open',
-  //   // children: [
-  //   //   {description: 'Active Orders'},
-  //   //   {description: 'Recent Trades'},
-  //   //   {description: 'Call Notes'},
-  //   //   {description: 'Position Changes', subDescription: '11/24 9:45am'}
-  //   // ]
-  // },
-  // {
-  //   description: 'Trading Activity',
-  //   badgeCount: 3,
-  //   icon: 'fa-solid fa-ranking-star'
-  // },
-  // {
-  //   description: 'Market Data',
-  //   badgeCount: 4,
-  //   icon: 'fa-solid fa-chart-simple',
-  //   // children: [
-  //   //   {description: 'Breaking News', subDescription: '11/24 7:45am'},
-  //   //   {description: 'Earnings Updates'},
-  //   //   {description: 'Rating Changes'},
-  //   //   {description: 'Research Notes', subDescription: '11/24 8:45am'}
-  //   // ]
-  // },
-  // {
-  //   description: 'Client Data',
-  //   badgeCount: 3,
-  //   icon: 'fa-solid fa-user'
-  // },
+export enum Mode {
+  SELL = 'sell',
+  BUY = 'buy',
+}
+
+const menuInfoList: MenuInfo[] = [
   {
     id: 'macro-panel',
     route: '/dashboard/macro-panel',
@@ -107,3 +75,47 @@ export const menuInfoList: MenuInfo[] = [
   //   route: '/dashboard/term-sheets',
   // },
 ];
+
+const sellMenuInfoList: MenuInfo[] = [
+  // {
+  //   description: 'Today',
+  //   badgeCount: 5,
+  //   icon: 'fa-regular fa-snowflake'
+  // },
+  {
+    description: `Today's Axes`,
+    badgeCount: 4,
+    icon: 'fa-solid fa-book-open',
+    // children: [
+    //   {description: 'Active Orders'},
+    //   {description: 'Recent Trades'},
+    //   {description: 'Call Notes'},
+    //   {description: 'Position Changes', subDescription: '11/24 9:45am'}
+    // ]
+  },
+  {
+    description: 'Trading Activity',
+    badgeCount: 3,
+    icon: 'fa-solid fa-ranking-star'
+  },
+  {
+    description: 'Market Data',
+    badgeCount: 4,
+    icon: 'fa-solid fa-chart-simple',
+    // children: [
+    //   {description: 'Breaking News', subDescription: '11/24 7:45am'},
+    //   {description: 'Earnings Updates'},
+    //   {description: 'Rating Changes'},
+    //   {description: 'Research Notes', subDescription: '11/24 8:45am'}
+    // ]
+  },
+  {
+    description: 'Client Data',
+    badgeCount: 3,
+    icon: 'fa-solid fa-user'
+  },
+];
+
+export function getMenuItems(mode: Mode) {
+  return mode === Mode.SELL ? sellMenuInfoList : menuInfoList;
+}

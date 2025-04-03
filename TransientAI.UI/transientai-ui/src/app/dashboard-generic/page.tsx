@@ -1,6 +1,6 @@
 'use client';
 import { Explorer } from '@/components/explorer/explorer';
-import { Header } from '../../components/header/header'
+import { Header } from '@/components/header/header'
 import styles from './page.module.scss';
 
 import { Chatbot } from '@/components/chatbot/chatbot';
@@ -8,8 +8,9 @@ import { Notifications } from '@/components/notifications';
 import dynamic from 'next/dynamic';
 import { useState } from 'react';
 import { News } from '@/components/news';
+import {Mode} from "@/services/menu-data";
 
-// dynamic loading to addres build issue when importing highcharts
+// dynamic loading to address build issue when importing highcharts
 const PriceGraph = dynamic(() => import("@/components/market-data").then(module => module.PriceGraph), { ssr: false, });
 
 export default function Home() {
@@ -36,7 +37,9 @@ export default function Home() {
         <div className={styles['left-panel']}>
           {
             !expandedPanels.includes('notifications') ?
-              <Explorer onExpandCollapse={isExpanded => onExpandCollapse('explorer', isExpanded)}>
+              <Explorer
+                  mode={Mode.SELL}
+                  onExpandCollapse={isExpanded => onExpandCollapse('explorer', isExpanded)}>
               </Explorer> : <></>
           }
           {

@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { MenuInfo } from './model';
-import { menuInfoList } from './menu-data-service';
+import {getMenuItems, Mode} from './menu-data-service';
 
 interface MenuState {
   activeMenuList: MenuInfo[];
@@ -9,14 +9,15 @@ interface MenuState {
   defaultMenu: MenuInfo;
   setActiveMenu: (menu: MenuInfo) => void;
   closeTab: (menuId: string) => void;
+  initializeMenus: (mode: Mode) => void;
 }
 
-function calculateDefaultMenu() {
+function calculateDefaultMenu(menuInfoList: MenuInfo[]) {
   return menuInfoList
     .find(menuInfo => menuInfo.description === 'Research Reports')!;
 }
 
-function calculateCurrentMenu() {
+function calculateCurrentMenu(menuInfoList: MenuInfo[]) {
   if (typeof window === 'undefined') {
     return {};
   }
@@ -24,17 +25,27 @@ function calculateCurrentMenu() {
     .find(menuInfo => menuInfo.route?.toLowerCase() === window.document.location.pathname?.toLowerCase())!;
 }
 
-function calculateActiveMenuList() {
-  const currentMenu = calculateCurrentMenu();
-  const defaultMenu = calculateDefaultMenu();
+function calculateActiveMenuList(menuInfoList: MenuInfo[]) {
+  const currentMenu = calculateCurrentMenu(menuInfoList);
+  const defaultMenu = calculateDefaultMenu(menuInfoList);
   return currentMenu === defaultMenu ? [defaultMenu] : [defaultMenu, currentMenu];
 }
 
 export const useMenuStore = create<MenuState>((set) => ({
-  activeMenuList: calculateActiveMenuList(),
-  fullMenuList: menuInfoList,
-  selectedMenu: calculateCurrentMenu()!,
-  defaultMenu: calculateDefaultMenu(),
+  activeMenuList: [],
+  fullMenuList: [],
+  selectedMenu: [],
+  defaultMenu: [],
+
+  initializeMenus: (mode: Mode) => {
+      const menuInfoList = getMenuItems(mode);
+        set({
+            activeMenuList: calculateActiveMenuList(menuInfoList),
+            fullMenuList: menuInfoList,
+            selectedMenu: calculateCurrentMenu(menuInfoList)!,
+            defaultMenu: calculateDefaultMenu(menuInfoList)
+        })
+  },
 
   setActiveMenu: (menu) =>
     set((state) => {
