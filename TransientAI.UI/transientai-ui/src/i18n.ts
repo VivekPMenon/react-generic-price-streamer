@@ -3,6 +3,27 @@ import i18n from 'i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
 import { initReactI18next } from 'react-i18next';
 import macro from 'styled-jsx/macro';
+import axios from 'axios';
+export const translateText = async (text: string, targetLanguage: string) => {
+  try {
+    const response = await fetch('/translate', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        text: text,
+        target_language: targetLanguage, // 'ja' for Japanese
+      }),
+    });
+
+    const data = await response.json();
+    return data.translated_text; // Return the translated text
+  } catch (error) {
+    console.error('Translation Error:', error);
+    return text; // If there's an error, return the original text
+  }
+};
 
 i18n
   .use(LanguageDetector)
@@ -97,7 +118,16 @@ i18n
           sort_by_action_required: 'Sort by Action Required',
           reset: 'Reset',
           search_placeholder: 'Ask TransientAI anything about recent Corporate Actions. Include securities if you are looking for specific information',
-        }
+        },
+        "market_data_1": {
+        "as_of": "As of",
+        "quarterly_financials": "Quarterly Financials",
+        "revenue": "Revenue",
+        "high": "High",
+        "open": "Open",
+        "prev_close": "Prev Close",
+        "low": "Low"
+      }
         },
       },
       ja: {
@@ -185,6 +215,15 @@ i18n
       sort_by_action_required: 'アクションが必要な順に並べ替え',
       reset: 'リセット',
       search_placeholder: '最近の企業活動についてTransientAIに何でも尋ねてください。特定の情報を探している場合は、証券を含めてください',
+    },
+    "market_data_1": {
+      "as_of": "基準日時",
+      "quarterly_financials": "四半期財務",
+      "revenue": "収益",
+      "high": "高値",
+      "open": "始値",
+      "prev_close": "前日終値",
+      "low": "安値",
     }
         },
       },
