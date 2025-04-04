@@ -1,3 +1,4 @@
+import i18n from '../../i18n';
 export interface ImageItem {
   url: string,
   title?: string,
@@ -30,7 +31,7 @@ export interface ReportSummary {
 }
 
 export enum ReportType {
-  Abstract = 'Full View',
-  Detailed = 'Detailed',
-  ExecutiveSummary = 'Executive Summary',
+  Abstract = i18n.t('full_view'),
+  Detailed = i18n.t('detailed'),
+  ExecutiveSummary = i18n.t('executive_summary'),
 }
