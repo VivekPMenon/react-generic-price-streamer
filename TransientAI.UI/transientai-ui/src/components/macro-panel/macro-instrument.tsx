@@ -1,7 +1,7 @@
 import dynamic from 'next/dynamic';
 import Highcharts from 'highcharts';
 import Highstock from 'highcharts/highstock';
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, memo} from 'react';
 import {Instrument, marketDataService} from "@/services/market-data";
 import {Spinner} from "@radix-ui/themes";
 import styles from './macro-panel-tabs.module.scss';
@@ -131,7 +131,7 @@ export interface MacroInstrumentProps {
     type?: MarketDataType;
 }
 
-export function MacroInstrument({symbol, type, name, value, change, percent, showCharts, showPopupAction, changeSuffix, inverseChange}: MacroInstrumentProps) {
+function MacroInstrument({symbol, type, name, value, change, percent, showCharts, showPopupAction, changeSuffix, inverseChange}: MacroInstrumentProps) {
     const [instrument, setInstrument] = useState<Instrument|null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(true);
 
@@ -198,3 +198,5 @@ export function MacroInstrument({symbol, type, name, value, change, percent, sho
         </div>
     );
 }
+
+export default memo(MacroInstrument);

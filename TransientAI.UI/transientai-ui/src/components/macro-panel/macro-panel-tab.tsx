@@ -1,6 +1,6 @@
-import React from 'react';
+import React, {memo} from 'react';
 import {IInstrument, MarketDataType} from "@/services/macro-panel-data/model";
-import {MacroInstrument} from "@/components/macro-panel/macro-instrument";
+import MacroInstrument from "@/components/macro-panel/macro-instrument";
 import styles from './macro-panel-tabs.module.scss';
 import {Instrument} from "@/services/market-data";
 
@@ -12,7 +12,7 @@ export interface MacroPanelTabProps {
     inverseChange?: boolean;
 }
 
-export function MacroPanelTab({instruments, showCharts, showPopupAction, changeSuffix, inverseChange} : MacroPanelTabProps) {
+function MacroPanelTab({instruments, showCharts, showPopupAction, changeSuffix, inverseChange} : MacroPanelTabProps) {
     return (
         <div className={`${styles['macro-tab']}`}>
             {
@@ -30,3 +30,5 @@ export function MacroPanelTab({instruments, showCharts, showPopupAction, changeS
         </div>
     );
 }
+
+export default memo(MacroPanelTab);

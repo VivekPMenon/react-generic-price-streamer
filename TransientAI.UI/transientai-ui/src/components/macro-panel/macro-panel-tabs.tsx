@@ -2,7 +2,7 @@ import React, {useMemo, useState, memo} from 'react';
 import {Spinner, Tabs} from '@radix-ui/themes';
 import {useMacroPanelDataStore} from "@/services/macro-panel-data/macro-panel-data-store";
 import styles from './macro-panel-tabs.module.scss';
-import {MacroPanelTab} from "@/components/macro-panel/macro-panel-tab";
+import MacroPanelTab from "@/components/macro-panel/macro-panel-tab";
 import * as Dialog from "@radix-ui/react-dialog";
 import {MarketDataTile} from "@/components/market-data/market-data-tile";
 import {Cross1Icon} from "@radix-ui/react-icons";
