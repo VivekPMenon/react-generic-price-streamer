@@ -40,10 +40,10 @@ export function Explorer(props: NotificationsProps) {
 
       <div className="menu">
         {fullMenuList.map(menuInfo => (
-          <div className="menu-item" key={menuInfo.description}>
+          <div className="menu-item" key={menuInfo.id}>
 
             <div 
-              className={`parent-menu ${menuInfo.description === selectedMenu?.description ? 'active' : ''}`}
+              className={`parent-menu ${menuInfo.id === selectedMenu?.id ? 'active' : ''}`}
               onClick={() => onMenuClick(menuInfo)}
             >
               <span className={`icon ${menuInfo.icon}`}></span>
@@ -54,7 +54,7 @@ export function Explorer(props: NotificationsProps) {
             </div>
 
             {menuInfo.children && menuInfo.children.map(childMenu => (
-              <div className="submenu" key={childMenu.description}>
+              <div className="submenu" key={childMenu.id}>
                 <div className="submenu-item" onClick={() => onMenuClick(childMenu)}>
                   {childMenu.description}
                   <span className="timestamp">{childMenu.subDescription}</span>
