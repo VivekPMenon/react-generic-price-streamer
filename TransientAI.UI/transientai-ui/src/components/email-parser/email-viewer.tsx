@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, useDeferredValue, useCallback } from "react";
 import DOMPurify from "dompurify";
+import i18n from '../../i18n';
 
 export interface EmailViewerProps {
   emailHtml?: string;
@@ -205,7 +206,7 @@ const EmailViewer = ({ emailHtml, htmlSource, className, scrollToSearchTerm, hid
           <div className='search-toolbar'>
             <input
               type="text"
-              placeholder="Find..."
+              placeholder={i18n.t("find")}
               value={searchTerm}
               onChange={(e) => handleSearchTermChanged(e.target.value)}
             />

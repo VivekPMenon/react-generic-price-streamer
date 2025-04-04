@@ -5,7 +5,7 @@ export enum Mode {
   SELL = 'sell',
   BUY = 'buy',
 }
-
+console.log(i18n.t('macro_panel'));
 const menuInfoList: MenuInfo[] = [
   {
     id: 'macro-panel',
@@ -17,7 +17,7 @@ const menuInfoList: MenuInfo[] = [
   {
     id: 'research-reports',
     route: '/dashboard/research-reports',
-    description: 'Research Reports', 
+    description:'Research Reports',  //i18n.t('research_reports'),//
     // description: i18n.t('research_reports', { defaultValue: 'Research Reports' }), //TODO//TODO
     badgeCount: 1,
     icon: 'fa-solid fa-book'

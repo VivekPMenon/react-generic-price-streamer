@@ -1,3 +1,4 @@
+//src/services/menu-data/model.ts
 export interface MenuInfo {
   id?: string;
   description?: string;
@@ -15,6 +16,6 @@ export interface ActiveMenuData {
 }
 
 export interface MenuContextDataType {
-  activeMenuData?: ActiveMenuData;
+  activeMenuData?: ActiveMenuData;  
   setActiveMenuData?: (data: ActiveMenuData) => void;
 }
