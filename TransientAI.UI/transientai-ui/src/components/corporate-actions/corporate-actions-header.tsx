@@ -97,7 +97,8 @@ export const CorporateActionHeader = () => {
           key: "securityidentifier",
           label: "ISIN/CUSIP",
           type: "dropdown",
-          options: uniqueFilters.isinOptions
+          options: uniqueFilters.isinOptions,
+          isSearchable: true
         },
         {
           key: "dateRange",
@@ -158,8 +159,8 @@ export const CorporateActionHeader = () => {
 
     return(
         <div>
-            <section className='flex gap-[30px] items-center mb-3'>
-                <div className={`${styles['search-bar']} flex-1 basis-1/2`}>
+            <section className='flex gap-[30px] items-center mb-3 md:flex-row flex-col'>
+                <div className={`${styles['search-bar']} flex-1 w-full md:w-1/2`}>
                     <input
                         type="text"
                         value={''}
@@ -176,7 +177,7 @@ export const CorporateActionHeader = () => {
                     }
                 </div>
 
-                <div className='flex-1 basis-1/2'>
+                <div className='flex-1 w-full md:w-1/2'>
                     <div className='flex gap-4'>
                         <div className='flex items-center gap-2'>
                             <label htmlFor='sort-action'>Sort by Action Required</label>

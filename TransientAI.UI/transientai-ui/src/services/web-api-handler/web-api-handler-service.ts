@@ -68,8 +68,7 @@ class WebApihandler {
                 account: account
               })
 
-              const microsoftRefreshToken = tokenResponse.idToken;
-
+              const microsoftRefreshToken = await tokenResponse.idToken;
               const loginResponse = await axios.post(
                 loginUrl,
                 {}, 
