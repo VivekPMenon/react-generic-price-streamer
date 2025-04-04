@@ -35,7 +35,7 @@ class MacroPanelDataService {
               change: t.one_day_change_bps,
               percent: t.ytd_change_bps,
               symbol: t.ticker ?? '',
-              type: MarketDataType.DOMESTIC_TREASURY
+              type: t.type
             };
           })];
     } catch (e: any) {
@@ -59,7 +59,7 @@ class MacroPanelDataService {
               change: t.one_day_change_bps,
               percent: t.ytd_change_bps,
               symbol: t.ticker ?? '',
-              type: MarketDataType.FOREIGN_TREASURY
+              type: t.type ?? MarketDataType.FOREIGN_TREASURY
             };
           })))
       ];

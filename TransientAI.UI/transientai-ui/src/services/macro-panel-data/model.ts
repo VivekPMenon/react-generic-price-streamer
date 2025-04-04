@@ -12,6 +12,7 @@ export interface TreasuryYield extends IInstrument {
   rate: number
   one_day_change_bps?: number
   ytd_change_bps?: number;
+  type?: MarketDataType;
 }
 
 export interface Bond {
