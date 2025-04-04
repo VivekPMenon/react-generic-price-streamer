@@ -8,7 +8,7 @@ import { useRouter } from 'next/navigation';
 import { useDeviceType } from '@/lib/hooks';
 import { useUnseenItemsStore } from '@/services/unseen-items-store/unseen-items-store';
 import { useMenuStore } from '@/services/menu-data';
-
+import { useTranslation } from 'react-i18next';
 export interface DashboardTabsProps {
   children?: ReactNode;
 }
@@ -16,7 +16,9 @@ export interface DashboardTabsProps {
 export function DashboardTabs({ children }: DashboardTabsProps) {
   const router = useRouter();
   const deviceType = useDeviceType();
-
+  const { t } = useTranslation(); // Use the useTranslation hook  
+  const defaultTab = t('macro_panel'); // Translate the default tab
+  
   const { unseenItems: unseen, resetUnseenItems } = useUnseenItemsStore();
   const { activeMenuList, selectedMenu, setActiveMenu, closeTab, defaultMenu } = useMenuStore();
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
@@ -44,13 +46,13 @@ export function DashboardTabs({ children }: DashboardTabsProps) {
         : [];
     }
 
-    return activeMenuList.map(menu => ({
-      id: menu.id,
-      description: menu.description,
-      route: menu.route
-    }));
-  }
-
+  // Ensure the 'id' exists before returning the tabs
+  return activeMenuList.filter(menu => menu.id).map(menu => ({
+    id: menu.id,
+    description: menu.description,
+    route: menu.route
+  }));
+}
   function selectTab(tab: TabInfo) {
     if (!tab.route) return;
     previousSelectedMenu.current = selectedMenu?.id;

@@ -1,6 +1,7 @@
-'use client';
-
+// src/components/research-reports/research-reports.tsx
+'use client'; // Mark this as a client-side component
 import React, { useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next'; // Import useTranslation hook
 import styles from './research-reports.module.scss';
 import Segmented from 'rc-segmented';
 import { SearchableMarkdown } from '@/components/markdown';
@@ -22,7 +23,7 @@ export interface ResearchReportsProps {
 }
 
 export function ResearchReports({ isExpanded }: ResearchReportsProps) {
-
+  const { t } = useTranslation(); // Initialize translation function
   const { scrollTargetRef } = useScrollTo<HTMLDivElement>();
   const { scrollToElementId } = useScrollToElementId();
   const { isLoading, reports, selectedReport, setSelectedReport } = useResearchReportsStore();
@@ -62,18 +63,14 @@ export function ResearchReports({ isExpanded }: ResearchReportsProps) {
       const emailContent = await researchReportsDataService.getEmailContentAsHtml(report.id!);
       setEmailContent(emailContent);
 
-      const [aiSummary1, aiSummary2] = await Promise.all([
+      const [aiSummary1, aiSummary2] = await Promise.all([ 
         researchReportsDataService.getAiSummary(report.id!, ReportType.ExecutiveSummary),
-        // TODO: purposely calling detailed report - even though selection is Abstract
         researchReportsDataService.getAiSummary(report.id!, ReportType.Detailed)
       ]);
 
       setExecutiveSummary(aiSummary1);
       setDetailedSummary(aiSummary2);
 
-      // if (deviceType === 'mobile') {
-      //   scrollToTarget();
-      // }
     } catch (error) {
       console.error("Error fetching report data:", error);
     }
@@ -106,26 +103,24 @@ export function ResearchReports({ isExpanded }: ResearchReportsProps) {
       <div className={styles['reports-container']}>
 
         <div className={styles['filter-panel']}>
-          Search:
+          {t('search')}:
 
-          {/* Todo.. move the seacrch textbox in to common component */}
           <div className={styles['search-box']}>
-            <input type='text' className='mb-2'
+            <input 
+              type='text' 
+              className='mb-2'
               autoFocus={true}
               autoComplete='on'
               value={searchQuery}
               onChange={event => setSearchQuery(event.target.value)}
-              onKeyDown={event => searchReports(event)}></input>
-            {
-              searchQuery ? <i className='fa-solid fa-remove' onClick={() => {
-                setSearchQuery('');
-                setSearchedReports([])
-              }}></i> : <i className='fa-solid fa-magnifying-glass'></i>
-            }
-
+              onKeyDown={event => searchReports(event)}
+            />
+            {searchQuery ? 
+              <i className='fa-solid fa-remove' onClick={() => { setSearchQuery(''); setSearchedReports([]); }}></i> : 
+              <i className='fa-solid fa-magnifying-glass'></i>}
           </div>
 
-          Summary Type:
+          {t('summary_type')}:
           <Segmented
             className={styles['format-type']}
             value={summaryType}
@@ -135,84 +130,63 @@ export function ResearchReports({ isExpanded }: ResearchReportsProps) {
         </div>
 
         <div className={`${styles['reports']} news scrollable-div`}>
-          {
-            isLoading || isSearchResultsLoading ?
-              <Spinner size="3" className='self-center'></Spinner>
-              :
-              <>
-                {
-                  visibleReports.map(report =>
-                    <div key={report.id} id={report.id} className={report.name === selectedReport?.name ? 'news-item active' : 'news-item'}
-                      onClick={() => setSelectedReport(report)}>
-                      <div className='news-content'>
-                        <div className='news-title'>
-                          <i className='fa-regular fa-file-lines'></i>
-                          {report.name}
-                        </div>
-
-                        {
-                          report.concise_summary &&
-                          <div className='news-description'>
-                            <div>{report.concise_summary}</div>
-                          </div>
-                        }
-                      </div>
+          {isLoading || isSearchResultsLoading ? 
+            <Spinner size="3" className='self-center'></Spinner>
+            :
+            <>
+              {visibleReports.map(report => 
+                <div key={report.id} id={report.id} 
+                     className={report.name === selectedReport?.name ? 'news-item active' : 'news-item'} 
+                     onClick={() => setSelectedReport(report)}>
+                  <div className='news-content'>
+                    <div className='news-title'>
+                      <i className='fa-regular fa-file-lines'></i>
+                      {report.name}
                     </div>
-                  )
-                }
-              </>
+                    {report.concise_summary && 
+                      <div className='news-description'>
+                        <div>{report.concise_summary}</div>
+                      </div>}
+                  </div>
+                </div>
+              )}
+            </>
           }
-
         </div>
       </div>
 
-      {
-        isSummaryVisible ?
-          <>
-            <div className={`${styles['email-content']} ${isExpanded ? styles['expanded'] : ''}`}>
-              <div className={styles['summary-title']}>
-                Original Email
-              </div>
+      {isSummaryVisible &&
+        <>
+          <div className={`${styles['email-content']} ${isExpanded ? styles['expanded'] : ''}`}>
+            <div className={styles['summary-title']}>
+              {t('original_email')}
+            </div>
 
+            <div>
+              <EmailViewer className='height-vh-67' emailHtml={emailContent} />
+            </div>
+          </div>
+
+          <div className={`${styles['ai-summary']} ${isExpanded ? styles['expanded'] : ''}`}>
+            <div className={styles['summary-title']}>
+              {summaryType === ReportType.ExecutiveSummary ? t('executive_summary') : t('abstract')}
+            </div>
+
+            <div className={`height-vh-67 justify-center scrollable-div`} ref={scrollTargetRef}>
               <div>
-                {/* {
-                  emailContent ? <EmailViewer className='height-vh-68' emailHtml={emailContent} /> : <Spinner size="3" className='self-center p-2'></Spinner>
-                } */}
-                <EmailViewer className='height-vh-67' emailHtml={emailContent} />
+                {finalAiContent 
+                  ? <SearchableMarkdown markdownContent={finalAiContent.content} /> 
+                  : <Spinner size="3" className='self-center'></Spinner>}
               </div>
+
+              {finalAiContent?.images &&
+                <ImageContainer images={finalAiContent.images} />}
+              
+              {selectedReport?.keywords && 
+                <Tags header={t('keywords')} tags={selectedReport.keywords} />}
             </div>
-
-            <div className={`${styles['ai-summary']} ${isExpanded ? styles['expanded'] : ''}`}>
-              <div className={styles['summary-title']}>
-                {summaryType}
-              </div>
-
-              <div className={`height-vh-67 justify-center scrollable-div `} ref={scrollTargetRef}>
-                <div >
-                  {
-                    finalAiContent
-                      ? <SearchableMarkdown
-                        markdownContent={finalAiContent.content}
-                      />
-                      : <Spinner size="3" className='self-center'></Spinner>
-                  }
-                </div>
-                {finalAiContent?.images &&
-                  <ImageContainer
-                    images={finalAiContent.images}
-                  />
-                }
-
-                {selectedReport?.keywords &&
-                  <Tags
-                    header='Keywords:'
-                    tags={selectedReport.keywords}
-                  />}
-              </div>
-            </div>
-          </> : <></>
-      }
+          </div>
+        </>}
     </div>
   );
 }
-

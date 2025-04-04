@@ -1,3 +1,4 @@
+//src/components/notifications/notifications.tsx
 'use client'
 
 import { useEffect, useMemo, useState, useRef } from 'react';
@@ -19,6 +20,8 @@ import { resourceName as BreakNewsresourceName } from '@/services/break-news/bre
 import { resourceName as bloombergReportResourceName, useMacroPanelDataStore } from '@/services/macro-panel-data/macro-panel-data-store';
 import { RoleType, useUserContextStore } from '@/services/user-context';
 import {usePmsPnlDataStore} from "@/services/pms-pnl-data/pms-pnl-data-store";
+import { useTranslation } from 'react-i18next'; // Import the translation hook
+
 
 export interface NotificationsProps {
   onExpandCollapse?: (state: boolean) => void;
@@ -109,6 +112,7 @@ export const filterTypeToResourceMap: { [key: string]: string } = {
 };
 
 export function Notifications(props: NotificationsProps) {
+  const { t } = useTranslation(); // Get the translation function
   const router = useRouter();
   const divRef = useRef<HTMLDivElement>(null);
   const { isLoading, reports: researchReports, setSelectedReport: setSelectedResearchReport } = useResearchReportsStore();
@@ -200,7 +204,7 @@ export function Notifications(props: NotificationsProps) {
           type: NotificationType.Macro,
           timestamp: bloombergEmailReport.received_date ? new Date(bloombergEmailReport.received_date).getTime() : new Date().getTime(),
           highlights: [
-            `Date: ${formatDate(bloombergEmailReport.received_date)}`
+             `${t('notification.date')}: ${formatDate(bloombergEmailReport.received_date)}`
           ]
         })),
       ...researchReports
@@ -264,13 +268,14 @@ export function Notifications(props: NotificationsProps) {
       },
       {
         id: 'pms-pnl-notification',
-        title: `P&L Dashboard for ${reportDate?.toLocaleDateString()}`,
+        title: t('notification.pnl_dashboard', { date: reportDate?.toLocaleDateString() }),
         type: NotificationType.PmsPnl,
         timestamp: reportDate ? reportDate.getTime() : 0,
         highlights: [
           formatDate(reportDate?.toISOString())
         ]
       },
+      
       // ...breakNewsItems
       //   .map(news => ({
       //     id: news.id?.toString(),
@@ -386,28 +391,22 @@ export function Notifications(props: NotificationsProps) {
   return (
     //TODO .. create a common component for WIdget with transclusion so that widget tiel etc. can be reused
     <div className={`${styles.notifications} widget`}>
-      <div className='widget-title'>
-        Notifications
-        <i className='fa-solid fa-expand toggler' onClick={() => expandOrCollapsePanel()}></i>
-      </div>
+          <div className='widget-title'>
+      {t('notification.title')}  {/* Translates the title */}
+      <i className='fa-solid fa-expand toggler' onClick={() => expandOrCollapsePanel()} title={t('notification.expand')}></i>
+    </div>
 
       <div className='horizontal-scrollable-div filters'>
-        {
-          filterTypes.map(filterType => {
-            const additionalResourceToCheck = filterType === NotificationType.RiskReport ? resourceNameRiskMetrics : '';
-            const unseenItemsCount = getUnseenItemsCount(filterType)
-              + (additionalResourceToCheck && unseenItems[additionalResourceToCheck] > 0 ? unseenItems[additionalResourceToCheck] : 0);
-
-            return <button
-              key={filterType}
-              className={`${filterType === selectedType ? 'filter active' : 'filter'} ${unseenItemsCount > 0 ? 'flash' : ''}`}
-              onClick={() => changeNotificationType(filterType)}>
-              {filterType}
-
-              {unseenItemsCount > 0 && <div className='bubble off-white-color'>{unseenItemsCount}</div>}
-            </button>
-          })
-        }
+      {filterTypes.map(filterType => {
+  const unseenItemsCount = getUnseenItemsCount(filterType);
+  return <button
+    key={filterType}
+    className={`${filterType === selectedType ? 'filter active' : 'filter'} ${unseenItemsCount > 0 ? 'flash' : ''}`}
+    onClick={() => changeNotificationType(filterType)}>
+    {t(`notification.${filterType.toLowerCase()}`)} {/* Translate the filter type */}
+    {unseenItemsCount > 0 && <div className='bubble off-white-color'>{unseenItemsCount}</div>}
+  </button>
+})}
       </div>
 
       <div ref={divRef} className={`${styles['notification-items']} scrollable-div ${isExpanded ? styles['expanded'] : ''}`}>

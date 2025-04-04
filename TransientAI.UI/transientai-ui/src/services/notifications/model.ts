@@ -1,4 +1,3 @@
-
 export interface Notification {
   title?: string;
   subTitle?: string;
