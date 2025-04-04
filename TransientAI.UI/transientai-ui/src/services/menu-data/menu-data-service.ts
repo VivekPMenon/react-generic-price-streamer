@@ -77,6 +77,7 @@ const menuInfoList: MenuInfo[] = [
   },
   // {
   //   description: 'Term Sheets',
+  //   displayName: 'Term Sheets',
   //   badgeCount: 5,
   //   icon: 'fa-solid fa-newspaper',
   //   route: '/dashboard/term-sheets',
@@ -86,10 +87,12 @@ const menuInfoList: MenuInfo[] = [
 const sellMenuInfoList: MenuInfo[] = [
   // {
   //   description: 'Today',
+  //   displayName: 'Today',
   //   badgeCount: 5,
   //   icon: 'fa-regular fa-snowflake'
   // },
   {
+    id: 'todays-axes',
     description: `Today's Axes`,
     badgeCount: 4,
     icon: 'fa-solid fa-book-open',
@@ -101,11 +104,13 @@ const sellMenuInfoList: MenuInfo[] = [
     // ]
   },
   {
+    id: 'trading-activity',
     description: 'Trading Activity',
     badgeCount: 3,
     icon: 'fa-solid fa-ranking-star'
   },
   {
+    id: 'market-data',
     description: 'Market Data',
     badgeCount: 4,
     icon: 'fa-solid fa-chart-simple',
@@ -117,6 +122,7 @@ const sellMenuInfoList: MenuInfo[] = [
     // ]
   },
   {
+    id: 'client-data',
     description: 'Client Data',
     badgeCount: 3,
     icon: 'fa-solid fa-user'

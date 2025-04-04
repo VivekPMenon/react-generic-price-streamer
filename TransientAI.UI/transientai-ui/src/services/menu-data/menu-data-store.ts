@@ -14,7 +14,7 @@ interface MenuState {
 
 function calculateDefaultMenu(menuInfoList: MenuInfo[]) {
   return menuInfoList
-    .find(menuInfo => menuInfo.description === 'Research Reports')!;
+    .find(menuInfo => menuInfo.id === 'research-reports')!;
 }
 
 function calculateCurrentMenu(menuInfoList: MenuInfo[]) {
