@@ -26,11 +26,14 @@ class MarketDataService {
     return result.trace_data;
   }
 
-  async getMarketData(company_or_ticker : string, period: PeriodType = PeriodType.ONE_YEAR, type: MarketDataType = MarketDataType.DOMESTIC): Promise<Instrument|null> {
+  async getMarketData(company_or_ticker : string, period: PeriodType = PeriodType.ONE_YEAR, type?: MarketDataType): Promise<Instrument|null> {
     try {
-      const fieldName = type === undefined || type === MarketDataType.DOMESTIC
+      const fieldName = type === undefined
           ? 'company_or_ticker'
-          : 'foreign_treasury_ticker';
+          :  type === MarketDataType.DOMESTIC_TREASURY
+              ? 'us_treasury'
+              : 'foreign_treasury_ticker';
+
       const params: Record<string, string> = { period };
       params[fieldName] = company_or_ticker;
 
@@ -41,12 +44,14 @@ class MarketDataService {
     }
   }
 
-  async getIntradayData(company_or_ticker : string, type: MarketDataType = MarketDataType.DOMESTIC): Promise<Instrument|null> {
+  async getIntradayData(company_or_ticker : string, type?: MarketDataType): Promise<Instrument|null> {
     try {
-      const fieldName = //type === undefined || type === MarketDataType.DOMESTIC
-          //?
-          'company_or_ticker'
-          //: 'foreign_treasury_ticker';
+      // const fieldName = type === undefined
+      //     ? 'company_or_ticker'
+      //     :  type === MarketDataType.DOMESTIC_TREASURY
+      //         ? 'us_treasury'
+      //         : 'foreign_treasury_ticker';
+      const fieldName = 'company_or_ticker';
       const params: Record<string, string> = {};
       params[fieldName] = company_or_ticker;
 

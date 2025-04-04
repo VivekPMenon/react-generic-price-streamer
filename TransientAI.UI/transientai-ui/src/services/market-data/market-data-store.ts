@@ -15,7 +15,7 @@ export interface MarketDataStore {
     removeInstrument: (instrument: Instrument) => void;
     getInstrumentLogoUrl: (instrument: Instrument, format: ImageType, size: number) => string;
     maxInstruments: boolean;
-    loadInstrument: (company_or_ticker: string, type: MarketDataType, period: PeriodType, includeFinancials: boolean) => Promise<Instrument|null>;
+    loadInstrument: (company_or_ticker: string, type: MarketDataType|undefined, period: PeriodType, includeFinancials: boolean) => Promise<Instrument|null>;
 }
 
 const MAX_INSTRUMENTS = 5;
@@ -38,7 +38,7 @@ export const useMarketDataStore = create<MarketDataStore>()(
             });
             set({instruments: [], isLoading: false, maxInstruments: false, error: ''});
         },
-        loadInstrument: async (company_or_ticker: string, type: MarketDataType, period: PeriodType, includeFinancials: boolean) => {
+        loadInstrument: async (company_or_ticker: string, type: MarketDataType|undefined, period: PeriodType, includeFinancials: boolean) => {
             const promises: Promise<any>[] = [
                 marketDataService.getMarketData(company_or_ticker, period, type)
             ];
@@ -80,7 +80,7 @@ export const useMarketDataStore = create<MarketDataStore>()(
                     return;
                 }
 
-                const instrument = await get().loadInstrument(search, MarketDataType.DOMESTIC, period, true);
+                const instrument = await get().loadInstrument(search, undefined, period, true);
                 if (!instrument) {
                     set({error: `Could not find ${search}`});
                     return;
@@ -93,7 +93,7 @@ export const useMarketDataStore = create<MarketDataStore>()(
                         .findIndex(i => instrument.ticker.toUpperCase() === i.ticker.toUpperCase());
 
                     if (index >= 0) {
-                        const refreshed = await loadInstrument(instrument.ticker, MarketDataType.DOMESTIC, period, false);
+                        const refreshed = await loadInstrument(instrument.ticker, undefined, period, false);
                         if (refreshed) {
                             refreshed.dispose = instrument.dispose;
                             refreshed.financials = instrument.financials;

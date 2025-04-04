@@ -67,6 +67,6 @@ export interface IInstrument {
 }
 
 export enum MarketDataType {
-  DOMESTIC = 'domestic',
+  DOMESTIC_TREASURY = 'domestic_treasury',
   FOREIGN_TREASURY = 'foreign_treasury'
 }
