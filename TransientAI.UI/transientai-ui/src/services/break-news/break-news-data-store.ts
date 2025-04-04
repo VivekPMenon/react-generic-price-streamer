@@ -1,7 +1,9 @@
+
 import { create } from 'zustand';
-import { BreakNewsItem } from './model';
+import { BreakNewsItem } from './model'
 import { breakNewsDataService } from './break-news-data-service';
 import { useUnseenItemsStore } from '../unseen-items-store/unseen-items-store';
+
 
 export const resourceName = 'break-news';
 export interface BreakNewsDataState {
@@ -9,9 +11,9 @@ export interface BreakNewsDataState {
   setBreakNewsItems: (breakNewsItems: BreakNewsItem[]) => void;
   selectedBreakNewsItem: BreakNewsItem | null;
   lastUpdatedTimestamp: string;
-  setSelectedBreakNewsItem: (breakNewsItem: BreakNewsItem | null) => void;
+  setSelectedBreakNewsItem: (riskMetricsItem: BreakNewsItem | null) => void;
   loadBreakNews: () => Promise<void>;
-  setGroupId: (groupId: string | number | null) => void;
+  setGroupId: (groupId: string | number | null)=> void;
   selectedGroupId: string | number | null;
   isLoading: boolean;
   error: string | null;
@@ -27,21 +29,21 @@ export const useBreakNewsDataStore = create<BreakNewsDataState>((set, get) => ({
   error: null,
 
   setBreakNewsItems: (breakNewsItems) => set({ breakNewsItems }),
-  setSelectedBreakNewsItem: (selectedBreakNewsItem) => set({ selectedBreakNewsItem }),
-  setGroupId: (groupId) => set({ selectedGroupId: groupId }),
+  setSelectedBreakNewsItem: (selectedBreakNewsItem) => set({ selectedBreakNewsItem: selectedBreakNewsItem }),
+  setGroupId: (groupId) => set({selectedGroupId: groupId}),
   loadBreakNews: async () => {
     set({ isLoading: true, error: null });
 
     try {
-      const result = await breakNewsDataService.getBreakNews(); // Fetch data
+      const result = await breakNewsDataService.getBreakNews();
       set({
-        breakNewsItems: result.data.unread_messages, // Store translated messages
+        breakNewsItems: result.data.unread_messages,
         lastUpdatedTimestamp: '',
-        isLoading: false,
+        isLoading: false
       });
     } catch (error) {
-      console.error('Error loading break news:', error);
-      set({ error: 'Failed to load break news.', isLoading: false });
+      console.error('Error loading risk metrics:', error);
+      set({ error: 'Failed to load risk metrics.', isLoading: false });
     }
   },
 
@@ -58,8 +60,8 @@ export const useBreakNewsDataStore = create<BreakNewsDataState>((set, get) => ({
         }
         return {}; // No need to modify state, just ensuring correctness
       });
-    }, 60000); // Poll every minute
-  },
+    }, 60000); // Polls every 2 minutes
+  }
 }));
 
 // Initial Load and Start Polling

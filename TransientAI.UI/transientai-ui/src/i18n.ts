@@ -1,9 +1,13 @@
 // src/i18n.ts
 import i18n from 'i18next';
-import LanguageDetector from 'i18next-browser-languagedetector';
 import { initReactI18next } from 'react-i18next';
+import LanguageDetector from 'i18next-browser-languagedetector';
+
 import macro from 'styled-jsx/macro';
 import axios from 'axios';
+
+console.log('Detected Language:',i18n.language); // Check which language is detected
+
 export const translateText = async (text: string, targetLanguage: string) => {
   try {
     const response = await fetch('/translate', {
@@ -35,7 +39,7 @@ i18n
       en: {
         translation: {
           macro_panel: 'Macro Panel',
-          research_reports_: 'Research Reports',
+          research_reports: 'Research Reports',
           risk_report_portal: 'Risk Report Portal',
           corporate_actions: 'Corporate Actions',
           investor_relations: 'Investor Relations',
@@ -74,15 +78,18 @@ i18n
           Loading: "Loading...",
           Treasury_Yields: "Treasury Yields",
           Equity_Futures: "Equity Futures",
+          find: "Find...",
           notification: {
          title: "Notifications",
          research: "Research",
          all: "All",
          macro: "Macro",
-         'Risk Report': "Risk Report",
+         'risk report': "Risk Report",
+         'corp act': "Corp Act",
+         'inquiries': "Inquiries",
+         pms: "PMS",
             "expand": "Expand",
             "collapse": "Collapse",
-            "pnl_dashboard": "P&L Dashboard for {{date}}",
             "date": "Date",
             "due": "Due",
             "assigned_to": "Assigned to",
@@ -127,13 +134,32 @@ i18n
         "open": "Open",
         "prev_close": "Prev Close",
         "low": "Low"
-      }
+      },
+      risk_metrics: {
+        MANAGER: "Manager",
+        ENTITY: "Entity",
+        GS_MARGIN_EXCESS: "GS Margin Excess",
+        // Add other translations for this section
+      },
+        "pms_1": {
+          "pnl_dashboard": "P&L Dashboard for ",
+        },
+      "Date": "Date",
+    "From": "From",
+    "To": "To",
+    "Subject": "Subject",
+    "Inquiry/Request": "Inquiry/Request",
+    "Status": "Status",
+    "Flag": "Flag",
+    "Due": "Due",
+    "Date edited": "Date edited",
+      Investor_Relations_Inquiries: "Investor Relations Inquiries",
         },
       },
       ja: {
         translation: {
           macro_panel: 'マクロパネル',
-          research_reports_: '調査レポート',
+          research_reports: '調査レポート',
           risk_report_portal: 'リスクレポートポータル',
           corporate_actions: '企業活動',
           investor_relations: '投資家向け広報',
@@ -143,7 +169,7 @@ i18n
           notifications: '通知',
           all: 'すべて',
           research: '調査',
-          risk_report: 'リスクレポート',
+          'risk report': 'リスクレポート',
           pnl_and_financial_resource_metrics: '損益および財務リソース指標',
           margin_excess: '証拠金超過額',
           ibis_all: 'IBIS ALL',
@@ -165,6 +191,7 @@ i18n
           trading_activity: "取引活動",
           client_data: "クライアントデータ",
           pms: "PMS",
+          find: "検索...",
           Macro_Report_Generated : 'マクロレポートが生成されました',
           Global_Equity_Index_Futures: 'グローバル株式指数先物',
           Rates_Yield: '金利利回り',
@@ -173,15 +200,19 @@ i18n
           Loading: "読み込み中...",
           Treasury_Yields: "国債利回り",
           Equity_Futures: "株式先物",
+          Investor_Relations_Inquiries: "投資家向け広報お問い合わせ",
           notification: {
           title: "通知",
           research: "調査",
           macro: "マクロ",
-          'Risk Report': "リスクレポート",
+          Risk_Report: "リスクレポート",
+          'risk report': "リスクレポート", // Ensure both cases are handled
+          'corp act': "企業活動",
+          inquiries: "お問い合わせ",
+          pms: "PMS",
           all: "すべて",
             "expand": "展開",
             "collapse": "折りたたむ",
-            "pnl_dashboard": "P&L ダッシュボード {{date}}",
             "date": "日付",
             "due": "期限",
             "assigned_to": "割り当て先",
@@ -224,7 +255,25 @@ i18n
       "open": "始値",
       "prev_close": "前日終値",
       "low": "安値",
-    }
+    },
+    risk_metrics: {
+      MANAGER: "マネージャー",
+      ENTITY: "エンティティ",
+      GS_MARGIN_EXCESS: "GS 証拠金超過額",
+      // Add other translations for this section
+    },
+    "pms_1": {
+      "pnl_dashboard": "損益ダッシュボード for  "
+    },
+    "Date": "日付",
+    "From": "送信者",
+    "To": "宛先",
+    "Subject": "件名",
+    "Inquiry/Request": "問い合わせ/リクエスト",
+    "Status": "状態",
+    "Flag": "フラグ",
+    "Due": "期限",
+    "Date edited": "編集日"
         },
       },
     },
