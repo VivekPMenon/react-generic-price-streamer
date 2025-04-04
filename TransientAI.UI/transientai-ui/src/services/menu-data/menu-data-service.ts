@@ -17,7 +17,7 @@ const menuInfoList: MenuInfo[] = [
   {
     id: 'research-reports',
     route: '/dashboard/research-reports',
-    description:'Research Reports',  //i18n.t('research_reports'),//
+    description:i18n.t('research_reports'),  //i18n.t('research_reports'),//
     // description: i18n.t('research_reports', { defaultValue: 'Research Reports' }), //TODO//TODO
     badgeCount: 1,
     icon: 'fa-solid fa-book'

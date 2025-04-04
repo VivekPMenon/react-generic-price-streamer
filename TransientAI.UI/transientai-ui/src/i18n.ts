@@ -104,6 +104,8 @@ i18n
             "close": "Close"
 
         },
+        full_view: "Full View",
+        detailed: "Detailed",
         file_upload_wizard:{
           upload: "Upload File",
           submit: "Submit",
@@ -256,6 +258,8 @@ i18n
       "prev_close": "前日終値",
       "low": "安値",
     },
+    full_view: "フルビュー",
+    detailed: "詳細",
     risk_metrics: {
       MANAGER: "マネージャー",
       ENTITY: "エンティティ",
