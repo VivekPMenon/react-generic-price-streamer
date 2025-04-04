@@ -136,10 +136,8 @@ export function PmList ({ data }: PmListProps) {
   )
   return (
     <>
-      <div className={styles['corporate-actions']}>
-        <div className={styles['chatbot']}>
-          {data?.length ? corpActionsListElement : <></>}
-        </div>
+      <div className={styles['chatbot']}>
+        {data?.length > 0 ? corpActionsListElement : <p className='text-center my-auto'>No data Found</p>}
       </div>
     </>
   )

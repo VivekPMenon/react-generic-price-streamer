@@ -8,22 +8,29 @@ import { OpsCorporateActions } from './ops-corporate-actions/ops-corporate-actio
 import { PmCorporateActions } from './pm-corporate-action/pm-corporate-action'
 import { RoleType, useUserContextStore } from '@/services/user-context'
 import { useEffect, useState } from 'react'
+import { Spinner } from "@radix-ui/themes";
 
 export const CorporateActions = () => {
   const { userContext } = useUserContextStore();
   const {
-      selectedCorpAction
+      selectedCorpAction,
+      isSearching,
+      isLoading
   } = useCorpActionsStore();
   const [selectedEmailContent, setSelectedEmailContent] = useState<string>('');
+  const [isLoadingEmail, setIsLoadingEmail] = useState<boolean>(false);
 
   useEffect(() => {
       async function calculateSelectedEmailContent() {
+        setIsLoadingEmail(true);
         if (!selectedCorpAction?.eventId) {
+          setIsLoadingEmail(false);
           return;
         }
   
         const newContent = await corpActionsDataService.getCorpActionEmail(selectedCorpAction.eventId, selectedCorpAction.version!)
         setSelectedEmailContent(newContent);
+        setIsLoadingEmail(false);
       }
   
       calculateSelectedEmailContent();
@@ -38,6 +45,11 @@ export const CorporateActions = () => {
     <div>
       <CorporateActionHeader />
       <section className={styles['corporate-actions']}>
+        {isSearching ? (
+          <div className='h-full flex justify-center items-center'>
+            <Spinner size="3" />
+          </div>
+        ) : (
         <div className={styles['chatbot'] + ' scrollable-div'}>
           {(() => {
             switch (userContext.role) {
@@ -52,15 +64,19 @@ export const CorporateActions = () => {
               }
             }
           })()}
-        </div>
+        </div>)}
         
-
         <div className={styles['email-content']}>
-          <EmailViewer
-            className={styles['email-viewer']}
-            emailHtml={selectedEmailContent}
-            scrollToSearchTerm={searchValue || ''} // selectedCorpAction?.accounts && selectedCorpAction?.accounts[0].accountNumber 
-          />
+          {isLoadingEmail ? (
+            <Spinner size="3" className='m-auto'/>
+          ) : (
+            <EmailViewer
+              className={styles['email-viewer']}
+              emailHtml={selectedEmailContent}
+              scrollToSearchTerm={searchValue || ''} // selectedCorpAction?.accounts && selectedCorpAction?.accounts[0].accountNumber 
+            />
+          )}
+          
         </div>
       </section>
     </div>

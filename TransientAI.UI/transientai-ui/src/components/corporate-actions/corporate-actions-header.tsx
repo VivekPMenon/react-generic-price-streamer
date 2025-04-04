@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import styles from './corporate-actions.module.scss';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -35,10 +35,19 @@ export const CorporateActionHeader = () => {
       corpActions,
       filterActions,
       sortByAction,
+      searchCorpActions,
       reset,
       setFilterActions,
       setSortByAction,
     } = useCorpActionsStore();
+        
+    useEffect(() => {
+      const handler = setTimeout(() => {
+        searchCorpActions(searchQuery);
+      }, 1000);
+
+      return () => clearTimeout(handler);
+    }, [searchQuery]);
 
     function onSearchQueryChange(event: any) {
       setSearchQuery(event.target.value);
@@ -97,7 +106,8 @@ export const CorporateActionHeader = () => {
           key: "securityidentifier",
           label: "ISIN/CUSIP",
           type: "dropdown",
-          options: uniqueFilters.isinOptions
+          options: uniqueFilters.isinOptions,
+          isSearchable: true
         },
         {
           key: "dateRange",
@@ -158,11 +168,11 @@ export const CorporateActionHeader = () => {
 
     return(
         <div>
-            <section className='flex gap-[30px] items-center mb-3'>
-                <div className={`${styles['search-bar']} flex-1 basis-1/2`}>
+            <section className='flex gap-[30px] items-center mb-3 md:flex-row flex-col'>
+                <div className={`${styles['search-bar']} flex-1 w-full md:w-1/2`}>
                     <input
                         type="text"
-                        value={''}
+                        value={searchQuery}
                         onChange={event => onSearchQueryChange(event)}
                         placeholder="Ask TransientAI anything about recent Corporate Actions. Include securities if you are looking for specific information" />
                     {
@@ -176,7 +186,7 @@ export const CorporateActionHeader = () => {
                     }
                 </div>
 
-                <div className='flex-1 basis-1/2'>
+                <div className='flex-1 w-full md:w-1/2'>
                     <div className='flex gap-4'>
                         <div className='flex items-center gap-2'>
                             <label htmlFor='sort-action'>Sort by Action Required</label>
@@ -203,7 +213,7 @@ export const CorporateActionHeader = () => {
                 <div className={`${styles['corporate-filter-cont']} mb-3 grid lg:grid-cols-8 md:grid-cols-2 gap-4`}>
                     {filterConfig.map((filter) => (
                     <div key={filter.key} className={`${styles['search-filter-input']} `}>
-                        <label className="block mb-1">{filter.label}</label>
+                        <label className="block mb-1 truncate">{filter.label}</label>
 
                         {filter.type === "input" && (
                         <input
