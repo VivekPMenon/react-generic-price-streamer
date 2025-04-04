@@ -18,7 +18,7 @@ function PmsPnl() {
         <div className={`${styles['pms-panel']}`}>
             <DataGrid
                 domLayout={'normal'}
-                height={isMobile ? 500 : 600}
+                height={isMobile ? 500 : '95%'}
                 isSummaryGrid={false}
                 suppressStatusBar={true}
                 suppressFloatingFilter={false}
