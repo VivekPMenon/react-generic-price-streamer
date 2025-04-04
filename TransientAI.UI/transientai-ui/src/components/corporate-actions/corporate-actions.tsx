@@ -13,7 +13,9 @@ import { Spinner } from "@radix-ui/themes";
 export const CorporateActions = () => {
   const { userContext } = useUserContextStore();
   const {
-      selectedCorpAction
+      selectedCorpAction,
+      isSearching,
+      isLoading
   } = useCorpActionsStore();
   const [selectedEmailContent, setSelectedEmailContent] = useState<string>('');
   const [isLoadingEmail, setIsLoadingEmail] = useState<boolean>(false);
@@ -43,6 +45,11 @@ export const CorporateActions = () => {
     <div>
       <CorporateActionHeader />
       <section className={styles['corporate-actions']}>
+        {isSearching ? (
+          <div className='h-full flex justify-center items-center'>
+            <Spinner size="3" />
+          </div>
+        ) : (
         <div className={styles['chatbot'] + ' scrollable-div'}>
           {(() => {
             switch (userContext.role) {
@@ -57,7 +64,7 @@ export const CorporateActions = () => {
               }
             }
           })()}
-        </div>
+        </div>)}
         
         <div className={styles['email-content']}>
           {isLoadingEmail ? (

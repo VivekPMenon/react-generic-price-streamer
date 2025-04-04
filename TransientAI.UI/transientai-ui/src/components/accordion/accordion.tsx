@@ -22,46 +22,64 @@ const Accordion: React.FC<AccordionProps> = ({
   className = '', 
   type = 'single' 
 }) => {
-  return (
-    <AccordionPrimitive.Root 
-      type={type}
-      className={`w-full ${className}`}
-    >
-      {items.map((item) => (
-        <AccordionPrimitive.Item
-          key={item.value}
-          value={item.value}
-          className=""
-        >
-          <AccordionPrimitive.Header className={`flex ${item.titleTextStyle}`}>
-            <AccordionPrimitive.Trigger
-              className="group flex flex-1 items-center justify-start p-4 text-left 
-                         hover:bg-gray-800 focus:outline-none"
-            >
-               <DoubleArrowRightIcon
-                className={`h-5 w-5 mr-2 transition-transform duration-300 
-                           group-data-[state=open]:rotate-90 
-                          `}
-              />
-              <span className="text-base font-medium">{item.title}</span>
-             
-            </AccordionPrimitive.Trigger>
-          </AccordionPrimitive.Header>
 
-          <AccordionPrimitive.Content
-            className="overflow-hidden text-white 
-                       data-[state=open]:animate-slideDown 
-                       data-[state=closed]:animate-slideUp"
-          >
-            <div className="py-3">
-              {item.content}
-            </div>
-          </AccordionPrimitive.Content>
-        </AccordionPrimitive.Item>
-      ))}
-    </AccordionPrimitive.Root>
-  );
+  if (type === 'single') {
+    return (
+      <AccordionPrimitive.Root 
+        type="single"
+        className={`w-full ${className}`}
+        defaultValue={items.length > 0 ? items[0].value : undefined}
+      >
+        {items.map((item) => (
+          <AccordionItem key={item.value} item={item} />
+        ))}
+      </AccordionPrimitive.Root>
+    );
+  } else {
+    return (
+      <AccordionPrimitive.Root 
+        type="multiple"
+        className={`w-full ${className}`}
+        defaultValue={items.map(item => item.value)}
+      >
+        {items.map((item) => (
+          <AccordionItem key={item.value} item={item} />
+        ))}
+      </AccordionPrimitive.Root>
+    );
+  }
 };
+
+const AccordionItem: React.FC<{ item: AccordionItem }> = ({ item }) => (
+  <AccordionPrimitive.Item
+    value={item.value}
+    className=""
+  >
+    <AccordionPrimitive.Header className={`flex ${item.titleTextStyle}`}>
+      <AccordionPrimitive.Trigger
+        className="group flex flex-1 items-center justify-start p-4 text-left 
+                   hover:bg-gray-800 focus:outline-none"
+      >
+         <DoubleArrowRightIcon
+          className="h-5 w-5 mr-2 transition-transform duration-300 
+                     group-data-[state=open]:rotate-90"
+        />
+        <span className="text-base font-medium">{item.title}</span>
+       
+      </AccordionPrimitive.Trigger>
+    </AccordionPrimitive.Header>
+
+    <AccordionPrimitive.Content
+      className="overflow-hidden text-white 
+                 data-[state=open]:animate-slideDown 
+                 data-[state=closed]:animate-slideUp"
+    >
+      <div className="py-3">
+        {item.content}
+      </div>
+    </AccordionPrimitive.Content>
+  </AccordionPrimitive.Item>
+);
 
 // Example usage component
 const AccordionExample = () => {

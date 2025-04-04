@@ -11,6 +11,7 @@ export interface CorpActionsDataState {
   corpActions: CorporateAction[] ;
   pmCorpActions:{ [key: string]: CorporateAction[] };
   loadedCorpActions: CorporateAction[];
+  loadedPmCorpActions: { [key: string]: CorporateAction[] };
   searchedEventIds: Set<string>;
   selectedCorpAction: CorporateAction | null;
   isLoading: boolean;
@@ -42,6 +43,7 @@ export const useCorpActionsStore = create<CorpActionsDataState>((set, get) => ({
   corpActions: [],
   pmCorpActions: {},
   loadedCorpActions: [],
+  loadedPmCorpActions: {},
   searchedEventIds: new Set<string>(),
   selectedCorpAction: null,
   isLoading: false,
@@ -142,12 +144,14 @@ export const useCorpActionsStore = create<CorpActionsDataState>((set, get) => ({
         set({
           pmCorpActions: filteredCorpActions,
           loadedCorpActions: mergedCorpActions,
+          loadedPmCorpActions: newCorpActions,
           isLoading: false,
         });
       } else {
         set({
           pmCorpActions: newCorpActions,
           loadedCorpActions: mergedCorpActions,
+          loadedPmCorpActions: newCorpActions,
           isLoading: false,
         });
       }
@@ -162,13 +166,29 @@ export const useCorpActionsStore = create<CorpActionsDataState>((set, get) => ({
 
     try {
       if (!query || query.trim().length === 0) {
-        set({ corpActions: get().loadedCorpActions, searchedEventIds: new Set<string>() });
+        set({ 
+          corpActions: get().loadedCorpActions, 
+          pmCorpActions: get().loadedPmCorpActions, 
+          searchedEventIds: new Set<string>(),
+        });
+
         return;
       }
 
       const eventIds = new Set(await corpActionsDataService.searchCorpAction(query));
-      const filtered = get().loadedCorpActions.filter(ca => eventIds.has(ca.eventId));
-      set({ corpActions: filtered, searchedEventIds: eventIds });
+      const role = useUserContextStore.getState().userContext.role
+      const loadedPmCorpActions = get().loadedPmCorpActions;
+      if(role === RoleType.PM){
+        const filteredCorpActions = {
+          'Action Required': (loadedPmCorpActions['Action Required'] || []).filter(ca => eventIds.has(ca.eventId)),
+          'No Action Required': (loadedPmCorpActions['No Action Required'] || []).filter(ca => eventIds.has(ca.eventId)),
+          'Expired': (loadedPmCorpActions['Expired'] || []).filter(ca => eventIds.has(ca.eventId)),
+        };
+        set({ pmCorpActions: filteredCorpActions, searchedEventIds: eventIds });
+      } else {
+        const filtered = get().loadedCorpActions.filter(ca => eventIds.has(ca.eventId));
+        set({ corpActions: filtered, searchedEventIds: eventIds });
+      }
     } catch (error) {
       console.error('Error searching corporate actions:', error);
     } finally {
