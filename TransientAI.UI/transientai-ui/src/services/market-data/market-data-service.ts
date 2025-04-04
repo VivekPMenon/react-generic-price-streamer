@@ -28,7 +28,7 @@ class MarketDataService {
 
   async getMarketData(company_or_ticker : string, period: PeriodType = PeriodType.ONE_YEAR, type?: MarketDataType): Promise<Instrument|null> {
     try {
-      const fieldName = type === undefined
+      const fieldName = type === undefined || type === MarketDataType.NONE
           ? 'company_or_ticker'
           :  type === MarketDataType.DOMESTIC_TREASURY
               ? 'us_treasury'
@@ -46,7 +46,7 @@ class MarketDataService {
 
   async getIntradayData(company_or_ticker : string, type?: MarketDataType): Promise<Instrument|null> {
     try {
-      // const fieldName = type === undefined
+      // const fieldName = type === undefined || type === MarketDataType.NONE
       //     ? 'company_or_ticker'
       //     :  type === MarketDataType.DOMESTIC_TREASURY
       //         ? 'us_treasury'
