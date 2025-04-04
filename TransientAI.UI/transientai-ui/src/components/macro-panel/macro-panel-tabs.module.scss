@@ -153,6 +153,11 @@
   }
 }
 
+.market-data-no-graph {
+  @extend .market-data-graph;
+  cursor: unset;
+}
+
 .market-data-graph-popup {
   gap: 10px;
   padding: 10px;
