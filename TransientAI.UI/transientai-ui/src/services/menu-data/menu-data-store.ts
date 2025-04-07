@@ -1,5 +1,5 @@
-import { create } from 'zustand';
-import { MenuInfo } from './model';
+import {create} from 'zustand';
+import {MenuInfo} from './model';
 import {getMenuItems, Mode} from './menu-data-service';
 
 interface MenuState {
@@ -12,9 +12,9 @@ interface MenuState {
   initializeMenus: (mode: Mode) => void;
 }
 
-function calculateDefaultMenu(menuInfoList: MenuInfo[]) {
+function calculateDefaultMenu(menuInfoList: MenuInfo[], defaultMenuId: string) {
   return menuInfoList
-    .find(menuInfo => menuInfo.id === 'research-reports')!;
+    .find(menuInfo => menuInfo.id === defaultMenuId)!;
 }
 
 function calculateCurrentMenu(menuInfoList: MenuInfo[]) {
@@ -25,10 +25,11 @@ function calculateCurrentMenu(menuInfoList: MenuInfo[]) {
     .find(menuInfo => menuInfo.route?.toLowerCase() === window.document.location.pathname?.toLowerCase())!;
 }
 
-function calculateActiveMenuList(menuInfoList: MenuInfo[]) {
+function calculateActiveMenuList(menuInfoList: MenuInfo[], defaultMenuId: string) {
   const currentMenu = calculateCurrentMenu(menuInfoList);
-  const defaultMenu = calculateDefaultMenu(menuInfoList);
-  return currentMenu === defaultMenu ? [defaultMenu] : [defaultMenu, currentMenu];
+  const defaultMenu = calculateDefaultMenu(menuInfoList, defaultMenuId);
+  const menuItems = currentMenu === defaultMenu ? [defaultMenu] : [defaultMenu, currentMenu];
+  return menuItems.filter(menu => menu !== undefined);
 }
 
 export const useMenuStore = create<MenuState>((set) => ({
@@ -38,13 +39,16 @@ export const useMenuStore = create<MenuState>((set) => ({
   defaultMenu: [],
 
   initializeMenus: (mode: Mode) => {
-      const menuInfoList = getMenuItems(mode);
-        set({
-            activeMenuList: calculateActiveMenuList(menuInfoList),
-            fullMenuList: menuInfoList,
-            selectedMenu: calculateCurrentMenu(menuInfoList)!,
-            defaultMenu: calculateDefaultMenu(menuInfoList)
-        })
+    const menuInfoList = getMenuItems(mode);
+
+    const defaultMenuId = mode === Mode.BUY ? 'research-reports' : 'todays-axes';
+
+    set({
+        activeMenuList: calculateActiveMenuList(menuInfoList, defaultMenuId),
+        fullMenuList: menuInfoList,
+        selectedMenu: calculateCurrentMenu(menuInfoList)!,
+        defaultMenu: calculateDefaultMenu(menuInfoList, defaultMenuId)
+    })
   },
 
   setActiveMenu: (menu) =>

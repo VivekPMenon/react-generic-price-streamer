@@ -103,6 +103,7 @@ const sellMenuInfoList: MenuInfo[] = [
     description: `Today's Axes`,
     badgeCount: 4,
     icon: 'fa-solid fa-book-open',
+    route: '/dashboard-generic/todays-axes',
     // children: [
     //   {description: 'Active Orders'},
     //   {description: 'Recent Trades'},
@@ -114,13 +115,15 @@ const sellMenuInfoList: MenuInfo[] = [
     id: 'trading-activity',
     description: 'Trading Activity',
     badgeCount: 3,
-    icon: 'fa-solid fa-ranking-star'
+    icon: 'fa-solid fa-ranking-star',
+    route: '/dashboard-generic/trading-activity',
   },
   {
     id: 'market-data',
     description: 'Market Data',
     badgeCount: 4,
     icon: 'fa-solid fa-chart-simple',
+    route: '/dashboard-generic/market-data',
     // children: [
     //   {description: 'Breaking News', subDescription: '11/24 7:45am'},
     //   {description: 'Earnings Updates'},
@@ -128,11 +131,19 @@ const sellMenuInfoList: MenuInfo[] = [
     //   {description: 'Research Notes', subDescription: '11/24 8:45am'}
     // ]
   },
+  // {
+  //   id: 'client-data',
+  //   description: 'Client Data',
+  //   badgeCount: 3,
+  //   icon: 'fa-solid fa-user',
+  //   route: '/dashboard-generic/todays-axes',
+  // },
   {
-    id: 'client-data',
-    description: 'Client Data',
+    id: 'breaking-new',
+    description: 'Breaking News',
     badgeCount: 3,
-    icon: 'fa-solid fa-user'
+    icon: 'fa-solid fa-newspaper',
+    route: '/dashboard-generic/breaking-news',
   },
 ];
 

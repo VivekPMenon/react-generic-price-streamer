@@ -1,28 +1,41 @@
 'use client'
 
-import { useEffect, useMemo, useState, useRef } from 'react';
+import {useEffect, useMemo, useRef, useState} from 'react';
 import styles from './notifications.module.scss';
-import { Notification, NotificationType } from '@/services/notifications';
-import { useCorpActionsStore, resourceName as corpActionResourceName } from "@/services/corporate-actions";
-import { useMenuStore } from "@/services/menu-data";
-import { NotificationPopup } from './notification-popup';
-import { useRouter } from 'next/navigation';
-import { useResearchReportsStore, useRiskReportsSlice, resourceName as researchReportResourceName, resourceNameRiskReports, ResearchReport } from '@/services/reports-data';
-import { Spinner } from '@radix-ui/themes';
-import { resourceNameInvestorRelations, useInvestorRelationsStore } from "@/services/investor-relations-data/investor-relations-store";
-import { InquiryFlag } from "@/services/investor-relations-data";
-import { useVirtualizer, VirtualItem } from "@tanstack/react-virtual";
-import { resourceNameRiskMetrics, useRiskDataStore } from '@/services/risk-data/risk-data-store';
-import { formatDate } from '@/lib/utility-functions/date-operations';
-import { useUnseenItemsStore } from '@/services/unseen-items-store/unseen-items-store';
-import { resourceName as BreakNewsresourceName } from '@/services/break-news/break-news-data-store';
-import { resourceName as bloombergReportResourceName, useMacroPanelDataStore } from '@/services/macro-panel-data/macro-panel-data-store';
-import { RoleType, useUserContextStore } from '@/services/user-context';
+import {Notification, NotificationType} from '@/services/notifications';
+import {resourceName as corpActionResourceName, useCorpActionsStore} from "@/services/corporate-actions";
+import {Mode, useMenuStore} from "@/services/menu-data";
+import {NotificationPopup} from './notification-popup';
+import {useRouter} from 'next/navigation';
+import {
+  ResearchReport,
+  resourceName as researchReportResourceName,
+  resourceNameRiskReports,
+  useResearchReportsStore,
+  useRiskReportsSlice
+} from '@/services/reports-data';
+import {Spinner} from '@radix-ui/themes';
+import {
+  resourceNameInvestorRelations,
+  useInvestorRelationsStore
+} from "@/services/investor-relations-data/investor-relations-store";
+import {InquiryFlag} from "@/services/investor-relations-data";
+import {useVirtualizer, VirtualItem} from "@tanstack/react-virtual";
+import {resourceNameRiskMetrics, useRiskDataStore} from '@/services/risk-data/risk-data-store';
+import {formatDate} from '@/lib/utility-functions/date-operations';
+import {useUnseenItemsStore} from '@/services/unseen-items-store/unseen-items-store';
+import {resourceName as BreakNewsresourceName} from '@/services/break-news/break-news-data-store';
+import {
+  resourceName as bloombergReportResourceName,
+  useMacroPanelDataStore
+} from '@/services/macro-panel-data/macro-panel-data-store';
+import {RoleType, useUserContextStore} from '@/services/user-context';
 import {usePmsPnlDataStore} from "@/services/pms-pnl-data/pms-pnl-data-store";
 
 export interface NotificationsProps {
   onExpandCollapse?: (state: boolean) => void;
   notificationClicked?: (notification: Notification) => void;
+  mode: Mode;
 }
 
 function getIconClass(type: NotificationType) {
@@ -85,19 +98,26 @@ function getPillClass(type: NotificationType) {
   }
 }
 
-const filterTypes = [
-  NotificationType.All,
-  // NotificationType.Axes,
-  // NotificationType.Clients,
-  // NotificationType.Trades,
-  NotificationType.Research,
-  NotificationType.Macro,
-  NotificationType.RiskReport,
-  NotificationType.CorpAct,
-  NotificationType.Inquiries,
-  NotificationType.PmsPnl,
-  // NotificationType.BreakNews
-];
+const getFilterTypes = (mode: Mode) => {
+  if (mode === Mode.SELL) {
+    return [
+      NotificationType.All,
+      NotificationType.Axes,
+      NotificationType.Clients,
+      NotificationType.Trades
+    ]
+  }
+
+  return [
+    NotificationType.All,
+    NotificationType.Research,
+    NotificationType.Macro,
+    NotificationType.RiskReport,
+    NotificationType.CorpAct,
+    NotificationType.Inquiries,
+    NotificationType.PmsPnl
+  ]
+};
 
 export const filterTypeToResourceMap: { [key: string]: string } = {
   'All': '',
@@ -188,100 +208,107 @@ export function Notifications(props: NotificationsProps) {
     }
   }, [resetUnseenItems, selectedType, unseenItems]);
 
-  function loadNotifications() {
-    const newNotifications: Notification[] = [
-      // ...notifications,
-      ...bloombergEmailReports
-        .map(bloombergEmailReport => ({
-          id: bloombergEmailReport.received_date,
-          resourceName: bloombergReportResourceName,
-          title: bloombergEmailReport.subject,
-          // subTitle: researchReport.concise_summary,
-          type: NotificationType.Macro,
-          timestamp: bloombergEmailReport.received_date ? new Date(bloombergEmailReport.received_date).getTime() : new Date().getTime(),
-          highlights: [
-            `Date: ${formatDate(bloombergEmailReport.received_date)}`
-          ]
-        })),
-      ...researchReports
-        .map(researchReport => ({
-          id: researchReport.id,
-          resourceName: researchReportResourceName,
-          title: researchReport.name,
-          // subTitle: researchReport.concise_summary,
-          type: NotificationType.Research,
-          timestamp: researchReport.received_date ? new Date(researchReport.received_date).getTime() : new Date().getTime(),
-          highlights: getResearchReportHighlights(researchReport)
-        })),
-      ...riskReports
-        .map(riskReport => ({
-          id: riskReport.id,
-          resourceName: resourceNameRiskReports,
-          title: riskReport.filename,
+  function loadNotifications(mode: Mode) {
+    let newNotifications: Notification[] = [];
+    if (mode === Mode.BUY) {
+      newNotifications = [
+        // ...notifications,
+        ...bloombergEmailReports
+            .map(bloombergEmailReport => ({
+              id: bloombergEmailReport.received_date,
+              resourceName: bloombergReportResourceName,
+              title: bloombergEmailReport.subject,
+              // subTitle: researchReport.concise_summary,
+              type: NotificationType.Macro,
+              timestamp: bloombergEmailReport.received_date ? new Date(bloombergEmailReport.received_date).getTime() : new Date().getTime(),
+              highlights: [
+                `Date: ${formatDate(bloombergEmailReport.received_date)}`
+              ]
+            })),
+        ...researchReports
+            .map(researchReport => ({
+              id: researchReport.id,
+              resourceName: researchReportResourceName,
+              title: researchReport.name,
+              // subTitle: researchReport.concise_summary,
+              type: NotificationType.Research,
+              timestamp: researchReport.received_date ? new Date(researchReport.received_date).getTime() : new Date().getTime(),
+              highlights: getResearchReportHighlights(researchReport)
+            })),
+        ...riskReports
+            .map(riskReport => ({
+              id: riskReport.id,
+              resourceName: resourceNameRiskReports,
+              title: riskReport.filename,
+              type: NotificationType.RiskReport,
+              timestamp: riskReport.uploaded ? riskReport.uploaded.getTime() : new Date().getTime(),
+              highlights: [
+                `Date: ${riskReport.uploaded!}`
+              ]
+            })),
+        ...loadedCorpActions
+            .map(corpAction => ({
+              id: corpAction.eventId,
+              resourceName: corpActionResourceName,
+              title: `TICKER: ${corpAction.ticker} \n ${corpAction.security?.name}`,
+              type: NotificationType.CorpAct,
+              subTitle: `<span class=${corpAction.actionRequired ? 'text-red-500' : 'text-green-500'}>${corpAction.eventType} - ${corpAction.eventStatus}<span/>`,
+              timestamp: corpAction?.receivedDate ? new Date(corpAction.receivedDate).getTime() : new Date().getTime(),
+              highlights: [
+                `ISIN: ${corpAction.isin!}, ID: ${corpAction.eventId}`,
+                `No Accounts: ${corpAction.accounts?.length ? (corpAction.accounts?.length + ' ' + 'Account: ' + corpAction.accounts[0].accountNumber) : ''} ${corpAction.accounts && corpAction.accounts?.length > 1 ? ' +' + (corpAction.accounts?.length - 1) + 'More accts' : ''}`,
+                `Pay Date: ${formatDate(corpAction.dates?.pay_date)}`,
+                `Holding: ${corpAction.holdingQuantity}`,
+                `Version: ${corpAction.version}`,
+              ]
+            })),
+        ...inquiries
+            .map(inquiry => ({
+              id: inquiry.id,
+              title: `${inquiry.subject}`,
+              type: NotificationType.Inquiries,
+              subTitle: inquiry.inquiry ? inquiry.inquiry : '',
+              timestamp: inquiry.due_date ? new Date(inquiry.due_date).getTime() : 0,
+              highlights: [
+                `Due: ${inquiry.due_date ? new Date(inquiry.due_date).toDateString() : ''}`,
+                `Assigned to: ${inquiry.assignee_name}`,
+                `${inquiry.flag ? InquiryFlag[inquiry.flag] : ''}`,
+              ]
+            })),
+        {
+          id: 'risk-metrics-notification',
+          title: `GS Margin Excess Updated`,
           type: NotificationType.RiskReport,
-          timestamp: riskReport.uploaded ? riskReport.uploaded.getTime() : new Date().getTime(),
+          timestamp: lastUpdatedTimestamp ? new Date(lastUpdatedTimestamp).getTime() : 0,
           highlights: [
-            `Date: ${riskReport.uploaded!}`
+            formatDate(lastUpdatedTimestamp)
           ]
-        })),
-      ...loadedCorpActions
-        .map(corpAction => ({
-          id: corpAction.eventId,
-          resourceName: corpActionResourceName,
-          title: `TICKER: ${corpAction.ticker} \n ${corpAction.security?.name}`,
-          type: NotificationType.CorpAct,
-          subTitle: `<span class=${corpAction.actionRequired ? 'text-red-500' :'text-green-500'}>${corpAction.eventType} - ${corpAction.eventStatus}<span/>`,
-          timestamp: corpAction?.receivedDate ? new Date(corpAction.receivedDate).getTime() : new Date().getTime(),
+        },
+        {
+          id: 'pms-pnl-notification',
+          title: `P&L Dashboard for ${reportDate?.toLocaleDateString()}`,
+          type: NotificationType.PmsPnl,
+          timestamp: reportDate ? reportDate.getTime() : 0,
           highlights: [
-            `ISIN: ${corpAction.isin!}, ID: ${corpAction.eventId}`,
-            `No Accounts: ${corpAction.accounts?.length ? (corpAction.accounts?.length +' '+'Account: ' + corpAction.accounts[0].accountNumber): ''} ${corpAction.accounts && corpAction.accounts?.length > 1 ? ' +'+(corpAction.accounts?.length-1)+'More accts' : ''}`,
-            `Pay Date: ${formatDate(corpAction.dates?.pay_date)}`,
-            `Holding: ${corpAction.holdingQuantity}`,
-            `Version: ${corpAction.version}`,
+            formatDate(reportDate?.toISOString())
           ]
-        })),
-      ...inquiries
-        .map(inquiry => ({
-          id: inquiry.id,
-          title: `${inquiry.subject}`,
-          type: NotificationType.Inquiries,
-          subTitle: inquiry.inquiry ? inquiry.inquiry : '',
-          timestamp: inquiry.due_date ? new Date(inquiry.due_date).getTime() : 0,
-          highlights: [
-            `Due: ${inquiry.due_date ? new Date(inquiry.due_date).toDateString() : ''}`,
-            `Assigned to: ${inquiry.assignee_name}`,
-            `${inquiry.flag ? InquiryFlag[inquiry.flag] : ''}`,
-          ]
-        })),
-      {
-        id: 'risk-metrics-notification',
-        title: `GS Margin Excess Updated`,
-        type: NotificationType.RiskReport,
-        timestamp: lastUpdatedTimestamp ? new Date(lastUpdatedTimestamp).getTime() : 0,
-        highlights: [
-          formatDate(lastUpdatedTimestamp)
-        ]
-      },
-      {
-        id: 'pms-pnl-notification',
-        title: `P&L Dashboard for ${reportDate?.toLocaleDateString()}`,
-        type: NotificationType.PmsPnl,
-        timestamp: reportDate ? reportDate.getTime() : 0,
-        highlights: [
-          formatDate(reportDate?.toISOString())
-        ]
-      },
-      // ...breakNewsItems
-      //   .map(news => ({
-      //     id: news.id?.toString(),
-      //     title: news.message,
-      //     sideTitle: 'WhatsApp',
-      //     type: NotificationType.BreakNews,
-      //     highlights: [
-      //       `${formatDate(news?.sender_time_info || '')}`,
-      //     ]
-      //   }))
-    ];
+        },
+        // ...breakNewsItems
+        //   .map(news => ({
+        //     id: news.id?.toString(),
+        //     title: news.message,
+        //     sideTitle: 'WhatsApp',
+        //     type: NotificationType.BreakNews,
+        //     highlights: [
+        //       `${formatDate(news?.sender_time_info || '')}`,
+        //     ]
+        //   }))
+      ];
+    } else {
+      newNotifications = [
+
+      ];
+    }
 
     newNotifications.sort((x, y) => (y.timestamp ?? -1) - (x.timestamp ?? -1));
 
@@ -348,6 +375,16 @@ export function Notifications(props: NotificationsProps) {
         router.push(newRoute = '/dashboard/pms-pnl');
         break;
 
+      case NotificationType.Axes:
+        router.push(newRoute = '/dashboard-generic/axes');
+        break;
+
+      case NotificationType.Clients:
+        break;
+
+      case NotificationType.Trades:
+        break;
+
       // case NotificationType.BreakNews:
       //   const selectedNewsItem = breakNewsItems.find((news) => news.id == notification.id);
       //   setSelectedBreakNewsItem(selectedNewsItem!);
@@ -393,7 +430,7 @@ export function Notifications(props: NotificationsProps) {
 
       <div className='horizontal-scrollable-div filters'>
         {
-          filterTypes.map(filterType => {
+          getFilterTypes(props.mode).map(filterType => {
             const additionalResourceToCheck = filterType === NotificationType.RiskReport ? resourceNameRiskMetrics : '';
             const unseenItemsCount = getUnseenItemsCount(filterType)
               + (additionalResourceToCheck && unseenItems[additionalResourceToCheck] > 0 ? unseenItems[additionalResourceToCheck] : 0);

@@ -1,0 +1,42 @@
+@import '../../assets/variables.scss';
+
+.marketDataPanel {
+  display: flex;
+  flex-direction: row;
+  color: $font-color-100;
+  gap: 15px;
+  height: 100%;
+  width: 100%;
+
+  @media screen and (max-width: $mobile-breakpoint-max) {
+    flex-direction: column;
+    gap: 35px;
+    height: 100%;
+    width: 100%;
+  }
+}
+
+.marketDataTable {
+  //height: 100%;
+  //width: 50%;
+  flex: 1 1 500px;
+  max-height: 100%;
+  //display: flex;
+
+  @media screen and (max-width: $mobile-breakpoint-max) {
+    flex: 1 1 100%;
+    align-items: stretch;
+    max-height: unset;
+  }
+}
+
+.traces {
+  flex: 1 1 500px;
+  max-height: 100%;
+
+  @media screen and (max-width: $mobile-breakpoint-max) {
+    flex: 1 1 100%;
+    align-items: stretch;
+    max-height: unset;
+  }
+}
