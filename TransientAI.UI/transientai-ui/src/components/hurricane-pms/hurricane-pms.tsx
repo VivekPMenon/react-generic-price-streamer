@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useDeviceType } from "@/lib/hooks";
 import styles from "./hurricane-pms.module.scss";
 import { DataGrid } from "@/components/data-grid";
@@ -15,17 +15,20 @@ import {
   top_gainers,
   top_losers,
 } from "./pms_mock_data";
+import { IManager } from "./model";
 
 export const HurricanePms = () => {
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [managerId, setManagerId] = useState<string>('1');
     const [managerDetails, setManagerDetails] = useState<any>(null);
+    const managerDetailsRef = useRef<HTMLDivElement>(null);
     const deviceType = useDeviceType();
     const isMobile = deviceType !== 'desktop';
 
     const handleOnRowClicked = (event: any) => {
         const selectedRow = event.data;
         setManagerId(selectedRow.id.toString());
+        managerDetailsRef.current?.scrollIntoView({ behavior: "smooth" });
     };
 
     useEffect(() => {
@@ -42,14 +45,36 @@ export const HurricanePms = () => {
                 domLayout={'normal'}
                 height={isMobile ? 500 : '95%'}
                 isSummaryGrid={false}
-                suppressStatusBar={true}
+                suppressStatusBar={false}
                 suppressFloatingFilter={false}
                 columnDefs={columnDefs}
                 rowData={managers}
                 gridOptions={{
                   ...defaultGridOptions,
                   onRowClicked: handleOnRowClicked,
-                }}
+                  pinnedTopRowData: [
+                    managers.reduce((totals, row) => {
+                      Object.keys(row).forEach((key) => {
+                        const typedKey = key as keyof IManager;
+                        const value = row[typedKey];
+                  
+                        if (typeof value === 'number') {
+                          const currentTotal = (totals[typedKey] ?? 0) as number;
+                          totals[typedKey] = currentTotal + value;
+                        }
+                      });
+                  
+                      totals.name = 'Total';
+                      return totals;
+                    }, {} as Partial<any>),
+                  ],
+                  getRowClass: (params) => {
+                    if (params.node.rowPinned === 'top') {
+                        return styles["pinned-top-row"];
+                    }
+                    return '';
+                }
+              }}
                 loading={isLoading}
             />
           </section>
@@ -91,7 +116,7 @@ export const HurricanePms = () => {
       </section>
 
       <section className="flex h-[600px] gap-4">
-        <div className="w-[80%]">
+        <div className="w-[80%]" ref={managerDetailsRef}>
             <DataGrid 
             domLayout={'normal'}
             height={isMobile ? 500 : '95%'}

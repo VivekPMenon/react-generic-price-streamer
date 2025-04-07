@@ -1,8 +1,10 @@
-export const managers = [
+import { IManager } from "./model";
+
+export const managers: IManager[] = [
   {
     "id": 1,
     "name": "DAVE NEUBERT",
-    "pl": -1693640.92,
+    "pl": 1693640.92,
     "delta_adj_gross": 46815260.36,
     "gmv_usage_percent": 0.0,
     "delta_adj": 41938883.94,
@@ -29,7 +31,7 @@ export const managers = [
   {
     "id": 4,
     "name": "MATT HAGERTY",
-    "pl": -240020.43,
+    "pl": 240020.43,
     "delta_adj_gross": 7302126.19,
     "gmv_usage_percent": 0.0,
     "delta_adj": 2234963.19,
@@ -65,7 +67,7 @@ export const managers = [
   {
     "id": 8,
     "name": "JONNY DAK",
-    "pl": -130834.08,
+    "pl": 130834.08,
     "delta_adj_gross": 3384007.68,
     "gmv_usage_percent": 0.0,
     "delta_adj": 2743730.68,
@@ -128,7 +130,7 @@ export const managers = [
   {
     "id": 15,
     "name": "DAVID ALBERT",
-    "pl": -1693640.92,
+    "pl": 1693640.92,
     "delta_adj_gross": 46815260.36,
     "gmv_usage_percent": 0.0,
     "delta_adj": 41938883.94,
