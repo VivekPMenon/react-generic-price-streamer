@@ -13,10 +13,12 @@ const HighchartsReact = dynamic(() => import('highcharts-react-official'), { ssr
 function getChartOptions(instrument: Instrument, isNegative: boolean = false, ignoreNegative: boolean = false) {
     let seriesData: any[] = [];
     if (instrument.marketData?.length) {
-        seriesData = instrument.marketData.map(data => {
-            const date = new Date(data.timestamp!);
-            return [date.getTime(), data.open, data.high, data.low, data.close];
-        });
+        const today = new Date().setHours(0, 0, 0, 0);
+        seriesData = instrument.marketData
+            .filter(data => data.timestamp && data.timestamp.getTime() >= today)
+            .map(data => {
+                return [data.timestamp!.getTime(), data.open, data.high, data.low, data.close];
+            });
     }
 
     let gradientStart: string;
@@ -50,7 +52,8 @@ function getChartOptions(instrument: Instrument, isNegative: boolean = false, ig
             type: 'datetime',
             labels: { enabled: false, style: { color: '#dddddd' } },
             gridLineWidth: 0,
-            crosshair: false
+            crosshair: false,
+            minRange: 3600 * 1000
         },
         yAxis: {
             title: { text: null },
@@ -66,8 +69,7 @@ function getChartOptions(instrument: Instrument, isNegative: boolean = false, ig
             enabled: false,
         },
         rangeSelector: {
-            enabled: false,
-            selected: 1,
+            enabled: false
         },
         plotOptions: {
             area: {
@@ -101,9 +103,6 @@ function getChartOptions(instrument: Instrument, isNegative: boolean = false, ig
                 enableMouseTracking: false,
                 marker: { enabled: false },
                 threshold: null,
-                dataGrouping: {
-                    units: [['day', [1]]]
-                },
             },
         ],
         tooltip: {

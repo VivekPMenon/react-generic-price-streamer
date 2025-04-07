@@ -23,6 +23,16 @@ const nextConfig: NextConfig = {
         destination: '/dashboard/macro-panel',
         permanent: true, // Set to false if temporary
       },
+      // {
+      //   source: '/sell',
+      //   destination: '/dashboard-generic',
+      //   permanent: true, // Set to false if temporary
+      // },
+      // {
+      //   source: '/dashboard-generic',
+      //   destination: '/dashboard-generic/axes',
+      //   permanent: true, // Set to false if temporary
+      // },
     ]);
   }
 };
