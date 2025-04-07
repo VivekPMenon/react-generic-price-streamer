@@ -8,27 +8,31 @@ import Highcharts from 'highcharts';
 const HighchartsReact = dynamic(() => import('highcharts-react-official'), { ssr: false });
 
 const issuerData = [
-  { name: 'JAPANESEYEN', value: 15.68 },
-  { name: 'ALPHABET', value: 11.45 },
-  { name: 'AMAZON.COM', value: 8.92 },
-  { name: 'APPLE', value: 8.02 },
-  { name: 'NVIDIA CORP', value: 7.63 },
-  { name: 'FACEBOOK', value: 7.07 },
-  { name: 'TESLA', value: 6.01 },
-  { name: 'UNITED HEALTHCARE', value: 3.82 },
-  { name: 'JP MORGAN', value: 3.27 },
-  { name: 'PROCTER & GAMBLE', value: 3.15 },
-  { name: 'MASTERCARD', value: 3.02 },
-  { name: 'WALMART', value: 2.86 },
-  { name: 'INTEL', value: 2.39 },
-  { name: 'SUPER INTERNATIONAL', value: 2.04 },
-  { name: 'MCDONALDS', value: 1.96 },
-  { name: 'CISCO SYSTEMS', value: 1.85 },
-  { name: 'PEPSICO', value: 1.68 },
-  { name: 'CHEVRON', value: 1.52 },
-  { name: 'ORACLE', value: 1.43 },
-  { name: 'HOME DEPOT', value: 1.26 },
-  { name: 'OTHER', value: 0.97 }
+  { name: 'JAPANESE YEN', value: 14.00 },
+  { name: 'CANADIAN DOLLAR', value: 10.00 },
+  { name: 'SWISS FRANC', value: 9.90 },
+  { name: 'FEDEX CORP', value: 8.00 },
+  { name: 'ISHARES MSCI JAPAN ETF', value: 7.50 },
+  { name: 'MICROSOFT', value: 7.00 },
+  { name: 'ROCHE HLDG AG', value: 6.20 },
+  { name: 'ASML TECHNOLOGIES NV', value: 5.80 },
+  { name: 'CARRIER GLOBAL CORP', value: 5.60 },
+  { name: 'SWISS FRANC', value: 5.20 },
+  { name: 'BRITISH POUND', value: 3.75 },
+  { name: 'NESTLE CORP SPONSOR', value: 3.75 },
+  { name: 'SANOFI-AVENTIS HOLDING NV', value: 3.00 },
+  { name: 'MOODYS CORP HOME', value: 3.00 },
+  { name: 'RIO TINTO PLC GROUP ADR', value: 2.00 },
+  { name: 'ALIBABA GROUP HOLDING SP ADR', value: 2.00 },
+  { name: 'DIAGEO PLC GROUP', value: 1.25 },
+  { name: 'DEERE & CO', value: 1.20 },
+  { name: 'GLENCORE MINING CHTD SECURE', value: 1.00 },
+  { name: 'ROCKWELL AUTOMATION INC', value: 1.00 },
+  { name: 'DOLLARAMA INC', value: 0.80 },
+  { name: 'ALPHABET INC CL A', value: 0.80 },
+  { name: 'ENERGY TRANSFER LP', value: 0.50 },
+  { name: 'CVS', value: 0.25 },
+  { name: 'QQQ', value: 0.20 }
 ];
 
 function getChartOptions() {
@@ -38,7 +42,8 @@ function getChartOptions() {
   const chartOptions: Highcharts.Options = {
     chart: {
       type: 'bar',
-      backgroundColor: '#0C101B', // Matching background from reference
+      height: "525px",
+      backgroundColor: '#0C101B', 
     },
     title: {
       text: 'Issuer Exposure',
@@ -59,7 +64,6 @@ function getChartOptions() {
     },
     yAxis: {
       title: {
-        text: 'Percentage (%)',
         style: {
           color: '#888'
         }

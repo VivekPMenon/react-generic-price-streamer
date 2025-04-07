@@ -19,8 +19,8 @@ export const AssetAllocationChart = ({ data = [] }) => {
       chart: {
         type: 'pie',
         backgroundColor: '#0C101B', // Matching background from reference
-        height: '280px',
-        spacing: [10, 0, 30, 0] // Add space at bottom for legend
+        spacing: [10, 0, 30, 0], // Add space at bottom for legend
+        height:"215px"
       },
       title: {
         text: 'Asset Class Allocation',

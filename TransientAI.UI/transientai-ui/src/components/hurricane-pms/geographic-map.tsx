@@ -22,7 +22,8 @@ const staticData: [string, number][] = [
 const options: Highcharts.Options = {
   chart: {
     map: mapDataWorld as any,
-    backgroundColor: '#0f172a', // Tailwind slate-900
+     height:"250px",
+     backgroundColor: '#0C101B'
   },
   title: {
     text: 'Static World Map - Sample Data',

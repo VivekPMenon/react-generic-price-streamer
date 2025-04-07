@@ -16,6 +16,9 @@ import {
   top_losers,
 } from "./pms_mock_data";
 import { IManager } from "./model";
+import AssetAllocationChart from "./pms-charts";
+import WorldMapChart from "./geographic-map";
+import BarChart from "./issue-explorer-chart";
 
 export const HurricanePms = () => {
     const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -37,7 +40,7 @@ export const HurricanePms = () => {
 
   return (
     <div className={`${styles["hurricane-pms"]} scrollable-div gap-4`}>
-      <section className="flex h-[600px] gap-4 flex-1">
+      <section className="flex h-[600px] gap-4">
         <div className="w-[80%] flex gap-8">
 
           <section className="w-[60%]">
@@ -110,8 +113,14 @@ export const HurricanePms = () => {
         </div>
 
         <div className="">
-          <section>charts</section>
-          <section>charts</section>
+          <div className="rounded-md p-2 h-[250px] w-[350px]">
+            <h4 className="text-white text-center mb-2">Asset Allocation</h4>
+            <AssetAllocationChart />
+          </div>
+          <div className="rounded-md p-2 h-[250px]  w-[350px]">
+            <h4 className="text-white text-center mb-2">Geographic Exposure map</h4>
+            <WorldMapChart />
+          </div>
         </div>
       </section>
 
@@ -129,7 +138,11 @@ export const HurricanePms = () => {
             loading={isLoading}
             />
         </div>
-        <div>charts</div>
+
+        <div className="rounded-md p-2 h-[500px] w-[350px]">
+          <h4 className="text-white text-center mb-2">Manager Exposure</h4>
+          <BarChart />
+        </div>
       </section>
     </div>
   );
