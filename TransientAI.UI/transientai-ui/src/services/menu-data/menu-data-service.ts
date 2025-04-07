@@ -75,6 +75,13 @@ const menuInfoList: MenuInfo[] = [
     icon: 'fa-solid fa-briefcase',
     route: '/dashboard/pms-pnl',
   },
+  {
+    id: 'hurricane-pms',
+    description: 'Hurricane PMS',
+    badgeCount: 1,
+    icon: 'fa-solid fa-briefcase',
+    route: '/dashboard/hurricane-pms',
+  },
   // {
   //   description: 'Term Sheets',
   //   displayName: 'Term Sheets',
