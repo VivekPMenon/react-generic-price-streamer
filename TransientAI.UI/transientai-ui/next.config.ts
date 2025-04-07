@@ -15,14 +15,14 @@ const nextConfig: NextConfig = {
     return Promise.resolve([
       {
         source: '/',
-        destination: '/dashboard-generic',
+        destination: '/dashboard',
         permanent: true, // Set to false if temporary
       },
-      // {
-      //   source: '/dashboard',
-      //   destination: '/dashboard/macro-panel',
-      //   permanent: true, // Set to false if temporary
-      // },
+      {
+        source: '/dashboard',
+        destination: '/dashboard/macro-panel',
+        permanent: true, // Set to false if temporary
+      },
     ]);
   }
 };

@@ -8,10 +8,7 @@ class ProductBrowserDataService {
       page: 1,
       page_size: 500
     });
-    const data = result.bonds_data;
-    const random = Math.floor(Math.random() * data.length);
-    data[random].is_golden = true;
-    return data;
+    return result.bonds_data;
   }
 
   async getTopRecommendations(): Promise<string[]> {
