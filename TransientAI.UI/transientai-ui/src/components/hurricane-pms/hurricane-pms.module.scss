@@ -1,0 +1,10 @@
+@import '../../assets/variables.scss';
+
+.hurricane-pms {
+    height: calc(100vh - 125px);
+}
+
+.header {
+    color: $yellow;
+    font-weight: bold;
+}
