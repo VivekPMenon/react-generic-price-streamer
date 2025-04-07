@@ -181,7 +181,7 @@ function MacroPanelTabs() {
                                 ))}
                             </Tabs.Root>
                         )}
-                    <hr className={styles['divider']} />
+                    <hr className={styles['div  ider']} />
                 </div>
             </div>
             <Dialog.Root open={open} onOpenChange={handleOpenChange}>

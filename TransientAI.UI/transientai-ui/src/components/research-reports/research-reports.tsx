@@ -1,16 +1,15 @@
-// src/components/research-reports/research-reports.tsx
-'use client'; // Mark this as a client-side component
+'use client';
+
 import React, { useEffect, useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next'; // Import useTranslation hook
+import { useTranslation } from 'react-i18next';
 import styles from './research-reports.module.scss';
 import Segmented from 'rc-segmented';
 import { SearchableMarkdown } from '@/components/markdown';
 import {
   ReportSummary,
-  ReportType,
   ResearchReport,
   researchReportsDataService,
-  useResearchReportsStore
+  useResearchReportsStore,
 } from '@/services/reports-data';
 import EmailViewer from '../email-parser/email-viewer';
 import Tags from "@/components/tags/tags";
@@ -22,8 +21,22 @@ export interface ResearchReportsProps {
   isExpanded?: boolean;
 }
 
+// ✅ Enum with stable keys
+export enum ReportType {
+  Abstract = 'abstract',
+  ExecutiveSummary = 'executive_summary',
+  Detailed = 'detailed',
+}
+
+// ✅ Labels map for translation
+export const ReportTypeLabels = {
+  [ReportType.Abstract]: 'full_view',
+  [ReportType.ExecutiveSummary]: 'executive_summary',
+  [ReportType.Detailed]: 'detailed',
+};
+
 export function ResearchReports({ isExpanded }: ResearchReportsProps) {
-  const { t } = useTranslation(); // Initialize translation function
+  const { t } = useTranslation();
   const { scrollTargetRef } = useScrollTo<HTMLDivElement>();
   const { scrollToElementId } = useScrollToElementId();
   const { isLoading, reports, selectedReport, setSelectedReport } = useResearchReportsStore();
@@ -36,22 +49,18 @@ export function ResearchReports({ isExpanded }: ResearchReportsProps) {
   const [emailContent, setEmailContent] = useState<string>('');
   const [executiveSummary, setExecutiveSummary] = useState<ReportSummary | null>(null);
   const [detailedSummary, setDetailedSummary] = useState<ReportSummary | null>(null);
-  const [summaryType, setSummaryType] = useState<ReportType.ExecutiveSummary | ReportType.Abstract>(ReportType.ExecutiveSummary);
+  const [summaryType, setSummaryType] = useState<ReportType>(ReportType.ExecutiveSummary);
 
   const visibleReports = useMemo<ResearchReport[]>(() => {
-    if (searchedReports?.length) {
-      return searchedReports;
-    }
-
-    return reports;
+    return searchedReports?.length ? searchedReports : reports;
   }, [searchedReports, reports]);
 
-  useEffect(() => { onReportSelection(selectedReport!) }, [selectedReport]);
+  useEffect(() => {
+    if (selectedReport) onReportSelection(selectedReport);
+  }, [selectedReport]);
 
   async function onReportSelection(report: ResearchReport) {
-    if (!report?.id) {
-      return;
-    }
+    if (!report?.id) return;
 
     setIsSummaryVisible(true);
     setSelectedReport(report);
@@ -63,24 +72,21 @@ export function ResearchReports({ isExpanded }: ResearchReportsProps) {
       const emailContent = await researchReportsDataService.getEmailContentAsHtml(report.id!);
       setEmailContent(emailContent);
 
-      const [aiSummary1, aiSummary2] = await Promise.all([ 
+      const [aiSummary1, aiSummary2] = await Promise.all([
         researchReportsDataService.getAiSummary(report.id!, ReportType.ExecutiveSummary),
         researchReportsDataService.getAiSummary(report.id!, ReportType.Detailed)
       ]);
 
       setExecutiveSummary(aiSummary1);
       setDetailedSummary(aiSummary2);
-
     } catch (error) {
       console.error("Error fetching report data:", error);
     }
   }
 
-  async function searchReports(event: any) {
-    const inputValue = event.target.value;
-    if (event.key !== "Enter") {
-      return;
-    }
+  async function searchReports(event: React.KeyboardEvent<HTMLInputElement>) {
+    const inputValue = event.currentTarget.value;
+    if (event.key !== "Enter") return;
 
     if (inputValue === '') {
       setSearchedReports([]);
@@ -89,7 +95,6 @@ export function ResearchReports({ isExpanded }: ResearchReportsProps) {
 
     setIsSearchResultsLoading(true);
     const searchedReports = await researchReportsDataService.searchReports(inputValue);
-
     setIsSearchResultsLoading(false);
     setSearchedReports(searchedReports);
   }
@@ -113,7 +118,7 @@ export function ResearchReports({ isExpanded }: ResearchReportsProps) {
               autoComplete='on'
               value={searchQuery}
               onChange={event => setSearchQuery(event.target.value)}
-              onKeyDown={event => searchReports(event)}
+              onKeyDown={searchReports}
             />
             {searchQuery ? 
               <i className='fa-solid fa-remove' onClick={() => { setSearchQuery(''); setSearchedReports([]); }}></i> : 
@@ -124,32 +129,37 @@ export function ResearchReports({ isExpanded }: ResearchReportsProps) {
           <Segmented
             className={styles['format-type']}
             value={summaryType}
-            options={[ReportType.ExecutiveSummary, ReportType.Abstract]}
-            onChange={(value: any) => { setSummaryType(value) }}
+            options={[
+              { label: t(ReportTypeLabels[ReportType.ExecutiveSummary]), value: ReportType.ExecutiveSummary },
+              { label: t(ReportTypeLabels[ReportType.Abstract]), value: ReportType.Abstract }
+            ]}
+            onChange={(value: ReportType) => setSummaryType(value)}
           />
         </div>
 
         <div className={`${styles['reports']} news scrollable-div`}>
           {isLoading || isSearchResultsLoading ? 
-            <Spinner size="3" className='self-center'></Spinner>
-            :
+            <Spinner size="3" className='self-center' /> :
             <>
-              {visibleReports.map(report => 
-                <div key={report.id} id={report.id} 
-                     className={report.name === selectedReport?.name ? 'news-item active' : 'news-item'} 
-                     onClick={() => setSelectedReport(report)}>
+              {visibleReports.map(report => (
+                <div
+                  key={report.id}
+                  id={report.id}
+                  className={report.name === selectedReport?.name ? 'news-item active' : 'news-item'}
+                  onClick={() => setSelectedReport(report)}
+                >
                   <div className='news-content'>
                     <div className='news-title'>
                       <i className='fa-regular fa-file-lines'></i>
                       {report.name}
                     </div>
-                    {report.concise_summary && 
+                    {report.concise_summary &&
                       <div className='news-description'>
                         <div>{report.concise_summary}</div>
                       </div>}
                   </div>
                 </div>
-              )}
+              ))}
             </>
           }
         </div>
@@ -161,32 +171,28 @@ export function ResearchReports({ isExpanded }: ResearchReportsProps) {
             <div className={styles['summary-title']}>
               {t('original_email')}
             </div>
-
-            <div>
-              <EmailViewer className='height-vh-67' emailHtml={emailContent} />
-            </div>
+            <EmailViewer className='height-vh-67' emailHtml={emailContent} />
           </div>
 
           <div className={`${styles['ai-summary']} ${isExpanded ? styles['expanded'] : ''}`}>
             <div className={styles['summary-title']}>
-              {summaryType === ReportType.ExecutiveSummary ? t('executive_summary') : t('abstract')}
+              {t(ReportTypeLabels[summaryType])}
             </div>
 
-            <div className={`height-vh-67 justify-center scrollable-div`} ref={scrollTargetRef}>
+            <div className='height-vh-67 justify-center scrollable-div' ref={scrollTargetRef}>
               <div>
-                {finalAiContent 
-                  ? <SearchableMarkdown markdownContent={finalAiContent.content} /> 
-                  : <Spinner size="3" className='self-center'></Spinner>}
+                {finalAiContent
+                  ? <SearchableMarkdown markdownContent={finalAiContent.content} />
+                  : <Spinner size="3" className='self-center' />}
               </div>
 
-              {finalAiContent?.images &&
-                <ImageContainer images={finalAiContent.images} />}
-              
-              {selectedReport?.keywords && 
-                <Tags header={t('keywords')} tags={selectedReport.keywords} />}
+              {finalAiContent?.images && <ImageContainer images={finalAiContent.images} />}
+
+              {selectedReport?.keywords && <Tags header={t('keywords')} tags={selectedReport.keywords} />}
             </div>
           </div>
-        </>}
+        </>
+      }
     </div>
   );
 }
