@@ -307,6 +307,11 @@
   resolved "https://registry.npmjs.org/@floating-ui/utils/-/utils-0.2.9.tgz"
   integrity sha512-MDWhGtE+eHw5JW7lq4qhc5yRLS11ERl1c7Z6Xd0a58DozHES6EnNNwUWbMiG4J9Cgj053Bhk8zvlhFYKVhULwg==
 
+"@highcharts/map-collection@^2.3.0":
+  version "2.3.0"
+  resolved "https://registry.npmjs.org/@highcharts/map-collection/-/map-collection-2.3.0.tgz"
+  integrity sha512-lknEzFw9u8BA+8J7Y1cDP0N0FxZKSJgKwTn+e8vHsBH1Xj5RYNmPJeac/3Tse0JDgKfsCT43ZHG95W9xZbSTWw==
+
 "@humanfs/core@^0.19.1":
   version "0.19.1"
   resolved "https://registry.npmjs.org/@humanfs/core/-/core-0.19.1.tgz"

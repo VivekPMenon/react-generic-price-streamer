@@ -19,6 +19,8 @@ import {useDeviceType} from "@/lib/hooks";
 // dynamic loading to address build issue when importing highcharts
 const PriceGraph = dynamic(() => import("@/components/market-data").then(module => module.PriceGraph), { ssr: false, });
 
+const MODE: Mode = Mode.SELL;
+
 export default function DashboardLayout({
   children,
 }: Readonly<{
@@ -77,14 +79,14 @@ export default function DashboardLayout({
             {
               !expandedPanels.includes('notifications') ?
                   <Explorer
-                      mode={Mode.SELL}
+                      mode={MODE}
                       onExpandCollapse={isExpanded => onExpandCollapse('explorer', isExpanded)} /> : <></>
             }
             {
               !expandedPanels.includes('explorer') ?
                   <Notifications
                       onExpandCollapse={isExpanded => onExpandCollapse('notifications', isExpanded)}
-                      mode={Mode.SELL} /> : <></>
+                      mode={MODE} /> : <></>
             }
           </div>
 

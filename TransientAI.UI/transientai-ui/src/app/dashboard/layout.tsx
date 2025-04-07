@@ -15,6 +15,8 @@ import {ContentCarousel} from '@/components/content-carousel/content-carousel';
 import {EContentTypes} from '@/components/content-carousel/model';
 import {Mode} from "@/services/menu-data";
 
+const MODE: Mode = Mode.BUY;
+
 export default function DashboardLayout({
   children,
 }: Readonly<{
@@ -73,16 +75,19 @@ export default function DashboardLayout({
                 {
                   !expandedPanels.includes('notifications') ?
                     <Explorer
-                      mode={Mode.BUY}
+                      mode={MODE}
                       onExpandCollapse={isExpanded => onExpandCollapse('explorer', isExpanded)}
                       onNavigate={() => setIsMenuVisible(false)}>
                     </Explorer> : <></>
                 }
                 {
-                  !expandedPanels.includes('explorer') ?
-                    <Notifications onExpandCollapse={isExpanded => onExpandCollapse('notifications', isExpanded)}
-                      notificationClicked={() => setIsMenuVisible(false)}>
-                    </Notifications> : <></>
+                  !expandedPanels.includes('explorer')
+                      ? <Notifications
+                          onExpandCollapse={isExpanded => onExpandCollapse('notifications', isExpanded)}
+                          notificationClicked={() => setIsMenuVisible(false)}
+                          mode={MODE}
+                        />
+                      : <></>
                 }
               </div>
 

@@ -166,7 +166,7 @@ export function Notifications(props: NotificationsProps) {
   });
 
   // todo ... we will be fetching the entire notification types from an API instead of UI individually calling each categories and stitching
-  useEffect(() => loadNotifications(), [
+  useEffect(() => loadNotifications(props.mode), [
     researchReports,
     riskReports,
     inquiries,
