@@ -1,5 +1,6 @@
 import type { NextConfig } from "next";
 
+/** @type {import('next').NextConfig} */
 const nextConfig: NextConfig = {
   experimental: {
     serverActions: {}
@@ -10,18 +11,33 @@ const nextConfig: NextConfig = {
   },
   distDir: "build",
   output: "standalone",
+
+  webpack: (config, { isServer }) => {
+    // Ignore .node files (like canvas.node)
+    config.module.rules.push({
+      test: /\.node$/,
+      use: 'ignore-loader',
+    });
+
+    // Prevent bundling native canvas on server
+    if (isServer) {
+      config.externals.push({ canvas: 'commonjs canvas' });
+    }
+
+    return config;
+  },
+
   async redirects() {
-    
-    return Promise.resolve([
+    return [
       {
         source: '/',
         destination: '/dashboard',
-        permanent: true, // Set to false if temporary
+        permanent: true,
       },
       {
         source: '/dashboard',
         destination: '/dashboard/macro-panel',
-        permanent: true, // Set to false if temporary
+        permanent: true,
       },
       // {
       //   source: '/sell',
