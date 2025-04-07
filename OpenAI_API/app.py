@@ -24,10 +24,10 @@ def execute_openai_api(command):
     company_info=True,
     company_news=True
   )
-
+  
   finance_agent = Agent(
     name="Breaking News Agent",
-    model=OpenAIChat(id="gpt-4o-mini", api_key=OPENAI_API_KEY),
+    model=OpenAIChat(id="gpt-4o", api_key=OPENAI_API_KEY),
     tools=[yfinance_tools],
     instructions=["do not include any images and always try to summarize"],
     # show_tool_calls=True,
