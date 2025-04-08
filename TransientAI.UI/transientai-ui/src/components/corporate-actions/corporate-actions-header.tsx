@@ -5,7 +5,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import Toggle from 'react-toggle';
 import { RoleType, useUserContextStore } from '@/services/user-context';
 import { FilterDropDown } from './filter-dropdown';
-import { useCorpActionsStore } from '@/services/corporate-actions';
+import { useCorpActionsStore, CorporateAction } from '@/services/corporate-actions';
 
 interface FilterActions {
     actionType: boolean;
@@ -35,6 +35,7 @@ export const CorporateActionHeader = () => {
       corpActions,
       filterActions,
       sortByAction,
+      loadedCorpActions,
       searchCorpActions,
       reset,
       setFilterActions,
@@ -61,7 +62,9 @@ export const CorporateActionHeader = () => {
         const corpActionId = new Set<string>();
         const isinSet = new Set<string>();
 
-        corpActions.forEach((item) => {
+        const actionsToFilter: CorporateAction[] = userContext.role == RoleType.PM ? loadedCorpActions : corpActions;
+
+        actionsToFilter.forEach((item) => {
             if (item.eventType) eventTypeSet.add(item.eventType);
             if (item.eventStatus) eventStatusSet.add(item.eventStatus);
             if (item.eventId) corpActionId.add(item.eventId);
@@ -83,7 +86,7 @@ export const CorporateActionHeader = () => {
             securityOptions: Array.from(securitySet).map((value) => ({ label: value, value })),
             isinOptions: Array.from(isinSet).map((value) => ({ label: value, value }))
         }
-    }, [corpActions])
+    }, [corpActions, loadedCorpActions, userContext.role])
 
     const filterConfig: FilterConfigItem[] = [
         {
@@ -164,6 +167,7 @@ export const CorporateActionHeader = () => {
       const handleReset = () => {
         reset();
         setDateRange([null, null]);
+        setSearchQuery('');
       };
 
     return(
@@ -209,7 +213,7 @@ export const CorporateActionHeader = () => {
             </section>
 
             {/* Show only for OPS view filter */}
-           {!(userContext.role == RoleType.PM) && <section>
+           <section>
                 <div className={`${styles['corporate-filter-cont']} mb-3 grid lg:grid-cols-8 md:grid-cols-2 gap-4`}>
                     {filterConfig.map((filter) => (
                     <div key={filter.key} className={`${styles['search-filter-input']} `}>
@@ -251,7 +255,7 @@ export const CorporateActionHeader = () => {
                     ))}
                 </div>
             </section>
-            }
+
         </div>
     )
 }
