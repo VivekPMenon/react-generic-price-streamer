@@ -302,9 +302,9 @@ export const HurricanePms = () => {
                     rowData={topLosers}
                     gridOptions={{
                       ...defaultGridOptions,
-                      getRowId: (params) => {
-                        return `loss-${params.data.portfolio_manager}-${params.data.security}`;
-                      }
+                      // getRowId: (params) => {
+                      //   return `loss-${params.data.portfolio_manager}-${params.data.security}`;
+                      // }
                     }}
                     loading={isLoading}
                 />
