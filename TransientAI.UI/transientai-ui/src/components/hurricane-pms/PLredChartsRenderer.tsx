@@ -38,7 +38,7 @@ const PLHighchartsRenderer = (props: ICellRendererParams) => {
           title: { text: null },
           labels: { enabled: false },
           gridLineWidth: 0,
-          min: 0
+          min: -0,
         },
         plotOptions: {
           bar: {
