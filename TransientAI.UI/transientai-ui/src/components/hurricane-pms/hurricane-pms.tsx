@@ -41,11 +41,11 @@ const topLossOption = [
 export const HurricanePms = () => {
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [managerId, setManagerId] = useState<string>('all');
-    const [managerDetails, setManagerDetails] = useState<any>(null);
+    const [managerDetails, setManagerDetails] = useState<any[]>([]);
     const [selectedProfit, setSelectedProfit] = useState<string>('10');
     const [selectedLoss, setSelectedLoss] = useState<string>('10');
-    const [topGainers, setTopGainers] = useState<any[] | null>(null);
-    const [topLosers, setTopLosers] = useState<any[] | null>(null);
+    const [topGainers, setTopGainers] = useState<any[]>([]);
+    const [topLosers, setTopLosers] = useState<any[]>([]);
     const managerDetailsRef = useRef<HTMLDivElement>(null);
     const deviceType = useDeviceType();
     const isMobile = deviceType !== 'desktop';
@@ -56,39 +56,94 @@ export const HurricanePms = () => {
         managerDetailsRef.current?.scrollIntoView({ behavior: "smooth" });
     };
 
-    const getTopRecords = <T extends Record<string, any>>(
+    const getRecords = (
       data: any[],
       count: number,
-      key: string
+      key: string,
+      ascending: boolean = false
     ): any[] => {
+      if (!data || !Array.isArray(data) || data.length === 0) {
+        return [];
+      }
+      
       return data
         .slice()
-        .sort((a, b) => (b[key] as number) - (a[key] as number))
+        .sort((a, b) => {
+          const valueA = a[key] as number;
+          const valueB = b[key] as number;
+          
+          if (ascending) {
+            return valueA - valueB;  
+          } else {
+            return valueB - valueA; 
+          }
+        })
         .slice(0, count);
     };
+    
     
     useEffect(() => {
       setIsLoading(true);
       
-      if (managerId === 'all') {
-        const allDetails = Object.values(manager_detail)
-          .flat(); 
-        setManagerDetails(allDetails);
-      } else {
-        console.log(managerId)
-        setManagerDetails(manager_detail[managerId as keyof typeof manager_detail] || []);
+      try {
+        if (managerId === 'all') {
+          const allDetails = Object.values(manager_detail).flat();
+          setManagerDetails(allDetails);
+        } else {
+          // For a specific manager, get details directly from the object using the manager ID
+          const managerData = manager_detail[managerId as keyof typeof manager_detail];
+          
+          if (Array.isArray(managerData) && managerData.length > 0) {
+            setManagerDetails(managerData);
+          } else {
+            // If no data found for this manager ID, set empty array
+            console.warn(`No details found for manager ID: ${managerId}`);
+            setManagerDetails([]);
+          }
+        }
+      } catch (error) {
+        console.error("Error loading manager details:", error);
+        setManagerDetails([]);
+      } finally {
+        setIsLoading(false);
       }
-    
-      setIsLoading(false);
     }, [managerId]);
 
     useEffect(() => {
-      const newTopGainers = getTopRecords(top_gainers['1'], parseInt(selectedProfit), 'pl');
-      const newTopLoser = getTopRecords(top_gainers['1'], parseInt(selectedLoss), 'pl');
-      console.log(newTopGainers)
-      setTopGainers(newTopGainers);
-      setTopLosers(newTopLoser);
-    }, [])
+      setIsLoading(true);
+      
+      try {
+        // Get all manager data
+        const allGainersData = Object.values(top_gainers).flat();
+        
+        // Find the selected manager's name based on ID
+        const selectedManager = managers.find(m => m.id.toString() === managerId);
+        const managerName = selectedManager?.name || '';
+        
+        // Filter data based on manager name if a specific manager is selected
+        let filteredData = allGainersData;
+        if (managerId !== 'all' && managerName) {
+          filteredData = allGainersData.filter(item => 
+            item.portfolio_manager === managerName
+          );
+        }
+        
+        // Get top gainers (highest pl values)
+        const newTopGainers = getRecords(filteredData, parseInt(selectedProfit), 'pl', false);
+        
+        // Get top losers (lowest pl values)
+        const newTopLosers = getRecords(filteredData, parseInt(selectedLoss), 'pl', true);
+        
+        setTopGainers(newTopGainers);
+        setTopLosers(newTopLosers);
+      } catch (error) {
+        console.error("Error processing top gainers/losers:", error);
+        setTopGainers([]);
+        setTopLosers([]);
+      } finally {
+        setIsLoading(false);
+      }
+    }, [managerId, selectedProfit, selectedLoss]);
 
     const handleManagerChange = (selectedOption: { value: string; label: string } | null) => {
       if (selectedOption) {
@@ -100,16 +155,12 @@ export const HurricanePms = () => {
     const handleProfitChange = (selectedOption: { value: string; label: string } | null) => {
       if (selectedOption) {
         setSelectedProfit(selectedOption.value);
-        const newTopGainers = getTopRecords(top_gainers['1'], parseInt(selectedOption.value), 'pl');
-        setTopGainers(newTopGainers);
       }
     };
   
     const handleLossChange = (selectedOption: { value: string; label: string } | null) => {
       if (selectedOption) {
         setSelectedLoss(selectedOption.value);
-        const newTopLoser = getTopRecords(top_gainers['1'], parseInt(selectedOption.value), 'pl');
-        setTopLosers(newTopLoser);
       }
     };
 
@@ -166,8 +217,8 @@ export const HurricanePms = () => {
                         return styles["pinned-top-row"];
                     }
                     return '';
-                }
-              }}
+                  }
+                }}
                 loading={isLoading}
             />
           </section>
@@ -191,11 +242,13 @@ export const HurricanePms = () => {
                     suppressFloatingFilter={true}
                     columnDefs={profitColDefs}
                     rowData={topGainers}
-                    gridOptions={defaultGridOptions}
-                    loading={isLoading}
-                    getRowId={(params) => {
-                        return `${params.data.portfolio_manager}-${params.data.security}`;
+                    gridOptions={{
+                      ...defaultGridOptions,
+                      getRowId: (params) => {
+                        return `gain-${params.data.portfolio_manager}-${params.data.security}`;
+                      }
                     }}
+                    loading={isLoading}
                 />
             </div>
             <div className="h-[45%] mt-10">
@@ -217,11 +270,13 @@ export const HurricanePms = () => {
                     suppressFloatingFilter={true}
                     columnDefs={lossColDefs}
                     rowData={topLosers}
-                    gridOptions={defaultGridOptions}
+                    gridOptions={{
+                      ...defaultGridOptions,
+                      getRowId: (params) => {
+                        return `loss-${params.data.portfolio_manager}-${params.data.security}`;
+                      }
+                    }}
                     loading={isLoading}
-                    getRowId={(params) => {
-                      return `${params.data.portfolio_manager}-${params.data.security}`;
-                  }}
                 />
             </div>
           </section>
@@ -251,7 +306,12 @@ export const HurricanePms = () => {
             suppressFloatingFilter={false}
             columnDefs={managerDetailsColDefs}
             rowData={managerDetails}
-            gridOptions={defaultGridOptions}
+            gridOptions={{
+              ...defaultGridOptions,
+              getRowId: (params) => {
+                return `detail-${params.data.id || params.data.security || params.data.ticker || params.node.rowIndex}`;
+              }
+            }}
             loading={isLoading}
             />
         </div>
