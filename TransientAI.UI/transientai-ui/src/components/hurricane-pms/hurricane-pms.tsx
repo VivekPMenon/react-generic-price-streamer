@@ -13,17 +13,39 @@ import {
   managers,
   manager_detail,
   top_gainers,
-  top_losers,
 } from "./pms_mock_data";
 import { IManager } from "./model";
 import AssetAllocationChart from "./pms-charts";
 import WorldMapChart from "./geographic-map";
 import BarChart from "./issue-explorer-chart";
+import { TaDropDown } from '../shared'
+
+const PortfolioSelectOptions = [
+  { value: 'all', label: 'All' },
+  ...managers.map((m) => ({
+    value: m.id?.toString() ?? '',
+    label: m.name ?? '',
+  }))
+];
+
+const topProfitOption = [
+  { value: '10', label: '10' },
+  { value: '5', label: '5' },
+];
+
+const topLossOption = [
+  { value: '10', label: '10' },
+  { value: '5', label: '5' },
+];
 
 export const HurricanePms = () => {
     const [isLoading, setIsLoading] = useState<boolean>(false);
-    const [managerId, setManagerId] = useState<string>('1');
+    const [managerId, setManagerId] = useState<string>('all');
     const [managerDetails, setManagerDetails] = useState<any>(null);
+    const [selectedProfit, setSelectedProfit] = useState<string>('10');
+    const [selectedLoss, setSelectedLoss] = useState<string>('10');
+    const [topGainers, setTopGainers] = useState<any[] | null>(null);
+    const [topLosers, setTopLosers] = useState<any[] | null>(null);
     const managerDetailsRef = useRef<HTMLDivElement>(null);
     const deviceType = useDeviceType();
     const isMobile = deviceType !== 'desktop';
@@ -34,9 +56,62 @@ export const HurricanePms = () => {
         managerDetailsRef.current?.scrollIntoView({ behavior: "smooth" });
     };
 
+    const getTopRecords = <T extends Record<string, any>>(
+      data: any[],
+      count: number,
+      key: string
+    ): any[] => {
+      return data
+        .slice()
+        .sort((a, b) => (b[key] as number) - (a[key] as number))
+        .slice(0, count);
+    };
+    
     useEffect(() => {
-      setManagerDetails(manager_detail[managerId as keyof typeof manager_detail] || []);
+      setIsLoading(true);
+      
+      if (managerId === 'all') {
+        const allDetails = Object.values(manager_detail)
+          .flat(); 
+        setManagerDetails(allDetails);
+      } else {
+        console.log(managerId)
+        setManagerDetails(manager_detail[managerId as keyof typeof manager_detail] || []);
+      }
+    
+      setIsLoading(false);
     }, [managerId]);
+
+    useEffect(() => {
+      const newTopGainers = getTopRecords(top_gainers['1'], parseInt(selectedProfit), 'pl');
+      const newTopLoser = getTopRecords(top_gainers['1'], parseInt(selectedLoss), 'pl');
+      console.log(newTopGainers)
+      setTopGainers(newTopGainers);
+      setTopLosers(newTopLoser);
+    }, [])
+
+    const handleManagerChange = (selectedOption: { value: string; label: string } | null) => {
+      if (selectedOption) {
+        setManagerId(selectedOption.value);
+        managerDetailsRef.current?.scrollIntoView({ behavior: "smooth" });
+      }
+    };
+
+    const handleProfitChange = (selectedOption: { value: string; label: string } | null) => {
+      if (selectedOption) {
+        setSelectedProfit(selectedOption.value);
+        const newTopGainers = getTopRecords(top_gainers['1'], parseInt(selectedOption.value), 'pl');
+        setTopGainers(newTopGainers);
+      }
+    };
+  
+    const handleLossChange = (selectedOption: { value: string; label: string } | null) => {
+      if (selectedOption) {
+        setSelectedLoss(selectedOption.value);
+        const newTopLoser = getTopRecords(top_gainers['1'], parseInt(selectedOption.value), 'pl');
+        setTopLosers(newTopLoser);
+      }
+    };
 
   return (
     <div className={`${styles["hurricane-pms"]} scrollable-div gap-4`}>
@@ -44,6 +119,16 @@ export const HurricanePms = () => {
         <div className="w-[80%] flex gap-8">
 
           <section className="w-[60%]">
+            <div className="inline-block min-w-44">
+              <TaDropDown  
+                options={PortfolioSelectOptions}
+                value={PortfolioSelectOptions.find((m) => m.value === managerId) || null}
+                onChange={handleManagerChange}
+                isSearchable={true}
+                prefix="Portfolio"
+              />
+            </div>
+
             <DataGrid 
                 className="hurrican-grid"
                 domLayout={'normal'}
@@ -87,7 +172,16 @@ export const HurricanePms = () => {
             />
           </section>
           <section className="w-[40%]">
-            <div className="h-1/2">
+            <div className="h-[45%]">
+                <div className="inline-block min-w-10">
+                    <TaDropDown
+                    options={topProfitOption}
+                    value={topProfitOption.find(p => p.value === selectedProfit) || null}
+                    onChange={handleProfitChange}
+                    isSearchable={false}
+                    prefix="Top"
+                  />
+                </div>
                 <DataGrid 
                     className="hurrican-grid"
                     domLayout={'normal'}
@@ -96,7 +190,7 @@ export const HurricanePms = () => {
                     suppressStatusBar={true}
                     suppressFloatingFilter={true}
                     columnDefs={profitColDefs}
-                    rowData={top_gainers}
+                    rowData={topGainers}
                     gridOptions={defaultGridOptions}
                     loading={isLoading}
                     getRowId={(params) => {
@@ -104,7 +198,16 @@ export const HurricanePms = () => {
                     }}
                 />
             </div>
-            <div className="h-1/2">
+            <div className="h-[45%] mt-10">
+                <div className="inline-block min-w-10">
+                  <TaDropDown
+                    options={topLossOption}
+                    value={topLossOption.find(l => l.value === selectedLoss) || null}
+                    onChange={handleLossChange}
+                    isSearchable={false}
+                    prefix="Top"
+                  />
+                </div>
                 <DataGrid 
                     className="hurrican-grid"
                     domLayout={'normal'}
@@ -113,7 +216,7 @@ export const HurricanePms = () => {
                     suppressStatusBar={true}
                     suppressFloatingFilter={true}
                     columnDefs={lossColDefs}
-                    rowData={top_losers}
+                    rowData={topLosers}
                     gridOptions={defaultGridOptions}
                     loading={isLoading}
                     getRowId={(params) => {

@@ -69,7 +69,7 @@ export const columnDefs: ColDef[] = [
 
 export const managerDetailsColDefs: ColDef[] = [
     {
-        field: 'name',
+        field: 'manager_name',
         headerName: 'Manager',
         headerClass: `${styles['table-header']} ag-right-aligned-header`,
         width: 85,
@@ -83,7 +83,7 @@ export const managerDetailsColDefs: ColDef[] = [
         aggFunc: 'sum'
     },
     {
-        field: 'order_side_1',
+        field: 'order_side',
         headerName: 'Order Side',
         headerClass: `${styles['table-header']} ag-right-aligned-header`,
         cellStyle: params => params.value !== "Buy" ? { color: '#ff4d4f' } : { color: '#52c41a' },
@@ -174,7 +174,6 @@ export const profitColDefs: ColDef[] = [
         headerName: 'Profolio Manager',
         headerClass: `${styles['table-header']} ag-right-aligned-header`,
         width: 85,
-        aggFunc: 'sum'
     },
     {
         field: 'security',
