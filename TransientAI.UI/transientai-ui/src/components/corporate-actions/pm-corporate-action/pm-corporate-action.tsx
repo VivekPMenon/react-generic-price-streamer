@@ -4,19 +4,27 @@ import { Accordion } from '@/components/accordion/accordion';
 import { PmList } from './pm-list';
 import { CorporateAction, useCorpActionsStore } from '@/services/corporate-actions';
 import { useEffect } from 'react';
+import { useFilterPmCorporateActions } from './use-filter-pm-corp-action';
 
 type CorporateActionKey = 'Action Required' | 'No Action Required' | 'Expired';
 
 export function PmCorporateActions() {
-  const { sortByAction, pmCorpActions, loadPmCorpActions} = useCorpActionsStore();
- 
-  const getCorporateActions = (key: CorporateActionKey): CorporateAction[] =>
-    (pmCorpActions[key] as CorporateAction[]) || [];
+  const { 
+    sortByAction, 
+    pmCorpActions, 
+    filterActions,
+    loadPmCorpActions 
+  } = useCorpActionsStore();
   
   useEffect(() => {
     loadPmCorpActions();
   }, []);
   
+  const sortedData = useFilterPmCorporateActions(pmCorpActions, filterActions, sortByAction);
+
+  const getCorporateActions = (key: CorporateActionKey): CorporateAction[] =>
+    (sortedData[key] as CorporateAction[]) || [];
+
   const items = [
     {
       value: '1',
@@ -44,11 +52,7 @@ export function PmCorporateActions() {
         <Accordion type="multiple" items={items} />
       ) : (
         <PmList
-          data={[
-            ...(pmCorpActions['Action Required'] || []),
-            ...(pmCorpActions['No Action Required'] || []),
-            ...(pmCorpActions['Expired'] || []),
-          ] as CorporateAction[]}
+          data={getCorporateActions('Action Required')}
         />
       )}
     </>

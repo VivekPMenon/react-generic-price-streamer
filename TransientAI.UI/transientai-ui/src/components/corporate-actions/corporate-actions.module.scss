@@ -13,6 +13,11 @@
   @media screen and (max-width: $mobile-breakpoint-max) {
     flex-direction: column;
     width: 91vw;
+
+    & > div {
+      flex: 1 1 100%;
+      width: 100%;
+    }
   }
 }
 

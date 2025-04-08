@@ -167,3 +167,14 @@ export interface CorporateActionFilterOptions {
   pageNumber?: number;
   pageSize?: number;
 }
+
+export interface IFilterActions {
+  actionType?: string | null;
+  securityTicker?: string | null;
+  securityidentifier?: string | null;
+  dateRange?: string | null;
+  corpActionId?: string | null;
+  eventStatus?: string | null;
+  account?: string | null;
+  eventType?: string | null;
+};

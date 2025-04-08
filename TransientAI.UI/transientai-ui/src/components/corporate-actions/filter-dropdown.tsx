@@ -72,7 +72,8 @@ const customStyles = {
     }),
     valueContainer: (provided: any) => ({
         ...provided,
-        padding: '0px 4px', 
+        padding: '0px 4px',
+        height: '25px', 
     }),
     clearIndicator: (provided: any) => ({
       ...provided,
