@@ -4,6 +4,7 @@ import { endpointFinder } from "./endpoint-finder-service";
 import { useUserContextStore } from '../user-context/user-context-store'
 import msalInstance from "@/app/msal-config";
 
+
 class WebApihandler {
   private readonly bankId = 123;
   private readonly viewId = 101;
@@ -57,29 +58,33 @@ class WebApihandler {
                 scopes: [currentEnv.authInfo?.scope!],
                 account: account,
               });
+                account: account,
+              });
 
-              const microsoftRefreshToken = await tokenResponse.idToken;
-              const loginResponse = await axios.post(
-                loginUrl,
-                {}, 
-                {
-                  headers: {
-                    Authorization: `Bearer ${microsoftRefreshToken}`,
-                    timezone: timezone,
-                  },
-                }
-              )
+              const microsoftRefreshToken = tokenResponse.idToken;
+              const loginResponse = await axios.post(loginUrl, {}, {
+                headers: {
+                  Authorization: `Bearer ${microsoftRefreshToken}`,
+                  timezone: timezone,
+                },
+              });
 
+              const newToken = loginResponse.headers["authorization"].split(" ")[1];
+              this.setBearerToken(newToken);
+              setUserContext({ ...userContext, token: newToken });
+              resolve(newToken);
               const newToken = loginResponse.headers["authorization"].split(" ")[1];
               this.setBearerToken(newToken);
               setUserContext({ ...userContext, token: newToken });
               resolve(newToken);
             } catch (msError) {
               console.error("Failed to refresh token:", msError);
+              console.error("Failed to refresh token:", msError);
               reject(msError);
             }
           } else {
             reject(error);
+          }
           }
         } finally {
           this.isRefreshing = false;
