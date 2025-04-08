@@ -17,16 +17,23 @@ export const translateText = async (text: string, targetLanguage: string) => {
       },
       body: JSON.stringify({
         text: text,
-        target_language: targetLanguage, // 'ja' for Japanese
+        target_language: targetLanguage,
       }),
     });
 
     const data = await response.json();
-    return data.translated_text; // Return the translated text
+    return data.translated_text;
   } catch (error) {
     console.error('Translation Error:', error);
-    return text; // If there's an error, return the original text
+    return text;
   }
+};
+
+// Detect missing keys and translate dynamically
+const customMissingKeyHandler = async (lng: string, ns: string, key: string) => {
+  const translated = await translateText(key, lng);
+  // Inject into i18next’s memory store so it's cached
+  i18n.addResource(lng, ns, key, translated);
 };
 
 i18n
