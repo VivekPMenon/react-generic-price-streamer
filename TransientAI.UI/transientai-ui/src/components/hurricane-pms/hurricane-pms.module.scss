@@ -14,7 +14,11 @@
 }
 
 :global(.hurrican-grid) :global(.ag-row-even:not(.ag-row-pinned)) {
-    background-color: rgba(25, 118, 210, 0.15) !important;
+    background-color: #002060 !important;
+}
+
+:global(.hurrican-grid) :global(.ag-row-even1:not(.ag-row-pinned)) {
+    background-color: #0070c0 !important;
 }
 
 .pl-chart-container {

@@ -38,12 +38,19 @@ const topLossOption = [
   { value: '5', label: '5' },
 ];
 
+const sortOptions = [
+  { value: 'pl', label: 'P&L' },
+  { value: 'plbps', label: 'PLBps' },
+];
+
 export const HurricanePms = () => {
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [managerId, setManagerId] = useState<string>('all');
     const [managerDetails, setManagerDetails] = useState<any[]>([]);
     const [selectedProfit, setSelectedProfit] = useState<string>('10');
     const [selectedLoss, setSelectedLoss] = useState<string>('10');
+    const [gainersSort, setGainersSort] = useState<string>('pl');
+    const [losersSort, setLosersSort] = useState<string>('pl');
     const [topGainers, setTopGainers] = useState<any[]>([]);
     const [topLosers, setTopLosers] = useState<any[]>([]);
     const managerDetailsRef = useRef<HTMLDivElement>(null);
@@ -128,11 +135,11 @@ export const HurricanePms = () => {
           );
         }
         
-        // Get top gainers (highest pl values)
-        const newTopGainers = getRecords(filteredData, parseInt(selectedProfit), 'pl', false);
+        // Get top gainers (highest values based on sort key)
+        const newTopGainers = getRecords(filteredData, parseInt(selectedProfit), gainersSort, false);
         
-        // Get top losers (lowest pl values)
-        const newTopLosers = getRecords(filteredData, parseInt(selectedLoss), 'pl', true);
+        // Get top losers (lowest values based on sort key)
+        const newTopLosers = getRecords(filteredData, parseInt(selectedLoss), losersSort, true);
         
         setTopGainers(newTopGainers);
         setTopLosers(newTopLosers);
@@ -143,7 +150,7 @@ export const HurricanePms = () => {
       } finally {
         setIsLoading(false);
       }
-    }, [managerId, selectedProfit, selectedLoss]);
+    }, [managerId, selectedProfit, selectedLoss, gainersSort, losersSort]);
 
     const handleManagerChange = (selectedOption: { value: string; label: string } | null) => {
       if (selectedOption) {
@@ -161,6 +168,18 @@ export const HurricanePms = () => {
     const handleLossChange = (selectedOption: { value: string; label: string } | null) => {
       if (selectedOption) {
         setSelectedLoss(selectedOption.value);
+      }
+    };
+
+    const handleGainersSortChange = (selectedOption: { value: string; label: string } | null) => {
+      if (selectedOption) {
+        setGainersSort(selectedOption.value);
+      }
+    };
+
+    const handleLosersSortChange = (selectedOption: { value: string; label: string } | null) => {
+      if (selectedOption) {
+        setLosersSort(selectedOption.value);
       }
     };
 
@@ -224,14 +243,25 @@ export const HurricanePms = () => {
           </section>
           <section className="w-[40%]">
             <div className="h-[45%]">
-                <div className="inline-block min-w-10">
-                    <TaDropDown
-                    options={topProfitOption}
-                    value={topProfitOption.find(p => p.value === selectedProfit) || null}
-                    onChange={handleProfitChange}
-                    isSearchable={false}
-                    prefix="Top"
-                  />
+                <div className="flex gap-2">
+                    <div className="inline-block min-w-10">
+                        <TaDropDown
+                        options={topProfitOption}
+                        value={topProfitOption.find(p => p.value === selectedProfit) || null}
+                        onChange={handleProfitChange}
+                        isSearchable={false}
+                        prefix="Top"
+                      />
+                    </div>
+                    <div className="inline-block min-w-20">
+                        <TaDropDown
+                        options={sortOptions}
+                        value={sortOptions.find(s => s.value === gainersSort) || null}
+                        onChange={handleGainersSortChange}
+                        isSearchable={false}
+                        prefix="Sort"
+                      />
+                    </div>
                 </div>
                 <DataGrid 
                     className="hurrican-grid"
@@ -252,14 +282,25 @@ export const HurricanePms = () => {
                 />
             </div>
             <div className="h-[45%] mt-10">
-                <div className="inline-block min-w-10">
-                  <TaDropDown
-                    options={topLossOption}
-                    value={topLossOption.find(l => l.value === selectedLoss) || null}
-                    onChange={handleLossChange}
-                    isSearchable={false}
-                    prefix="Top"
-                  />
+                <div className="flex gap-2">
+                    <div className="inline-block min-w-10">
+                      <TaDropDown
+                        options={topLossOption}
+                        value={topLossOption.find(l => l.value === selectedLoss) || null}
+                        onChange={handleLossChange}
+                        isSearchable={false}
+                        prefix="Top"
+                      />
+                    </div>
+                    <div className="inline-block min-w-20">
+                        <TaDropDown
+                        options={sortOptions}
+                        value={sortOptions.find(s => s.value === losersSort) || null}
+                        onChange={handleLosersSortChange}
+                        isSearchable={false}
+                        prefix="Sort"
+                      />
+                    </div>
                 </div>
                 <DataGrid 
                     className="hurrican-grid"
@@ -308,6 +349,10 @@ export const HurricanePms = () => {
             rowData={managerDetails}
             gridOptions={{
               ...defaultGridOptions,
+              rowClassRules: {
+                'ag-row-even1': (params :any) => params.node.rowIndex % 2 === 0,
+                'ag-row-odd': (params :any) => params.node.rowIndex % 2 !== 0
+              },   
               getRowId: (params) => {
                 return `detail-${params.data.id || params.data.security || params.data.ticker }`;
               }
