@@ -41,7 +41,7 @@ export const useMenuStore = create<MenuState>((set) => ({
   initializeMenus: (mode: Mode) => {
     const menuInfoList = getMenuItems(mode);
 
-    const defaultMenuId = mode === Mode.BUY ? 'research-reports' : 'todays-axes';
+    const defaultMenuId = mode === Mode.BUY ? 'hurricane-pms' : 'todays-axes';
 
     set({
         activeMenuList: calculateActiveMenuList(menuInfoList, defaultMenuId),

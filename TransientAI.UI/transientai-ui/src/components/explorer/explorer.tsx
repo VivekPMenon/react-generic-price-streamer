@@ -16,6 +16,7 @@ export function Explorer(props: NotificationsProps) {
   const router = useRouter();
   const { initializeMenus, fullMenuList, selectedMenu, setActiveMenu } = useMenuStore();
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
+  const hurricanePmsView = 'hurricane-pms';
 
   function expandOrCollapsePanel() {
     setIsExpanded(!isExpanded);
@@ -47,7 +48,7 @@ export function Explorer(props: NotificationsProps) {
               onClick={() => onMenuClick(menuInfo)}
             >
               <span className={`icon ${menuInfo.icon}`}></span>
-              <span className="text">{menuInfo.description}</span>
+              {selectedMenu?.id !== hurricanePmsView && <span className="text">{menuInfo.description}</span>}
               {menuInfo.badgeCount && menuInfo.badgeCount > 0 && (
                 <span className="badge">{menuInfo.badgeCount}</span>
               )}
