@@ -40,7 +40,7 @@ const topLossOption = [
 
 const sortOptions = [
   { value: 'pl', label: 'P&L' },
-  { value: 'plbps', label: 'PLBps' },
+  { value: 'pl_bps', label: 'PLBps' },
 ];
 
 export const HurricanePms = () => {
