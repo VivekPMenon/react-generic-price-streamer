@@ -7,38 +7,12 @@ import Highcharts from 'highcharts';
 // Use dynamic import for client-side rendering
 const HighchartsReact = dynamic(() => import('highcharts-react-official'), { ssr: false });
 
-const issuerData = [
-  { name: 'JAPANESE YEN', value: 14.00 },
-  { name: 'CANADIAN DOLLAR', value: 10.00 },
-  { name: 'SWISS FRANC', value: 9.90 },
-  { name: 'FEDEX CORP', value: 8.00 },
-  { name: 'ISHARES MSCI JAPAN ETF', value: 7.50 },
-  { name: 'MICROSOFT', value: 7.00 },
-  { name: 'ROCHE HLDG AG', value: 6.20 },
-  { name: 'ASML TECHNOLOGIES NV', value: 5.80 },
-  { name: 'CARRIER GLOBAL CORP', value: 5.60 },
-  { name: 'SWISS FRANC', value: 5.20 },
-  { name: 'BRITISH POUND', value: 3.75 },
-  { name: 'NESTLE CORP SPONSOR', value: 3.75 },
-  { name: 'SANOFI-AVENTIS HOLDING NV', value: 3.00 },
-  { name: 'MOODYS CORP HOME', value: 3.00 },
-  { name: 'RIO TINTO PLC GROUP ADR', value: 2.00 },
-  { name: 'ALIBABA GROUP HOLDING SP ADR', value: 2.00 },
-  { name: 'DIAGEO PLC GROUP', value: 1.25 },
-  { name: 'DEERE & CO', value: 1.20 },
-  { name: 'GLENCORE MINING CHTD SECURE', value: 1.00 },
-  { name: 'ROCKWELL AUTOMATION INC', value: 1.00 },
-  { name: 'DOLLARAMA INC', value: 0.80 },
-  { name: 'ALPHABET INC CL A', value: 0.80 },
-  { name: 'ENERGY TRANSFER LP', value: 0.50 },
-  { name: 'CVS', value: 0.25 },
-  { name: 'QQQ', value: 0.20 }
-];
 
 
-function getChartOptions() {
+
+function getChartOptions(result) {
   // Sort data in descending order
-  const sortedData = [...issuerData].sort((a, b) => b.value - a.value);
+  const sortedData = [...result].sort((a, b) => b.value - a.value);
   
   const chartOptions: Highcharts.Options = {
     chart: {
@@ -126,12 +100,43 @@ function getChartOptions() {
   return chartOptions;
 }
 
-export const BarChart = () => {
+export const BarChart = (data) => {
+  console.log(data)
+  const calculateTickerData = (data: any): any[] => {
+    const tickerValues: Record<string, number> = {};
+    let grandTotal = 0;
+    data.forEach(item => {
+      const ticker = item.ticker;
+      const qty = item.quantity || 0;
+      const price = item.price || 0;
+      const value = qty * price;
+  
+      if (!tickerValues[ticker]) {
+        tickerValues[ticker] = 0;
+      }
+  
+      tickerValues[ticker] += value;
+      grandTotal += value;
+    });
+  
+    const tickerData: any = Object.entries(tickerValues).map(([ticker, totalValue]) => {
+      const percentage = (totalValue / grandTotal) * 100;
+  
+      return {
+        name: ticker,
+        total: parseFloat(totalValue.toFixed(2)),  
+        value: parseFloat(percentage.toFixed(2)), 
+      };
+    });
+    console.log(tickerData);
+    return tickerData;
+  };
+  const result = calculateTickerData(data.data);
   return (
     <div className="h-full w-full p-2">
       <HighchartsReact 
         highcharts={Highcharts} 
-        options={getChartOptions()} 
+        options={getChartOptions(result)} 
       />
     </div>
   );

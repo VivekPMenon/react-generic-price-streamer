@@ -43,6 +43,8 @@ const sortOptions = [
   { value: 'pl_bps', label: 'PLBps' },
 ];
 
+
+
 export const HurricanePms = () => {
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [managerId, setManagerId] = useState<string>('all');
@@ -327,11 +329,11 @@ export const HurricanePms = () => {
         <div className="">
           <div className="rounded-md p-2 h-[250px] w-[350px]">
             <h4 className="text-white text-center mb-2">Asset Allocation</h4>
-            <AssetAllocationChart />
+            <AssetAllocationChart  data={managerDetails}/>
           </div>
           <div className="rounded-md p-2 h-[250px]  w-[350px]">
             <h4 className="text-white text-center mb-2">Geographic Exposure map</h4>
-            <WorldMapChart />
+            <WorldMapChart data={managerDetails}/>
           </div>
         </div>
       </section>
@@ -363,7 +365,7 @@ export const HurricanePms = () => {
 
         <div className="rounded-md p-2 h-[500px] w-[350px]">
           <h4 className="text-white text-center mb-2">Manager Exposure</h4>
-          <BarChart />
+          <BarChart data={managerDetails}/>
         </div>
       </section>
     </div>

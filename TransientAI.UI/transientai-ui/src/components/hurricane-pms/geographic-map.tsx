@@ -61,12 +61,59 @@ const options: Highcharts.Options = {
   ],
 };
 
-const WorldMapChart = () => (
-  <HighchartsReact
-    highcharts={Highcharts}
-    constructorType="mapChart"
-    options={options}
-  />
-);
+const WorldMapChart = (data) => {
+  console.log(data)
+  const calculateCountryGroupData = (data: any): [string, number][] => {
+    const totals: Record<string, number> = {};
+
+    data.data.forEach(item => {
+      const countryGroup = item.country_group.toLowerCase(); // Normalize the country group name
+      const qty = item.quantity || 0;
+      const price = item.price || 0;
+      const value = qty * price;
+
+      if (!totals[countryGroup]) {
+        totals[countryGroup] = 0;
+      }
+
+      totals[countryGroup] += value;
+    });
+
+    const countryData: [string, number][] = Object.entries(totals).map(([countryGroup, totalValue]) => [
+      countryGroup,
+      parseFloat(totalValue.toFixed(2)),  // Round to 2 decimals
+    ]);
+ 
+    return countryData;
+  };
+
+   //TO DO need to get the ISO code in response we cannot map it if we have full text to geo json
+
+  // Calculate dynamic country group data
+  const dynamicDataForMap = calculateCountryGroupData(data);
+  // const transformedData = dynamicDataForMap.map(([country, value]) => ({
+  //   'hc-key': country.toLowerCase(),  // Convert country name to lowercase or map to an appropriate key
+  //   value,
+  // }));
+ // console.log(transformedData);
+  // Update the map options with dynamic data
+  const updatedOptions = {
+    ...options,
+    series: [
+      {
+        ...options.series[0],
+        data: dynamicDataForMap,  
+      },
+    ],
+  };
+
+  return (
+    <HighchartsReact
+      highcharts={Highcharts}
+      constructorType="mapChart"
+      options={updatedOptions}
+    />
+  );
+};
 
 export default WorldMapChart;
