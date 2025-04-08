@@ -49,7 +49,7 @@ const nextConfig: NextConfig = {
       //   destination: '/dashboard-generic/axes',
       //   permanent: true, // Set to false if temporary
       // },
-    ]);
+    ];
   }
 };
 

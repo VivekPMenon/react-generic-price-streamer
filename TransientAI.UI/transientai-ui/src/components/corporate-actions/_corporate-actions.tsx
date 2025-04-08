@@ -340,6 +340,7 @@ export function CorporateActions() {
                 className={styles['email-viewer'] + ' height-vh-90'}
                 emailHtml={selectedEmailContent}
                 scrollToSearchTerm={selectedCorpAction.eventId}
+                translateTo="ja"
               />
               : <></>
         }
