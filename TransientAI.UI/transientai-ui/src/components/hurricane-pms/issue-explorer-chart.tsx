@@ -35,6 +35,7 @@ const issuerData = [
   { name: 'QQQ', value: 0.20 }
 ];
 
+
 function getChartOptions() {
   // Sort data in descending order
   const sortedData = [...issuerData].sort((a, b) => b.value - a.value);
@@ -60,21 +61,26 @@ function getChartOptions() {
           fontSize: '10px'
         }
       },
-      lineColor: '#444'
+      lineColor: '#444',
+      lineWidth: 0,  
+      tickLength: 0  
     },
     yAxis: {
       title: {
-        style: {
-          color: '#888'
-        }
+        text: null 
       },
       labels: {
         style: {
           color: '#888'
         },
-        format: '{value}%'
+        format: '{value}%',
+        enabled: false  
       },
-      gridLineColor: '#333'
+      gridLineColor: '#333',
+      gridLineWidth: 0,  
+      lineWidth: 0,     
+      min: 0,           
+      endOnTick: false  
     },
     tooltip: {
       valueSuffix: '%',
@@ -96,10 +102,11 @@ function getChartOptions() {
           }
         },
         borderRadius: 2,
-        pointWidth: 14
+        pointWidth: 14,
+        borderWidth: 0  
       },
       series: {
-        color: '#0088FF'
+        color: '#116186'
       }
     },
     legend: {
@@ -109,9 +116,10 @@ function getChartOptions() {
       enabled: false
     },
     series: [{
-      type: 'bar', // Explicitly define type to satisfy TypeScript
+      type: 'bar', 
       name: 'Exposure',
-      data: sortedData.map(item => item.value)
+      data: sortedData.map(item => item.value),
+      borderWidth: 0
     }]
   };
 
