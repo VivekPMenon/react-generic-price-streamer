@@ -1,13 +1,13 @@
 'use client';
 
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, memo} from 'react';
 import styles from './market-data.module.scss';
 import {useMarketDataStore} from "@/services/market-data/market-data-store";
 import {MarketDataTile} from "@/components/market-data/market-data-tile";
 import {ImageType, PeriodType} from "@/services/market-data";
 import { Spinner } from '@radix-ui/themes';
 
-export function MarketData() {
+function MarketData() {
     const [searchQuery, setSearchQuery] = useState<string>('');
     const {instruments, isLoading, error, findInstrument, removeInstrument, getInstrumentLogoUrl, clearAllInstruments} = useMarketDataStore();
 
@@ -82,3 +82,5 @@ export function MarketData() {
         </div>
    );
 }
+
+export default memo(MarketData);

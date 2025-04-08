@@ -31,15 +31,13 @@
 .price-summary-table {
   display: flex;
   flex-direction: column;
-  padding: 5px 0px 10px 5px;
+  padding: 5px 0 10px 5px;
 }
 
 .price-graph {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  flex: 1 1 50%;
-  max-height: 45vh;
+  @media screen and (max-width: $mobile-breakpoint-max) {
+    width: 100%;
+  }
 }
 
 .financial-details {

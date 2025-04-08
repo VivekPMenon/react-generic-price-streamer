@@ -1,23 +1,24 @@
-'use client';
-
 import dynamic from 'next/dynamic';
-
-const HighchartsReact = dynamic(() => import('highcharts-react-official'), { ssr: false });
 import Highcharts from 'highcharts';
 import Highstock from 'highcharts/highstock';
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, memo} from 'react';
 import {Instrument, marketDataService} from "@/services/market-data";
 import {Spinner} from "@radix-ui/themes";
 import styles from './macro-panel-tabs.module.scss';
 import {formatDecimal} from "@/lib/utility-functions";
+import {MarketDataType} from "@/services/macro-panel-data/model";
+
+const HighchartsReact = dynamic(() => import('highcharts-react-official'), { ssr: false });
 
 function getChartOptions(instrument: Instrument, isNegative: boolean = false, ignoreNegative: boolean = false) {
     let seriesData: any[] = [];
     if (instrument.marketData?.length) {
-        seriesData = instrument.marketData.map(data => {
-            const date = new Date(data.date!);
-            return [date.getTime(), data.open, data.high, data.low, data.close];
-        });
+        const today = new Date().setHours(0, 0, 0, 0);
+        seriesData = instrument.marketData
+            .filter(data => data.timestamp && data.timestamp.getTime() >= today)
+            .map(data => {
+                return [data.timestamp!.getTime(), data.open, data.high, data.low, data.close];
+            });
     }
 
     let gradientStart: string;
@@ -51,7 +52,8 @@ function getChartOptions(instrument: Instrument, isNegative: boolean = false, ig
             type: 'datetime',
             labels: { enabled: false, style: { color: '#dddddd' } },
             gridLineWidth: 0,
-            crosshair: false
+            crosshair: false,
+            minRange: 3600 * 1000
         },
         yAxis: {
             title: { text: null },
@@ -67,8 +69,7 @@ function getChartOptions(instrument: Instrument, isNegative: boolean = false, ig
             enabled: false,
         },
         rangeSelector: {
-            enabled: false,
-            selected: 1,
+            enabled: false
         },
         plotOptions: {
             area: {
@@ -102,9 +103,6 @@ function getChartOptions(instrument: Instrument, isNegative: boolean = false, ig
                 enableMouseTracking: false,
                 marker: { enabled: false },
                 threshold: null,
-                dataGrouping: {
-                    units: [['day', [1]]]
-                },
             },
         ],
         tooltip: {
@@ -126,19 +124,20 @@ export interface MacroInstrumentProps {
     change?: number;
     percent?: number;
     showCharts: boolean;
-    showPopupAction: (instrument: Instrument) => void;
+    showPopupAction: (symbol: string, type?: MarketDataType, instrument?: Instrument) => void;
     changeSuffix?: string
     inverseChange?: boolean;
+    type?: MarketDataType;
 }
 
-export function MacroInstrument({symbol, name, value, change, percent, showCharts, showPopupAction, changeSuffix, inverseChange}: MacroInstrumentProps) {
+function MacroInstrument({symbol, type, name, value, change, percent, showCharts, showPopupAction, changeSuffix, inverseChange}: MacroInstrumentProps) {
     const [instrument, setInstrument] = useState<Instrument|null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(true);
 
     useEffect(() => {
         if (symbol) {
             setIsLoading(true);
-            marketDataService.getMarketData(symbol)
+            marketDataService.getIntradayData(symbol, type)
                 .then(data => {
                     if (data) {
                         setInstrument(data);
@@ -150,7 +149,7 @@ export function MacroInstrument({symbol, name, value, change, percent, showChart
         } else {
             setIsLoading(false);
         }
-    }, [symbol]);
+    }, [symbol, type]);
 
     const isNegative = inverseChange === true
         ? ((change ?? 0.0) > 0.0)
@@ -158,36 +157,45 @@ export function MacroInstrument({symbol, name, value, change, percent, showChart
 
     const isNegativeChange = ((change ?? 0.0) < 0.0);
 
+    let content = null;
+    if (showCharts) {
+        content = isLoading
+            ? (
+                <div className={styles['market-data-no-graph']}>
+                    <Spinner />
+                </div>
+            )
+            : instrument !== null
+                ? (
+                    <div
+                        className={styles['market-data-graph']}
+                        onDoubleClick={()=> {
+                            if (symbol) {
+                                showPopupAction(symbol, type, instrument || undefined);
+                            }
+                        }}
+                    >
+                        <HighchartsReact
+                            highcharts={Highstock}
+                            constructorType={'stockChart'}
+                            options={getChartOptions(instrument, isNegative, false)}
+                        />
+                    </div>
+                )
+                : (<div className={styles['market-data-no-graph']} />)
+    }
+
     return (
         <div className={styles['market-data' + (showCharts ? '' : '-no-chart')]}>
             <div className={styles['market-data-name']}>{name}</div>
             <div className={styles['market-data-value']}>{formatDecimal(value, '', 3)}</div>
-            <div className={styles['market-data-change' + (isNegative ? '-negative' : '')]}>{(isNegativeChange ? '' : '+') + formatDecimal(change, '', 3) + (changeSuffix ?? '')}</div>
-            <div className={styles['market-data-percent' + (isNegative ? '-negative' : '')]}>({(isNegativeChange ? '' : '+') + formatDecimal(percent, '-', 2)}%)</div>
+            <div className={styles['market-data-change' + (isNegative ? '-negative' : '')]}>{(isNegativeChange ? '-' : '+') + formatDecimal(Math.abs(change ?? 0.0), '', 3) + (changeSuffix ?? '')}</div>
+            <div className={styles['market-data-percent' + (isNegative ? '-negative' : '')]}>({(isNegativeChange ? '-' : '+') + formatDecimal(Math.abs(percent ?? 0.0), '-', 2)}%)</div>
             {
-                showCharts && (
-                    <div
-                        className={styles['market-data-graph']}
-                        onDoubleClick={()=> {
-                            if (instrument) {
-                                showPopupAction(instrument);
-                            }
-                        }}
-                    >
-                        {
-                            isLoading
-                                ? <Spinner />
-                                : instrument !== null
-                                    ? <HighchartsReact
-                                        highcharts={Highstock}
-                                        constructorType={'stockChart'}
-                                        options={getChartOptions(instrument, isNegative, false)}
-                                    />
-                                : null
-                        }
-                    </div>
-                )
+                content
             }
         </div>
     );
 }
+
+export default memo(MacroInstrument);

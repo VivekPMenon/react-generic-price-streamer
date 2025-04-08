@@ -1,15 +1,7 @@
 import {webApihandler} from "../web-api-handler";
-import {
-  FinancialData,
-  GraphDataPoint,
-  ImageType,
-  Instrument,
-  MarketData,
-  PeriodType,
-  Price,
-  TraceData
-} from "./model";
-import {isToday, parseLocalDate} from "@/lib/utility-functions/date-operations";
+import {FinancialData, GraphDataPoint, ImageType, Instrument, MarketData, PeriodType, Price, TraceData} from "./model";
+import {isToday, parseIsoDate, parseLocalDate} from "@/lib/utility-functions/date-operations";
+import {MarketDataType} from "@/services/macro-panel-data/model";
 
 class MarketDataService {
   readonly serviceName = 'hurricane-api';
@@ -34,51 +26,37 @@ class MarketDataService {
     return result.trace_data;
   }
 
-  async getMarketData(company_or_ticker : string, period: PeriodType = PeriodType.ONE_YEAR): Promise<Instrument|null> {
+  async getMarketData(company_or_ticker : string, period: PeriodType = PeriodType.ONE_YEAR, type?: MarketDataType): Promise<Instrument|null> {
     try {
-      const result = await webApihandler
-          .get(
-              `market-data/${company_or_ticker}`, {
-                period
-              }, {
-                serviceName: this.serviceName
-              });
+      const fieldName = type === undefined || type === MarketDataType.NONE
+          ? 'company_or_ticker'
+          :  type === MarketDataType.DOMESTIC_TREASURY
+              ? 'us_treasury'
+              : 'foreign_treasury_ticker';
 
-      const marketData = result.data;
-      let previousClose: number|undefined = undefined;
-      let latest: MarketData|undefined = undefined;
-      if (marketData && marketData.length) {
-        marketData.forEach((market: any) => {
-          market.date = parseLocalDate(market.date);
-        });
+      const params: Record<string, string> = { period };
+      params[fieldName] = company_or_ticker;
 
-        latest = marketData[marketData.length - 1];
-        if (isToday(latest?.date) && marketData[marketData.length - 2]) {
-          previousClose = marketData[marketData.length - 2]?.close;
-        } else {
-          previousClose = latest?.close;
-        }
-      }
+      return await this.getMarketDataCore('market-data', params);
 
-      const timestamp = new Date(
-          result.timestamp.endsWith('Z')
-              ? result.timestamp
-              : result.timestamp + 'Z'
-      );
-
-      return {
-        ticker: result.ticker,
-        company_name: result.company_name,
-        marketData: marketData,
-        lastMarketData: latest,
-        current_price: result.current_price,
-        previous_close: previousClose,
-        change: result.change,
-        percent_change: result.percent_change,
-        timestamp: new Date(timestamp),
-        dispose: null
-      };
     } catch (e) {
+      return null;
+    }
+  }
+
+  async getIntradayData(company_or_ticker : string, type?: MarketDataType): Promise<Instrument|null> {
+    try {
+      // const fieldName = type === undefined || type === MarketDataType.NONE
+      //     ? 'company_or_ticker'
+      //     :  type === MarketDataType.DOMESTIC_TREASURY
+      //         ? 'us_treasury'
+      //         : 'foreign_treasury_ticker';
+      const fieldName = 'company_or_ticker';
+      const params: Record<string, string> = {};
+      params[fieldName] = company_or_ticker;
+
+      return await this.getMarketDataCore('intraday-data', params);
+    } catch (e: any) {
       return null;
     }
   }
@@ -124,6 +102,46 @@ class MarketDataService {
       format,
       size
     });
+  }
+
+  private async getMarketDataCore(url: string, params: Record<string, string>) {
+    const result = await webApihandler
+        .get(
+            url, params, {
+              serviceName: this.serviceName
+            });
+
+    const marketData = result.data;
+    let previousClose: number|undefined = undefined;
+    let latest: MarketData|undefined = undefined;
+    if (marketData && marketData.length) {
+      marketData.forEach((market: any) => {
+        market.date = parseLocalDate(market.date);
+        market.timestamp = market.timestamp
+            ? new Date(market.timestamp)
+            : market.date;
+      });
+
+      latest = marketData[marketData.length - 1];
+      if (isToday(latest?.date) && marketData[marketData.length - 2]) {
+        previousClose = marketData[marketData.length - 2]?.close;
+      } else {
+        previousClose = latest?.close;
+      }
+    }
+
+    return {
+      ticker: result.ticker,
+      company_name: result.company_name,
+      marketData: marketData,
+      lastMarketData: latest,
+      current_price: result.current_price,
+      previous_close: previousClose,
+      change: result.change,
+      percent_change: result.percent_change,
+      timestamp: parseIsoDate(result.timestamp) || new Date(),
+      dispose: null
+    };
   }
 }
 

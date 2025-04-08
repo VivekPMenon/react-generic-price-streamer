@@ -1,0 +1,51 @@
+@import '../../assets/variables.scss';
+
+.pms-panel {
+  display: flex;
+  gap: 5px;
+  height: calc(100vh - 225px);
+  width: calc(100vw - 500px);
+  flex-wrap: wrap;
+
+  @media screen and (max-width: $mobile-breakpoint-max) {
+    flex-direction: row;
+    height: calc(100vh - 300px);
+    width: 100%;
+    gap: 10px;
+  }
+}
+
+.header {
+  color: $yellow;
+  font-weight: bold;
+}
+
+.manager-cell {
+  color: $blue;
+}
+
+.table-header {
+  color: $green;
+  font-weight: bold;
+}
+
+.muted-cell-numeric {
+  color: gray;
+  justify-content: right;
+}
+
+.white-cell-numeric {
+  color: $white;
+  justify-content: right;
+}
+
+.total-cell {
+  color: $white;
+  font-weight: bold;
+}
+
+.total-cell-numeric {
+  color: $white;
+  font-weight: bold;
+  justify-content: right;
+}

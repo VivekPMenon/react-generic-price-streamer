@@ -34,7 +34,6 @@ export const useBreakNewsDataStore = create<BreakNewsDataState>((set, get) => ({
   loadBreakNews: async () => {
     set({ isLoading: true, error: null });
 
-
     try {
       const result = await breakNewsDataService.getBreakNews();
       set({
@@ -61,7 +60,7 @@ export const useBreakNewsDataStore = create<BreakNewsDataState>((set, get) => ({
         }
         return {}; // No need to modify state, just ensuring correctness
       });
-    }, 5000); // Polls every 2 minutes
+    }, 60000); // Polls every 2 minutes
   }
 }));
 

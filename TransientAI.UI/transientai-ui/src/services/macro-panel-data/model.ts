@@ -8,9 +8,11 @@ export interface BloombergEmailReport {
 export interface TreasuryYield extends IInstrument {
   name: string;
   group_name: string;
+  ticker?: string;
   rate: number
   one_day_change_bps?: number
   ytd_change_bps?: number;
+  type?: MarketDataType;
 }
 
 export interface Bond {
@@ -62,4 +64,11 @@ export interface IInstrument {
   value?: number;
   change?: number;
   percent?: number;
+  type?: MarketDataType;
+}
+
+export enum MarketDataType {
+  NONE = 'none',
+  DOMESTIC_TREASURY = 'domestic_treasury',
+  FOREIGN_TREASURY = 'foreign_treasury'
 }

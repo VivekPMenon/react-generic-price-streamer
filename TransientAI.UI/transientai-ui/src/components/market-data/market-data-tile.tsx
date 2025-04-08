@@ -3,13 +3,14 @@
 import dynamic from 'next/dynamic';
 
 const HighchartsReact = dynamic(() => import('highcharts-react-official'), { ssr: false });
-import {Instrument} from "@/services/market-data";
+import {Instrument, PeriodType} from "@/services/market-data";
 import { formatDecimal, formatShortened } from "@/lib/utility-functions";
-import Highcharts from 'highcharts';
+import Highcharts, {RangeSelectorButtonsOptions} from 'highcharts';
 import Highstock from 'highcharts/highstock';
 import "highcharts/modules/exporting";
 import styles from './market-data-tile.module.scss';
 import {formatDateTime} from "@/lib/utility-functions/date-operations";
+import {enumToKeyValuePair, KeyValuePair} from "@/lib/utility-functions/enum-operations";
 
 export interface MarketDataTileProps {
     instrument: Instrument,
@@ -22,11 +23,55 @@ export interface MarketDataTileProps {
     ignoreNegative?: boolean;
 }
 
+function getFilterButtons(): RangeSelectorButtonsOptions[] {
+    const keyValuePairs = enumToKeyValuePair(PeriodType);
+    return keyValuePairs.map((value: KeyValuePair): RangeSelectorButtonsOptions|null => {
+        const key = (value.value as string).toUpperCase();
+        switch (key) {
+            case 'YTD':
+                return {
+                    type: 'ytd',
+                    text: key,
+                };
+            case 'MAX':
+                return {
+                    type: 'all',
+                    text: 'All',
+                };
+            default:
+                if (key.endsWith('D')) {
+                    return {
+                        type: 'day',
+                        count: parseInt(key),
+                        text: key,
+                    }
+                }
+                if (key.endsWith('MO')) {
+                    const count = parseInt(key);
+                    return {
+                        type: 'month',
+                        count: count,
+                        text: count + 'M',
+                    }
+                }
+                if (key.endsWith('Y')) {
+                    const count = parseInt(key);
+                    return {
+                        type: 'year',
+                        count: count,
+                        text: count + 'Y',
+                    }
+                }
+                return null;
+        }
+    }).filter(button => button !== null);
+}
+
 function getChartOptions(instrument: Instrument, isNegative: boolean = false, ignoreNegative: boolean = false) {
     let seriesData: any[] = [];
     if (instrument.marketData?.length) {
       seriesData = instrument.marketData.map(data => {
-        const date = new Date(data.date!);
+        const date = new Date(data.timestamp!);
         return [date.getTime(), data.open, data.high, data.low, data.close];
       });
     }
@@ -77,36 +122,7 @@ function getChartOptions(instrument: Instrument, isNegative: boolean = false, ig
       rangeSelector: {
         enabled: true,
         inputEnabled: false,
-        buttons: [
-          {
-              type: 'month',
-              count: 1,
-              text: '1M',
-          },
-          {
-              type: 'month',
-              count: 3,
-              text: '3M',
-          },
-          {
-              type: 'month',
-              count: 6,
-              text: '6M',
-          },
-          {
-              type: 'ytd',
-              text: 'YTD',
-          },
-          {
-              type: 'year',
-              count: 1,
-              text: '1Y',
-          },
-          {
-              type: 'all',
-              text: 'All',
-          }
-        ],
+        buttons: getFilterButtons(),
         buttonTheme: {
           fill: '#1E2128',
           stroke: '#1E2128',

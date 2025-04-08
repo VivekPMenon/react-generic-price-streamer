@@ -87,7 +87,7 @@ export function DashboardTabs({ children }: DashboardTabsProps) {
               >
                 {tab.description}
                 {unseenCount > 0 && <span className="ml-1 orange-color">({unseenCount})</span>}
-                {tab.description !== defaultMenu.description && (
+                {tab.id !== defaultMenu.id && (
                   <i className={`${styles['close-button']} fa-solid fa-xmark`} onClick={(event) => handleCloseTab(event, tab)}></i>
                 )}
               </Tabs.Trigger>

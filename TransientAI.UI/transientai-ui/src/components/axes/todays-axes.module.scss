@@ -1,3 +1,5 @@
+@import '../../assets/variables.scss';
+
 .todays-axes {
   display: flex;
   height: 100%;
@@ -27,4 +29,12 @@
       flex: 1 1 100%;
     }
   }
+}
+
+.golden-axe {
+  background-color: $gold;
+}
+
+.axe {
+  background-color: unset;
 }

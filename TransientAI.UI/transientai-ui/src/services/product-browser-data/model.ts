@@ -28,6 +28,7 @@ export interface BondInfo {
   moody_rating?: string;
   trader?: string;
   level?: number | null;
+  is_golden?: boolean;
 }
 
 export interface TopRecommendation {

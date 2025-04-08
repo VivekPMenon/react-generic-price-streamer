@@ -1,7 +1,7 @@
 'use client'
 
 import styles from './investor-relations.module.scss';
-import React, {useCallback} from 'react';
+import React, {useCallback, memo} from 'react';
 import {DataGrid} from "@/components/data-grid";
 import {RequestFormPopup} from "@/components/investor-relations/request-form-popup";
 import {useInvestorRelationsStore} from "@/services/investor-relations-data/investor-relations-store";
@@ -69,7 +69,7 @@ function DeleteButton(props: any) {
         ></i>);
 }
 
-export function InvestorRelations() {
+function InvestorRelations() {
     const { inquiries, isLoading, changeStatus, deleteInquiry, updateStatusFromCompleted } = useInvestorRelationsStore();
     const getColumnDefs= useCallback((): ColDef[] => {
         return [
@@ -194,3 +194,5 @@ export function InvestorRelations() {
         </div>
     );
 }
+
+export default memo(InvestorRelations)

@@ -1,6 +1,6 @@
-import { create } from 'zustand';
-import { MenuInfo } from './model';
-import { menuInfoList } from './menu-data-service';
+import {create} from 'zustand';
+import {MenuInfo} from './model';
+import {getMenuItems, Mode} from './menu-data-service';
 
 interface MenuState {
   activeMenuList: MenuInfo[];
@@ -9,14 +9,15 @@ interface MenuState {
   defaultMenu: MenuInfo;
   setActiveMenu: (menu: MenuInfo) => void;
   closeTab: (menuId: string) => void;
+  initializeMenus: (mode: Mode) => void;
 }
 
-function calculateDefaultMenu() {
+function calculateDefaultMenu(menuInfoList: MenuInfo[], defaultMenuId: string) {
   return menuInfoList
-    .find(menuInfo => menuInfo.description === 'Research Reports')!;
+    .find(menuInfo => menuInfo.id === defaultMenuId)!;
 }
 
-function calculateCurrentMenu() {
+function calculateCurrentMenu(menuInfoList: MenuInfo[]) {
   if (typeof window === 'undefined') {
     return {};
   }
@@ -24,17 +25,31 @@ function calculateCurrentMenu() {
     .find(menuInfo => menuInfo.route?.toLowerCase() === window.document.location.pathname?.toLowerCase())!;
 }
 
-function calculateActiveMenuList() {
-  const currentMenu = calculateCurrentMenu();
-  const defaultMenu = calculateDefaultMenu();
-  return currentMenu === defaultMenu ? [defaultMenu] : [defaultMenu, currentMenu];
+function calculateActiveMenuList(menuInfoList: MenuInfo[], defaultMenuId: string) {
+  const currentMenu = calculateCurrentMenu(menuInfoList);
+  const defaultMenu = calculateDefaultMenu(menuInfoList, defaultMenuId);
+  const menuItems = currentMenu === defaultMenu ? [defaultMenu] : [defaultMenu, currentMenu];
+  return menuItems.filter(menu => menu !== undefined);
 }
 
 export const useMenuStore = create<MenuState>((set) => ({
-  activeMenuList: calculateActiveMenuList(),
-  fullMenuList: menuInfoList,
-  selectedMenu: calculateCurrentMenu()!,
-  defaultMenu: calculateDefaultMenu(),
+  activeMenuList: [],
+  fullMenuList: [],
+  selectedMenu: [],
+  defaultMenu: [],
+
+  initializeMenus: (mode: Mode) => {
+    const menuInfoList = getMenuItems(mode);
+
+    const defaultMenuId = mode === Mode.BUY ? 'research-reports' : 'todays-axes';
+
+    set({
+        activeMenuList: calculateActiveMenuList(menuInfoList, defaultMenuId),
+        fullMenuList: menuInfoList,
+        selectedMenu: calculateCurrentMenu(menuInfoList)!,
+        defaultMenu: calculateDefaultMenu(menuInfoList, defaultMenuId)
+    })
+  },
 
   setActiveMenu: (menu) =>
     set((state) => {

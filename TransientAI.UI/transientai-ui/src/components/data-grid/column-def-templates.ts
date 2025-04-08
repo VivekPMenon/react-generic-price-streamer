@@ -1,17 +1,18 @@
 import { isNumeric, numberFormatter } from "@/lib/utility-functions";
 import { ColDef } from "ag-grid-community";
 
-export function getNumberColDefTemplate(numberOfDecimals = 0, isZeroBlank = true): ColDef {
+export function getNumberColDefTemplate(numberOfDecimals = 0, isZeroBlank = true, defaultValue= ''): ColDef {
   return {
     filter: 'agNumberColumnFilter',
+    headerClass: 'ag-right-aligned-header',
     cellClass: 'text-end',
     valueFormatter: params => {
       if (!isNumeric(params.value)) {
-        return '';
+        return defaultValue;
       }
 
       if(isZeroBlank && params.value === 0) {
-        return '';
+        return defaultValue;
       }
 
       return numberFormatter(params.value, numberOfDecimals);
@@ -22,6 +23,7 @@ export function getNumberColDefTemplate(numberOfDecimals = 0, isZeroBlank = true
 export function getCurrencyColDefTemplate(currency = 'USD', isZeroBlank = true): ColDef {
   return {
     filter: 'agNumberColumnFilter',
+    headerClass: 'ag-right-aligned-header',
     cellClass: 'text-end justify-end orange-color',
     valueFormatter: params => {
       if (!isNumeric(params.value)) {

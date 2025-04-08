@@ -25,9 +25,9 @@ export function TopClients() {
       }
 
       const topCompanies = await productBrowserDataService.getTopRecommendations();
-      const firstFiveComapanies = selectedCompany ? topCompanies.filter(topCompany => topCompany === selectedCompany) : topCompanies.slice(0, 4);
+      const firstFiveCompanies = selectedCompany ? topCompanies.filter(topCompany => topCompany === selectedCompany) : topCompanies.slice(0, 4);
 
-      const promises = firstFiveComapanies
+      const promises = firstFiveCompanies
         ?.map(companyName => productBrowserDataService.getRecommendationsDetails(companyName));
 
       const results: TopRecommendation[] = await Promise.all(promises);

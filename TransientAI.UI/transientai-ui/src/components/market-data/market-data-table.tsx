@@ -7,19 +7,38 @@ import { BondTrade, ClientHolding, clientHoldingsDataService } from "@/services/
 import { marketDataService, Price } from "@/services/market-data";
 import { SearchDataContext } from "@/services/search-data";
 
+
+function getColumnDef(): ColDef[] {
+  return [
+    { field: 'bond', headerName: 'Bond', width: 130, cellClass: 'orange-color' },
+    { field: 'date', headerName: 'Date', hide: true },
+    { field: 'isin', headerName: 'ISIN' },
+    { field: 'source', width: 100, headerName: 'Source' },
+    { field: 'mid_price', width: 90, headerName: 'Mid Price', ...getNumberColDefTemplate(2) },
+    { field: 'mid_spread', width: 90, headerName: 'Mid Spread', ...getNumberColDefTemplate(2) },
+    { field: 'mid_yield', width: 90, headerName: 'Mid Yield', ...getNumberColDefTemplate(2) },
+
+    { field: 'bond_issuer', headerName: 'Bond Issuer' },
+    { field: 'time', headerName: 'Time' },
+  ];
+}
+
 export function MarketDataTable() {
 
   const { searchData, setSearchData } = useContext(SearchDataContext);
-
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [prices, setPrices] = useState<Price[]>();
-  const [columnDefs] = useState<ColDef[]>(getColumnDef());
 
   useEffect(() => {
     const loadPrices = async () => {
-      const prices = await marketDataService.getMarketDataPrices(searchData.id);
-      setPrices(prices);
+      try {
+        const prices = await marketDataService.getMarketDataPrices(searchData.id);
+        setPrices(prices);
+      } finally {
+        setIsLoading(false);
+      }
     };
-
+    setIsLoading(true);
     loadPrices();
   }, [searchData.id]);
 
@@ -30,28 +49,15 @@ export function MarketDataTable() {
     });
   }
 
-  function getColumnDef(): ColDef[] {
-    return [
-      { field: 'bond', headerName: 'Bond', width: 130, cellClass: 'orange-color' },
-      { field: 'date', headerName: 'Date', hide: true },
-      { field: 'isin', headerName: 'ISIN' },
-      { field: 'source', width: 100, headerName: 'Source' },
-      { field: 'mid_price', width: 90, headerName: 'Mid Price', ...getNumberColDefTemplate(2) },
-      { field: 'mid_spread', width: 90, headerName: 'Mid Spread', ...getNumberColDefTemplate(2) },
-      { field: 'mid_yield', width: 90, headerName: 'Mid Yield', ...getNumberColDefTemplate(2) },
-
-      { field: 'bond_issuer', headerName: 'Bond Issuer' },
-      { field: 'time', headerName: 'Time' },
-    ];
-  }
-
   return (
     <div className="height-100p">
       <div className='sub-header'>Prices</div>
-
-      <DataGrid isSummaryGrid={true}
+      <DataGrid
+        height={'100%'}
+        isSummaryGrid={true}
+        loading={isLoading}
         rowData={prices}
-        columnDefs={columnDefs}
+        columnDefs={getColumnDef()}
         onRowDoubleClicked={onRowDoubleClicked}>
       </DataGrid>
     </div>

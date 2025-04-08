@@ -1,43 +1,11 @@
 import { MenuInfo } from "./model";
 
-export const menuInfoList: MenuInfo[] = [
-  // {
-  //   description: 'Today',
-  //   badgeCount: 5,
-  //   icon: 'fa-regular fa-snowflake'
-  // },
-  // {
-  //   description: `Today's Axes`,
-  //   badgeCount: 4,
-  //   icon: 'fa-solid fa-book-open',
-  //   // children: [
-  //   //   {description: 'Active Orders'},
-  //   //   {description: 'Recent Trades'},
-  //   //   {description: 'Call Notes'},
-  //   //   {description: 'Position Changes', subDescription: '11/24 9:45am'}
-  //   // ]
-  // },
-  // {
-  //   description: 'Trading Activity',
-  //   badgeCount: 3,
-  //   icon: 'fa-solid fa-ranking-star'
-  // },
-  // {
-  //   description: 'Market Data',
-  //   badgeCount: 4,
-  //   icon: 'fa-solid fa-chart-simple',
-  //   // children: [
-  //   //   {description: 'Breaking News', subDescription: '11/24 7:45am'},
-  //   //   {description: 'Earnings Updates'},
-  //   //   {description: 'Rating Changes'},
-  //   //   {description: 'Research Notes', subDescription: '11/24 8:45am'}
-  //   // ]
-  // },
-  // {
-  //   description: 'Client Data',
-  //   badgeCount: 3,
-  //   icon: 'fa-solid fa-user'
-  // },
+export enum Mode {
+  SELL = 'sell',
+  BUY = 'buy',
+}
+
+const menuInfoList: MenuInfo[] = [
   {
     id: 'macro-panel',
     route: '/dashboard/macro-panel',
@@ -100,10 +68,85 @@ export const menuInfoList: MenuInfo[] = [
     icon: 'fa-solid fa-chart-column',
     route: '/dashboard/risk-metrics',
   },
+  {
+    id: 'pms-pnl',
+    description: 'PMS',
+    badgeCount: 1,
+    icon: 'fa-solid fa-briefcase',
+    route: '/dashboard/pms-pnl',
+  },
+  {
+    id: 'hurricane-pms',
+    description: 'Hurricane PMS',
+    badgeCount: 1,
+    icon: 'fa-solid fa-briefcase',
+    route: '/dashboard/hurricane-pms',
+  },
   // {
   //   description: 'Term Sheets',
+  //   displayName: 'Term Sheets',
   //   badgeCount: 5,
   //   icon: 'fa-solid fa-newspaper',
   //   route: '/dashboard/term-sheets',
   // },
 ];
+
+const sellMenuInfoList: MenuInfo[] = [
+  // {
+  //   description: 'Today',
+  //   displayName: 'Today',
+  //   badgeCount: 5,
+  //   icon: 'fa-regular fa-snowflake'
+  // },
+  {
+    id: 'todays-axes',
+    description: `Today's Axes`,
+    badgeCount: 4,
+    icon: 'fa-solid fa-book-open',
+    route: '/dashboard-generic/todays-axes',
+    // children: [
+    //   {description: 'Active Orders'},
+    //   {description: 'Recent Trades'},
+    //   {description: 'Call Notes'},
+    //   {description: 'Position Changes', subDescription: '11/24 9:45am'}
+    // ]
+  },
+  {
+    id: 'trading-activity',
+    description: 'Trading Activity',
+    badgeCount: 3,
+    icon: 'fa-solid fa-ranking-star',
+    route: '/dashboard-generic/trading-activity',
+  },
+  {
+    id: 'market-data',
+    description: 'Market Data',
+    badgeCount: 4,
+    icon: 'fa-solid fa-chart-simple',
+    route: '/dashboard-generic/market-data',
+    // children: [
+    //   {description: 'Breaking News', subDescription: '11/24 7:45am'},
+    //   {description: 'Earnings Updates'},
+    //   {description: 'Rating Changes'},
+    //   {description: 'Research Notes', subDescription: '11/24 8:45am'}
+    // ]
+  },
+  // {
+  //   id: 'client-data',
+  //   description: 'Client Data',
+  //   badgeCount: 3,
+  //   icon: 'fa-solid fa-user',
+  //   route: '/dashboard-generic/todays-axes',
+  // },
+  {
+    id: 'breaking-new',
+    description: 'Breaking News',
+    badgeCount: 3,
+    icon: 'fa-solid fa-newspaper',
+    route: '/dashboard-generic/breaking-news',
+  },
+];
+
+export function getMenuItems(mode: Mode) {
+  return mode === Mode.SELL ? sellMenuInfoList : menuInfoList;
+}

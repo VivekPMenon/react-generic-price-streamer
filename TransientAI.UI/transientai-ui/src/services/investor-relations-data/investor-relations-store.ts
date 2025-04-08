@@ -3,7 +3,6 @@ import { InquiryRequest, InquiryStatus } from './model';
 import { investorRelationsService } from '@/services/investor-relations-data/investor-relations-service';
 import { useUserContextStore } from '@/services/user-context';
 import { useUnseenItemsStore } from '../unseen-items-store/unseen-items-store';
-import {clearInterval} from "node:timers";
 
 export const resourceNameInvestorRelations = 'investor-relations';
 
@@ -35,6 +34,7 @@ export const useInvestorRelationsStore = create<InvestorRelationsStore>((set, ge
   loadInquiries: async () => {
     const userContext = useUserContextStore.getState().userContext;
     try {
+      set({ isLoading: true });
       const inquiries = await investorRelationsService.getSubmittedTasks(userContext.userName!);
       inquiries.sort((a, b) => {
         const aDate = a?.due_date ? new Date(a.due_date).getTime() : -1;

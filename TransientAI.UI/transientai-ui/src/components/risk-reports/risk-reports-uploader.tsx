@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useRef } from 'react';
+import { useEffect, useMemo, useRef, memo } from 'react';
 import { calculateFileSize, DataGrid } from '../data-grid';
 import { ColDef, GridApi } from 'ag-grid-community';
 import { FileUploadWizard } from '../file-upload-wizard/file-upload-wizard';
@@ -14,7 +14,7 @@ import styles from './risk-reports-uploader.module.scss';
 
 const EMPTY = new Uint8Array(0);
 
-export function RiskReportsUploader() {
+function RiskReportsUploader() {
   const { scrollTargetRef, scrollToTarget } = useScrollTo<HTMLDivElement>();
   const gridApiRef = useRef<GridApi | null>(null);
 
@@ -136,3 +136,5 @@ export function RiskReportsUploader() {
     </div>
   );
 }
+
+export default memo(RiskReportsUploader);

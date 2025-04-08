@@ -1,0 +1,66 @@
+@import '../../assets/variables.scss';
+@import './animations.scss';
+
+.drawerOverlay {
+  position: fixed !important;
+  z-index: 9;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(2px);
+
+  &[data-state='open'] {
+    @include fade-in;
+  }
+
+  &[data-state='closed'] {
+    @include fade-out;
+  }
+}
+
+.drawerContent {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  width: 450px;
+  height: 100%;
+  background: $body-bg;
+  display: flex;
+  flex-direction: column;
+  border-radius: 15px;
+  z-index: 10;
+
+  &[data-state='open'] {
+    @include slide-in-bottom;
+  }
+
+  &[data-state='closed'] {
+    @include slide-out-bottom;
+  }
+
+  @media (max-width: 768px) {
+    width: 100%;
+    right: 0;
+  }
+}
+
+.drawerTitle {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.8rem 1rem;
+  font-size: 1.35rem;
+  text-transform: capitalize;
+  margin: 0;
+}
+
+.drawerClose {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  cursor: pointer;
+}
+
+.drawerDescription {
+  padding: 20px;
+}

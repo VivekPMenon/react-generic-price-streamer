@@ -1,5 +1,13 @@
-import { webApihandler } from "../web-api-handler";
-import {BloombergEmailReport, BondData, CryptoCurrency, EquityFuture, FxRate, TreasuryYield} from './model';
+import {webApihandler} from "../web-api-handler";
+import {
+  BloombergEmailReport,
+  BondData,
+  CryptoCurrency,
+  EquityFuture,
+  FxRate,
+  MarketDataType,
+  TreasuryYield
+} from './model';
 
 class MacroPanelDataService {
   private readonly serviceName = 'hurricane-api';
@@ -16,7 +24,8 @@ class MacroPanelDataService {
       const result = await webApihandler.get('treasury-yields', {}, {
         serviceName: this.serviceName
       });
-      return [new Date(new Date().setHours(6, 0, 0,0)), Object.entries(result)
+
+      return [new Date(result.as_of_date), Object.entries(result)
           .filter(([key]) => key !== 'as_of_date')
           .map(([, item]) => {
             const t = item as TreasuryYield;
@@ -24,11 +33,12 @@ class MacroPanelDataService {
               ...t,
               value: t.rate,
               change: t.one_day_change_bps,
-              percent: t.ytd_change_bps
+              percent: t.ytd_change_bps,
+              symbol: t.ticker ?? '',
+              type: t.type
             };
           })];
     } catch (e: any) {
-      console.log(e)
       return [null, []];
     }
   }
@@ -47,7 +57,9 @@ class MacroPanelDataService {
               ...t,
               value: t.rate,
               change: t.one_day_change_bps,
-              percent: t.ytd_change_bps
+              percent: t.ytd_change_bps,
+              symbol: t.ticker ?? '',
+              type: t.type ?? MarketDataType.FOREIGN_TREASURY
             };
           })))
       ];
@@ -89,7 +101,7 @@ class MacroPanelDataService {
           percent: t.change_percentage,
           symbol: t.ticker,
         };
-      });
+      }).sort((a, b) => (b.percent ?? 0.0) - (a.percent ?? 0.0));
     } catch (e: any) {
       return [];
     }

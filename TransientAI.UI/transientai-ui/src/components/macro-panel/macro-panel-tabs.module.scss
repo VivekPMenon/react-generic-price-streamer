@@ -20,6 +20,21 @@
   font-weight: bold;
 }
 
+.section-header {
+  @extend .header;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background-color: $border-alt;
+
+  @media screen and (max-width: $mobile-breakpoint-max) {
+    flex-direction: row;
+    position: unset;
+    top: unset;
+    z-index: unset;
+  }
+}
+
 .macro-tab {
   width: 100%;
   height: 100%;
@@ -87,7 +102,12 @@
 }
 
 .divider {
-  border-color: $white
+  border-color: $white;
+}
+
+.tab-list {
+  @extend .rt-BaseTabList !optional;
+  box-shadow: inset 0 -1px 0 0 $white;
 }
 
 .instrument-group-tab {
@@ -130,6 +150,23 @@
     max-width: 165px;
     height: 100%;
     padding: 0;
+  }
+}
+
+.market-data-no-graph {
+  @extend .market-data-graph;
+  cursor: unset;
+}
+
+.market-data-graph-popup {
+  gap: 10px;
+  padding: 10px;
+  height: 100%;
+  width: 100%;
+
+  @media screen and (max-width: $mobile-breakpoint-max) {
+    width: calc(100vw - 35px);
+    vertical-align: center;
   }
 }
 
@@ -211,11 +248,18 @@
 }
 
 .dialog-content {
-  display: flex;
   position: fixed;
   width: 100%;
   height: 100%;
   top: 0;
+}
+
+.dialog-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  font-size: 16px;
 }
 
 .dialog-close {

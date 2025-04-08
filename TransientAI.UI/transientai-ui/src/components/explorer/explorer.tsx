@@ -1,19 +1,20 @@
 'use client';
 
-import { useMenuStore } from '@/services/menu-data';
+import {Mode, useMenuStore} from '@/services/menu-data';
 import styles from './explorer.module.scss';
-import { useState } from 'react';
+import {useEffect, useState} from 'react';
 import { useRouter } from 'next/navigation';
 import { MenuInfo } from '@/services/menu-data';
 
 export interface NotificationsProps {
   onExpandCollapse?: (state: boolean) => void;
   onNavigate?: () => void;
+  mode: Mode;
 }
 
 export function Explorer(props: NotificationsProps) {
   const router = useRouter();
-  const { activeMenuList, fullMenuList, selectedMenu, setActiveMenu } = useMenuStore();
+  const { initializeMenus, fullMenuList, selectedMenu, setActiveMenu } = useMenuStore();
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
 
   function expandOrCollapsePanel() {
@@ -27,6 +28,10 @@ export function Explorer(props: NotificationsProps) {
     props.onNavigate?.();
   }
 
+  useEffect(() => {
+    initializeMenus(props.mode);
+  }, [props.mode])
+
   return (
     <div className={`${styles.explorer} widget`}>
       <div className="widget-title">
@@ -35,10 +40,10 @@ export function Explorer(props: NotificationsProps) {
 
       <div className="menu">
         {fullMenuList.map(menuInfo => (
-          <div className="menu-item" key={menuInfo.description}>
+          <div className="menu-item" key={menuInfo.id}>
 
             <div 
-              className={`parent-menu ${menuInfo.description === selectedMenu?.description ? 'active' : ''}`}
+              className={`parent-menu ${menuInfo.id === selectedMenu?.id ? 'active' : ''}`}
               onClick={() => onMenuClick(menuInfo)}
             >
               <span className={`icon ${menuInfo.icon}`}></span>
@@ -49,7 +54,7 @@ export function Explorer(props: NotificationsProps) {
             </div>
 
             {menuInfo.children && menuInfo.children.map(childMenu => (
-              <div className="submenu" key={childMenu.description}>
+              <div className="submenu" key={childMenu.id}>
                 <div className="submenu-item" onClick={() => onMenuClick(childMenu)}>
                   {childMenu.description}
                   <span className="timestamp">{childMenu.subDescription}</span>

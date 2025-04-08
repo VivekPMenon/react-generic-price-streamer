@@ -1,10 +1,10 @@
-import { useMemo } from "react";
+import { useMemo, memo } from "react";
 import { DataGrid, getCurrencyColDefTemplate } from "../data-grid";
 import { ColDef } from "ag-grid-community";
 import { useRiskDataStore } from "@/services/risk-data/risk-data-store";
 import { useDeviceType } from "@/lib/hooks";
 
-export function RiskMetrics() {
+function RiskMetrics() {
 
   const deviceType = useDeviceType();
   const columnDefs = useMemo<ColDef[]>(() => getColumnDef(), [deviceType]);
@@ -42,3 +42,5 @@ export function RiskMetrics() {
     </div>
   )
 }
+
+export default memo(RiskMetrics);

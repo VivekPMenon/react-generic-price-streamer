@@ -5,20 +5,11 @@ import { TextArea } from "@radix-ui/themes";
 import styles from './request-form-popup.module.scss';
 import {useInvestorRelationsStore} from "@/services/investor-relations-data/investor-relations-store";
 import {InquiryFlag, InquiryStatus} from "@/services/investor-relations-data/model";
+import {enumToKeyValuePair} from "@/lib/utility-functions/enum-operations";
 
 export interface RequestPopupProps {
     children: ReactNode;
     onSubmitted?: (message: string) => void;
-}
-
-type KeyValuePair = { key: string, value: string|number };
-
-function enumToKeyValuePair<T extends { [key: string]: number | string }>(enumObj: T): KeyValuePair[] {
-    return Object.entries(enumObj)
-        .filter(([key]) => isNaN(Number(key)))
-        .map(([key, value]) => ({
-            key, value
-        }));
 }
 
 const Flags = enumToKeyValuePair(InquiryFlag);
