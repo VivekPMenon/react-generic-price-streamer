@@ -11,6 +11,7 @@ export interface IDataGridProps extends AgGridReactProps {
   isSummaryGrid?: boolean;
   suppressStatusBar?: boolean;
   suppressFloatingFilter?: boolean;
+  width?: string | number;
 }
 
 // Expose the Grid API via ref
@@ -24,6 +25,7 @@ export const DataGrid = forwardRef<GridApi | null, IDataGridProps>((props, ref) 
       sortable: true,
       resizable: true,
       suppressHeaderMenuButton: true,
+      flex: 1,
       width: 120,
       suppressHeaderFilterButton: true,
       ...props.defaultColDef

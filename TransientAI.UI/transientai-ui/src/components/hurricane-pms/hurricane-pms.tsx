@@ -13,17 +13,46 @@ import {
   managers,
   manager_detail,
   top_gainers,
-  top_losers,
 } from "./pms_mock_data";
 import { IManager } from "./model";
 import AssetAllocationChart from "./pms-charts";
 import WorldMapChart from "./geographic-map";
 import BarChart from "./issue-explorer-chart";
+import { TaDropDown } from '../shared'
+
+const PortfolioSelectOptions = [
+  { value: 'all', label: 'All' },
+  ...managers.map((m) => ({
+    value: m.id?.toString() ?? '',
+    label: m.name ?? '',
+  }))
+];
+
+const topProfitOption = [
+  { value: '10', label: '10' },
+  { value: '5', label: '5' },
+];
+
+const topLossOption = [
+  { value: '10', label: '10' },
+  { value: '5', label: '5' },
+];
+
+const sortOptions = [
+  { value: 'pl', label: 'P&L' },
+  { value: 'pl_bps', label: 'PLBps' },
+];
 
 export const HurricanePms = () => {
     const [isLoading, setIsLoading] = useState<boolean>(false);
-    const [managerId, setManagerId] = useState<string>('1');
-    const [managerDetails, setManagerDetails] = useState<any>(null);
+    const [managerId, setManagerId] = useState<string>('all');
+    const [managerDetails, setManagerDetails] = useState<any[]>([]);
+    const [selectedProfit, setSelectedProfit] = useState<string>('10');
+    const [selectedLoss, setSelectedLoss] = useState<string>('10');
+    const [gainersSort, setGainersSort] = useState<string>('pl');
+    const [losersSort, setLosersSort] = useState<string>('pl');
+    const [topGainers, setTopGainers] = useState<any[]>([]);
+    const [topLosers, setTopLosers] = useState<any[]>([]);
     const managerDetailsRef = useRef<HTMLDivElement>(null);
     const deviceType = useDeviceType();
     const isMobile = deviceType !== 'desktop';
@@ -34,9 +63,125 @@ export const HurricanePms = () => {
         managerDetailsRef.current?.scrollIntoView({ behavior: "smooth" });
     };
 
+    const getRecords = (
+      data: any[],
+      count: number,
+      key: string,
+      ascending: boolean = false
+    ): any[] => {
+      if (!data || !Array.isArray(data) || data.length === 0) {
+        return [];
+      }
+      
+      return data
+        .slice()
+        .sort((a, b) => {
+          const valueA = a[key] as number;
+          const valueB = b[key] as number;
+          
+          if (ascending) {
+            return valueA - valueB;  
+          } else {
+            return valueB - valueA; 
+          }
+        })
+        .slice(0, count);
+    };
+    
+    
     useEffect(() => {
-      setManagerDetails(manager_detail[managerId as keyof typeof manager_detail] || []);
+      setIsLoading(true);
+      
+      try {
+        if (managerId === 'all') {
+          const allDetails = Object.values(manager_detail).flat();
+          setManagerDetails(allDetails);
+        } else {
+          // For a specific manager, get details directly from the object using the manager ID
+          const managerData = manager_detail[managerId as keyof typeof manager_detail];
+          
+          if (Array.isArray(managerData) && managerData.length > 0) {
+            setManagerDetails(managerData);
+          } else {
+            // If no data found for this manager ID, set empty array
+            console.warn(`No details found for manager ID: ${managerId}`);
+            setManagerDetails([]);
+          }
+        }
+      } catch (error) {
+        console.error("Error loading manager details:", error);
+        setManagerDetails([]);
+      } finally {
+        setIsLoading(false);
+      }
     }, [managerId]);
+
+    useEffect(() => {
+      setIsLoading(true);
+      
+      try {
+        // Get all manager data
+        const allGainersData = Object.values(top_gainers).flat();
+        
+        // Find the selected manager's name based on ID
+        const selectedManager = managers.find(m => m.id.toString() === managerId);
+        const managerName = selectedManager?.name || '';
+        
+        // Filter data based on manager name if a specific manager is selected
+        let filteredData = allGainersData;
+        if (managerId !== 'all' && managerName) {
+          filteredData = allGainersData.filter(item => 
+            item.portfolio_manager === managerName
+          );
+        }
+        
+        // Get top gainers (highest values based on sort key)
+        const newTopGainers = getRecords(filteredData, parseInt(selectedProfit), gainersSort, false);
+        
+        // Get top losers (lowest values based on sort key)
+        const newTopLosers = getRecords(filteredData, parseInt(selectedLoss), losersSort, true);
+        
+        setTopGainers(newTopGainers);
+        setTopLosers(newTopLosers);
+      } catch (error) {
+        console.error("Error processing top gainers/losers:", error);
+        setTopGainers([]);
+        setTopLosers([]);
+      } finally {
+        setIsLoading(false);
+      }
+    }, [managerId, selectedProfit, selectedLoss, gainersSort, losersSort]);
+
+    const handleManagerChange = (selectedOption: { value: string; label: string } | null) => {
+      if (selectedOption) {
+        setManagerId(selectedOption.value);
+        managerDetailsRef.current?.scrollIntoView({ behavior: "smooth" });
+      }
+    };
+
+    const handleProfitChange = (selectedOption: { value: string; label: string } | null) => {
+      if (selectedOption) {
+        setSelectedProfit(selectedOption.value);
+      }
+    };
+  
+    const handleLossChange = (selectedOption: { value: string; label: string } | null) => {
+      if (selectedOption) {
+        setSelectedLoss(selectedOption.value);
+      }
+    };
+
+    const handleGainersSortChange = (selectedOption: { value: string; label: string } | null) => {
+      if (selectedOption) {
+        setGainersSort(selectedOption.value);
+      }
+    };
+
+    const handleLosersSortChange = (selectedOption: { value: string; label: string } | null) => {
+      if (selectedOption) {
+        setLosersSort(selectedOption.value);
+      }
+    };
 
   return (
     <div className={`${styles["hurricane-pms"]} scrollable-div gap-4`}>
@@ -44,17 +189,32 @@ export const HurricanePms = () => {
         <div className="w-[80%] flex gap-8">
 
           <section className="w-[60%]">
+            <div className="inline-block min-w-44">
+              <TaDropDown  
+                options={PortfolioSelectOptions}
+                value={PortfolioSelectOptions.find((m) => m.value === managerId) || null}
+                onChange={handleManagerChange}
+                isSearchable={true}
+                prefix="Portfolio"
+              />
+            </div>
+
             <DataGrid 
+                className="hurrican-grid"
                 domLayout={'normal'}
                 height={isMobile ? 500 : '95%'}
                 isSummaryGrid={false}
-                suppressStatusBar={false}
+                suppressStatusBar={true}
                 suppressFloatingFilter={false}
                 columnDefs={columnDefs}
                 rowData={managers}
                 gridOptions={{
                   ...defaultGridOptions,
                   onRowClicked: handleOnRowClicked,
+                  rowClassRules: {
+                    'ag-row-even': (params :any) => params.node.rowIndex % 2 === 0,
+                    'ag-row-odd': (params :any) => params.node.rowIndex % 2 !== 0
+                  },            
                   pinnedTopRowData: [
                     managers.reduce((totals, row) => {
                       Object.keys(row).forEach((key) => {
@@ -76,35 +236,87 @@ export const HurricanePms = () => {
                         return styles["pinned-top-row"];
                     }
                     return '';
-                }
-              }}
+                  }
+                }}
                 loading={isLoading}
             />
           </section>
           <section className="w-[40%]">
-            <div className="h-1/2">
+            <div className="h-[45%]">
+                <div className="flex gap-2">
+                    <div className="inline-block min-w-10">
+                        <TaDropDown
+                        options={topProfitOption}
+                        value={topProfitOption.find(p => p.value === selectedProfit) || null}
+                        onChange={handleProfitChange}
+                        isSearchable={false}
+                        prefix="Top"
+                      />
+                    </div>
+                    <div className="inline-block min-w-20">
+                        <TaDropDown
+                        options={sortOptions}
+                        value={sortOptions.find(s => s.value === gainersSort) || null}
+                        onChange={handleGainersSortChange}
+                        isSearchable={false}
+                        prefix="Sort"
+                      />
+                    </div>
+                </div>
                 <DataGrid 
+                    className="hurrican-grid"
                     domLayout={'normal'}
                     height={isMobile ? 500 : '95%'}
                     isSummaryGrid={false}
                     suppressStatusBar={true}
-                    suppressFloatingFilter={false}
+                    suppressFloatingFilter={true}
                     columnDefs={profitColDefs}
-                    rowData={top_gainers}
-                    gridOptions={defaultGridOptions}
+                    rowData={topGainers}
+                    gridOptions={{
+                      ...defaultGridOptions,
+                      getRowId: (params) => {
+                        return `gain-${params.data.portfolio_manager}-${params.data.security}`;
+                      }
+                    }}
                     loading={isLoading}
                 />
             </div>
-            <div className="h-1/2">
+            <div className="h-[45%] mt-10">
+                <div className="flex gap-2">
+                    <div className="inline-block min-w-10">
+                      <TaDropDown
+                        options={topLossOption}
+                        value={topLossOption.find(l => l.value === selectedLoss) || null}
+                        onChange={handleLossChange}
+                        isSearchable={false}
+                        prefix="Top"
+                      />
+                    </div>
+                    <div className="inline-block min-w-20">
+                        <TaDropDown
+                        options={sortOptions}
+                        value={sortOptions.find(s => s.value === losersSort) || null}
+                        onChange={handleLosersSortChange}
+                        isSearchable={false}
+                        prefix="Sort"
+                      />
+                    </div>
+                </div>
                 <DataGrid 
+                    className="hurrican-grid"
                     domLayout={'normal'}
                     height={isMobile ? 500 : '95%'}
                     isSummaryGrid={false}
                     suppressStatusBar={true}
-                    suppressFloatingFilter={false}
+                    suppressFloatingFilter={true}
                     columnDefs={lossColDefs}
-                    rowData={top_losers}
-                    gridOptions={defaultGridOptions}
+                    rowData={topLosers}
+                    gridOptions={{
+                      ...defaultGridOptions,
+                      getRowId: (params) => {
+                        return `loss-${params.data.portfolio_manager}-${params.data.security}`;
+                      }
+                    }}
                     loading={isLoading}
                 />
             </div>
@@ -124,9 +336,10 @@ export const HurricanePms = () => {
         </div>
       </section>
 
-      <section className="flex h-[600px] gap-4">
+      <section className="flex h-[600px] gap-4 mt-5">
         <div className="w-[80%]" ref={managerDetailsRef}>
             <DataGrid 
+            className="hurrican-grid"
             domLayout={'normal'}
             height={isMobile ? 500 : '95%'}
             isSummaryGrid={false}
@@ -134,7 +347,16 @@ export const HurricanePms = () => {
             suppressFloatingFilter={false}
             columnDefs={managerDetailsColDefs}
             rowData={managerDetails}
-            gridOptions={defaultGridOptions}
+            gridOptions={{
+              ...defaultGridOptions,
+              rowClassRules: {
+                'ag-row-even1': (params :any) => params.node.rowIndex % 2 === 0,
+                'ag-row-odd': (params :any) => params.node.rowIndex % 2 !== 0
+              },   
+              getRowId: (params) => {
+                return `detail-${params.data.id || params.data.security || params.data.ticker }`;
+              }
+            }}
             loading={isLoading}
             />
         </div>

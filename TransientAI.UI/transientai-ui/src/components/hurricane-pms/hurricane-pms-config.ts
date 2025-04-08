@@ -11,6 +11,8 @@ import {
     CellClassParams,
     IRowNode
 } from "ag-grid-community";
+import PLHighchartsRenderer from './PLHighchartsRenderer';
+import PLredChartRenderer from './PLredChartsRenderer'
 
 export const columnDefs: ColDef[] = [
     {
@@ -18,7 +20,6 @@ export const columnDefs: ColDef[] = [
         headerName: 'Portfolio',
         headerClass: `${styles['table-header']} ag-right-aligned-header`,
         aggFunc: 'sum',
-        pinned: true,
     },
     {
         field: 'pl',
@@ -67,7 +68,7 @@ export const columnDefs: ColDef[] = [
 
 export const managerDetailsColDefs: ColDef[] = [
     {
-        field: 'name',
+        field: 'manager_name',
         headerName: 'Manager',
         headerClass: `${styles['table-header']} ag-right-aligned-header`,
         width: 85,
@@ -81,7 +82,7 @@ export const managerDetailsColDefs: ColDef[] = [
         aggFunc: 'sum'
     },
     {
-        field: 'order_side_1',
+        field: 'order_side',
         headerName: 'Order Side',
         headerClass: `${styles['table-header']} ag-right-aligned-header`,
         cellStyle: params => params.value !== "Buy" ? { color: '#ff4d4f' } : { color: '#52c41a' },
@@ -172,7 +173,6 @@ export const profitColDefs: ColDef[] = [
         headerName: 'Profolio Manager',
         headerClass: `${styles['table-header']} ag-right-aligned-header`,
         width: 85,
-        aggFunc: 'sum'
     },
     {
         field: 'security',
@@ -192,13 +192,12 @@ export const profitColDefs: ColDef[] = [
         field: 'pl',
         headerName: 'P&L',
         headerClass: `${styles['table-header']} ag-right-aligned-header`,
-        width: 85,
-        valueFormatter: (params: ValueFormatterParams) => {
-            const value = params.data?.pl;
-            return value != null ? `$ ${formatInteger(value, '')}` : '';
-        },
+        // Use the React component
+        cellRenderer: PLHighchartsRenderer,
+        valueFormatter: (params: ValueFormatterParams) => formatInteger(params.data?.pl, ''),
+        aggFunc: 'sum',
         cellStyle: { color: '#52c41a' },
-        aggFunc: 'sum'
+        width: 130 // Ensure enough space for the chart
     },
     {
         field: 'pl_bps',
@@ -223,7 +222,7 @@ export const lossColDefs: ColDef[] = [
         aggFunc: 'sum'
     },
     {
-        field: 'manager',
+        field: 'security',
         headerName: 'Security',
         headerClass: `${styles['table-header']} ag-right-aligned-header`,
         width: 85,
@@ -240,7 +239,8 @@ export const lossColDefs: ColDef[] = [
         field: 'pl',
         headerName: 'P&L',
         headerClass: `${styles['table-header']} ag-right-aligned-header`,
-        width: 85,
+        width: 130,
+        cellRenderer: PLredChartRenderer, 
         valueFormatter: (params: ValueFormatterParams) => {
             const value = params.data?.pl;
             return value != null ? `$ ${formatInteger(value, '')}` : '';
@@ -263,7 +263,6 @@ export const lossColDefs: ColDef[] = [
 ]
 
 export const defaultGridOptions: GridOptions = {
-    getRowId: (params: GetRowIdParams) => String(params.data),
     autoSizeStrategy: {
         type: 'fitCellContents',
     },

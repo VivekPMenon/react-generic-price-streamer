@@ -13,7 +13,7 @@ import msalInstance from '../msal-config';
 import {Spinner} from '@radix-ui/themes';
 import {ContentCarousel} from '@/components/content-carousel/content-carousel';
 import {EContentTypes} from '@/components/content-carousel/model';
-import {Mode} from "@/services/menu-data";
+import {Mode, useMenuStore} from "@/services/menu-data";
 
 const MODE: Mode = Mode.BUY;
 
@@ -25,6 +25,8 @@ export default function DashboardLayout({
 
   // todo.. unable to add this to the root of the app, as it is server side rendered, create an intermediate layout that wil act as root for all client dashbaords
   const { loadUserContext, isLoading, isAuthenticated } = useUserContextStore();
+  const { selectedMenu } = useMenuStore();
+  const [hurricanePmsView, setHurricanePmsView] = useState<boolean | null>(null);
 
   useEffect(() => {
     loadUserContext();
@@ -35,6 +37,10 @@ export default function DashboardLayout({
       window.history.replaceState({}, document.title, window.location.pathname);
     }
   }, [isAuthenticated]);
+
+  useEffect(() => {
+    setHurricanePmsView(selectedMenu?.id === 'hurricane-pms');
+  }, [selectedMenu]);
 
   const deviceType = useDeviceType();
 
@@ -71,17 +77,18 @@ export default function DashboardLayout({
             <Header isMenuVisible={isMenuVisible} onMenuToggle={onMenuToggle}></Header>
 
             <main>
-              <div className={`${styles['left-panel']} ${!isMenuVisible && deviceType === 'mobile' ? styles['collapsed'] : ''}`}>
+              <div className={`${styles['left-panel']} ${!isMenuVisible && deviceType === 'mobile' ? styles['collapsed'] : ''} ${hurricanePmsView && '!max-w-32'} transition-all duration-300`}>
                 {
                   !expandedPanels.includes('notifications') ?
                     <Explorer
                       mode={MODE}
                       onExpandCollapse={isExpanded => onExpandCollapse('explorer', isExpanded)}
-                      onNavigate={() => setIsMenuVisible(false)}>
+                      onNavigate={() => setIsMenuVisible(false)}
+                      >
                     </Explorer> : <></>
                 }
                 {
-                  !expandedPanels.includes('explorer')
+                  !expandedPanels.includes('explorer') && !hurricanePmsView
                       ? <Notifications
                           onExpandCollapse={isExpanded => onExpandCollapse('notifications', isExpanded)}
                           notificationClicked={() => setIsMenuVisible(false)}
@@ -92,8 +99,10 @@ export default function DashboardLayout({
               </div>
 
               <div className={`${styles['middle-panel']} ${isMenuVisible && deviceType === 'mobile' ? styles['collapsed'] : ''}`}>
+                {!hurricanePmsView && (
                 <ContentCarousel
                   contentType={EContentTypes.NOTIFICATION} />
+                )}
                 <DashboardTabs>
                   {children}
                 </DashboardTabs>
