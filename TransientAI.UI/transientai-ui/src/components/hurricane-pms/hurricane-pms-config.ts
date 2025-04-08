@@ -104,21 +104,28 @@ export const managerDetailsColDefs: ColDef[] = [
     },
     {
         field: 'ticker',
-        headerName: 'Ticker',
+        headerName: 'Ticker Anon',
         headerClass: `${styles['table-header']} ag-right-aligned-header`,
         width: 85,
         aggFunc: 'sum'
     },
     {
         field: 'security_description',
-        headerName: 'security Description',
+        headerName: 'security Description Anon',
         headerClass: `${styles['table-header']} ag-right-aligned-header`,
         width: 85,
         aggFunc: 'sum'
     },
     {
         field: 'quantity',
-        headerName: 'Quantity',
+        headerName: 'Quantity Rand',
+        headerClass: `${styles['table-header']} ag-right-aligned-header`,
+        width: 85,
+        aggFunc: 'sum'
+    },
+    {
+        field: 'price',
+        headerName: 'Price Rand',
         headerClass: `${styles['table-header']} ag-right-aligned-header`,
         width: 85,
         aggFunc: 'sum'
