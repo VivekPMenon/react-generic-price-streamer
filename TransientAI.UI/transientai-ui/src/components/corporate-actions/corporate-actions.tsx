@@ -73,7 +73,8 @@ export const CorporateActions = () => {
             <EmailViewer
               className={styles['email-viewer']}
               emailHtml={selectedEmailContent}
-              scrollToSearchTerm={searchValue || ''} // selectedCorpAction?.accounts && selectedCorpAction?.accounts[0].accountNumber 
+              scrollToSearchTerm={searchValue || ''}
+            translateTo="ja" // selectedCorpAction?.accounts && selectedCorpAction?.accounts[0].accountNumber 
             />
           )}
           

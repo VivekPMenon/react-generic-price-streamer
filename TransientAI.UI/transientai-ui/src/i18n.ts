@@ -6,7 +6,13 @@ import LanguageDetector from 'i18next-browser-languagedetector';
 import macro from 'styled-jsx/macro';
 import axios from 'axios';
 
-console.log('Detected Language:',i18n.language); // Check which language is detected
+console.log('Detected Language:',i18n.language);
+
+// Optional: to detect and set HTML lang tag
+i18n.on('initialized', () => {
+  console.log('✅ Detected Language (event):', i18n.language);
+});
+
 
 export const translateText = async (text: string, targetLanguage: string) => {
   try {
@@ -41,7 +47,14 @@ i18n
   .use(initReactI18next)
   .init({
     debug: true,
-    lng: "ja", // Default language
+    fallbackLng: 'en', //fallback if detection fails
+    detection: {
+      order: ['querystring', 'cookie', 'localStorage', 'navigator', 'htmlTag'],
+      lookupQuerystring: 'lng',
+      lookupCookie: 'i18next',
+      lookupLocalStorage: 'i18nextLng',
+      caches: ['localStorage', 'cookie'],
+    }, 
     resources: {
       en: {
         translation: {
@@ -108,7 +121,8 @@ i18n
             "term_details": "Term Details",
             "pay_date": "Pay Date",
             "read_more": "Read More",
-            "close": "Close"
+            "close": "Close",
+            'pnl_dashboard': "PnL Dashboard"
 
         },
         full_view: "Full View",
@@ -233,7 +247,8 @@ i18n
             "term_details": "条件の詳細",
             "pay_date": "支払い日",
             "read_more": "続きを読む",
-            "close": "閉じる"
+            "close": "閉じる",
+            'pnl_dashboard': "損益ダッシュボード"
     },
     file_upload_wizard:{
       upload: "ファイルをアップロード",
@@ -288,6 +303,8 @@ i18n
         },
       },
     },
-  });
+  }).then(() => {
+    console.log('✅ Language after detection:', i18n.language);
+  });;
 
 export default i18n;

@@ -35,7 +35,6 @@ import {RoleType, useUserContextStore} from '@/services/user-context';
 import {usePmsPnlDataStore} from "@/services/pms-pnl-data/pms-pnl-data-store";
 import { useTranslation } from 'react-i18next'; // Import the translation hook
 
-import { useTranslation } from 'react-i18next'; // Import the translation hook
 
 
 export interface NotificationsProps {
@@ -135,7 +134,6 @@ export const filterTypeToResourceMap: { [key: string]: string } = {
 };
 
 export function Notifications(props: NotificationsProps) {
-  const { t } = useTranslation(); // Get the translation function
   const { t } = useTranslation(); // Get the translation function
   const router = useRouter();
   const divRef = useRef<HTMLDivElement>(null);
@@ -436,11 +434,6 @@ export function Notifications(props: NotificationsProps) {
       {t('notification.title')}  {/* Translates the title */}
       <i className='fa-solid fa-expand toggler' onClick={() => expandOrCollapsePanel()} title={t('notification.expand')}></i>
     </div>
-          <div className='widget-title'>
-      {t('notification.title')}  {/* Translates the title */}
-      <i className='fa-solid fa-expand toggler' onClick={() => expandOrCollapsePanel()} title={t('notification.expand')}></i>
-    </div>
-
       <div className='horizontal-scrollable-div filters'>
       {getFilterTypes(props.mode).map(filterType => {
   const unseenItemsCount = getUnseenItemsCount(filterType);
