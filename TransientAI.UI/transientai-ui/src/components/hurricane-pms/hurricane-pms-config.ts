@@ -20,7 +20,6 @@ export const columnDefs: ColDef[] = [
         headerName: 'Portfolio',
         headerClass: `${styles['table-header']} ag-right-aligned-header`,
         aggFunc: 'sum',
-        pinned: true,
     },
     {
         field: 'pl',

@@ -25,6 +25,7 @@ export const DataGrid = forwardRef<GridApi | null, IDataGridProps>((props, ref) 
       sortable: true,
       resizable: true,
       suppressHeaderMenuButton: true,
+      flex: 1,
       width: 120,
       suppressHeaderFilterButton: true,
       ...props.defaultColDef
