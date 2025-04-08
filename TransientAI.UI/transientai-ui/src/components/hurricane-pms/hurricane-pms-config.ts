@@ -11,6 +11,8 @@ import {
     CellClassParams,
     IRowNode
 } from "ag-grid-community";
+import PLHighchartsRenderer from './PLHighchartsRenderer';
+import PLredChartRenderer from './PLredChartsRenderer'
 
 export const columnDefs: ColDef[] = [
     {
@@ -192,13 +194,12 @@ export const profitColDefs: ColDef[] = [
         field: 'pl',
         headerName: 'P&L',
         headerClass: `${styles['table-header']} ag-right-aligned-header`,
-        width: 85,
-        valueFormatter: (params: ValueFormatterParams) => {
-            const value = params.data?.pl;
-            return value != null ? `$ ${formatInteger(value, '')}` : '';
-        },
+        // Use the React component
+        cellRenderer: PLHighchartsRenderer,
+        valueFormatter: (params: ValueFormatterParams) => formatInteger(params.data?.pl, ''),
+        aggFunc: 'sum',
         cellStyle: { color: '#52c41a' },
-        aggFunc: 'sum'
+        width: 130 // Ensure enough space for the chart
     },
     {
         field: 'pl_bps',
@@ -240,7 +241,8 @@ export const lossColDefs: ColDef[] = [
         field: 'pl',
         headerName: 'P&L',
         headerClass: `${styles['table-header']} ag-right-aligned-header`,
-        width: 85,
+        width: 130,
+        cellRenderer: PLredChartRenderer, 
         valueFormatter: (params: ValueFormatterParams) => {
             const value = params.data?.pl;
             return value != null ? `$ ${formatInteger(value, '')}` : '';

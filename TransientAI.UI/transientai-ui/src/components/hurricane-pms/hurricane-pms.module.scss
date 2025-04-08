@@ -16,3 +16,11 @@
 :global(.hurrican-grid) :global(.ag-row-even:not(.ag-row-pinned)) {
     background-color: rgba(25, 118, 210, 0.15) !important;
 }
+
+.pl-chart-container {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    padding: 0 8px;
+  }
