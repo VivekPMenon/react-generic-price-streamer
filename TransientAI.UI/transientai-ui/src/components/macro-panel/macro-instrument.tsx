@@ -52,8 +52,7 @@ function getChartOptions(instrument: Instrument, isNegative: boolean = false, ig
             type: 'datetime',
             labels: { enabled: false, style: { color: '#dddddd' } },
             gridLineWidth: 0,
-            crosshair: false,
-            minRange: 3600 * 1000
+            crosshair: false
         },
         yAxis: {
             title: { text: null },
