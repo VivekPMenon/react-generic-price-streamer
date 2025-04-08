@@ -5398,6 +5398,41 @@ export const managers: IManager[] = [
       "last_price": 10.25,
       "pl": 14563,
       "pl_bps": 2
+    },
+    {
+      "portfolio_manager": "VAN DIESL",
+      "security": "BPL",
+      "last_price": 100.25,
+      "pl": 14563,
+      "pl_bps": 2
+    },
+    {
+      "portfolio_manager": "HURRY KENDRY",
+      "security": "LLS",
+      "last_price": 8.25,
+      "pl": 15890,
+      "pl_bps": 3
+    },
+    {
+      "portfolio_manager": "MARK ZION",
+      "security": "EIO",
+      "last_price": 27.60,
+      "pl": 19078,
+      "pl_bps": 5
+    },
+    {
+      "portfolio_manager": "AKIM RAAN",
+      "security": "AAPL",
+      "last_price": 101.17,
+      "pl": 16009,
+      "pl_bps": 3
+    },
+    {
+      "portfolio_manager": "VAJ RANM",
+      "security": "EIO",
+      "last_price": 60.25,
+      "pl": 17008,
+      "pl_bps": 5
     }
   ]
   
@@ -5436,5 +5471,40 @@ export const managers: IManager[] = [
       "last_price": 304,
       "pl": 14563,
       "pl_bps": 8
+    },
+    {
+      "portfolio_manager": "RAK GEORGE",
+      "security": "BCC",
+      "last_price": 389,
+      "pl": 12373,
+      "pl_bps": 4
+    },
+    {
+      "portfolio_manager": "HARSHA KIM",
+      "security": "DFL",
+      "last_price": 209,
+      "pl": 40094,
+      "pl_bps": 9
+    },
+    {
+      "portfolio_manager": "JHON DAO",
+      "security": "CACI",
+      "last_price": 238,
+      "pl": 39090,
+      "pl_bps": 6
+    },
+    {
+      "portfolio_manager": "RIO HUMN",
+      "security": "DFL",
+      "last_price": 400,
+      "pl": 13563,
+      "pl_bps": 8
+    },
+    {
+      "portfolio_manager": "JACK HUMN",
+      "security": "DFL",
+      "last_price": 277,
+      "pl": 11006,
+      "pl_bps": 7
     }
   ]
