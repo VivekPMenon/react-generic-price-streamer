@@ -1,7 +1,7 @@
 import {webApihandler} from "../web-api-handler";
 import {FinancialData, GraphDataPoint, ImageType, Instrument, MarketData, PeriodType, Price, TraceData} from "./model";
 import {isToday, parseIsoDate, parseLocalDate} from "@/lib/utility-functions/date-operations";
-import {MarketDataType} from "@/services/macro-panel-data/model";
+import {MarketDataInterval, MarketDataType} from "@/services/macro-panel-data/model";
 
 class MarketDataService {
   readonly serviceName = 'hurricane-api';
@@ -34,10 +34,10 @@ class MarketDataService {
               ? 'us_treasury'
               : 'foreign_treasury_ticker';
 
-      const params: Record<string, string> = { period };
+      const params: Record<string, unknown> = { period, intraday: false, interval: MarketDataInterval.FIVE_MIN };
       params[fieldName] = company_or_ticker;
 
-      return await this.getMarketDataCore('market-data', params);
+      return await this.getMarketDataCore(params);
 
     } catch (e) {
       return null;
@@ -52,10 +52,10 @@ class MarketDataService {
       //         ? 'us_treasury'
       //         : 'foreign_treasury_ticker';
       const fieldName = 'company_or_ticker';
-      const params: Record<string, string> = {};
+      const params: Record<string, unknown> = { intraday: true, interval: MarketDataInterval.FIVE_MIN };
       params[fieldName] = company_or_ticker;
 
-      return await this.getMarketDataCore('intraday-data', params);
+      return await this.getMarketDataCore(params);
     } catch (e: any) {
       return null;
     }
@@ -104,10 +104,10 @@ class MarketDataService {
     });
   }
 
-  private async getMarketDataCore(url: string, params: Record<string, string>) {
+  private async getMarketDataCore(params: Record<string, unknown>) {
     const result = await webApihandler
         .get(
-            url, params, {
+            'market-data', params, {
               serviceName: this.serviceName
             });
 

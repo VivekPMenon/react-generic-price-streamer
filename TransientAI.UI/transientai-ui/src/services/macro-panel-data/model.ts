@@ -72,3 +72,8 @@ export enum MarketDataType {
   DOMESTIC_TREASURY = 'domestic_treasury',
   FOREIGN_TREASURY = 'foreign_treasury'
 }
+
+export enum MarketDataInterval {
+  ONE_MIN = 1,
+  FIVE_MIN = 5
+}
