@@ -49,7 +49,7 @@ export const HurricanePms = () => {
                 domLayout={'normal'}
                 height={isMobile ? 500 : '95%'}
                 isSummaryGrid={false}
-                suppressStatusBar={false}
+                suppressStatusBar={true}
                 suppressFloatingFilter={false}
                 columnDefs={columnDefs}
                 rowData={managers}
@@ -94,7 +94,7 @@ export const HurricanePms = () => {
                     height={isMobile ? 500 : '95%'}
                     isSummaryGrid={false}
                     suppressStatusBar={true}
-                    suppressFloatingFilter={false}
+                    suppressFloatingFilter={true}
                     columnDefs={profitColDefs}
                     rowData={top_gainers}
                     gridOptions={defaultGridOptions}
@@ -111,7 +111,7 @@ export const HurricanePms = () => {
                     height={isMobile ? 500 : '95%'}
                     isSummaryGrid={false}
                     suppressStatusBar={true}
-                    suppressFloatingFilter={false}
+                    suppressFloatingFilter={true}
                     columnDefs={lossColDefs}
                     rowData={top_losers}
                     gridOptions={defaultGridOptions}
