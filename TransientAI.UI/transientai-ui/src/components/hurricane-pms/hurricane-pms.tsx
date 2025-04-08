@@ -45,6 +45,7 @@ export const HurricanePms = () => {
 
           <section className="w-[60%]">
             <DataGrid 
+                className="hurrican-grid"
                 domLayout={'normal'}
                 height={isMobile ? 500 : '95%'}
                 isSummaryGrid={false}
@@ -55,6 +56,10 @@ export const HurricanePms = () => {
                 gridOptions={{
                   ...defaultGridOptions,
                   onRowClicked: handleOnRowClicked,
+                  rowClassRules: {
+                    'ag-row-even': (params :any) => params.node.rowIndex % 2 === 0,
+                    'ag-row-odd': (params :any) => params.node.rowIndex % 2 !== 0
+                  },            
                   pinnedTopRowData: [
                     managers.reduce((totals, row) => {
                       Object.keys(row).forEach((key) => {
@@ -84,6 +89,7 @@ export const HurricanePms = () => {
           <section className="w-[40%]">
             <div className="h-1/2">
                 <DataGrid 
+                    className="hurrican-grid"
                     domLayout={'normal'}
                     height={isMobile ? 500 : '95%'}
                     isSummaryGrid={false}
@@ -97,6 +103,7 @@ export const HurricanePms = () => {
             </div>
             <div className="h-1/2">
                 <DataGrid 
+                    className="hurrican-grid"
                     domLayout={'normal'}
                     height={isMobile ? 500 : '95%'}
                     isSummaryGrid={false}
@@ -127,6 +134,7 @@ export const HurricanePms = () => {
       <section className="flex h-[600px] gap-4">
         <div className="w-[80%]" ref={managerDetailsRef}>
             <DataGrid 
+            className="hurrican-grid"
             domLayout={'normal'}
             height={isMobile ? 500 : '95%'}
             isSummaryGrid={false}

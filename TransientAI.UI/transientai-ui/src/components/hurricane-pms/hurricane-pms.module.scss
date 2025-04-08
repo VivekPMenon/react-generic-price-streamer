@@ -12,3 +12,7 @@
 .pinned-top-row {
     font-weight: 800;
 }
+
+:global(.hurrican-grid) :global(.ag-row-even:not(.ag-row-pinned)) {
+    background-color: rgba(25, 118, 210, 0.15) !important;
+}
