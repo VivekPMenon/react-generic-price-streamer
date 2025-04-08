@@ -223,7 +223,7 @@ export const lossColDefs: ColDef[] = [
         aggFunc: 'sum'
     },
     {
-        field: 'manager',
+        field: 'security',
         headerName: 'Security',
         headerClass: `${styles['table-header']} ag-right-aligned-header`,
         width: 85,

@@ -5365,7 +5365,7 @@ export const managers: IManager[] = [
 
   export const top_gainers = [
     {
-      "portfolio_manager": "FRONTIER ALPHA",
+      "portfolio_manager": "NEO ALPHA",
       "security": "CCN5 Comdty",
       "last_price": 13.06,
       "pl": 150000,
@@ -5379,7 +5379,7 @@ export const managers: IManager[] = [
       "pl_bps": 4
     },
     {
-      "portfolio_manager": "FRONTIER ALPHA",
+      "portfolio_manager": "JACK DRAVID",
       "security": "QQQ",
       "last_price": 400,
       "pl": 90560,
@@ -5431,7 +5431,7 @@ export const managers: IManager[] = [
       "pl_bps": 4
     },
     {
-      "portfolio_manager": "NEW PARADIGM",
+      "portfolio_manager": "NEO SEVEN",
       "security": "CACI",
       "last_price": 304,
       "pl": 14563,

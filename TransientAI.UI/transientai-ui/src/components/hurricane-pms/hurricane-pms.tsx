@@ -99,6 +99,9 @@ export const HurricanePms = () => {
                     rowData={top_gainers}
                     gridOptions={defaultGridOptions}
                     loading={isLoading}
+                    getRowId={(params) => {
+                        return `${params.data.portfolio_manager}-${params.data.security}`;
+                    }}
                 />
             </div>
             <div className="h-1/2">
@@ -113,6 +116,9 @@ export const HurricanePms = () => {
                     rowData={top_losers}
                     gridOptions={defaultGridOptions}
                     loading={isLoading}
+                    getRowId={(params) => {
+                      return `${params.data.portfolio_manager}-${params.data.security}`;
+                  }}
                 />
             </div>
           </section>
