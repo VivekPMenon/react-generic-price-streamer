@@ -309,7 +309,7 @@ export const HurricanePms = () => {
             gridOptions={{
               ...defaultGridOptions,
               getRowId: (params) => {
-                return `detail-${params.data.id || params.data.security || params.data.ticker || params.node.rowIndex}`;
+                return `detail-${params.data.id || params.data.security || params.data.ticker }`;
               }
             }}
             loading={isLoading}
