@@ -336,7 +336,7 @@ export const HurricanePms = () => {
         </div>
       </section>
 
-      <section className="flex h-[600px] gap-4">
+      <section className="flex h-[600px] gap-4 mt-5">
         <div className="w-[80%]" ref={managerDetailsRef}>
             <DataGrid 
             className="hurrican-grid"

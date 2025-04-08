@@ -264,7 +264,6 @@ export const lossColDefs: ColDef[] = [
 ]
 
 export const defaultGridOptions: GridOptions = {
-    getRowId: (params: GetRowIdParams) => String(params.data),
     autoSizeStrategy: {
         type: 'fitCellContents',
     },
