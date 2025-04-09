@@ -7,7 +7,8 @@ import { useDeviceType } from '@/lib/hooks';
 import { useUserContextStore } from '@/services/user-context';
 import * as Popover from '@radix-ui/react-popover';
 import ProfilePopover from './profile-popover';
-
+import Image from 'next/image';
+import { useMenuStore } from '@/services/menu-data';
 export interface HeaderProps {
   onMenuToggle?: () => void;
   isMenuVisible?: boolean;
@@ -18,6 +19,7 @@ export function Header({ onMenuToggle, isMenuVisible }: HeaderProps) {
   const { searchData, setSearchData } = useContext(SearchDataContext);
   const { userContext } = useUserContextStore();
   const deviceType = useDeviceType();
+  const {selectedMenu} = useMenuStore();
 
   return (
     <header>
@@ -59,6 +61,15 @@ export function Header({ onMenuToggle, isMenuVisible }: HeaderProps) {
         }
 
       </div>
+      {selectedMenu?.id === 'hurricane-pms' && <div>
+          <Image 
+            alt="Hurricane logo"
+            src="/images/hurricane_logo.png" 
+            className='absolute right-1/2 top-1'
+            width={65}
+            height={50}
+          />
+      </div>}
 
       {/* // todo remove inlines tyling */}
       <div className='flex'>
