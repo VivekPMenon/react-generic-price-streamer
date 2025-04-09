@@ -18,7 +18,7 @@ export const translateText = async (text: string) => {
   }
 
   // Only translate if the target language is not 'en' (English)
-  if (targetLanguage === 'en-US' || targetLanguage === 'en') {
+  if (targetLanguage.startsWith('en')) {
     return text;
   }
 
