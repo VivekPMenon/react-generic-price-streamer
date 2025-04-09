@@ -1,7 +1,6 @@
 //src/services/break-news/break-news-data-service.ts
 import { webApihandler } from "../web-api-handler";
 // import { BreakNewsItem } from "./model";
-import { translateText } from '../../i18n';
 
 class BreakNewsDataService {
   private serviceName = 'hurricane-api-2-0';

@@ -34,10 +34,7 @@ import {
 import {RoleType, useUserContextStore} from '@/services/user-context';
 import {usePmsPnlDataStore} from "@/services/pms-pnl-data/pms-pnl-data-store";
 import { useTranslation } from 'react-i18next'; // Import the translation hook
-import { translateText } from '../../i18n';
-import i18n from 'i18next';
-
- // Import the translation hook
+import { translateText } from '@/i18n';
 
 // Helper function to translate text fields within a notification
 const translateNotificationText = async (notification: Notification) => {

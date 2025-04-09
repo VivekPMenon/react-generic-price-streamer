@@ -16,7 +16,7 @@ import Tags from "@/components/tags/tags";
 import ImageContainer from "@/components/image-container/image-container";
 import { useScrollTo, useScrollToElementId } from '@/lib/hooks';
 import { Spinner } from '@radix-ui/themes';
-import { translateText } from '../../i18n'; // Import your translate function
+import { translateText } from '@/i18n'; // Import your translate function
 
 export interface ResearchReportsProps {
   isExpanded?: boolean;
