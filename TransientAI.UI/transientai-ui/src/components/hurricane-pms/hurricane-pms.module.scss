@@ -13,13 +13,14 @@
     font-weight: 800;
 }
 
-:global(.hurrican-grid) :global(.ag-row-even:not(.ag-row-pinned)) {
+.hurricane-pms :global(.hurrican-grid) :global(.ag-row-even:not(.ag-row-pinned)) {
     background-color: #002060 !important;
+  }
+  
+.hurricane-pms :global(.hurrican-grid) :global(.ag-row-even1:not(.ag-row-pinned)) {
+background-color: #0070c0 !important;
 }
-
-:global(.hurrican-grid) :global(.ag-row-even1:not(.ag-row-pinned)) {
-    background-color: #0070c0 !important;
-}
+  
 
 .pl-chart-container {
     display: flex;

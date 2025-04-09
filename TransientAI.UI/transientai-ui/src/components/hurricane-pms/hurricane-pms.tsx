@@ -40,7 +40,7 @@ const topLossOption = [
 
 const sortOptions = [
   { value: 'pl', label: 'P&L' },
-  { value: 'pl_bps', label: 'PLBps' },
+  { value: 'pl_bps', label: 'PLBPs' },
 ];
 
 
@@ -209,7 +209,7 @@ export const HurricanePms = () => {
                 suppressStatusBar={true}
                 suppressFloatingFilter={false}
                 columnDefs={columnDefs}
-                rowData={managers}
+                rowData={managerId === 'all' ? managers : managers.filter(manager => manager.id.toString() === managerId)}
                 gridOptions={{
                   ...defaultGridOptions,
                   onRowClicked: handleOnRowClicked,
@@ -315,9 +315,9 @@ export const HurricanePms = () => {
                     rowData={topLosers}
                     gridOptions={{
                       ...defaultGridOptions,
-                      getRowId: (params) => {
-                        return `loss-${params.data.portfolio_manager}-${params.data.security}`;
-                      }
+                      // getRowId: (params) => {
+                      //   return `loss-${params.data.portfolio_manager}-${params.data.security}`;
+                      // }
                     }}
                     loading={isLoading}
                 />
@@ -338,7 +338,7 @@ export const HurricanePms = () => {
         </div>
       </section>
 
-      <section className="flex h-[600px] gap-4">
+      <section className="flex h-[600px] gap-4 mt-5">
         <div className="w-[80%]" ref={managerDetailsRef}>
             <DataGrid 
             className="hurrican-grid"

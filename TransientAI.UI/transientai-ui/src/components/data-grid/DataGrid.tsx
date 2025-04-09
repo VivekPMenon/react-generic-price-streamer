@@ -25,7 +25,7 @@ export const DataGrid = forwardRef<GridApi | null, IDataGridProps>((props, ref) 
       sortable: true,
       resizable: true,
       suppressHeaderMenuButton: true,
-      width: 120,
+      width: 150,
       suppressHeaderFilterButton: true,
       ...props.defaultColDef
     },
@@ -63,6 +63,7 @@ export const DataGrid = forwardRef<GridApi | null, IDataGridProps>((props, ref) 
     <div className={`ag-theme-balham-dark height-100p ${props.isSummaryGrid ? 'summary-grid' : ''}`} 
       style={{ height: props.height }}>
       <AgGridReact
+        key={JSON.stringify(props.rowData)}
         {...finalProps}
         statusBar={props.suppressStatusBar ? undefined : props.isSummaryGrid ? undefined : statusBar}
         onGridReady={onGridReady}
