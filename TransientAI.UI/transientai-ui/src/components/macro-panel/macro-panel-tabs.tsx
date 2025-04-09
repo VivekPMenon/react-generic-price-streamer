@@ -1,46 +1,54 @@
-import React, { useMemo, useState, memo } from 'react';
+import React, {useMemo, useState, memo} from 'react';
 import { Spinner, Tabs } from '@radix-ui/themes';
 import { useMacroPanelDataStore } from "@/services/macro-panel-data/macro-panel-data-store";
 import styles from './macro-panel-tabs.module.scss';
 import MacroPanelTab from "@/components/macro-panel/macro-panel-tab";
 import * as Dialog from "@radix-ui/react-dialog";
-import { MarketDataTile } from "@/components/market-data/market-data-tile";
-import { Cross1Icon } from "@radix-ui/react-icons";
-import { Instrument, marketDataService, PeriodType } from "@/services/market-data";
-import { useDeviceType } from "@/lib/hooks";
-import { MarketDataType } from "@/services/macro-panel-data/model";
-import { useTranslation } from 'react-i18next'; // Import useTranslation hook
+import {MarketDataTile} from "@/components/market-data/market-data-tile";
+import {Cross1Icon} from "@radix-ui/react-icons";
+import {Instrument, MarketData, marketDataService, PeriodType} from "@/services/market-data";
+import {useDeviceType} from "@/lib/hooks";
+import {MarketDataType} from "@/services/macro-panel-data/model";
 import i18n from '../../i18n';
 
 function MacroPanelTabs() {
-    const { t } = useTranslation(); // Get the translation function
     const { reportGenerationDate, treasuryYields, fxRates, cryptos, equityFutures, isTreasuryLoading, isFxLoading, isCryptoLoading, isEquityFuturesLoading } = useMacroPanelDataStore();
     const [open, setOpen] = useState(false);
+    const [isLoadingMarketData, setIsLoadingMarketData] = useState(false);
     const [instrument, setInstrument] = useState<Instrument | null>(null);
     const deviceType = useDeviceType();
 
-    function showPopup(symbol: string, type?: MarketDataType, instrument_?: Instrument) {
+    function showPopup(symbol: string, type?: MarketDataType, marketData?: MarketData[]) {
         if (symbol) {
+            setIsLoadingMarketData(true);
             setOpen(true);
+            const controller = new AbortController();
             marketDataService
                 .getMarketData(symbol, PeriodType.ONE_YEAR, type)
                 .then(data => {
                     if (data) {
-                        if (instrument_ && instrument_.marketData?.length) {
+                        if (marketData?.length) {
                             if (data.marketData) {
-                                data.marketData.push(...instrument_.marketData);
-                                data.marketData.sort((a, b) => (a.timestamp?.getTime() ?? 0) - (b.timestamp?.getTime() ?? 0));
+                                data.marketData.push(...marketData);
                             } else {
                                 data.marketData = [];
                             }
                         }
                         setInstrument(data);
+                    } else {
+                        setInstrument(data);
                     }
                 })
                 .catch(() => {
-                    setInstrument(instrument_ ?? null);
+                    setInstrument(null);
                     setOpen(false);
+                })
+                .finally(() => {
+                    setIsLoadingMarketData(false);
                 });
+            return () => {
+                controller.abort();
+            };
         }
     }
 
@@ -192,16 +200,18 @@ function MacroPanelTabs() {
                         <Dialog.Description />
                         <div className={styles['dialog-content']}>
                             {
-                                instrument
-                                    ? <MarketDataTile
-                                        instrument={instrument}
-                                        showFinancialData={false}
-                                        showPriceSummary={false}
-                                        className={styles['market-data-graph-popup']}
-                                        ignoreNegative={false}
-                                        isNegative={instrument.change < 0.0}
-                                    />
-                                    : <div className={styles['dialog-loading']}>{i18n.t('Loading')}</div> // Example of adding a translation for "Loading"
+                                isLoadingMarketData
+                                    ? <div className={styles['dialog-message']}>{i18n.t('Loading')}</div>
+                                    : instrument
+                                        ? <MarketDataTile
+                                            instrument={instrument!}
+                                            showFinancialData={false}
+                                            showPriceSummary={false}
+                                            className={styles['market-data-graph-popup']}
+                                            ignoreNegative={false}
+                                            isNegative={instrument!.change < 0.0}
+                                          />
+                                        : <div className={styles['dialog-message']}>{i18n.t('NoDataFound')}</div>
                             }
                         </div>
                         <div className={styles['dialog-close']}>

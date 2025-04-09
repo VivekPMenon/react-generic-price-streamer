@@ -5,7 +5,7 @@ import {useUnseenItemsStore} from "@/services/unseen-items-store/unseen-items-st
 
 export const resourceName = 'bloomberg-email-reports';
 
-const REFRESH_INTERVAL = 60000;
+const REFRESH_INTERVAL = 300000;
 const BBG_REFRESH_INTERVAL = 1200000;
 let lastRefreshMillis: number = 0;
 

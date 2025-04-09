@@ -1,7 +1,7 @@
 import {webApihandler} from "../web-api-handler";
 import {FinancialData, GraphDataPoint, ImageType, Instrument, MarketData, PeriodType, Price, TraceData} from "./model";
 import {isToday, parseIsoDate, parseLocalDate} from "@/lib/utility-functions/date-operations";
-import {MarketDataType} from "@/services/macro-panel-data/model";
+import {MarketDataInterval, MarketDataType} from "@/services/macro-panel-data/model";
 
 class MarketDataService {
   readonly serviceName = 'hurricane-api';
@@ -26,36 +26,33 @@ class MarketDataService {
     return result.trace_data;
   }
 
-  async getMarketData(company_or_ticker : string, period: PeriodType = PeriodType.ONE_YEAR, type?: MarketDataType): Promise<Instrument|null> {
+  async getMarketData(company_or_ticker: string, period: PeriodType = PeriodType.ONE_YEAR, type?: MarketDataType): Promise<Instrument|null> {
     try {
-      const fieldName = type === undefined || type === MarketDataType.NONE
-          ? 'company_or_ticker'
-          :  type === MarketDataType.DOMESTIC_TREASURY
-              ? 'us_treasury'
-              : 'foreign_treasury_ticker';
-
-      const params: Record<string, string> = { period };
-      params[fieldName] = company_or_ticker;
-
-      return await this.getMarketDataCore('market-data', params);
+      const params: Record<string, unknown> = {
+        company_or_ticker,
+        type: type ?? MarketDataType.EQUITY,
+        period,
+        intraday: false,
+        interval: MarketDataInterval.FIVE_MIN
+      };
+      return await this.getMarketDataCore(params);
 
     } catch (e) {
       return null;
     }
   }
 
-  async getIntradayData(company_or_ticker : string, type?: MarketDataType): Promise<Instrument|null> {
+  async getIntradayData(company_or_ticker: string, type?: MarketDataType): Promise<Instrument|null> {
     try {
-      // const fieldName = type === undefined || type === MarketDataType.NONE
-      //     ? 'company_or_ticker'
-      //     :  type === MarketDataType.DOMESTIC_TREASURY
-      //         ? 'us_treasury'
-      //         : 'foreign_treasury_ticker';
-      const fieldName = 'company_or_ticker';
-      const params: Record<string, string> = {};
-      params[fieldName] = company_or_ticker;
+      const params: Record<string, unknown> = {
+        company_or_ticker,
+        type: type ?? MarketDataType.EQUITY,
+        period: PeriodType.ONE_DAY,
+        intraday: true,
+        interval: MarketDataInterval.FIVE_MIN
+      };
 
-      return await this.getMarketDataCore('intraday-data', params);
+      return await this.getMarketDataCore(params);
     } catch (e: any) {
       return null;
     }
@@ -104,10 +101,10 @@ class MarketDataService {
     });
   }
 
-  private async getMarketDataCore(url: string, params: Record<string, string>) {
+  private async getMarketDataCore(params: Record<string, unknown>) {
     const result = await webApihandler
         .get(
-            url, params, {
+            'market-data', params, {
               serviceName: this.serviceName
             });
 
