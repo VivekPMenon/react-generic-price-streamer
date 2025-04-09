@@ -1,3 +1,5 @@
+//src/components/notifications/notifications.tsx
+//src/components/notifications/notifications.tsx
 'use client'
 
 import {useEffect, useMemo, useRef, useState} from 'react';
@@ -31,6 +33,34 @@ import {
 } from '@/services/macro-panel-data/macro-panel-data-store';
 import {RoleType, useUserContextStore} from '@/services/user-context';
 import {usePmsPnlDataStore} from "@/services/pms-pnl-data/pms-pnl-data-store";
+import { useTranslation } from 'react-i18next'; // Import the translation hook
+import { translateText } from '../../i18n';
+import i18n from 'i18next';
+
+ // Import the translation hook
+
+// Helper function to translate text fields within a notification
+const translateNotificationText = async (notification: Notification) => {
+  const translatedNotification = { ...notification };
+
+  // Translate the title and subtitle
+  if (notification.title) {
+  translatedNotification.title = await translateText(notification.title);
+}
+
+  translatedNotification.subTitle = notification.subTitle
+    ? await translateText(notification.subTitle)
+    : '';
+
+  // Translate the highlights (if any)
+  if (notification.highlights) {
+    translatedNotification.highlights = await Promise.all(
+      notification.highlights.map(async (highlight) => await translateText(highlight))
+    );
+  }
+
+  return translatedNotification;
+};
 
 export interface NotificationsProps {
   onExpandCollapse?: (state: boolean) => void;
@@ -129,6 +159,7 @@ export const filterTypeToResourceMap: { [key: string]: string } = {
 };
 
 export function Notifications(props: NotificationsProps) {
+  const { t } = useTranslation(); // Get the translation function // Get the translation function
   const router = useRouter();
   const divRef = useRef<HTMLDivElement>(null);
   const { isLoading, reports: researchReports, setSelectedReport: setSelectedResearchReport } = useResearchReportsStore();
@@ -209,110 +240,81 @@ export function Notifications(props: NotificationsProps) {
   }, [resetUnseenItems, selectedType, unseenItems]);
 
   function loadNotifications(mode: Mode) {
-    let newNotifications: Notification[] = [];
     if (mode === Mode.BUY) {
-      newNotifications = [
-        // ...notifications,
-        ...bloombergEmailReports
-            .map(bloombergEmailReport => ({
-              id: bloombergEmailReport.received_date,
-              resourceName: bloombergReportResourceName,
-              title: bloombergEmailReport.subject,
-              // subTitle: researchReport.concise_summary,
-              type: NotificationType.Macro,
-              timestamp: bloombergEmailReport.received_date ? new Date(bloombergEmailReport.received_date).getTime() : new Date().getTime(),
-              highlights: [
-                `Date: ${formatDate(bloombergEmailReport.received_date)}`
-              ]
-            })),
-        ...researchReports
-            .map(researchReport => ({
-              id: researchReport.id,
-              resourceName: researchReportResourceName,
-              title: researchReport.name,
-              // subTitle: researchReport.concise_summary,
-              type: NotificationType.Research,
-              timestamp: researchReport.received_date ? new Date(researchReport.received_date).getTime() : new Date().getTime(),
-              highlights: getResearchReportHighlights(researchReport)
-            })),
-        ...riskReports
-            .map(riskReport => ({
-              id: riskReport.id,
-              resourceName: resourceNameRiskReports,
-              title: riskReport.filename,
-              type: NotificationType.RiskReport,
-              timestamp: riskReport.uploaded ? riskReport.uploaded.getTime() : new Date().getTime(),
-              highlights: [
-                `Date: ${riskReport.uploaded!}`
-              ]
-            })),
-        ...loadedCorpActions
-            .map(corpAction => ({
-              id: corpAction.eventId,
-              resourceName: corpActionResourceName,
-              title: `TICKER: ${corpAction.ticker} \n ${corpAction.security?.name}`,
-              type: NotificationType.CorpAct,
-              subTitle: `<span class=${corpAction.actionRequired ? 'text-red-500' : 'text-green-500'}>${corpAction.eventType} - ${corpAction.eventStatus}<span/>`,
-              timestamp: corpAction?.receivedDate ? new Date(corpAction.receivedDate).getTime() : new Date().getTime(),
-              highlights: [
-                `ISIN: ${corpAction.isin!}, ID: ${corpAction.eventId}`,
-                `No Accounts: ${corpAction.accounts?.length ? (corpAction.accounts?.length + ' ' + 'Account: ' + corpAction.accounts[0].accountNumber) : ''} ${corpAction.accounts && corpAction.accounts?.length > 1 ? ' +' + (corpAction.accounts?.length - 1) + 'More accts' : ''}`,
-                `Pay Date: ${formatDate(corpAction.dates?.pay_date)}`,
-                `Holding: ${corpAction.holdingQuantity}`,
-                `Version: ${corpAction.version}`,
-              ]
-            })),
-        ...inquiries
-            .map(inquiry => ({
-              id: inquiry.id,
-              title: `${inquiry.subject}`,
-              type: NotificationType.Inquiries,
-              subTitle: inquiry.inquiry ? inquiry.inquiry : '',
-              timestamp: inquiry.due_date ? new Date(inquiry.due_date).getTime() : 0,
-              highlights: [
-                `Due: ${inquiry.due_date ? new Date(inquiry.due_date).toDateString() : ''}`,
-                `Assigned to: ${inquiry.assignee_name}`,
-                `${inquiry.flag ? InquiryFlag[inquiry.flag] : ''}`,
-              ]
-            })),
-        {
-          id: 'risk-metrics-notification',
-          title: `GS Margin Excess Updated`,
+      // Collect all notification promises in a flat array
+      const notificationPromises: Promise<Notification>[] = [
+        ...bloombergEmailReports.map(async (bloombergEmailReport) => ({
+          id: bloombergEmailReport.received_date,
+          resourceName: bloombergReportResourceName,
+          title: bloombergEmailReport.subject,
+          type: NotificationType.Macro,
+          timestamp: bloombergEmailReport.received_date
+            ? new Date(bloombergEmailReport.received_date).getTime()
+            : new Date().getTime(),
+          highlights: [`${t('notification.date')}: ${formatDate(bloombergEmailReport.received_date)}`]
+        })),
+  
+        ...researchReports.map(async (researchReport) => ({
+          id: researchReport.id,
+          resourceName: researchReportResourceName,
+          title: researchReport.name,
+          type: NotificationType.Research,
+          timestamp: researchReport.received_date
+            ? new Date(researchReport.received_date).getTime()
+            : new Date().getTime(),
+          highlights: getResearchReportHighlights(researchReport)
+        })),
+  
+        ...riskReports.map(async (riskReport) => ({
+          id: riskReport.id,
+          resourceName: resourceNameRiskReports,
+          title: riskReport.filename,
           type: NotificationType.RiskReport,
-          timestamp: lastUpdatedTimestamp ? new Date(lastUpdatedTimestamp).getTime() : 0,
+          timestamp: riskReport.uploaded ? riskReport.uploaded.getTime() : new Date().getTime(),
+          highlights: [`Date: ${riskReport.uploaded!}`]
+        })),
+  
+        ...loadedCorpActions.map(async (corpAction) => ({
+          id: corpAction.eventId,
+          resourceName: corpActionResourceName,
+          title: `TICKER: ${corpAction.ticker} \n ${corpAction.security?.name}`,
+          type: NotificationType.CorpAct,
+          subTitle: `<span class=${corpAction.actionRequired ? 'text-red-500' : 'text-green-500'}>${corpAction.eventType} - ${corpAction.eventStatus}<span/>`,
+          timestamp: corpAction?.receivedDate ? new Date(corpAction.receivedDate).getTime() : new Date().getTime(),
           highlights: [
-            formatDate(lastUpdatedTimestamp)
+            `ISIN: ${corpAction.isin!}, ID: ${corpAction.eventId}`,
+            `No Accounts: ${corpAction.accounts?.length ? (corpAction.accounts?.length + ' ' + 'Account: ' + corpAction.accounts[0].accountNumber) : ''} ${corpAction.accounts && corpAction.accounts?.length > 1 ? ' +' + (corpAction.accounts?.length - 1) + 'More accts' : ''}`,
+            `Pay Date: ${formatDate(corpAction.dates?.pay_date)}`,
+            `Holding: ${corpAction.holdingQuantity}`,
+            `Version: ${corpAction.version}`
           ]
-        },
-        {
-          id: 'pms-pnl-notification',
-          title: `P&L Dashboard for ${reportDate?.toLocaleDateString()}`,
-          type: NotificationType.PmsPnl,
-          timestamp: reportDate ? reportDate.getTime() : 0,
+        })),
+  
+        ...inquiries.map(async (inquiry) => ({
+          id: inquiry.id,
+          title: `${inquiry.subject}`,
+          type: NotificationType.Inquiries,
+          subTitle: inquiry.inquiry ? inquiry.inquiry : '',
+          timestamp: inquiry.due_date ? new Date(inquiry.due_date).getTime() : 0,
           highlights: [
-            formatDate(reportDate?.toISOString())
+            `Due: ${inquiry.due_date ? new Date(inquiry.due_date).toDateString() : ''}`,
+            `Assigned to: ${inquiry.assignee_name}`,
+            `${inquiry.flag ? InquiryFlag[inquiry.flag] : ''}`
           ]
-        },
-        // ...breakNewsItems
-        //   .map(news => ({
-        //     id: news.id?.toString(),
-        //     title: news.message,
-        //     sideTitle: 'WhatsApp',
-        //     type: NotificationType.BreakNews,
-        //     highlights: [
-        //       `${formatDate(news?.sender_time_info || '')}`,
-        //     ]
-        //   }))
+        })),
       ];
-    } else {
-      newNotifications = [
-
-      ];
+  
+      Promise.all(notificationPromises).then(async (resolvedNotifications) => {
+        const translatedNotifications = await Promise.all(
+          resolvedNotifications.map(translateNotificationText)
+        );
+  
+        translatedNotifications.sort((a, b) => (b.timestamp ?? 0) - (a.timestamp ?? 0));
+        setNotifications(translatedNotifications);
+      });
     }
-
-    newNotifications.sort((x, y) => (y.timestamp ?? -1) - (x.timestamp ?? -1));
-
-    setNotifications(newNotifications);
+  
+    // Optionally handle SELL mode if needed
   }
 
   function getResearchReportHighlights(researchReport: ResearchReport): string[] {
@@ -423,28 +425,21 @@ export function Notifications(props: NotificationsProps) {
   return (
     //TODO .. create a common component for WIdget with transclusion so that widget tiel etc. can be reused
     <div className={`${styles.notifications} widget`}>
-      <div className='widget-title'>
-        Notifications
-        <i className='fa-solid fa-expand toggler' onClick={() => expandOrCollapsePanel()}></i>
-      </div>
-
+          <div className='widget-title'>
+      {t('notification.title')}  {/* Translates the title */}
+      <i className='fa-solid fa-expand toggler' onClick={() => expandOrCollapsePanel()} title={t('notification.expand')}></i>
+    </div>
       <div className='horizontal-scrollable-div filters'>
-        {
-          getFilterTypes(props.mode).map(filterType => {
-            const additionalResourceToCheck = filterType === NotificationType.RiskReport ? resourceNameRiskMetrics : '';
-            const unseenItemsCount = getUnseenItemsCount(filterType)
-              + (additionalResourceToCheck && unseenItems[additionalResourceToCheck] > 0 ? unseenItems[additionalResourceToCheck] : 0);
-
-            return <button
-              key={filterType}
-              className={`${filterType === selectedType ? 'filter active' : 'filter'} ${unseenItemsCount > 0 ? 'flash' : ''}`}
-              onClick={() => changeNotificationType(filterType)}>
-              {filterType}
-
-              {unseenItemsCount > 0 && <div className='bubble off-white-color'>{unseenItemsCount}</div>}
-            </button>
-          })
-        }
+      {getFilterTypes(props.mode).map(filterType => {
+  const unseenItemsCount = getUnseenItemsCount(filterType);
+  return <button
+    key={filterType}
+    className={`${filterType === selectedType ? 'filter active' : 'filter'} ${unseenItemsCount > 0 ? 'flash' : ''}`}
+    onClick={() => changeNotificationType(filterType)}>
+    {t(`notification.${filterType.toLowerCase()}`)} {/* Translate the filter type */}
+    {unseenItemsCount > 0 && <div className='bubble off-white-color'>{unseenItemsCount}</div>}
+  </button>
+})}
       </div>
 
       <div ref={divRef} className={`${styles['notification-items']} scrollable-div ${isExpanded ? styles['expanded'] : ''}`}>

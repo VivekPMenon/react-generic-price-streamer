@@ -1,11 +1,14 @@
+'use client';
+
 import { useMemo, useState } from 'react';
 import styles from './file-upload-wizard.module.scss';
 import { DataGrid } from '../data-grid';
 import { ColDef } from 'ag-grid-community';
 import { File, fileManagerService } from '@/services/file-manager';
+import { useTranslation } from 'react-i18next'; // Import translation hook
 
 export interface FileUploaderWizardProps {
-  onUploadSuccess?:(file: File) => void;
+  onUploadSuccess?: (file: File) => void;
 }
 
 function getColumnDef(): ColDef[] {
@@ -25,10 +28,11 @@ function getColumnDef(): ColDef[] {
   ];
 }
 
-export function FileUploadWizard({onUploadSuccess}: FileUploaderWizardProps) {
+export function FileUploadWizard({ onUploadSuccess }: FileUploaderWizardProps) {
+  const { t } = useTranslation();  // Use the useTranslation hook
   const [stepId, setStepId] = useState<number>(1);
   const [isDragging, setIsDragging] = useState(false);
-  const [selectedFile, setSelectedFile] = useState<File|null>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [errorMessage, setErrorMessage] = useState('');
 
@@ -38,16 +42,16 @@ export function FileUploadWizard({onUploadSuccess}: FileUploaderWizardProps) {
     e.preventDefault();
     setIsDragging(true);
   }
-  
+
   function handleDragOver(e: any) {
     e.preventDefault();
   }
-  
+
   function handleDragLeave(e: any) {
     e.preventDefault();
     setIsDragging(false);
   }
-  
+
   function handleDrop(e: any) {
     e.preventDefault();
     setIsDragging(false);
@@ -66,7 +70,7 @@ export function FileUploadWizard({onUploadSuccess}: FileUploaderWizardProps) {
       setStepId(stepId + 1);
     }
   }
-  
+
   function handleFileSelect(event: any) {
     const file = event.target.files[0];
     if (!file || file.type !== 'application/pdf') {
@@ -90,15 +94,15 @@ export function FileUploadWizard({onUploadSuccess}: FileUploaderWizardProps) {
     }
     setStepId(stepId + 1);
     fileManagerService
-        .uploadFile(selectedFile)
-        .then(() => {
-          setSelectedFiles([]);
-          setSelectedFile(null);
-          onUploadSuccess!(selectedFile);
-        })
-        .catch(e => {
-          setErrorMessage(e.message);
-        });
+      .uploadFile(selectedFile)
+      .then(() => {
+        setSelectedFiles([]);
+        setSelectedFile(null);
+        onUploadSuccess!(selectedFile);
+      })
+      .catch(e => {
+        setErrorMessage(e.message);
+      });
   }
 
   return (
@@ -106,16 +110,15 @@ export function FileUploadWizard({onUploadSuccess}: FileUploaderWizardProps) {
 
       <div className='wizard-steps mb-[10px]'>
         <span className={`step-number ${stepId === 1 ? 'active' : ''}`}>1</span>
-        <span className='step-title'>Upload</span>
+        <span className='step-title'>{t('file_upload_wizard.upload')}</span> {/* Translated Upload */}
         <span className='step-separator'></span>
 
         <span className={`step-number ${stepId === 2 ? 'active' : ''}`}>2</span>
-        <span className='step-title'>Review</span>
+        <span className='step-title'>{t('file_upload_wizard.review')}</span> {/* Translated Review */}
         <span className='step-separator'></span>
 
         <span className={`step-number ${stepId === 3 ? 'active' : ''}`}>3</span>
-        <span className='step-title'>Submit</span>
-
+        <span className='step-title'>{t('file_upload_wizard.submit')}</span> {/* Translated Submit */}
       </div>
 
       {
@@ -128,39 +131,14 @@ export function FileUploadWizard({onUploadSuccess}: FileUploaderWizardProps) {
             onDragLeave={handleDragLeave}
             onDrop={handleDrop}
           >
-            <span>Drag and drop files here</span>
-            <span>Or</span>
+            <span>{t('file_upload_wizard.drag_drop')}</span> {/* Translated Drag and drop files here */}
+            <span>{t('file_upload_wizard.or')}</span> {/* Translated Or */}
             <input type='file' onChange={handleFileSelect} style={{ display: 'none' }} id='fileInput' />
-            <label htmlFor='fileInput' className={styles['file-input-label']}>Browse Your File</label>
+            <label htmlFor='fileInput' className={styles['file-input-label']}>{t('file_upload_wizard.browse_file')}</label> {/* Translated Browse Your File */}
           </div>
 
           {errorMessage && <p className={styles['error-message']}>{errorMessage}</p>}
 
-          {/* we will proceed to the next step with a preview of the uploaded file. user can hit back button if they lke to upload new one */}
-          {/* {selectedFiles.length > 0 && (
-            <div className='gap-3 justify-center'>
-              <h2>Selected File:</h2>
-              <ul>
-                {selectedFiles.map((file: any, index: number) => (
-                  <li key={file.name}>
-                    <div style={{ display: 'flex', alignItems: 'center' }}>
-                      <Cross1Icon
-                        color='red'
-                        width='10'
-                        height='10'
-                        onClick={() => handleDeleteFile(index)}
-                      />
-                      &nbsp;<span style={{ fontSize: '10px' }}>{file.name} ({file.size} bytes)</span>
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-
-          <div className='flex gap-3 justify-center'>
-            <CsvTemplateDownloader columns={csvColumns} sampleData={sampleRows}></CsvTemplateDownloader>
-          </div>*/}
         </div>
       }
 
@@ -175,8 +153,8 @@ export function FileUploadWizard({onUploadSuccess}: FileUploaderWizardProps) {
           </DataGrid>
 
           <div className='flex gap-3 justify-center'>
-            <button className="secondary-button" onClick={() => setStepId(stepId - 1)}>Back</button>
-            <button className="button" onClick={uploadFile}>Next</button>
+            <button className="secondary-button" onClick={() => setStepId(stepId - 1)}>{t('file_upload_wizard.back')}</button> {/* Translated Back */}
+            <button className="button" onClick={uploadFile}>{t('file_upload_wizard.next')}</button> {/* Translated Next */}
           </div>
         </div>
       }
@@ -185,19 +163,17 @@ export function FileUploadWizard({onUploadSuccess}: FileUploaderWizardProps) {
         stepId === 3 &&
         <div className={styles['file-submission-step']}>
           <div className={styles['upload-status']}>
-
             <span>
               <i className='fa-solid fa-check'></i>
             </span>
-            Upload Successful
+            {t('file_upload_wizard.upload_successful')} {/* Translated Upload Successful */}
           </div>
           <div className='flex gap-3 justify-center'>
-            <button className="button" onClick={() => setStepId(1)}>Done</button>
+            <button className="button" onClick={() => setStepId(1)}>{t('file_upload_wizard.done')}</button> {/* Translated Done */}
           </div>
         </div>
       }
 
     </div>
   );
-
 }

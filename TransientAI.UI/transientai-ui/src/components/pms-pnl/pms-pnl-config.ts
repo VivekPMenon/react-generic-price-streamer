@@ -1,4 +1,4 @@
-import {formatInteger} from "@/lib/utility-functions";
+import { formatInteger } from "@/lib/utility-functions";
 import {
     FirstDataRenderedEvent,
     GetRowIdParams,
@@ -11,7 +11,8 @@ import {
     IRowNode
 } from "ag-grid-community";
 import styles from "@/components/pms-pnl/pms-pnl.module.scss";
-import {executeAsync} from "@/lib/utility-functions/async";
+import { executeAsync } from "@/lib/utility-functions/async";
+import i18n from "../../i18n";  // Import i18n
 
 function isPinned(node: IRowNode): boolean {
     return node.rowPinned === 'top';
@@ -57,7 +58,7 @@ cellClassRules[`${styles["muted-cell-numeric"]}`] = (params: CellClassParams) =>
 export const columnDefs: ColDef[] = [
     {
         field: 'manager',
-        headerName: 'Manager',
+        headerName: i18n.t('manager'),  // Use i18n for 'Manager'
         headerClass: styles['table-header'],
         cellClassRules: cellClassRules,
         pinned: true,
@@ -65,7 +66,7 @@ export const columnDefs: ColDef[] = [
     },
     {
         field: 'dayPnl',
-        headerName: 'Day PnL',
+        headerName: i18n.t('dayPnl'),  // Use i18n for 'Day PnL'
         headerClass: `${styles['table-header']} ag-right-aligned-header`,
         cellClassRules: cellClassRules,
         valueFormatter: (params: ValueFormatterParams) => formatInteger(params.data?.dayPnl, ''),
@@ -74,7 +75,7 @@ export const columnDefs: ColDef[] = [
     },
     {
         field: 'mtdPnl',
-        headerName: 'MTD PnL',
+        headerName: i18n.t('mtdPnl'),  // Use i18n for 'MTD PnL'
         headerClass: `${styles['table-header']} ag-right-aligned-header`,
         cellClassRules: cellClassRules,
         valueFormatter: (params: ValueFormatterParams) => formatInteger(params.data?.mtdPnl, ''),
@@ -83,7 +84,7 @@ export const columnDefs: ColDef[] = [
     },
     {
         field: 'ytdPnl',
-        headerName: 'YTD PnL',
+        headerName: i18n.t('ytdPnl'),  // Use i18n for 'YTD PnL'
         headerClass: `${styles['table-header']} ag-right-aligned-header`,
         cellClassRules: cellClassRules,
         valueFormatter: (params: ValueFormatterParams) => formatInteger(params.data?.ytdPnl, ''),
@@ -92,7 +93,7 @@ export const columnDefs: ColDef[] = [
     },
     {
         field: 'dayPnlNoFees',
-        headerName: 'Day PnL w/o Fees',
+        headerName: i18n.t('dayPnlNoFees'),  // Use i18n for 'Day PnL w/o Fees'
         headerClass: `${styles['table-header']} ag-right-aligned-header`,
         cellClassRules: cellClassRules,
         valueFormatter: (params: ValueFormatterParams) => formatInteger(params.data?.dayPnlNoFees, ''),
@@ -103,7 +104,7 @@ export const columnDefs: ColDef[] = [
     },
     {
         field: 'mtdPnlNoFees',
-        headerName: 'MTD PnL w/o Fees',
+        headerName: i18n.t('mtdPnlNoFees'),  // Use i18n for 'MTD PnL w/o Fees'
         headerClass: `${styles['table-header']} ag-right-aligned-header`,
         cellClassRules: cellClassRules,
         valueFormatter: (params: ValueFormatterParams) => formatInteger(params.data?.mtdPnlNoFees, ''),
@@ -114,7 +115,7 @@ export const columnDefs: ColDef[] = [
     },
     {
         field: 'ytdPnlNoFees',
-        headerName: 'YTD PnL w/o Fees',
+        headerName: i18n.t('ytdPnlNoFees'),  // Use i18n for 'YTD PnL w/o Fees'
         headerClass: `${styles['table-header']} ag-right-aligned-header`,
         cellClassRules: cellClassRules,
         valueFormatter: (params: ValueFormatterParams) => formatInteger(params.data?.ytdPnlNoFees, ''),
