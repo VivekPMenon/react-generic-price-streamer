@@ -6,54 +6,38 @@ import LanguageDetector from 'i18next-browser-languagedetector';
 import macro from 'styled-jsx/macro';
 import axios from 'axios';
 
+console.log('Detected Language:',i18n.language);
+
 // Optional: to detect and set HTML lang tag
 i18n.on('initialized', () => {
   console.log('✅ Detected Language (event):', i18n.language);
 });
 
-export const translateText = async (text: string) => {
-  const targetLanguage = i18n.language;
 
-  // Return original if the text has 5 or fewer words
-  const wordCount = text.trim().split(/\s+/).length;
-  if (wordCount <= 5) {
-    return text;
-  }
-
-  // Only translate if the target language is not 'en' (English)
-  if (targetLanguage === 'en') {
-    return text;
-  }
-
+export const translateText = async (text: string, targetLanguage: string) => {
   try {
-    const response = await fetch('https://hurricanecap-devfastapi.azurewebsites.net/translate', {
+    const response = await fetch('/translate', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
         text: text,
-        target_language: targetLanguage, // Pass the target language to the API
+        target_language: targetLanguage,
       }),
     });
 
-    if (!response.ok) {
-      throw new Error(`Translation failed: ${response.statusText}`);
-    }
-
     const data = await response.json();
-    return data.translated_text; // Assuming the API returns translated text
+    return data.translated_text;
   } catch (error) {
-    console.error('Translation error:', error);
-    return text; // Return original text if there's an error
+    console.error('Translation Error:', error);
+    return text;
   }
 };
 
-
 // Detect missing keys and translate dynamically
-const customMissingKeyHandler = async (ns: string, key: string) => {
-  const lng = i18n.language;
-  const translated = await translateText(key);
+const customMissingKeyHandler = async (lng: string, ns: string, key: string) => {
+  const translated = await translateText(key, lng);
   // Inject into i18next’s memory store so it's cached
   i18n.addResource(lng, ns, key, translated);
 };
