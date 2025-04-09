@@ -9,11 +9,9 @@ import {Cross1Icon} from "@radix-ui/react-icons";
 import {Instrument, MarketData, marketDataService, PeriodType} from "@/services/market-data";
 import {useDeviceType} from "@/lib/hooks";
 import {MarketDataType} from "@/services/macro-panel-data/model";
-import { useTranslation } from 'react-i18next'; // Import useTranslation hook
 import i18n from '../../i18n';
 
 function MacroPanelTabs() {
-    const { t } = useTranslation(); // Get the translation function
     const { reportGenerationDate, treasuryYields, fxRates, cryptos, equityFutures, isTreasuryLoading, isFxLoading, isCryptoLoading, isEquityFuturesLoading } = useMacroPanelDataStore();
     const [open, setOpen] = useState(false);
     const [instrument, setInstrument] = useState<Instrument | null>(null);

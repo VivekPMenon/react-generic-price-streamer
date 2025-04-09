@@ -3,9 +3,6 @@ import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
 
-import macro from 'styled-jsx/macro';
-import axios from 'axios';
-
 // Optional: to detect and set HTML lang tag
 i18n.on('initialized', () => {
   console.log('✅ Detected Language (event):', i18n.language);
