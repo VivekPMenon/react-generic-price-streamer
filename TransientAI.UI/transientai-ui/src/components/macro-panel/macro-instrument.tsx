@@ -132,10 +132,11 @@ export interface MacroInstrumentProps {
 
 function MacroInstrument({symbol, type, name, value, change, percent, marketData: data, showCharts, showPopupAction, changeSuffix, inverseChange}: MacroInstrumentProps) {
     const [marketData, setMarketData] = useState<MarketData[]|undefined>(data);
-    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [isLoading, setIsLoading] = useState<boolean>(true);
 
     useEffect(() => {
-        if (marketData?.length) {
+        if (marketData?.length ?? 0 > 0) {
+            setIsLoading(false);
             return;
         }
         if (symbol) {

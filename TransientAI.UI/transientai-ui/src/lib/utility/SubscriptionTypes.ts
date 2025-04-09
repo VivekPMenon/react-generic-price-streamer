@@ -1,5 +1,8 @@
-export interface Subscription {
+export interface SubscriptionLike {
     topic: string;
+}
+
+export interface Subscription extends SubscriptionLike {
     id: string;
 }
 
@@ -17,6 +20,6 @@ export interface MessageLike {
 }
 
 export interface Message extends MessageLike {
-    subscription: Subscription;
-    data: Record<string, unknown>;
+    subscription: Subscription|SubscriptionLike;
+    data?: Record<string, unknown>;
 }

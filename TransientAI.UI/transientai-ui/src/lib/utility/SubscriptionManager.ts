@@ -14,13 +14,11 @@ class SubscriptionManager {
                 case MessageType.SUBSCRIBE:
                 case MessageType.UNSUBSCRIBE:
                 case MessageType.REMOVE_ALL:
-                case MessageType.DISPOSE: {
+                case MessageType.DISPOSE:
                     this.updatePending(message);
-                }
                     break;
-                case MessageType.MESSAGE: {
+                case MessageType.MESSAGE:
                     this.onMessage(message);
-                }
                     break;
             }
         };
@@ -132,9 +130,10 @@ class SubscriptionManager {
         if (request) {
             this.pending.delete(message.id);
             const [resolve] = request;
-            resolve(message.subscription);
+            resolve(message.subscription as Subscription);
         }
     }
 }
 
-export const subscriptionManager = new SubscriptionManager(new Worker('SubscriptionWorker.js'));
+const worker = new Worker('./SubscriptionWorker.js')
+export const subscriptionManager = new SubscriptionManager(worker);

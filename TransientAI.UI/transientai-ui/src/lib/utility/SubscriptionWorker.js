@@ -1,5 +1,7 @@
-import {MessageType} from './SubscriptionTypes';
+import { MessageType } from './SubscriptionTypes';
+import { io } from "socket.io-client";
 
+const EMPTY = {id: '', topic: ''};
 const subscriptions = new Map();
 
 function parseSubscription(id) {
@@ -11,13 +13,12 @@ function handleMessage(event) {
     const data = event.data; // MessageLike
     switch (data.type) {
         case MessageType.SUBSCRIBE: {
-            let subscription = subscriptions.get(data.id)
+            let subscription = subscriptions.get(data.id);
             if (!subscription) {
                 subscription = parseSubscription(data.id);
                 subscriptions.set(data.id, subscription);
             }
-            postMessage(subscription);
-
+            self.postMessage({ ...data, subscription});
         }
             break;
         case MessageType.UNSUBSCRIBE: {
@@ -27,29 +28,52 @@ function handleMessage(event) {
             } else {
                 subscription = parseSubscription(data.id);
             }
-            postMessage(subscription);
+            self.postMessage({ ...data, subscription});
         }
             break;
         case MessageType.REMOVE_ALL: {
             const subscription = parseSubscription(data.id);
-            for (const subscription_ of subscriptions.values()) {
-                if (subscription_.topic === subscription.topic) {
-                    subscriptions.delete(subscription_.id);
+            for (const [key, value] of subscriptions.entries()) {
+                if (value.topic === subscription.topic) {
+                    subscriptions.delete(key);
                 }
             }
             if (subscription) {
-                postMessage(subscription);
+                self.postMessage({ ...data, subscription});
             } else {
-                postMessage({id: '', topic: ''});
+                self.postMessage({ ...data, subscription: EMPTY});
             }
         }
             break;
         case MessageType.DISPOSE: {
             subscriptions.clear();
-            postMessage({id: '', topic: ''});
+            self.postMessage({ ...data, subscription: EMPTY});
         }
             break;
     }
 }
 
-addEventListener('message', handleMessage);
+function connect() {
+    const socket = io('');
+
+    socket.on('data', (data) => {
+        // find topic to attach to subscription
+        self.postMessage({
+            id: '',
+            type: MessageType.MESSAGE,
+            subscription: {
+                id: '',
+                topic: ''
+            },
+            data
+        });
+    })
+
+    socket.connect();
+
+    self.addEventListener('message', handleMessage);
+}
+
+console.log(connect);
+
+// connect();
