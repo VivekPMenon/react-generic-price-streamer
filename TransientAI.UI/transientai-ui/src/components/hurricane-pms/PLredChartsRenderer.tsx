@@ -3,11 +3,17 @@ import Highcharts from 'highcharts';
 import { ICellRendererParams } from 'ag-grid-community';
 import { formatInteger } from '@/lib/utility-functions';
 
-const PLHighchartsRenderer = (props: ICellRendererParams) => {
+const PLredChartRenderer = (props: ICellRendererParams) => {
   const chartRef = useRef<HTMLDivElement>(null);
   const value = props.value || 0;
-  const isNegative = value < 0;
   const formattedValue = formatInteger(value, '');
+
+  // Calculate the height proportion for the bar.
+  const maxValue = 1000000; // Maximum value based on your data
+  const absValue = Math.abs(value);
+  
+  // Inverted height for negative P&L (closer to zero = higher bar)
+  const heightPercentage = Math.min(100, (maxValue - absValue) / maxValue * 100);
 
   useEffect(() => {
     if (chartRef.current) {
@@ -19,7 +25,7 @@ const PLHighchartsRenderer = (props: ICellRendererParams) => {
           margin: [0, 0, 0, 0],
           spacing: [0, 0, 0, 0],
           renderTo: chartRef.current,
-          animation: false
+          animation: true,
         },
         title: { text: undefined },
         credits: { enabled: false },
@@ -28,42 +34,43 @@ const PLHighchartsRenderer = (props: ICellRendererParams) => {
         xAxis: {
           categories: [''],
           labels: { enabled: false },
-          reversed: true, // <--- key to reverse direction
+          reversed: true, // Ensure the bar goes left for negative values
           lineWidth: 0,
           lineColor: 'transparent',
-          tickLength: 0
+          tickLength: 0,
         },
         yAxis: {
-            reversed: true,
           title: { text: null },
+          reversed: false,
           labels: { enabled: false },
           gridLineWidth: 0,
-          min: -0,
+          min: 0,
+          max: maxValue,
         },
         plotOptions: {
           bar: {
             borderWidth: 0,
             pointPadding: 0,
             groupPadding: 0,
-            dataLabels: { enabled: false }
-          }
+            dataLabels: { enabled: false },
+          },
         },
         series: [
           {
             type: 'bar',
             name: 'P&L',
-            data: [Math.abs(value)],
+            data: [absValue],  // Absolute value for bar height
             color: {
-                linearGradient: { x1: 1, y1: 0, x2: 0, y2: 0 }, // ⬅️ Right to left
-                stops: [
-                [0, 'rgba(255, 77, 79, 0.9)'],    // strong red
-                [0.7, 'rgba(255, 153, 153, 0.6)'], // lighter red
-                [1, 'rgba(255, 255, 255, 0.3)']    // fade
-              ]
+              linearGradient: { x1: 1, y1: 0, x2: 0, y2: 0 }, // Gradient effect
+              stops: [
+                [0, 'rgba(255, 77, 79, 0.9)'],    // Strong red for negative values
+                [0.7, 'rgba(255, 153, 153, 0.6)'], // Lighter red
+                [1, 'rgba(255, 255, 255, 0.3)']    // Fade effect
+              ],
             },
-            enableMouseTracking: false
-          }
-        ]
+            animation: { duration: 1000 },
+          },
+        ],
       });
     }
   }, [value]);
@@ -78,23 +85,20 @@ const PLHighchartsRenderer = (props: ICellRendererParams) => {
         alignItems: 'center',
         justifyContent: 'space-between',
         padding: '0 8px',
-        overflow: 'hidden'
+        overflow: 'hidden',
       }}
     >
-      {/* Chart background */}
       <div
-        ref={chartRef}
         style={{
           position: 'absolute',
           top: 0,
-          left: 0,
-          width: '100%',
+          [value < 0 ? 'right' : 'left']: 0,  // Negative values expand to the left
+          width: `${heightPercentage}%`,
           height: '100%',
-          zIndex: 0
+          background: 'linear-gradient(to ' + (value < 0 ? 'left' : 'right') + ', rgba(255,77,79,0.9), rgba(255,153,153,0.6), rgba(255,255,255,0.3))',
+          zIndex: 0,
         }}
       />
-
-      {/* Foreground value */}
       <div
         style={{
           position: 'relative',
@@ -104,7 +108,7 @@ const PLHighchartsRenderer = (props: ICellRendererParams) => {
           gap: '2px',
           fontWeight: 'bold',
           width: '100%',
-          justifyContent: 'space-between'
+          justifyContent: 'space-between',
         }}
       >
         <span>$</span>
@@ -114,5 +118,4 @@ const PLHighchartsRenderer = (props: ICellRendererParams) => {
   );
 };
 
-export default PLHighchartsRenderer;
-
+export default PLredChartRenderer;

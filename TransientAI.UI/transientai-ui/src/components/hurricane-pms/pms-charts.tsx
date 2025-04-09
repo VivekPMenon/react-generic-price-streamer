@@ -6,14 +6,51 @@ import Highcharts from 'highcharts';
 // Use dynamic import for client-side rendering
 const HighchartsReact = dynamic(() => import('highcharts-react-official'), { ssr: false });
 
-export const AssetAllocationChart = ({ data = [] }) => {
+export const AssetAllocationChart = ({ data }: any) => {
   // Default data matching the image (21% Equity, 76% Cash, 3% Equity Option)
-  const chartData = data.length ? data : [
-    { name: 'Equity', y: 21, color: '#3498db' },
-    { name: 'Cash', y: 76, color: '#ff7730' },
-    { name: 'Equity Option', y: 3, color: '#2ecc71' }
-  ];
 
+  const colorMap = {
+    "Government Bond": "#2980b9",
+    "Equity": "#e67e22",
+    "Equity Option": "#27ae60",
+    "Corporate Bond": "#8e44ad",
+    "Index Option": "#16a085",
+    "Index Future": "#c0392b",
+    "Equity Swap": "#d35400",
+    "Bond Future": "#34495e",
+    "Commodity Future Option": "#7f8c8d"
+  };
+  
+
+  const calculateChartData = (data: TradeItem[]): ChartItem[] => {
+    const totals: Record<string, number> = {};
+    let grandTotal = 0;
+    data.forEach(item => {
+      const type = item.security_type;
+      const qty = item.quantity || 0;
+      const price = item.price || 0;
+      const value = qty * price;
+  
+      if (!totals[type]) {
+        totals[type] = 0;
+      }
+  
+      totals[type] += value;
+      grandTotal += value;
+    });
+  
+    const chartData: ChartItem[] = Object.entries(totals).map(([type, totalValue]) => {
+      const percentage = parseFloat(((totalValue / grandTotal) * 100).toFixed(2));
+      return {
+        name: type,
+        y: percentage === 0 ? null : percentage,
+        color: colorMap[type as keyof typeof colorMap] || "#95a5a6",
+      };
+    });
+    return chartData;
+  };
+
+  const chartData = calculateChartData(data);
   const getChartOptions = () => {
     const options: Highcharts.Options = {
       chart: {
@@ -32,7 +69,7 @@ export const AssetAllocationChart = ({ data = [] }) => {
         }
       },
       tooltip: {
-        pointFormat: '{series.name}: <b>{point.percentage:.0f}%</b>'
+        pointFormat: '{series.name}: <b>{point.percentage:.2f}%</b>'
       },
       plotOptions: {
         pie: {
@@ -40,7 +77,7 @@ export const AssetAllocationChart = ({ data = [] }) => {
           borderWidth: 0,
           dataLabels: {
             enabled: true,
-            format: '{point.percentage:.0f}%',
+            format: '{point.percentage:.2f}%',
             distance: 10,
             style: {
               color: '#FFFFFF',
@@ -88,3 +125,15 @@ export const AssetAllocationChart = ({ data = [] }) => {
 };
 
 export default AssetAllocationChart;
+
+type TradeItem = {
+  security_type: string;
+  quantity: number;
+  [key: string]: any; 
+};
+
+type ChartItem = {
+  name: string;
+  y: number | null;
+  color: string;
+};

@@ -1,4 +1,5 @@
-import { useEffect, useRef, useState } from "react";
+import React from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useDeviceType } from "@/lib/hooks";
 import styles from "./hurricane-pms.module.scss";
 import { DataGrid } from "@/components/data-grid";
@@ -19,6 +20,7 @@ import AssetAllocationChart from "./pms-charts";
 import WorldMapChart from "./geographic-map";
 import BarChart from "./issue-explorer-chart";
 import { TaDropDown } from '../shared'
+import { Spinner } from "@radix-ui/themes";
 
 const PortfolioSelectOptions = [
   { value: 'all', label: 'All' },
@@ -43,6 +45,8 @@ const sortOptions = [
   { value: 'pl_bps', label: 'PLBPs' },
 ];
 
+
+
 export const HurricanePms = () => {
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [managerId, setManagerId] = useState<string>('all');
@@ -56,6 +60,7 @@ export const HurricanePms = () => {
     const managerDetailsRef = useRef<HTMLDivElement>(null);
     const deviceType = useDeviceType();
     const isMobile = deviceType !== 'desktop';
+    const MemoizedDataGrid = React.memo(DataGrid);
 
     const handleOnRowClicked = (event: any) => {
         const selectedRow = event.data;
@@ -88,46 +93,22 @@ export const HurricanePms = () => {
         .slice(0, count);
     };
     
+    useEffect(() => {
+      setIsLoading(true)
+      setTimeout(() => {
+        setIsLoading(false)
+      }, 2000)
+      try {
+        const details = managerId === 'all' 
+          ? Object.values(manager_detail).flat()
+          : manager_detail[managerId as keyof typeof manager_detail] || [];
+        setManagerDetails(Array.isArray(details) ? details : []);
     
-    useEffect(() => {
-      setIsLoading(true);
-      
-      try {
-        if (managerId === 'all') {
-          const allDetails = Object.values(manager_detail).flat();
-          setManagerDetails(allDetails);
-        } else {
-          // For a specific manager, get details directly from the object using the manager ID
-          const managerData = manager_detail[managerId as keyof typeof manager_detail];
-          
-          if (Array.isArray(managerData) && managerData.length > 0) {
-            setManagerDetails(managerData);
-          } else {
-            // If no data found for this manager ID, set empty array
-            console.warn(`No details found for manager ID: ${managerId}`);
-            setManagerDetails([]);
-          }
-        }
-      } catch (error) {
-        console.error("Error loading manager details:", error);
-        setManagerDetails([]);
-      } finally {
-        setIsLoading(false);
-      }
-    }, [managerId]);
-
-    useEffect(() => {
-      setIsLoading(true);
-      
-      try {
-        // Get all manager data
+        // Process top gainers/losers
         const allGainersData = Object.values(top_gainers).flat();
-        
-        // Find the selected manager's name based on ID
         const selectedManager = managers.find(m => m.id.toString() === managerId);
         const managerName = selectedManager?.name || '';
         
-        // Filter data based on manager name if a specific manager is selected
         let filteredData = allGainersData;
         if (managerId !== 'all' && managerName) {
           filteredData = allGainersData.filter(item => 
@@ -135,23 +116,19 @@ export const HurricanePms = () => {
           );
         }
         
-        // Get top gainers (highest values based on sort key)
-        const newTopGainers = getRecords(filteredData, parseInt(selectedProfit), gainersSort, false);
-        
-        // Get top losers (lowest values based on sort key)
-        const newTopLosers = getRecords(filteredData, parseInt(selectedLoss), losersSort, true);
-        
-        setTopGainers(newTopGainers);
-        setTopLosers(newTopLosers);
+        setTopGainers(getRecords(filteredData, parseInt(selectedProfit), gainersSort, false));
+        setTopLosers(getRecords(filteredData, parseInt(selectedLoss), losersSort, true));
       } catch (error) {
-        console.error("Error processing top gainers/losers:", error);
+        console.error("Error processing data:", error);
+        setManagerDetails([]);
         setTopGainers([]);
         setTopLosers([]);
       } finally {
-        setIsLoading(false);
+        // setIsLoading(false);
       }
     }, [managerId, selectedProfit, selectedLoss, gainersSort, losersSort]);
 
+// Use these memoized versions in your grids
     const handleManagerChange = (selectedOption: { value: string; label: string } | null) => {
       if (selectedOption) {
         setManagerId(selectedOption.value);
@@ -183,6 +160,20 @@ export const HurricanePms = () => {
       }
     };
 
+    const gridOptions = useMemo(() => ({
+        ...defaultGridOptions,
+        onRowClicked: handleOnRowClicked,
+        rowClassRules: {
+          'ag-row-even': (params: any) => params.node.rowIndex % 2 === 0,
+          'ag-row-odd': (params: any) => params.node.rowIndex % 2 !== 0
+        },
+      }), []);
+
+      if(isLoading){
+        return <div className="absolute top-1/2 left-1/2 ">
+             <Spinner size={"3"} />
+        </div>
+      }
   return (
     <div className={`${styles["hurricane-pms"]} scrollable-div gap-4`}>
       <section className="flex h-[600px] gap-4">
@@ -199,22 +190,18 @@ export const HurricanePms = () => {
               />
             </div>
 
-            <DataGrid 
+            <MemoizedDataGrid 
                 className="hurrican-grid"
                 domLayout={'normal'}
                 height={isMobile ? 500 : '95%'}
                 isSummaryGrid={false}
+                suppressScrollOnNewData={true}
                 suppressStatusBar={true}
                 suppressFloatingFilter={false}
                 columnDefs={columnDefs}
                 rowData={managerId === 'all' ? managers : managers.filter(manager => manager.id.toString() === managerId)}
                 gridOptions={{
-                  ...defaultGridOptions,
-                  onRowClicked: handleOnRowClicked,
-                  rowClassRules: {
-                    'ag-row-even': (params :any) => params.node.rowIndex % 2 === 0,
-                    'ag-row-odd': (params :any) => params.node.rowIndex % 2 !== 0
-                  },            
+                  ...gridOptions,           
                   pinnedTopRowData: [
                     managers.reduce((totals, row) => {
                       Object.keys(row).forEach((key) => {
@@ -263,11 +250,12 @@ export const HurricanePms = () => {
                       />
                     </div>
                 </div>
-                <DataGrid 
+                <MemoizedDataGrid 
                     className="hurrican-grid"
                     domLayout={'normal'}
                     height={isMobile ? 500 : '95%'}
                     isSummaryGrid={false}
+                    suppressScrollOnNewData={true}
                     suppressStatusBar={true}
                     suppressFloatingFilter={true}
                     columnDefs={profitColDefs}
@@ -302,20 +290,21 @@ export const HurricanePms = () => {
                       />
                     </div>
                 </div>
-                <DataGrid 
+                <MemoizedDataGrid 
                     className="hurrican-grid"
                     domLayout={'normal'}
                     height={isMobile ? 500 : '95%'}
                     isSummaryGrid={false}
+                    suppressScrollOnNewData={true}
                     suppressStatusBar={true}
                     suppressFloatingFilter={true}
                     columnDefs={lossColDefs}
                     rowData={topLosers}
                     gridOptions={{
                       ...defaultGridOptions,
-                      // getRowId: (params) => {
-                      //   return `loss-${params.data.portfolio_manager}-${params.data.security}`;
-                      // }
+                      getRowId: (params) => {
+                        return `loss-${params.data.portfolio_manager}-${params.data.security}`;
+                      }
                     }}
                     loading={isLoading}
                 />
@@ -327,22 +316,23 @@ export const HurricanePms = () => {
         <div className="">
           <div className="rounded-md p-2 h-[250px] w-[350px]">
             <h4 className="text-white text-center mb-2">Asset Allocation</h4>
-            <AssetAllocationChart />
+            <AssetAllocationChart  data={managerDetails}/>
           </div>
           <div className="rounded-md p-2 h-[250px]  w-[350px]">
             <h4 className="text-white text-center mb-2">Geographic Exposure map</h4>
-            <WorldMapChart />
+            <WorldMapChart data={managerDetails}/>
           </div>
         </div>
       </section>
 
       <section className="flex h-[600px] gap-4 mt-5">
         <div className="w-[80%]" ref={managerDetailsRef}>
-            <DataGrid 
+            <MemoizedDataGrid 
             className="hurrican-grid"
             domLayout={'normal'}
             height={isMobile ? 500 : '95%'}
             isSummaryGrid={false}
+            suppressScrollOnNewData={true}
             suppressStatusBar={true}
             suppressFloatingFilter={false}
             columnDefs={managerDetailsColDefs}
@@ -363,7 +353,7 @@ export const HurricanePms = () => {
 
         <div className="rounded-md p-2 h-[500px] w-[350px]">
           <h4 className="text-white text-center mb-2">Manager Exposure</h4>
-          <BarChart />
+          <BarChart data={managerDetails}/>
         </div>
       </section>
     </div>
