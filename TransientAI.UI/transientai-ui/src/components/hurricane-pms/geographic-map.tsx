@@ -61,12 +61,12 @@ const options: Highcharts.Options = {
   ],
 };
 
-const WorldMapChart = (data) => {
+const WorldMapChart = (data: any) => {
   console.log(data)
   const calculateCountryGroupData = (data: any): [string, number][] => {
     const totals: Record<string, number> = {};
 
-    data.data.forEach(item => {
+    data.data.forEach((item: any) => {
       const countryGroup = item.country_group.toLowerCase(); // Normalize the country group name
       const qty = item.quantity || 0;
       const price = item.price || 0;
@@ -101,7 +101,7 @@ const WorldMapChart = (data) => {
     ...options,
     series: [
       {
-        ...options.series[0],
+        ...(options.series?.[0] || {}), 
         data: dynamicDataForMap,  
       },
     ],

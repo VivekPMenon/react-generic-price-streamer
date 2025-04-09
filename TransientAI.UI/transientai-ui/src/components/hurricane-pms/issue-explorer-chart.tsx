@@ -10,7 +10,7 @@ const HighchartsReact = dynamic(() => import('highcharts-react-official'), { ssr
 
 
 
-function getChartOptions(result) {
+function getChartOptions(result: any) {
   // Sort data in descending order
   const sortedData = [...result].sort((a, b) => b.value - a.value);
   
@@ -100,12 +100,12 @@ function getChartOptions(result) {
   return chartOptions;
 }
 
-export const BarChart = (data) => {
+export const BarChart = (data: any) => {
   console.log(data)
   const calculateTickerData = (data: any): any[] => {
     const tickerValues: Record<string, number> = {};
     let grandTotal = 0;
-    data.forEach(item => {
+    data.forEach((item: any) => {
       const ticker = item.ticker;
       const qty = item.quantity || 0;
       const price = item.price || 0;
@@ -132,6 +132,7 @@ export const BarChart = (data) => {
     return tickerData;
   };
   const result = calculateTickerData(data.data);
+
   return (
     <div className="h-full w-full p-2">
       <HighchartsReact 

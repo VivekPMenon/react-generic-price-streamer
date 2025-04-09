@@ -6,7 +6,7 @@ import Highcharts from 'highcharts';
 // Use dynamic import for client-side rendering
 const HighchartsReact = dynamic(() => import('highcharts-react-official'), { ssr: false });
 
-export const AssetAllocationChart = ({ data }) => {
+export const AssetAllocationChart = ({ data }: any) => {
   // Default data matching the image (21% Equity, 76% Cash, 3% Equity Option)
 
   const colorMap = {
@@ -44,7 +44,7 @@ export const AssetAllocationChart = ({ data }) => {
       return {
         name: type,
         y: percentage === 0 ? null : percentage,
-        color: colorMap[type] || "#95a5a6",
+        color: colorMap[type as keyof typeof colorMap] || "#95a5a6",
       };
     });
     return chartData;
