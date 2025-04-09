@@ -169,20 +169,20 @@ export const profitColDefs: ColDef[] = [
         field: 'portfolio_manager',
         headerName: 'Profolio Manager',
         headerClass: `${styles['table-header']} ag-left-aligned-header`,
-        width: 85,
+        width: 150,
     },
     {
         field: 'security',
         headerName: 'Security',
         headerClass: `${styles['table-header']} ag-left-aligned-header`,
-        width: 85,
+        width: 100,
         aggFunc: 'sum'
     },
     {
         field: 'last_price',
         headerName: 'Last Price',
         headerClass: `${styles['table-header']} ag-left-aligned-header`,
-        width: 85,
+        width: 100,
         aggFunc: 'sum'
     },
     {
@@ -193,7 +193,7 @@ export const profitColDefs: ColDef[] = [
         cellRenderer: PLHighchartsRenderer,
         valueFormatter: (params: ValueFormatterParams) => formatInteger(params.data?.pl, ''),
         aggFunc: 'sum',
-        cellStyle: { color: '#52c41a' },
+        // cellStyle: { color: '#52c41a' },
         width: 130 // Ensure enough space for the chart
     },
     {
@@ -215,21 +215,21 @@ export const lossColDefs: ColDef[] = [
         field: 'portfolio_manager',
         headerName: 'Profolio Manager',
         headerClass: `${styles['table-header']} ag-left-aligned-header`,
-        width: 85,
+        width: 150,
         aggFunc: 'sum'
     },
     {
         field: 'security',
         headerName: 'Security',
         headerClass: `${styles['table-header']} ag-left-aligned-header`,
-        width: 85,
+        width: 100,
         aggFunc: 'sum'
     },
     {
         field: 'last_price',
         headerName: 'Last Price',
         headerClass: `${styles['table-header']} ag-left-aligned-header`,
-        width: 85,
+        width: 100,
         aggFunc: 'sum'
     },
     {
@@ -242,7 +242,7 @@ export const lossColDefs: ColDef[] = [
             const value = params.data?.pl;
             return value != null ? `$ ${formatInteger(value, '')}` : '';
         },
-        cellStyle: { color: '#ff4d4f' },
+        // cellStyle: { color: '#ff4d4f' },
         aggFunc: 'sum'
     },
     {
