@@ -16,6 +16,7 @@ function getChartOptions(marketData: MarketData[]|null|undefined, isNegative: bo
         const today = new Date().setHours(0, 0, 0, 0);
         seriesData = marketData
             .filter(data => data.timestamp && data.timestamp.getTime() >= today)
+            .sort((a, b) => a.timestamp!.getTime() - b.timestamp!.getTime())
             .map(data => {
                 return [data.timestamp!.getTime(), data.open, data.high, data.low, data.close];
             });
@@ -52,7 +53,8 @@ function getChartOptions(marketData: MarketData[]|null|undefined, isNegative: bo
             type: 'datetime',
             labels: { enabled: false, style: { color: '#dddddd' } },
             gridLineWidth: 0,
-            crosshair: false
+            crosshair: false,
+            // minRange: 300000
         },
         yAxis: {
             title: { text: null },
@@ -131,16 +133,18 @@ export interface MacroInstrumentProps {
 }
 
 function MacroInstrument({symbol, type, name, value, change, percent, marketData: data, showCharts, showPopupAction, changeSuffix, inverseChange}: MacroInstrumentProps) {
-    const [marketData, setMarketData] = useState<MarketData[]|undefined>(data);
+    const [marketData, setMarketData] = useState<MarketData[]|undefined>(undefined);
     const [isLoading, setIsLoading] = useState<boolean>(true);
 
     useEffect(() => {
-        if (marketData?.length ?? 0 > 0) {
-            setIsLoading(false);
-            return;
-        }
         if (symbol) {
+            if (data?.length ?? 0 > 0) {
+                setIsLoading(false);
+                setMarketData(data);
+                return;
+            }
             setIsLoading(true);
+            const controller = new AbortController();
             marketDataService.getIntradayData(symbol, type)
                 .then(data => {
                     if (data) {
@@ -150,10 +154,13 @@ function MacroInstrument({symbol, type, name, value, change, percent, marketData
                 .finally(() => {
                     setIsLoading(false);
                 });
+            return () => {
+                controller.abort();
+            }
         } else {
             setIsLoading(false);
         }
-    }, [marketData, symbol, type]);
+    }, [data, symbol, type]);
 
     const isNegative = inverseChange === true
         ? ((change ?? 0.0) > 0.0)

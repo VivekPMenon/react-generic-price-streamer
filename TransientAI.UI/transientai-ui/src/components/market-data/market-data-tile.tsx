@@ -1,7 +1,7 @@
 'use client';
 import dynamic from 'next/dynamic';
 const HighchartsReact = dynamic(() => import('highcharts-react-official'), { ssr: false });
-import Image from 'next/image'
+
 import { useTranslation } from 'react-i18next'; // Import translation hook
 import {Instrument, PeriodType} from "@/services/market-data";
 import { formatDecimal, formatShortened } from "@/lib/utility-functions";
@@ -72,6 +72,7 @@ function getChartOptions(instrument: Instrument, isNegative: boolean = false, ig
     if (instrument.marketData?.length) {
         seriesData = instrument.marketData
             .filter(data => data.timestamp)
+            .sort((a, b) => a.timestamp!.getTime() - b.timestamp!.getTime())
             .map(data => {
                 return [data.timestamp!.getTime(), data.open, data.high, data.low, data.close];
             });
@@ -244,11 +245,13 @@ export function MarketDataTile({ instrument, logoUrl, removeInstrument, showFina
                 <div className={styles['logo']}>
                     {
                         logoUrl && (
-                            <Image
+                            <img
                                 src={logoUrl}
                                 alt={instrument.company_name}
                                 loading={'lazy'}
                                 onError={handleError}
+                                height={50}
+                                width={50}
                             />
                         )
                     }

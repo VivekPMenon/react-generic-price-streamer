@@ -1,7 +1,7 @@
-import axios, { AxiosError, AxiosRequestConfig } from "axios";
-import { WebApihandlerOptions } from "./model";
+import axios, { AxiosRequestConfig } from "axios";
+import { WebApihandlerOptions} from "./model";
 import { endpointFinder } from "./endpoint-finder-service";
-import { useUserContextStore } from '../user-context/user-context-store'
+import { useUserContextStore } from '@/services/user-context'
 import msalInstance from "@/app/msal-config";
 
 class WebApihandler {
@@ -96,6 +96,9 @@ class WebApihandler {
       const response = await axios(config);
       return response.data;
     } catch (error) {
+      if (axios.isCancel(error)) {
+        return;
+      }
       if (axios.isAxiosError(error) && error.response?.status === 401) {
         try {
           await this.refreshToken();
@@ -114,7 +117,7 @@ class WebApihandler {
     }
   }
 
-  async get(url: string, params: { [key: string]: any }, options?: WebApihandlerOptions) {
+  async get(url: string, params: { [key: string]: any }, options?: WebApihandlerOptions): Promise<any> {
     await this.ensureToken();
     const finalUrl = this.getUrl(url, options);
     const config: AxiosRequestConfig = {
@@ -157,7 +160,7 @@ class WebApihandler {
 
   async postTranslate(text: string, targetLanguage: string): Promise<string> {
     await this.ensureToken();
-    const currentEnv = endpointFinder.getCurrentEnvInfo();
+    const currentEnv = endpointFinder.getCurrentEnvInfo()!;
     const translateUrl = `${currentEnv.httpsServices!["hurricane-api-2-0"]}/translate`;
 
     const config: AxiosRequestConfig = {

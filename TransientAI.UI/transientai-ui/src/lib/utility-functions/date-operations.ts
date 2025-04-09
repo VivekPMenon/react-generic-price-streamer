@@ -282,7 +282,7 @@ export function getMillisecondsTill(time: string): number {
   return new Date().getTime() - date.getTime();
 }
 
-export function   parseLocalDate(value: string|null|undefined): Date|null {
+export function parseLocalDate(value: string|null|undefined): Date|null {
   if (!value) {
     return null;
   }

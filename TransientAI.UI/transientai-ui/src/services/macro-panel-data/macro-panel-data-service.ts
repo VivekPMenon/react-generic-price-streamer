@@ -36,7 +36,7 @@ class MacroPanelDataService {
               change: t.one_day_change_bps,
               percent: t.ytd_change_bps,
               symbol: t.ticker ?? '',
-              type: MarketDataType.DOMESTIC_TREASURY
+              type: t.type ?? MarketDataType.UNKNOWN
             };
           })];
     } catch (e: any) {
@@ -60,7 +60,7 @@ class MacroPanelDataService {
               change: t.one_day_change_bps,
               percent: t.ytd_change_bps,
               symbol: t.ticker ?? '',
-              type: MarketDataType.FOREIGN_TREASURY
+              type: t.type ?? MarketDataType.UNKNOWN
             };
           })))
       ];
@@ -78,6 +78,7 @@ class MacroPanelDataService {
         const t = value as FxRate;
         if (t.data?.length) {
           t.data.forEach(value => {
+            value.date = new Date(value.date!);
             if (!value.timestamp) {
               value.timestamp = value.date;
             }
@@ -102,7 +103,7 @@ class MacroPanelDataService {
       const result = await webApihandler.get('crypto', {
         period: PeriodType.ONE_DAY,
         intraday: true,
-        interval: MarketDataInterval.FIVE_MIN
+        interval: MarketDataInterval.FIVE_MIN ? 5 : 1
       }, {
         serviceName: this.serviceName
       });
@@ -110,6 +111,7 @@ class MacroPanelDataService {
         const t = value as CryptoCurrency;
         if (t.data?.length) {
           t.data.forEach(value => {
+            value.date = new Date(value.date!);
             if (!value.timestamp) {
               value.timestamp = value.date;
             }

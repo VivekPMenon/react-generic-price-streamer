@@ -1,4 +1,4 @@
-import React, { useMemo, useState, memo } from 'react';
+import React, {useMemo, useState, memo} from 'react';
 import { Spinner, Tabs } from '@radix-ui/themes';
 import { useMacroPanelDataStore } from "@/services/macro-panel-data/macro-panel-data-store";
 import styles from './macro-panel-tabs.module.scss';
@@ -14,12 +14,15 @@ import i18n from '../../i18n';
 function MacroPanelTabs() {
     const { reportGenerationDate, treasuryYields, fxRates, cryptos, equityFutures, isTreasuryLoading, isFxLoading, isCryptoLoading, isEquityFuturesLoading } = useMacroPanelDataStore();
     const [open, setOpen] = useState(false);
+    const [isLoadingMarketData, setIsLoadingMarketData] = useState(false);
     const [instrument, setInstrument] = useState<Instrument | null>(null);
     const deviceType = useDeviceType();
 
     function showPopup(symbol: string, type?: MarketDataType, marketData?: MarketData[]) {
         if (symbol) {
+            setIsLoadingMarketData(true);
             setOpen(true);
+            const controller = new AbortController();
             marketDataService
                 .getMarketData(symbol, PeriodType.ONE_YEAR, type)
                 .then(data => {
@@ -27,18 +30,25 @@ function MacroPanelTabs() {
                         if (marketData?.length) {
                             if (data.marketData) {
                                 data.marketData.push(...marketData);
-                                data.marketData.sort((a, b) => (a.timestamp?.getTime() ?? 0) - (b.timestamp?.getTime() ?? 0));
                             } else {
                                 data.marketData = [];
                             }
                         }
+                        setInstrument(data);
+                    } else {
                         setInstrument(data);
                     }
                 })
                 .catch(() => {
                     setInstrument(null);
                     setOpen(false);
+                })
+                .finally(() => {
+                    setIsLoadingMarketData(false);
                 });
+            return () => {
+                controller.abort();
+            };
         }
     }
 
@@ -190,16 +200,18 @@ function MacroPanelTabs() {
                         <Dialog.Description />
                         <div className={styles['dialog-content']}>
                             {
-                                instrument
-                                    ? <MarketDataTile
-                                        instrument={instrument}
-                                        showFinancialData={false}
-                                        showPriceSummary={false}
-                                        className={styles['market-data-graph-popup']}
-                                        ignoreNegative={false}
-                                        isNegative={instrument.change < 0.0}
-                                    />
-                                    : <div className={styles['dialog-loading']}>{i18n.t('Loading')}</div> // Example of adding a translation for "Loading"
+                                isLoadingMarketData
+                                    ? <div className={styles['dialog-message']}>{i18n.t('Loading')}</div>
+                                    : instrument
+                                        ? <MarketDataTile
+                                            instrument={instrument!}
+                                            showFinancialData={false}
+                                            showPriceSummary={false}
+                                            className={styles['market-data-graph-popup']}
+                                            ignoreNegative={false}
+                                            isNegative={instrument!.change < 0.0}
+                                          />
+                                        : <div className={styles['dialog-message']}>{i18n.t('NoDataFound')}</div>
                             }
                         </div>
                         <div className={styles['dialog-close']}>

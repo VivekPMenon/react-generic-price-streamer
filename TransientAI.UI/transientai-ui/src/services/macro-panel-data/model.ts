@@ -73,6 +73,7 @@ export interface IInstrument {
 }
 
 export enum MarketDataType {
+  UNKNOWN = 'none',
   EQUITY = 'equity',
   FUTURES = 'futures',
   CRYPTOCURRENCY = 'cryptocurrency',

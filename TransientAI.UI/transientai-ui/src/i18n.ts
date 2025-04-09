@@ -109,6 +109,7 @@ i18n
                   FX: "FX",
                   Crypto: "Crypto",
                   Loading: "Loading...",
+                  NoDataFound: "No data found",
                   Treasury_Yields: "Treasury Yields",
                   Equity_Futures: "Equity Futures",
                   find: "Find...",
@@ -136,7 +137,6 @@ i18n
                       "read_more": "Read More",
                       "close": "Close",
                       'pnl_dashboard': "PnL Dashboard"
-
                   },
                   full_view: "Full View",
                   detailed: "Detailed",
@@ -147,7 +147,6 @@ i18n
                       or: "or",
                       browse_file: "Browse Your File",
                       review: "Review File",
-
                   },
                   corporate_actions_1: {
                       action_type: 'Action Type',
@@ -234,6 +233,7 @@ i18n
                   FX: "外国為替",
                   Crypto: "暗号通貨",
                   Loading: "読み込み中...",
+                  NoDataFound: "データが見つかりませんでした",
                   Treasury_Yields: "国債利回り",
                   Equity_Futures: "株式先物",
                   Investor_Relations_Inquiries: "投資家向け広報お問い合わせ",

@@ -58,6 +58,7 @@ function connect() {
 
     socket.on('data', (data) => {
         // find topic to attach to subscription
+        // also check if there are any subscribers, otherwise, dont send
         self.postMessage({
             id: '',
             type: MessageType.MESSAGE,
