@@ -81,6 +81,7 @@ class SubscriptionManager {
                         subscription.clear();
                     }
                     this.subscriptions.clear();
+                    this.worker.terminate();
                     resolve();
                 });
         });
