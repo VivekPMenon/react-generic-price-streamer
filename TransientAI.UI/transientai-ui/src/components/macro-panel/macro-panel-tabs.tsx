@@ -4,11 +4,11 @@ import { useMacroPanelDataStore } from "@/services/macro-panel-data/macro-panel-
 import styles from './macro-panel-tabs.module.scss';
 import MacroPanelTab from "@/components/macro-panel/macro-panel-tab";
 import * as Dialog from "@radix-ui/react-dialog";
-import { MarketDataTile } from "@/components/market-data/market-data-tile";
-import { Cross1Icon } from "@radix-ui/react-icons";
-import { Instrument, marketDataService, PeriodType } from "@/services/market-data";
-import { useDeviceType } from "@/lib/hooks";
-import { MarketDataType } from "@/services/macro-panel-data/model";
+import {MarketDataTile} from "@/components/market-data/market-data-tile";
+import {Cross1Icon} from "@radix-ui/react-icons";
+import {Instrument, MarketData, marketDataService, PeriodType} from "@/services/market-data";
+import {useDeviceType} from "@/lib/hooks";
+import {MarketDataType} from "@/services/macro-panel-data/model";
 import { useTranslation } from 'react-i18next'; // Import useTranslation hook
 import i18n from '../../i18n';
 
@@ -19,16 +19,16 @@ function MacroPanelTabs() {
     const [instrument, setInstrument] = useState<Instrument | null>(null);
     const deviceType = useDeviceType();
 
-    function showPopup(symbol: string, type?: MarketDataType, instrument_?: Instrument) {
+    function showPopup(symbol: string, type?: MarketDataType, marketData?: MarketData[]) {
         if (symbol) {
             setOpen(true);
             marketDataService
                 .getMarketData(symbol, PeriodType.ONE_YEAR, type)
                 .then(data => {
                     if (data) {
-                        if (instrument_ && instrument_.marketData?.length) {
+                        if (marketData?.length) {
                             if (data.marketData) {
-                                data.marketData.push(...instrument_.marketData);
+                                data.marketData.push(...marketData);
                                 data.marketData.sort((a, b) => (a.timestamp?.getTime() ?? 0) - (b.timestamp?.getTime() ?? 0));
                             } else {
                                 data.marketData = [];
@@ -38,7 +38,7 @@ function MacroPanelTabs() {
                     }
                 })
                 .catch(() => {
-                    setInstrument(instrument_ ?? null);
+                    setInstrument(null);
                     setOpen(false);
                 });
         }

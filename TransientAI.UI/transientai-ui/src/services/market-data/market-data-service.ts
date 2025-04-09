@@ -26,17 +26,15 @@ class MarketDataService {
     return result.trace_data;
   }
 
-  async getMarketData(company_or_ticker : string, period: PeriodType = PeriodType.ONE_YEAR, type?: MarketDataType): Promise<Instrument|null> {
+  async getMarketData(company_or_ticker: string, period: PeriodType = PeriodType.ONE_YEAR, type?: MarketDataType): Promise<Instrument|null> {
     try {
-      const fieldName = type === undefined || type === MarketDataType.NONE
-          ? 'company_or_ticker'
-          :  type === MarketDataType.DOMESTIC_TREASURY
-              ? 'us_treasury'
-              : 'foreign_treasury_ticker';
-
-      const params: Record<string, unknown> = { period, intraday: false, interval: MarketDataInterval.FIVE_MIN };
-      params[fieldName] = company_or_ticker;
-
+      const params: Record<string, unknown> = {
+        company_or_ticker,
+        type: type ?? MarketDataType.EQUITY,
+        period,
+        intraday: false,
+        interval: MarketDataInterval.FIVE_MIN
+      };
       return await this.getMarketDataCore(params);
 
     } catch (e) {
@@ -44,16 +42,15 @@ class MarketDataService {
     }
   }
 
-  async getIntradayData(company_or_ticker : string, type?: MarketDataType): Promise<Instrument|null> {
+  async getIntradayData(company_or_ticker: string, type?: MarketDataType): Promise<Instrument|null> {
     try {
-      // const fieldName = type === undefined || type === MarketDataType.NONE
-      //     ? 'company_or_ticker'
-      //     :  type === MarketDataType.DOMESTIC_TREASURY
-      //         ? 'us_treasury'
-      //         : 'foreign_treasury_ticker';
-      const fieldName = 'company_or_ticker';
-      const params: Record<string, unknown> = { intraday: true, interval: MarketDataInterval.FIVE_MIN };
-      params[fieldName] = company_or_ticker;
+      const params: Record<string, unknown> = {
+        company_or_ticker,
+        type: type ?? MarketDataType.EQUITY,
+        period: PeriodType.ONE_DAY,
+        intraday: true,
+        interval: MarketDataInterval.FIVE_MIN
+      };
 
       return await this.getMarketDataCore(params);
     } catch (e: any) {

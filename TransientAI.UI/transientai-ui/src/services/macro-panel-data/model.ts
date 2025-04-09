@@ -1,3 +1,5 @@
+import {MarketData} from "@/services/market-data";
+
 export interface BloombergEmailReport {
   subject?: string;
   sender?: string;
@@ -33,19 +35,21 @@ export interface BondData {
 
 export interface FxRate extends IInstrument {
   name: string;
-  ticker: string;
-  group_name: string;
-  price: number
+  symbol: string;
+  group: string;
+  current_price: number
   change: number
-  change_percentage: number;
+  percent_change: number;
+  data?: MarketData[];
 }
 
 export interface CryptoCurrency extends IInstrument{
   name: string;
-  ticker: string;
-  price: number
+  symbol: string;
+  current_price: number
   change: number
-  change_percentage: number;
+  percent_change: number;
+  data?: MarketData[];
 }
 
 export interface EquityFuture extends IInstrument {
@@ -65,15 +69,22 @@ export interface IInstrument {
   change?: number;
   percent?: number;
   type?: MarketDataType;
+  marketData?: MarketData[];
 }
 
 export enum MarketDataType {
-  NONE = 'none',
+  EQUITY = 'equity',
+  FUTURES = 'futures',
+  CRYPTOCURRENCY = 'cryptocurrency',
+  FX = 'fx',
   DOMESTIC_TREASURY = 'domestic_treasury',
   FOREIGN_TREASURY = 'foreign_treasury'
 }
 
 export enum MarketDataInterval {
-  ONE_MIN = 1,
-  FIVE_MIN = 5
+  ONE_MIN = '1min',
+  FIVE_MIN = '5min',
+  FIFTEEN_MIN = '15min',
+  THIRTY_MIN = '30min',
+  ONE_HOUR = '1hour',
 }

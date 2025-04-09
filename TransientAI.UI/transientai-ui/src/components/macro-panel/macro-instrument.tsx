@@ -2,7 +2,7 @@ import dynamic from 'next/dynamic';
 import Highcharts from 'highcharts';
 import Highstock from 'highcharts/highstock';
 import React, {useEffect, useState, memo} from 'react';
-import {Instrument, marketDataService} from "@/services/market-data";
+import {MarketData, marketDataService} from "@/services/market-data";
 import {Spinner} from "@radix-ui/themes";
 import styles from './macro-panel-tabs.module.scss';
 import {formatDecimal} from "@/lib/utility-functions";
@@ -10,11 +10,11 @@ import {MarketDataType} from "@/services/macro-panel-data/model";
 
 const HighchartsReact = dynamic(() => import('highcharts-react-official'), { ssr: false });
 
-function getChartOptions(instrument: Instrument, isNegative: boolean = false, ignoreNegative: boolean = false) {
-    let seriesData: any[] = [];
-    if (instrument.marketData?.length) {
+function getChartOptions(marketData: MarketData[]|null|undefined, isNegative: boolean = false, ignoreNegative: boolean = false) {
+    let seriesData: [number, number|undefined, number|undefined, number|undefined, number|undefined][] = [];
+    if (marketData?.length) {
         const today = new Date().setHours(0, 0, 0, 0);
-        seriesData = instrument.marketData
+        seriesData = marketData
             .filter(data => data.timestamp && data.timestamp.getTime() >= today)
             .map(data => {
                 return [data.timestamp!.getTime(), data.open, data.high, data.low, data.close];
@@ -123,23 +123,27 @@ export interface MacroInstrumentProps {
     change?: number;
     percent?: number;
     showCharts: boolean;
-    showPopupAction: (symbol: string, type?: MarketDataType, instrument?: Instrument) => void;
+    marketData?: MarketData[];
+    showPopupAction: (symbol: string, type?: MarketDataType, marketData?: MarketData[]) => void;
     changeSuffix?: string
     inverseChange?: boolean;
     type?: MarketDataType;
 }
 
-function MacroInstrument({symbol, type, name, value, change, percent, showCharts, showPopupAction, changeSuffix, inverseChange}: MacroInstrumentProps) {
-    const [instrument, setInstrument] = useState<Instrument|null>(null);
-    const [isLoading, setIsLoading] = useState<boolean>(true);
+function MacroInstrument({symbol, type, name, value, change, percent, marketData: data, showCharts, showPopupAction, changeSuffix, inverseChange}: MacroInstrumentProps) {
+    const [marketData, setMarketData] = useState<MarketData[]|undefined>(data);
+    const [isLoading, setIsLoading] = useState<boolean>(false);
 
     useEffect(() => {
+        if (marketData?.length) {
+            return;
+        }
         if (symbol) {
             setIsLoading(true);
             marketDataService.getIntradayData(symbol, type)
                 .then(data => {
                     if (data) {
-                        setInstrument(data);
+                        setMarketData(data.marketData);
                     }
                 })
                 .finally(() => {
@@ -148,7 +152,7 @@ function MacroInstrument({symbol, type, name, value, change, percent, showCharts
         } else {
             setIsLoading(false);
         }
-    }, [symbol, type]);
+    }, [marketData, symbol, type]);
 
     const isNegative = inverseChange === true
         ? ((change ?? 0.0) > 0.0)
@@ -164,20 +168,20 @@ function MacroInstrument({symbol, type, name, value, change, percent, showCharts
                     <Spinner />
                 </div>
             )
-            : instrument !== null
+            : marketData !== null
                 ? (
                     <div
                         className={styles['market-data-graph']}
                         onDoubleClick={()=> {
                             if (symbol) {
-                                showPopupAction(symbol, type, instrument || undefined);
+                                showPopupAction(symbol, type, marketData);
                             }
                         }}
                     >
                         <HighchartsReact
                             highcharts={Highstock}
                             constructorType={'stockChart'}
-                            options={getChartOptions(instrument, isNegative, false)}
+                            options={getChartOptions(marketData, isNegative, false)}
                         />
                     </div>
                 )

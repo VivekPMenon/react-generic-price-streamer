@@ -1,9 +1,9 @@
 'use client';
 import dynamic from 'next/dynamic';
-import { useTranslation } from 'react-i18next'; // Import translation hook
-
 const HighchartsReact = dynamic(() => import('highcharts-react-official'), { ssr: false });
-import { Instrument, PeriodType } from "@/services/market-data";
+import Image from 'next/image'
+import { useTranslation } from 'react-i18next'; // Import translation hook
+import {Instrument, PeriodType} from "@/services/market-data";
 import { formatDecimal, formatShortened } from "@/lib/utility-functions";
 import Highcharts, { RangeSelectorButtonsOptions } from 'highcharts';
 import Highstock from 'highcharts/highstock';
@@ -68,12 +68,13 @@ function getFilterButtons(): RangeSelectorButtonsOptions[] {
 }
 
 function getChartOptions(instrument: Instrument, isNegative: boolean = false, ignoreNegative: boolean = false) {
-    let seriesData: any[] = [];
+    let seriesData: [number, number|undefined, number|undefined, number|undefined, number|undefined][] = [];
     if (instrument.marketData?.length) {
-        seriesData = instrument.marketData.map(data => {
-            const date = new Date(data.timestamp!);
-            return [date.getTime(), data.open, data.high, data.low, data.close];
-        });
+        seriesData = instrument.marketData
+            .filter(data => data.timestamp)
+            .map(data => {
+                return [data.timestamp!.getTime(), data.open, data.high, data.low, data.close];
+            });
     }
 
     let gradientStart: string;
@@ -243,9 +244,10 @@ export function MarketDataTile({ instrument, logoUrl, removeInstrument, showFina
                 <div className={styles['logo']}>
                     {
                         logoUrl && (
-                            <img
+                            <Image
                                 src={logoUrl}
                                 alt={instrument.company_name}
+                                loading={'lazy'}
                                 onError={handleError}
                             />
                         )
