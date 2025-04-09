@@ -34,8 +34,30 @@ import {
 import {RoleType, useUserContextStore} from '@/services/user-context';
 import {usePmsPnlDataStore} from "@/services/pms-pnl-data/pms-pnl-data-store";
 import { useTranslation } from 'react-i18next'; // Import the translation hook
+import { translateText } from '../../i18n';
+import i18n from 'i18next';
 
+ // Import the translation hook
 
+// Helper function to translate text fields within a notification
+const translateNotificationText = async (notification: Notification) => {
+  const translatedNotification = { ...notification };
+
+  // Translate the title and subtitle
+  translatedNotification.title = await translateText(notification.title);
+  translatedNotification.subTitle = notification.subTitle
+    ? await translateText(notification.subTitle)
+    : '';
+
+  // Translate the highlights (if any)
+  if (notification.highlights) {
+    translatedNotification.highlights = await Promise.all(
+      notification.highlights.map(async (highlight) => await translateText(highlight))
+    );
+  }
+
+  return translatedNotification;
+};
 
 export interface NotificationsProps {
   onExpandCollapse?: (state: boolean) => void;
@@ -134,7 +156,7 @@ export const filterTypeToResourceMap: { [key: string]: string } = {
 };
 
 export function Notifications(props: NotificationsProps) {
-  const { t } = useTranslation(); // Get the translation function
+  const { t } = useTranslation(); // Get the translation function // Get the translation function
   const router = useRouter();
   const divRef = useRef<HTMLDivElement>(null);
   const { isLoading, reports: researchReports, setSelectedReport: setSelectedResearchReport } = useResearchReportsStore();
@@ -216,110 +238,84 @@ export function Notifications(props: NotificationsProps) {
 
   function loadNotifications(mode: Mode) {
     let newNotifications: Notification[] = [];
+  
     if (mode === Mode.BUY) {
       newNotifications = [
-        // ...notifications,
         ...bloombergEmailReports
-            .map(bloombergEmailReport => ({
-              id: bloombergEmailReport.received_date,
-              resourceName: bloombergReportResourceName,
-              title: bloombergEmailReport.subject,
-              // subTitle: researchReport.concise_summary,
-              type: NotificationType.Macro,
-              timestamp: bloombergEmailReport.received_date ? new Date(bloombergEmailReport.received_date).getTime() : new Date().getTime(),
-              highlights: [
-                 `${t('notification.date')}: ${formatDate(bloombergEmailReport.received_date)}`
-              ]
-            })),
+          .map(async (bloombergEmailReport) => ({
+            id: bloombergEmailReport.received_date,
+            resourceName: bloombergReportResourceName,
+            title: bloombergEmailReport.subject,  // Initial (untranslated) title
+            type: NotificationType.Macro,
+            timestamp: bloombergEmailReport.received_date
+              ? new Date(bloombergEmailReport.received_date).getTime()
+              : new Date().getTime(),
+            highlights: [`${t('notification.date')}: ${formatDate(bloombergEmailReport.received_date)}`]
+          })),
         ...researchReports
-            .map(researchReport => ({
-              id: researchReport.id,
-              resourceName: researchReportResourceName,
-              title: researchReport.name,
-              // subTitle: researchReport.concise_summary,
-              type: NotificationType.Research,
-              timestamp: researchReport.received_date ? new Date(researchReport.received_date).getTime() : new Date().getTime(),
-              highlights: getResearchReportHighlights(researchReport)
-            })),
+          .map(async (researchReport) => ({
+            id: researchReport.id,
+            resourceName: researchReportResourceName,
+            title: researchReport.name,  // Initial (untranslated) title
+            type: NotificationType.Research,
+            timestamp: researchReport.received_date
+              ? new Date(researchReport.received_date).getTime()
+              : new Date().getTime(),
+            highlights: getResearchReportHighlights(researchReport)
+          })),
         ...riskReports
-            .map(riskReport => ({
-              id: riskReport.id,
-              resourceName: resourceNameRiskReports,
-              title: riskReport.filename,
-              type: NotificationType.RiskReport,
-              timestamp: riskReport.uploaded ? riskReport.uploaded.getTime() : new Date().getTime(),
-              highlights: [
-                `Date: ${riskReport.uploaded!}`
-              ]
-            })),
+          .map(async (riskReport) => ({
+            id: riskReport.id,
+            resourceName: resourceNameRiskReports,
+            title: riskReport.filename,  // Initial (untranslated) title
+            type: NotificationType.RiskReport,
+            timestamp: riskReport.uploaded ? riskReport.uploaded.getTime() : new Date().getTime(),
+            highlights: [`Date: ${riskReport.uploaded!}`]
+          })),
         ...loadedCorpActions
-            .map(corpAction => ({
-              id: corpAction.eventId,
-              resourceName: corpActionResourceName,
-              title: `TICKER: ${corpAction.ticker} \n ${corpAction.security?.name}`,
-              type: NotificationType.CorpAct,
-              subTitle: `<span class=${corpAction.actionRequired ? 'text-red-500' : 'text-green-500'}>${corpAction.eventType} - ${corpAction.eventStatus}<span/>`,
-              timestamp: corpAction?.receivedDate ? new Date(corpAction.receivedDate).getTime() : new Date().getTime(),
-              highlights: [
-                `ISIN: ${corpAction.isin!}, ID: ${corpAction.eventId}`,
-                `No Accounts: ${corpAction.accounts?.length ? (corpAction.accounts?.length + ' ' + 'Account: ' + corpAction.accounts[0].accountNumber) : ''} ${corpAction.accounts && corpAction.accounts?.length > 1 ? ' +' + (corpAction.accounts?.length - 1) + 'More accts' : ''}`,
-                `Pay Date: ${formatDate(corpAction.dates?.pay_date)}`,
-                `Holding: ${corpAction.holdingQuantity}`,
-                `Version: ${corpAction.version}`,
-              ]
-            })),
+          .map(async (corpAction) => ({
+            id: corpAction.eventId,
+            resourceName: corpActionResourceName,
+            title: `TICKER: ${corpAction.ticker} \n ${corpAction.security?.name}`,  // Initial (untranslated) title
+            type: NotificationType.CorpAct,
+            subTitle: `<span class=${corpAction.actionRequired ? 'text-red-500' : 'text-green-500'}>${corpAction.eventType} - ${corpAction.eventStatus}<span/>`,
+            timestamp: corpAction?.receivedDate ? new Date(corpAction.receivedDate).getTime() : new Date().getTime(),
+            highlights: [
+              `ISIN: ${corpAction.isin!}, ID: ${corpAction.eventId}`,
+              `No Accounts: ${corpAction.accounts?.length ? (corpAction.accounts?.length + ' ' + 'Account: ' + corpAction.accounts[0].accountNumber) : ''} ${corpAction.accounts && corpAction.accounts?.length > 1 ? ' +' + (corpAction.accounts?.length - 1) + 'More accts' : ''}`,
+              `Pay Date: ${formatDate(corpAction.dates?.pay_date)}`,
+              `Holding: ${corpAction.holdingQuantity}`,
+              `Version: ${corpAction.version}`
+            ]
+          })),
         ...inquiries
-            .map(inquiry => ({
-              id: inquiry.id,
-              title: `${inquiry.subject}`,
-              type: NotificationType.Inquiries,
-              subTitle: inquiry.inquiry ? inquiry.inquiry : '',
-              timestamp: inquiry.due_date ? new Date(inquiry.due_date).getTime() : 0,
-              highlights: [
-                `Due: ${inquiry.due_date ? new Date(inquiry.due_date).toDateString() : ''}`,
-                `Assigned to: ${inquiry.assignee_name}`,
-                `${inquiry.flag ? InquiryFlag[inquiry.flag] : ''}`,
-              ]
-            })),
-        {
-          id: 'risk-metrics-notification',
-          title: `GS Margin Excess Updated`,
-          type: NotificationType.RiskReport,
-          timestamp: lastUpdatedTimestamp ? new Date(lastUpdatedTimestamp).getTime() : 0,
-          highlights: [
-            formatDate(lastUpdatedTimestamp)
-          ]
-        },
-        {
-          id: 'pms-pnl-notification',
-          title: t('notification.pnl_dashboard', { date: reportDate?.toLocaleDateString() }),
-          type: NotificationType.PmsPnl,
-          timestamp: reportDate ? reportDate.getTime() : 0,
-          highlights: [
-            formatDate(reportDate?.toISOString())
-          ]
-        },
-      
-        // ...breakNewsItems
-        //   .map(news => ({
-        //     id: news.id?.toString(),
-        //     title: news.message,
-        //     sideTitle: 'WhatsApp',
-        //     type: NotificationType.BreakNews,
-        //     highlights: [
-        //       `${formatDate(news?.sender_time_info || '')}`,
-        //     ]
-        //   }))
+          .map(async (inquiry) => ({
+            id: inquiry.id,
+            title: `${inquiry.subject}`,  // Initial (untranslated) title
+            type: NotificationType.Inquiries,
+            subTitle: inquiry.inquiry ? inquiry.inquiry : '',
+            timestamp: inquiry.due_date ? new Date(inquiry.due_date).getTime() : 0,
+            highlights: [
+              `Due: ${inquiry.due_date ? new Date(inquiry.due_date).toDateString() : ''}`,
+              `Assigned to: ${inquiry.assignee_name}`,
+              `${inquiry.flag ? InquiryFlag[inquiry.flag] : ''}`
+            ]
+          })),
       ];
-    } else {
-      newNotifications = [
-
-      ];
+  
+      // Use Promise.all to resolve the translations for all notifications
+      Promise.all(newNotifications).then(async (resolvedNotifications) => {
+        const translatedNotifications = await Promise.all(
+          resolvedNotifications.map(translateNotificationText) // Translate all notifications
+        );
+  
+        translatedNotifications.sort((x, y) => (y.timestamp ?? -1) - (x.timestamp ?? -1));
+        setNotifications(translatedNotifications); // Set the translated notifications
+      });
     }
-
-    newNotifications.sort((x, y) => (y.timestamp ?? -1) - (x.timestamp ?? -1));
-
-    setNotifications(newNotifications);
+  
+    // Additional logic if necessary for the SELL mode
+  
   }
 
   function getResearchReportHighlights(researchReport: ResearchReport): string[] {

@@ -16,6 +16,7 @@ import Tags from "@/components/tags/tags";
 import ImageContainer from "@/components/image-container/image-container";
 import { useScrollTo, useScrollToElementId } from '@/lib/hooks';
 import { Spinner } from '@radix-ui/themes';
+import { translateText } from '../../i18n'; // Import your translate function
 
 export interface ResearchReportsProps {
   isExpanded?: boolean;
@@ -58,6 +59,25 @@ export function ResearchReports({ isExpanded }: ResearchReportsProps) {
   useEffect(() => {
     if (selectedReport) onReportSelection(selectedReport);
   }, [selectedReport]);
+  
+ // Translate the titles of the reports dynamically
+ const translateReportTitles = async (reports: ResearchReport[]) => {
+  const translatedReports = await Promise.all(
+    reports.map(async (report) => {
+      const translatedTitle = await translateText(report.name);
+      return { ...report, translatedName: translatedTitle };
+    })
+  );
+  return translatedReports;
+};
+const [translatedReports, setTranslatedReports] = useState<ResearchReport[]>([]);
+useEffect(() => {
+  const updateTranslatedReports = async () => {
+    const translated = await translateReportTitles(visibleReports);
+    setTranslatedReports(translated);
+  };
+  updateTranslatedReports();
+}, [visibleReports]);
 
   async function onReportSelection(report: ResearchReport) {
     if (!report?.id) return;
@@ -141,7 +161,7 @@ export function ResearchReports({ isExpanded }: ResearchReportsProps) {
           {isLoading || isSearchResultsLoading ? 
             <Spinner size="3" className='self-center' /> :
             <>
-              {visibleReports.map(report => (
+              {translatedReports.map(report => (
                 <div
                   key={report.id}
                   id={report.id}
@@ -151,7 +171,7 @@ export function ResearchReports({ isExpanded }: ResearchReportsProps) {
                   <div className='news-content'>
                     <div className='news-title'>
                       <i className='fa-regular fa-file-lines'></i>
-                      {report.name}
+                      {report.translatedName || report.name} 
                     </div>
                     {report.concise_summary &&
                       <div className='news-description'>

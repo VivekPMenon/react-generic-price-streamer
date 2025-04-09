@@ -6,38 +6,48 @@ import LanguageDetector from 'i18next-browser-languagedetector';
 import macro from 'styled-jsx/macro';
 import axios from 'axios';
 
-console.log('Detected Language:',i18n.language);
-
 // Optional: to detect and set HTML lang tag
 i18n.on('initialized', () => {
   console.log('✅ Detected Language (event):', i18n.language);
 });
 
+export const translateText = async (text: string) => {
+  const targetLanguage = i18n.language;
 
-export const translateText = async (text: string, targetLanguage: string) => {
+  // Only translate if the target language is not 'en' (English)
+  if (targetLanguage === 'en') {
+    return text; // No need to translate if the language is English
+  }
+
   try {
-    const response = await fetch('/translate', {
+    const response = await fetch('https://hurricanecap-devfastapi.azurewebsites.net/translate', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
         text: text,
-        target_language: targetLanguage,
+        target_language: targetLanguage, // Pass the target language to the API
       }),
     });
 
+    if (!response.ok) {
+      throw new Error(`Translation failed: ${response.statusText}`);
+    }
+
     const data = await response.json();
-    return data.translated_text;
+    return data.translated_text; // Assuming the API returns translated text
   } catch (error) {
-    console.error('Translation Error:', error);
-    return text;
+    console.error('Translation error:', error);
+    return text; // Return original text if there's an error
   }
 };
 
+
 // Detect missing keys and translate dynamically
-const customMissingKeyHandler = async (lng: string, ns: string, key: string) => {
-  const translated = await translateText(key, lng);
+const customMissingKeyHandler = async (ns: string, key: string) => {
+  const lng = i18n.language;
+  const translated = await translateText(key);
   // Inject into i18next’s memory store so it's cached
   i18n.addResource(lng, ns, key, translated);
 };

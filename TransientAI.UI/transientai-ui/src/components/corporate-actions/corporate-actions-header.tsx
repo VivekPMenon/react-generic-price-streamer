@@ -19,15 +19,6 @@ interface FilterActions {
   eventType: string | null;
   account: string | null;
 }
-  actionType: boolean;
-  securityTicker: string | null;
-  securityidentifier: string | null;
-  dateRange: string | null;
-  corpActionId: string | null;
-  eventStatus: string | null;
-  eventType: string | null;
-  account: string | null;
-}
 
 interface FilterConfigItem {
   key: keyof FilterActions; 
@@ -72,17 +63,6 @@ export const CorporateActionHeader = () => {
   function onSearchQueryChange(event: any) {
     setSearchQuery(event.target.value);
   }
-  function onSearchQueryChange(event: any) {
-    setSearchQuery(event.target.value);
-  }
-
-  const uniqueFilters = useMemo(() => {
-    const eventTypeSet = new Set<string>();
-    const eventStatusSet = new Set<string>();
-    const accountSet = new Set<string>();
-    const securitySet = new Set<string>();
-    const corpActionId = new Set<string>();
-    const isinSet = new Set<string>();
   const uniqueFilters = useMemo(() => {
     const eventTypeSet = new Set<string>();
     const eventStatusSet = new Set<string>();
@@ -192,16 +172,6 @@ export const CorporateActionHeader = () => {
       setFilterActions(key, formattedDates);
     }
   };
-  const handleDateFilter = (key: string, value: any) => {
-    const formattedDates = value.map((date: any) =>
-      date ? new Date(date).toISOString().split("T")[0] : null
-    );
-    setDateRange(value);
-    if (formattedDates.length > 1) {
-      setFilterActions(key, formattedDates);
-    }
-  };
-
   const handleReset = () => {
     reset();
     setDateRange([null, null]);
@@ -213,143 +183,67 @@ export const CorporateActionHeader = () => {
       <section className='flex gap-[30px] items-center mb-3'>
         <div className={`${styles['search-bar']} flex-1 basis-1/2`}>
           <input
-            type="text"
+            type='text'
             value={searchQuery}
-            onChange={event => onSearchQueryChange(event)}
-            placeholder={t('corporate_actions_1.search_placeholder')}  // Translated placeholder text
+            onChange={onSearchQueryChange}
+            placeholder={t('corporate_actions_1.search_placeholder')}
           />
         </div>
-  return (
-    <div>
-      <section className='flex gap-[30px] items-center mb-3'>
-        <div className={`${styles['search-bar']} flex-1 basis-1/2`}>
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={event => onSearchQueryChange(event)}
-            placeholder={t('corporate_actions_1.search_placeholder')}  // Translated placeholder text
-          />
-        </div>
-
         <div className='flex-1 w-full md:w-1/2'>
           <div className='flex gap-4'>
             <div className='flex items-center gap-2'>
-              <label htmlFor='sort-action'>{t('corporate_actions_1.sort_by_action_required')}</label>  {/* Translated label */}
+              <label htmlFor='sort-action'>
+                {t('corporate_actions_1.sort_by_action_required')}
+              </label>
               <Toggle
                 id='sort-action'
                 defaultChecked={sortByAction}
                 checked={sortByAction}
-                onChange={() => setSortByAction(!sortByAction)} 
+                onChange={() => setSortByAction(!sortByAction)}
                 className={styles['custom-toggle']}
               />
             </div>
-
-            <button className='button !py-1 !px-2'
-              onClick={handleReset}
-            >
-              {t('corporate_actions_1.reset')}  {/* Translated Reset button */}
-            </button>
-          </div>
-        </div>
-      </section>
-            <button className='button !py-1 !px-2'
-              onClick={handleReset}
-            >
-              {t('corporate_actions_1.reset')}  {/* Translated Reset button */}
+            <button className='button !py-1 !px-2' onClick={handleReset}>
+              {t('corporate_actions_1.reset')}
             </button>
           </div>
         </div>
       </section>
 
-            {/* Show only for OPS view filter */}
-           <section>
-                <div className={`${styles['corporate-filter-cont']} mb-3 grid lg:grid-cols-8 md:grid-cols-2 gap-4`}>
-                    {filterConfig.map((filter) => (
-                    <div key={filter.key} className={`${styles['search-filter-input']} `}>
-                        <label className="block mb-1 truncate">{filter.label}</label>
-      {/* Show only for OPS view filter */}
-      {!(userContext.role === RoleType.PM) && <section>
-        <div className={`${styles['corporate-filter-cont']} mb-3 grid lg:grid-cols-8 md:grid-cols-2 gap-4`}>
-          {filterConfig.map((filter) => (
-            <div key={filter.key} className={`${styles['search-filter-input']} `}>
-              <label className="block mb-1">{filter.label}</label>
-
-              {filter.type === "input" && (
-                <input
-                  className="w-full"
-                  type='text'
-                  onChange={(e) => null}
-                />
-              )}
-              {filter.type === "input" && (
-                <input
-                  className="w-full"
-                  type='text'
-                  onChange={(e) => null}
-                />
-              )}
-
-              {filter.type === "dropdown" && (
-                <FilterDropDown
-                  isSearchable={filter.isSearchable ? filter.isSearchable : false}
-                  value={
-                    filterActions[filter.key]
-                      ? { value: filterActions[filter.key], label: filterActions[filter.key] }
-                      : null
-                  }
-                  options={filter.options || []}
-                  onChange={(value) => handleFilterChange(filter.key!, value)} 
-                />
-              )}
-              {filter.type === "dropdown" && (
-                <FilterDropDown
-                  isSearchable={filter.isSearchable ? filter.isSearchable : false}
-                  value={
-                    filterActions[filter.key]
-                      ? { value: filterActions[filter.key], label: filterActions[filter.key] }
-                      : null
-                  }
-                  options={filter.options || []}
-                  onChange={(value) => handleFilterChange(filter.key!, value)} 
-                />
-              )}
-
-              {filter.type === "date" && (
-                <DatePicker
-                  selectsRange={true}
-                  startDate={startDate}
-                  endDate={endDate}
-                  onChange={(update: any) => handleDateFilter(filter.key!, update)}
-                  isClearable={true}
-                  className="w-full"
-                  wrapperClassName="w-full"
-                />
-              )}
-            </div>
-          ))}
-        </div>
-      </section>
-      }
-    </div>
-  );
-};
-
-              {filter.type === "date" && (
-                <DatePicker
-                  selectsRange={true}
-                  startDate={startDate}
-                  endDate={endDate}
-                  onChange={(update: any) => handleDateFilter(filter.key!, update)}
-                  isClearable={true}
-                  className="w-full"
-                  wrapperClassName="w-full"
-                />
-              )}
-            </div>
-          ))}
-        </div>
-      </section>
-      }
+      {userContext.role !== RoleType.PM && (
+        <section>
+          <div className={`${styles['corporate-filter-cont']} mb-3 grid lg:grid-cols-8 md:grid-cols-2 gap-4`}>
+            {filterConfig.map((filter) => (
+              <div key={filter.key} className={`${styles['search-filter-input']}`}>
+                <label className='block mb-1 truncate'>{filter.label}</label>
+                {filter.type === 'dropdown' && (
+                  <FilterDropDown
+                    isSearchable={filter.isSearchable ?? false}
+                    value={
+                      filterActions[filter.key]
+                        ? { value: filterActions[filter.key], label: filterActions[filter.key] }
+                        : null
+                    }
+                    options={filter.options || []}
+                    onChange={(value) => handleFilterChange(filter.key, value)}
+                  />
+                )}
+                {filter.type === 'date' && (
+                  <DatePicker
+                    selectsRange={true}
+                    startDate={startDate}
+                    endDate={endDate}
+                    onChange={(update: any) => handleDateFilter(filter.key, update)}
+                    isClearable={true}
+                    className='w-full'
+                    wrapperClassName='w-full'
+                  />
+                )}
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
     </div>
   );
 };
