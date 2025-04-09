@@ -21,7 +21,9 @@ import { translateText } from '../../i18n'; // Import your translate function
 export interface ResearchReportsProps {
   isExpanded?: boolean;
 }
-
+interface TranslatedResearchReport extends ResearchReport {
+  translatedName?: string;
+}
 // ✅ Enum with stable keys
 export enum ReportType {
   Abstract = 'abstract',
@@ -61,16 +63,25 @@ export function ResearchReports({ isExpanded }: ResearchReportsProps) {
   }, [selectedReport]);
   
  // Translate the titles of the reports dynamically
- const translateReportTitles = async (reports: ResearchReport[]) => {
+//  const translateReportTitles = async (reports: ResearchReport[]) => {
+  const translateReportTitles = async (reports: ResearchReport[]): Promise<TranslatedResearchReport[]> => {
+    if (!reports.length) return [];
   const translatedReports = await Promise.all(
-    reports.map(async (report) => {
-      const translatedTitle = await translateText(report.name);
-      return { ...report, translatedName: translatedTitle };
-    })
+    reports
+      .filter((report) => report.name) // filter out undefined names
+      .map(async (report) => {
+        const translatedTitle = await translateText(report.name!);
+        // return { ...report, translatedName: translatedTitle };
+        return { ...report, translatedName: translatedTitle } as ResearchReport & { translatedName: string };
+
+      })
   );
+  
   return translatedReports;
 };
-const [translatedReports, setTranslatedReports] = useState<ResearchReport[]>([]);
+// const [translatedReports, setTranslatedReports] = useState<ResearchReport[]>([]);
+const [translatedReports, setTranslatedReports] = useState<TranslatedResearchReport[]>([]);
+
 useEffect(() => {
   const updateTranslatedReports = async () => {
     const translated = await translateReportTitles(visibleReports);
