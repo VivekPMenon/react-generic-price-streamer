@@ -30,7 +30,7 @@ class MarketDataService {
     try {
       const params: Record<string, unknown> = {
         company_or_ticker,
-        type: type ?? MarketDataType.EQUITY,
+        type: type === undefined || MarketDataType.UNKNOWN ? MarketDataType.EQUITY : type,
         period,
         intraday: false,
         interval: MarketDataInterval.FIVE_MIN
