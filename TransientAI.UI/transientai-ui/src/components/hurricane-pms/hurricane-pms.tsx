@@ -54,7 +54,7 @@ const tabsConfig = [
   },
   {
     value: "orders-traders",
-    label: "ORDERS/TRADERS",
+    label: "ORDERS/TRADES",
   }
 ];
 
