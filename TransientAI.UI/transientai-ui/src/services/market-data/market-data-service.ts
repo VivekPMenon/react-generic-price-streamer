@@ -33,7 +33,7 @@ class MarketDataService {
         type: type === undefined || MarketDataType.UNKNOWN ? MarketDataType.EQUITY : type,
         period,
         intraday: false,
-        interval: MarketDataInterval.FIVE_MIN ? 5 : 1
+        interval: 5
       };
       return await this.getMarketDataCore(params, abortSignal);
 
@@ -49,7 +49,7 @@ class MarketDataService {
         type: type === undefined || MarketDataType.UNKNOWN ? MarketDataType.EQUITY : type,
         period: PeriodType.ONE_DAY,
         intraday: true,
-        interval: MarketDataInterval.FIVE_MIN ? 5 : 1
+        interval: 5
       };
 
       return await this.getMarketDataCore(params, abortSignal);
@@ -114,7 +114,7 @@ class MarketDataService {
     let latest: MarketData|undefined = undefined;
     if (marketData && marketData.length) {
       marketData.forEach((market: any) => {
-        market.date = parseLocalDate(market.date);
+        market.date = new Date(market.date);
         market.timestamp = market.timestamp
             ? new Date(market.timestamp)
             : market.date;

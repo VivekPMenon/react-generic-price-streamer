@@ -102,7 +102,7 @@ class MacroPanelDataService {
       const result = await webApihandler.get('crypto', {
         period: PeriodType.ONE_DAY,
         intraday: true,
-        interval: MarketDataInterval.FIVE_MIN ? 5 : 1
+        interval: 5
       }, {
         serviceName: this.serviceName
       });
