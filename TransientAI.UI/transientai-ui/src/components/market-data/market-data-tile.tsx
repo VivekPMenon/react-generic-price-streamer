@@ -1,16 +1,20 @@
 'use client';
+import {useEffect, useRef, useMemo} from 'react';
 import dynamic from 'next/dynamic';
-const HighchartsReact = dynamic(() => import('highcharts-react-official'), { ssr: false });
-
-import { useTranslation } from 'react-i18next'; // Import translation hook
-import {Instrument, PeriodType} from "@/services/market-data";
-import { formatDecimal, formatShortened } from "@/lib/utility-functions";
-import Highcharts, { RangeSelectorButtonsOptions } from 'highcharts';
+import {useTranslation} from 'react-i18next'; // Import translation hook
+import {Instrument, marketDataService, PeriodType} from "@/services/market-data";
+import {formatDecimal, formatShortened} from "@/lib/utility-functions";
+import Highcharts, {RangeSelectorButtonsOptions} from 'highcharts';
 import Highstock from 'highcharts/highstock';
 import "highcharts/modules/exporting";
 import styles from './market-data-tile.module.scss';
-import { formatDateTime } from "@/lib/utility-functions/date-operations";
-import { enumToKeyValuePair, KeyValuePair } from "@/lib/utility-functions/enum-operations";
+import {formatDateTime} from "@/lib/utility-functions/date-operations";
+import {enumToKeyValuePair, KeyValuePair} from "@/lib/utility-functions/enum-operations";
+import {MarketDataType} from "@/services/macro-panel-data/model";
+
+const HighchartsReact = dynamic(() => import('highcharts-react-official'), { ssr: false });
+
+type OLHCData = [number, number|undefined, number|undefined, number|undefined, number|undefined];
 
 export interface MarketDataTileProps {
     instrument: Instrument,
@@ -67,8 +71,10 @@ function getFilterButtons(): RangeSelectorButtonsOptions[] {
     }).filter(button => button !== null);
 }
 
-function getChartOptions(instrument: Instrument, isNegative: boolean = false, ignoreNegative: boolean = false) {
-    let seriesData: [number, number|undefined, number|undefined, number|undefined, number|undefined][] = [];
+function getChartOptions(instrument: Instrument,
+                         isNegative: boolean = false,
+                         ignoreNegative: boolean = false) {
+    let seriesData: OLHCData[] = [];
     if (instrument.marketData?.length) {
         seriesData = instrument.marketData
             .filter(data => data.timestamp)
@@ -112,7 +118,7 @@ function getChartOptions(instrument: Instrument, isNegative: boolean = false, ig
         yAxis: {
             title: { text: null },
             labels: { style: { color: '#dddddd' } },
-            gridLineWidth: 0,
+            gridLineWidth: 0
         },
         navigator: {
             enabled: true,
@@ -125,6 +131,7 @@ function getChartOptions(instrument: Instrument, isNegative: boolean = false, ig
             enabled: true,
             inputEnabled: false,
             buttons: getFilterButtons(),
+            allButtonsEnabled: true,
             buttonTheme: {
                 fill: '#1E2128',
                 stroke: '#1E2128',
@@ -176,9 +183,9 @@ function getChartOptions(instrument: Instrument, isNegative: boolean = false, ig
                 type: 'ohlc',
                 name: instrument.ticker,
                 data: seriesData,
-                dataGrouping: {
-                    groupAll: true,
-                },
+                // dataGrouping: {
+                //     groupAll: true,
+                // },
             },
             {
                 type: 'area',
@@ -215,12 +222,70 @@ function getChartOptions(instrument: Instrument, isNegative: boolean = false, ig
     return chartOptions;
 }
 
+function addButtonHandlers(chartOptions: Highcharts.Options, chart: any, ticker: string, type?: MarketDataType) {
+    const selector = chartOptions.rangeSelector;
+    const buttons = selector?.buttons;
+    if (buttons?.length) {
+        const controller = new AbortController();
+        buttons.forEach(option => {
+            if (option.type === 'day' && (option.count === 1 || option.count === 3)) {
+                const periodType = option.count === 1
+                    ? PeriodType.ONE_DAY
+                    : PeriodType.THREE_DAY;
+
+                const func = function () {
+                    let isClicked = false;
+                    return function () {
+                        if (!chart?.series || isClicked) {
+                            return true;
+                        }
+                        isClicked = true;
+                        marketDataService.getIntradayData(ticker, periodType, type, controller.signal)
+                            .then(result => {
+                                if (result && result.marketData?.length) {
+                                    const olhc = chart.series[0];
+                                    const area = chart.series[1];
+                                    result.marketData.forEach(data => {
+                                        if (data.timestamp) {
+                                            const time = data.timestamp!.getTime();
+                                            olhc.addPoint([time, data.open, data.high, data.low, data.close]);
+                                            area.addPoint([time, data.close]);
+                                        }
+                                    });
+                                }
+                            });
+                        return true;
+                    };
+                };
+
+                option.events = {
+                    click: func()
+                }
+            }
+        });
+        return () => controller.abort();
+    }
+}
+
 export function MarketDataTile({ instrument, logoUrl, removeInstrument, showFinancialData, showPriceSummary, className, ignoreNegative, isNegative }: MarketDataTileProps) {
     const { t } = useTranslation();  // Initialize translation hook
+    const chartRef = useRef<any>(null);
 
     function handleError(e: any) {
         e.target.style.display = 'none';
     }
+
+    const chartOptions = useMemo(
+        () => getChartOptions(instrument, isNegative, ignoreNegative),
+        [ignoreNegative, instrument, isNegative]);
+
+    useEffect(() => {
+        return addButtonHandlers(
+            chartOptions,
+            chartRef.current?.chart,
+            instrument.ticker,
+            instrument.type);
+    }, [chartOptions, instrument.ticker, instrument.type]);
 
     let sign: string = '';
     let style: string;
@@ -339,9 +404,10 @@ export function MarketDataTile({ instrument, logoUrl, removeInstrument, showFina
             )}
             <div>
                 <HighchartsReact
+                    ref={chartRef}
                     highcharts={Highstock}
                     constructorType={'stockChart'}
-                    options={getChartOptions(instrument, isNegative, ignoreNegative)}
+                    options={chartOptions}
                 />
             </div>
         </div>

@@ -22,23 +22,29 @@ function MacroPanelTabs() {
         if (symbol) {
             setIsLoadingMarketData(true);
             setOpen(true);
-            const controller = new AbortController();
 
             marketDataService
-                .getMarketData(symbol, PeriodType.ONE_YEAR, type, controller.signal)
+                .getMarketData(symbol, PeriodType.ONE_YEAR, type)
                 .then(data => {
                     if (data) {
-                        if (marketData?.length) {
-                            if (data.marketData) {
-                                data.marketData.push(...marketData);
-                            } else {
-                                data.marketData = [];
-                            }
+                        if (!data.marketData) {
+                            data.marketData = [];
                         }
-                        setInstrument(data);
-                    } else {
-                        setInstrument(data);
                     }
+                    setInstrument(data);
+                    // if (data) {
+                    //     if (marketData?.length) {
+                    //         if (data.marketData) {
+                    //             data.marketData.push(...marketData);
+                    //         } else {
+                    //             data.marketData = [];
+                    //         }
+                    //     }
+                    //     data.type = type;
+                    //     setInstrument(data);
+                    // } else {
+                    //     setInstrument(data);
+                    // }
                 })
                 .catch(() => {
                     setInstrument(null);
@@ -47,9 +53,6 @@ function MacroPanelTabs() {
                 .finally(() => {
                     setIsLoadingMarketData(false);
                 });
-            return () => {
-                controller.abort();
-            };
         }
     }
 

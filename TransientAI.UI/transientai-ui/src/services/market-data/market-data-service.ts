@@ -1,7 +1,7 @@
 import {webApihandler} from "../web-api-handler";
 import {FinancialData, GraphDataPoint, ImageType, Instrument, MarketData, PeriodType, Price, TraceData} from "./model";
-import {isToday, parseIsoDate, parseLocalDate} from "@/lib/utility-functions/date-operations";
-import {MarketDataInterval, MarketDataType} from "@/services/macro-panel-data/model";
+import {isToday, parseIsoDate,} from "@/lib/utility-functions/date-operations";
+import {MarketDataType} from "@/services/macro-panel-data/model";
 
 class MarketDataService {
   readonly serviceName = 'hurricane-api';
@@ -42,12 +42,12 @@ class MarketDataService {
     }
   }
 
-  async getIntradayData(company_or_ticker: string, type?: MarketDataType, abortSignal?: AbortSignal): Promise<Instrument|null> {
+  async getIntradayData(company_or_ticker: string, period: PeriodType = PeriodType.ONE_DAY, type?: MarketDataType, abortSignal?: AbortSignal): Promise<Instrument|null> {
     try {
       const params: Record<string, unknown> = {
         company_or_ticker,
         type: type === undefined || MarketDataType.UNKNOWN ? MarketDataType.EQUITY : type,
-        period: PeriodType.ONE_DAY,
+        period: period,
         intraday: true,
         interval: 5
       };

@@ -1,3 +1,4 @@
+import {MarketDataType} from "@/services/macro-panel-data/model";
 
 
 export interface GraphDataPoint {
@@ -93,5 +94,6 @@ export interface Instrument {
   change: number;
   percent_change: number;
   timestamp: Date;
+  type?: MarketDataType;
   dispose: null|(() => void);
 }

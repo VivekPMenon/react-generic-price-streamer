@@ -2,7 +2,7 @@ import dynamic from 'next/dynamic';
 import Highcharts from 'highcharts';
 import Highstock from 'highcharts/highstock';
 import React, {useEffect, useState, memo} from 'react';
-import {MarketData, marketDataService} from "@/services/market-data";
+import {MarketData, marketDataService, PeriodType} from "@/services/market-data";
 import {Spinner} from "@radix-ui/themes";
 import styles from './macro-panel-tabs.module.scss';
 import {formatDecimal} from "@/lib/utility-functions";
@@ -53,8 +53,7 @@ function getChartOptions(marketData: MarketData[]|null|undefined, isNegative: bo
             type: 'datetime',
             labels: { enabled: false, style: { color: '#dddddd' } },
             gridLineWidth: 0,
-            crosshair: false,
-            // minRange: 300000
+            crosshair: false
         },
         yAxis: {
             title: { text: null },
@@ -145,7 +144,7 @@ function MacroInstrument({symbol, type, name, value, change, percent, marketData
             }
             setIsLoading(true);
             const controller = new AbortController();
-            marketDataService.getIntradayData(symbol, type, controller.signal)
+            marketDataService.getIntradayData(symbol, PeriodType.ONE_DAY, type, controller.signal)
                 .then(result => {
                     if (result) {
                         setMarketData(result.marketData);
