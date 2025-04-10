@@ -35,7 +35,8 @@ export const translateText = async (text: string) => {
     });
 
     if (!response.ok) {
-      throw new Error(`Translation failed: ${response.statusText}`);
+        console.error(`Translation failed: ${response.statusText}`);
+        return text;
     }
 
     const data = await response.json();
