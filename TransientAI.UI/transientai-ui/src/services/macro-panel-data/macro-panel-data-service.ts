@@ -86,7 +86,6 @@ class MacroPanelDataService {
         }
         return {
           ...t,
-          group_name: t.group,
           value: t.current_price,
           percent: t.percent_change,
           marketData: t.data,

@@ -26,7 +26,7 @@ class MarketDataService {
     return result.trace_data;
   }
 
-  async getMarketData(company_or_ticker: string, period: PeriodType = PeriodType.ONE_YEAR, type?: MarketDataType): Promise<Instrument|null> {
+  async getMarketData(company_or_ticker: string, period: PeriodType = PeriodType.ONE_YEAR, type?: MarketDataType, abortSignal?: AbortSignal): Promise<Instrument|null> {
     try {
       const params: Record<string, unknown> = {
         company_or_ticker,
@@ -35,14 +35,14 @@ class MarketDataService {
         intraday: false,
         interval: MarketDataInterval.FIVE_MIN
       };
-      return await this.getMarketDataCore(params);
+      return await this.getMarketDataCore(params, abortSignal);
 
     } catch (e) {
       return null;
     }
   }
 
-  async getIntradayData(company_or_ticker: string, type?: MarketDataType): Promise<Instrument|null> {
+  async getIntradayData(company_or_ticker: string, type?: MarketDataType, abortSignal?: AbortSignal): Promise<Instrument|null> {
     try {
       const params: Record<string, unknown> = {
         company_or_ticker,
@@ -52,7 +52,7 @@ class MarketDataService {
         interval: MarketDataInterval.FIVE_MIN
       };
 
-      return await this.getMarketDataCore(params);
+      return await this.getMarketDataCore(params, abortSignal);
     } catch (e: any) {
       return null;
     }
@@ -101,11 +101,12 @@ class MarketDataService {
     });
   }
 
-  private async getMarketDataCore(params: Record<string, unknown>) {
+  private async getMarketDataCore(params: Record<string, unknown>, abortSignal?: AbortSignal) {
     const result = await webApihandler
         .get(
             'market-data', params, {
-              serviceName: this.serviceName
+              serviceName: this.serviceName,
+              signal: abortSignal
             });
 
     const marketData = result.data;

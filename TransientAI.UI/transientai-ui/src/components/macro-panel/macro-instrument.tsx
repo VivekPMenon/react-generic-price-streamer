@@ -145,7 +145,7 @@ function MacroInstrument({symbol, type, name, value, change, percent, marketData
             }
             setIsLoading(true);
             const controller = new AbortController();
-            marketDataService.getIntradayData(symbol, type)
+            marketDataService.getIntradayData(symbol, type, controller.signal)
                 .then(data => {
                     if (data) {
                         setMarketData(data.marketData);

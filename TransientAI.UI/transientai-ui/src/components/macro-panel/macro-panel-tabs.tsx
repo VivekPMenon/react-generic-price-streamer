@@ -23,8 +23,9 @@ function MacroPanelTabs() {
             setIsLoadingMarketData(true);
             setOpen(true);
             const controller = new AbortController();
+
             marketDataService
-                .getMarketData(symbol, PeriodType.ONE_YEAR, type)
+                .getMarketData(symbol, PeriodType.ONE_YEAR, type, controller.signal)
                 .then(data => {
                     if (data) {
                         if (marketData?.length) {
@@ -148,7 +149,7 @@ function MacroPanelTabs() {
                                         </Tabs.Trigger>
                                     ))}
                                 </Tabs.List>
-                                {groupedFx.map(fx => (
+                                {groupedFx.map(fx => { console.log(fx[0]); return (
                                     <Tabs.Content key={fx[0]} value={fx[0]}>
                                         <MacroPanelTab
                                             instruments={fx[1]}
@@ -157,7 +158,7 @@ function MacroPanelTabs() {
                                             inverseChange={false}
                                         />
                                     </Tabs.Content>
-                                ))}
+                                )})}
                             </Tabs.Root>
                         )}
                 </div>
