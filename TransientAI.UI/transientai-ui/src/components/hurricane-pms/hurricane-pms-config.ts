@@ -146,7 +146,7 @@ export const managerDetailsColDefs: ColDef[] = [
     },
     {
         field: 'clearing_broker',
-        headerName: 'Cleaning Broker',
+        headerName: 'Clearing Broker',
         headerClass: `${styles['table-header']} ag-left-aligned-header`,
         aggFunc: 'sum'
     },
@@ -280,7 +280,7 @@ export const managerPositionColDefs: ColDef[] = [
     },
     {
         field: 'clearing_broker',
-        headerName: 'Cleaning Broker',
+        headerName: 'Clearing Broker',
         headerClass: `${styles['table-header']} ag-left-aligned-header`,
         aggFunc: 'sum'
     },
