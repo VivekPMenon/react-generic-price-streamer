@@ -283,7 +283,41 @@ export function MarketDataTile({ instrument, logoUrl, removeInstrument, showFina
                             <div className="blue-color">{formatShortened(instrument.financials?.revenue, '-')}</div>
                             <div className="blue-color">{formatDecimal(instrument.financials?.yoy_revenue, '-')}%</div>
                         </div>
-                        {/* Add other financial fields with translation keys */}
+                        <div className="grid grid-cols-[40%_30%_30%]">
+                            <div>Net income</div>
+                            <div className="blue-color">{formatShortened(instrument.financials?.net_income, '-')}</div>
+                            <div className="blue-color">{formatDecimal(instrument.financials?.yoy_net_income, '-')}%</div>
+                        </div>
+
+                        <div className="grid grid-cols-[40%_30%_30%]">
+                            <div>Diluted EPS</div>
+                            <div className="blue-color">{formatShortened(instrument.financials?.diluted_eps, '-')}</div>
+                            <div className="blue-color">{formatDecimal(instrument.financials?.yoy_eps, '-')}%</div>
+                        </div>
+
+                        <div className="grid grid-cols-[40%_30%_30%]">
+                            <div>Net profit margin</div>
+                            <div className="blue-color">{formatDecimal(instrument.financials?.net_profit_margin, '-')}%</div>
+                            <div className="blue-color">{formatDecimal(instrument.financials?.yoy_net_profit_margin, '-')}%</div>
+                        </div>
+
+                        <div className="grid ">
+                            <div>Earnings call</div>
+                            <div></div>
+                            <div></div>
+                        </div>
+
+                        <div className="grid grid-cols-[40%_30%_30%]">
+                            <div>Previous</div>
+                            <div>EPS</div>
+                            <div>Revenue</div>
+                        </div>
+
+                        <div className="grid grid-cols-[40%_30%_30%]">
+                            <div></div>
+                            <div className="blue-color">{`${instrument.financials?.eps_beat ?? ''} ${formatDecimal(instrument.financials?.eps_surprise, '-')}%`}</div>
+                            <div className="blue-color">{`${instrument.financials?.revenue_beat ?? ''} ${formatDecimal(instrument.financials?.revenue_surprise, '-')}%`}</div>
+                        </div>
                     </div>
                 </div>
             )}
