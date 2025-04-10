@@ -9,7 +9,7 @@ import {tryParseAndFormatDateOnly} from "@/lib/utility-functions/date-operations
 import {ColDef, FirstDataRenderedEvent, GetRowIdParams, GridSizeChangedEvent} from "ag-grid-community";
 import {executeAsync} from "@/lib/utility-functions/async";
 import { toast } from 'react-toastify';
-
+import i18n from '../../i18n';
 function getFlagStyle(flag: string|undefined|null) {
     const style: any = { display: "flex" };
     switch(flag) {
@@ -85,7 +85,7 @@ function InvestorRelations() {
             },
             {
                 field: 'date',
-                headerName: 'Date',
+                headerName: i18n.t('Date'),
                 minWidth: 125,
                 autoHeight: true,
                 wrapText: true,
@@ -96,22 +96,22 @@ function InvestorRelations() {
             },
             {
                 field: 'owner_name',
-                headerName: 'From',
+                headerName: i18n.t('From'),
                 minWidth: 100,
             },
             {
                 field: 'assignee_name',
-                headerName: 'To',
+                headerName: i18n.t('To'),
                 minWidth: 100,
             },
             {
                 field: 'subject',
-                headerName: 'Subject',
+                headerName: i18n.t('Subject'),
                 width: 250,
             },
             {
                 field: 'inquiry',
-                headerName: 'Inquiry/Request',
+                headerName: i18n.t('Inquiry/Request'),
                 width: 500,
                 maxWidth: 500,
                 wrapText: true,
@@ -119,7 +119,7 @@ function InvestorRelations() {
             },
             {
                 field: 'completed',
-                headerName: 'Status',
+                headerName: i18n.t('Status'),
                 width: 150,
                 autoHeight: true,
                 editable: true,
@@ -135,7 +135,7 @@ function InvestorRelations() {
             },
             {
                 field: 'flag',
-                headerName: 'Flag',
+                headerName: i18n.t('Flag'),
                 width: 100,
                 cellRenderer: (params: any) => {
                     const style = getFlagStyle(params.data.flag?.toLowerCase());
@@ -146,7 +146,7 @@ function InvestorRelations() {
             },
             {
                 field: 'due_date',
-                headerName: 'Due',
+                headerName: i18n.t('Due'),
                 minWidth: 125,
                 cellClass: 'date-cell',
                 autoHeight: true,
@@ -157,7 +157,7 @@ function InvestorRelations() {
             },
             {
                 field: 'date_edited',
-                headerName: 'Date edited',
+                headerName: i18n.t('Date edited'),
                 minWidth: 125,
                 cellClass: 'date-cell',
                 autoHeight: true,
@@ -173,7 +173,7 @@ function InvestorRelations() {
     return (
         <div className={styles['investor-relations']}>
             <div className={styles['header']}>
-                <span>Investor Relations Inquiries</span>
+                <span>{i18n.t('Investor_Relations_Inquiries')}</span>
                 <RequestFormPopup onSubmitted={(msg) => toast.success(msg)}>
                     <i className='fa-regular fa-3x fa-file cursor-pointer' />
                 </RequestFormPopup>

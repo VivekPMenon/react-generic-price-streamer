@@ -4,10 +4,11 @@ import {
   BondData,
   CryptoCurrency,
   EquityFuture,
-  FxRate,
+  FxRate, MarketDataInterval,
   MarketDataType,
   TreasuryYield
 } from './model';
+import {PeriodType} from "@/services/market-data";
 
 class MacroPanelDataService {
   private readonly serviceName = 'hurricane-api';
@@ -35,7 +36,7 @@ class MacroPanelDataService {
               change: t.one_day_change_bps,
               percent: t.ytd_change_bps,
               symbol: t.ticker ?? '',
-              type: t.type
+              type: t.type ?? MarketDataType.UNKNOWN
             };
           })];
     } catch (e: any) {
@@ -59,7 +60,7 @@ class MacroPanelDataService {
               change: t.one_day_change_bps,
               percent: t.ytd_change_bps,
               symbol: t.ticker ?? '',
-              type: t.type ?? MarketDataType.FOREIGN_TREASURY
+              type: t.type ?? MarketDataType.UNKNOWN
             };
           })))
       ];
@@ -75,11 +76,20 @@ class MacroPanelDataService {
       });
       return Object.values(result).map(value => {
         const t = value as FxRate;
+        if (t.data?.length) {
+          t.data.forEach(value => {
+            value.date = new Date(value.date!);
+            if (!value.timestamp) {
+              value.timestamp = value.date;
+            }
+          });
+        }
         return {
           ...t,
-          value: t.price,
-          percent: t.change_percentage,
-          symbol: t.ticker,
+          value: t.current_price,
+          percent: t.percent_change,
+          marketData: t.data,
+          type: MarketDataType.FX
         };
       });
     } catch (e: any) {
@@ -89,17 +99,30 @@ class MacroPanelDataService {
 
   async getCryptos(): Promise<CryptoCurrency[]> {
     try {
-      const result = await webApihandler.get('crypto', {}, {
+      const result = await webApihandler.get('crypto', {
+        period: PeriodType.ONE_DAY,
+        intraday: true,
+        interval: MarketDataInterval.FIVE_MIN ? 5 : 1
+      }, {
         serviceName: this.serviceName
       });
       return Object.values(result).map(value => {
         const t = value as CryptoCurrency;
+        if (t.data?.length) {
+          t.data.forEach(value => {
+            value.date = new Date(value.date!);
+            if (!value.timestamp) {
+              value.timestamp = value.date;
+            }
+          });
+        }
         return {
           ...t,
           group_name: 'Coins',
-          value: t.price,
-          percent: t.change_percentage,
-          symbol: t.ticker,
+          value: t.current_price,
+          percent: t.percent_change,
+          marketData: t.data,
+          type: MarketDataType.CRYPTOCURRENCY
         };
       }).sort((a, b) => (b.percent ?? 0.0) - (a.percent ?? 0.0));
     } catch (e: any) {
@@ -120,6 +143,7 @@ class MacroPanelDataService {
               group_name: key,
               change: t.net_change,
               percent: t.percent_change,
+              type: MarketDataType.FUTURES
             }
           }));
     } catch (e: any) {

@@ -1,43 +1,55 @@
 import React, {useMemo, useState, memo} from 'react';
-import {Spinner, Tabs} from '@radix-ui/themes';
-import {useMacroPanelDataStore} from "@/services/macro-panel-data/macro-panel-data-store";
+import { Spinner, Tabs } from '@radix-ui/themes';
+import { useMacroPanelDataStore } from "@/services/macro-panel-data/macro-panel-data-store";
 import styles from './macro-panel-tabs.module.scss';
 import MacroPanelTab from "@/components/macro-panel/macro-panel-tab";
 import * as Dialog from "@radix-ui/react-dialog";
 import {MarketDataTile} from "@/components/market-data/market-data-tile";
 import {Cross1Icon} from "@radix-ui/react-icons";
-import {Instrument, marketDataService, PeriodType} from "@/services/market-data";
+import {Instrument, MarketData, marketDataService, PeriodType} from "@/services/market-data";
 import {useDeviceType} from "@/lib/hooks";
 import {MarketDataType} from "@/services/macro-panel-data/model";
+import i18n from '../../i18n';
 
 function MacroPanelTabs() {
     const { reportGenerationDate, treasuryYields, fxRates, cryptos, equityFutures, isTreasuryLoading, isFxLoading, isCryptoLoading, isEquityFuturesLoading } = useMacroPanelDataStore();
     const [open, setOpen] = useState(false);
-    const [instrument, setInstrument] = useState<Instrument|null>(null);
+    const [isLoadingMarketData, setIsLoadingMarketData] = useState(false);
+    const [instrument, setInstrument] = useState<Instrument | null>(null);
     const deviceType = useDeviceType();
 
-    function showPopup(symbol: string, type?: MarketDataType, instrument_?: Instrument) {
+    function showPopup(symbol: string, type?: MarketDataType, marketData?: MarketData[]) {
         if (symbol) {
+            setIsLoadingMarketData(true);
             setOpen(true);
+            const controller = new AbortController();
+
             marketDataService
-                .getMarketData(symbol, PeriodType.ONE_YEAR, type)
+                .getMarketData(symbol, PeriodType.ONE_YEAR, type, controller.signal)
                 .then(data => {
                     if (data) {
-                        if (instrument_ && instrument_.marketData?.length) {
+                        if (marketData?.length) {
                             if (data.marketData) {
-                                data.marketData.push(...instrument_.marketData);
-                                data.marketData.sort((a, b) => (a.timestamp?.getTime() ?? 0) - (b.timestamp?.getTime() ?? 0));
+                                data.marketData.push(...marketData);
                             } else {
                                 data.marketData = [];
                             }
                         }
                         setInstrument(data);
+                    } else {
+                        setInstrument(data);
                     }
                 })
                 .catch(() => {
-                    setInstrument(instrument_ ?? null);
+                    setInstrument(null);
                     setOpen(false);
+                })
+                .finally(() => {
+                    setIsLoadingMarketData(false);
                 });
+            return () => {
+                controller.abort();
+            };
         }
     }
 
@@ -56,103 +68,89 @@ function MacroPanelTabs() {
 
     return (
         <div>
-            <div className={`${styles['header']} sub-header`}>{`Macro Report: Generated ${reportGenerationDate?.toLocaleString() ?? ''}`}</div>
+            <div className={`${styles['header']} sub-header`}>
+                {`${i18n.t('Macro_Report_Generated')}: ${reportGenerationDate?.toLocaleString() ?? ''}`}
+            </div>
             <div className={`${styles['macro-panel']} scrollable-div`}>
                 <div className={styles['equity-futures-container']}>
                     <hr className={styles['divider']} />
-                    <div className={`${styles['section-header']} sub-header`}>Global Equity Index Futures and Indices</div>
-                    {
-                        isEquityFuturesLoading
-                            ? <Spinner />
-                            : (<Tabs.Root defaultValue={groupedEquityFutures?.length ? groupedEquityFutures[0][0] : undefined}>
-                                    <Tabs.List className={`${styles['tab-list']} ${isMobile ? 'horizontal-scrollable-div' : ''}`}>
-                                        {groupedEquityFutures.map(ef => (
-                                                <Tabs.Trigger
-                                                    key={ef[0]}
-                                                    value={ef[0] || 'Untitled'}
-                                                >
-                                                    <span className={styles['instrument-group-tab']}>{ef[0]}</span>
-                                                </Tabs.Trigger>
-                                            )
-                                        )}
-                                    </Tabs.List>
+                    <div className={`${styles['section-header']} sub-header`}>
+                        {i18n.t('Global_Equity_Index_Futures')}
+                    </div>
+                    {isEquityFuturesLoading
+                        ? <Spinner />
+                        : (
+                            <Tabs.Root defaultValue={groupedEquityFutures?.length ? groupedEquityFutures[0][0] : undefined}>
+                                <Tabs.List className={`${styles['tab-list']} ${isMobile ? 'horizontal-scrollable-div' : ''}`}>
                                     {groupedEquityFutures.map(ef => (
-                                        <Tabs.Content
-                                            key={ef[0]}
-                                            value={ef[0]}
-                                        >
-                                            <MacroPanelTab
-                                                instruments={ef[1]}
-                                                showCharts={true}
-                                                showPopupAction={showPopup}
-                                                inverseChange={false}
-                                            />
-                                        </Tabs.Content>
+                                        <Tabs.Trigger key={ef[0]} value={ef[0] || 'Untitled'}>
+                                            <span className={styles['instrument-group-tab']}>{ef[0]}</span>
+                                        </Tabs.Trigger>
                                     ))}
-                                </Tabs.Root>
-                            )
-                    }
+                                </Tabs.List>
+                                {groupedEquityFutures.map(ef => (
+                                    <Tabs.Content key={ef[0]} value={ef[0]}>
+                                        <MacroPanelTab
+                                            instruments={ef[1]}
+                                            showCharts={true}
+                                            showPopupAction={showPopup}
+                                            inverseChange={false}
+                                        />
+                                    </Tabs.Content>
+                                ))}
+                            </Tabs.Root>
+                        )}
                 </div>
+
                 <div className={styles['yields-container']}>
                     <hr className={styles['divider']} />
-                    <div className={`${styles['section-header']} sub-header`}>Rates (Yield)</div>
-                    {
-                        isTreasuryLoading
+                    <div className={`${styles['section-header']} sub-header`}>
+                        {i18n.t('Rates_Yield')}
+                    </div>
+                    {isTreasuryLoading
                         ? <Spinner />
-                        : (<Tabs.Root defaultValue={groupedYields?.find(groups => groups[0] === 'Notes/Bonds')?.[0] ?? (groupedYields?.length ? groupedYields[0][0] : undefined)}>
+                        : (
+                            <Tabs.Root defaultValue={groupedYields?.find(groups => groups[0] === 'Notes/Bonds')?.[0] ?? (groupedYields?.length ? groupedYields[0][0] : undefined)}>
                                 <Tabs.List className={`${styles['tab-list']} ${isMobile ? 'horizontal-scrollable-div' : ''}`}>
-                                {
-                                    groupedYields.map(y => (
-                                            <Tabs.Trigger
-                                                key={y[0]}
-                                                value={y[0] || 'Untitled'}
-                                            >
-                                                <span className={styles['instrument-group-tab']}>{y[0]}</span>
-                                            </Tabs.Trigger>
-                                        ))
-                                }
-                            </Tabs.List>
-                            {groupedYields.map(y => (
-                                <Tabs.Content
-                                    key={y[0]}
-                                    value={y[0]}
-                                >
-                                    <MacroPanelTab
-                                        instruments={y[1]}
-                                        showCharts={true}
-                                        showPopupAction={showPopup}
-                                        changeSuffix={' bps'}
-                                        inverseChange={true}
-                                    />
-                                </Tabs.Content>
-                            ))}
-                        </Tabs.Root>)
-                    }
+                                    {groupedYields.map(y => (
+                                        <Tabs.Trigger key={y[0]} value={y[0] || 'Untitled'}>
+                                            <span className={styles['instrument-group-tab']}>{y[0]}</span>
+                                        </Tabs.Trigger>
+                                    ))}
+                                </Tabs.List>
+                                {groupedYields.map(y => (
+                                    <Tabs.Content key={y[0]} value={y[0]}>
+                                        <MacroPanelTab
+                                            instruments={y[1]}
+                                            showCharts={true}
+                                            showPopupAction={showPopup}
+                                            changeSuffix={' bps'}
+                                            inverseChange={true}
+                                        />
+                                    </Tabs.Content>
+                                ))}
+                            </Tabs.Root>
+                        )}
                 </div>
+
                 <div className={styles['fx-container']}>
                     <hr className={styles['divider']} />
-                    <div className={`${styles['section-header']} sub-header`}>FX</div>
-                    {
-                        isFxLoading
+                    <div className={`${styles['section-header']} sub-header`}>
+                        {i18n.t('FX')}
+                    </div>
+                    {isFxLoading
                         ? <Spinner />
-                            : (<Tabs.Root defaultValue={groupedFx?.length ? groupedFx[0][0] : undefined}>
+                        : (
+                            <Tabs.Root defaultValue={groupedFx?.length ? groupedFx[0][0] : undefined}>
                                 <Tabs.List className={`${styles['tab-list']} ${isMobile ? 'horizontal-scrollable-div' : ''}`}>
-                                    {
-                                        groupedFx.map(fx => (
-                                            <Tabs.Trigger
-                                                key={fx[0]}
-                                                value={fx[0] || 'Untitled'}
-                                            >
-                                                <span className={styles['instrument-group-tab']}>{fx[0]}</span>
-                                            </Tabs.Trigger>
-                                        ))
-                                    }
+                                    {groupedFx.map(fx => (
+                                        <Tabs.Trigger key={fx[0]} value={fx[0] || 'Untitled'}>
+                                            <span className={styles['instrument-group-tab']}>{fx[0]}</span>
+                                        </Tabs.Trigger>
+                                    ))}
                                 </Tabs.List>
-                                {groupedFx.map(fx => (
-                                    <Tabs.Content
-                                        key={fx[0]}
-                                        value={fx[0]}
-                                    >
+                                {groupedFx.map(fx => { console.log(fx[0]); return (
+                                    <Tabs.Content key={fx[0]} value={fx[0]}>
                                         <MacroPanelTab
                                             instruments={fx[1]}
                                             showCharts={true}
@@ -160,34 +158,29 @@ function MacroPanelTabs() {
                                             inverseChange={false}
                                         />
                                     </Tabs.Content>
-                                ))}
-                            </Tabs.Root>)
-                    }
+                                )})}
+                            </Tabs.Root>
+                        )}
                 </div>
+
                 <div className={styles['crypto-container']}>
                     <hr className={styles['divider']} />
-                    <div className={`${styles['section-header']} sub-header`}>Crypto</div>
-                    {
-                        isCryptoLoading
-                            ? <Spinner />
-                            : (<Tabs.Root defaultValue={groupedCrypto?.length ? groupedCrypto[0][0] : undefined}>
+                    <div className={`${styles['section-header']} sub-header`}>
+                        {i18n.t('Crypto')}
+                    </div>
+                    {isCryptoLoading
+                        ? <Spinner />
+                        : (
+                            <Tabs.Root defaultValue={groupedCrypto?.length ? groupedCrypto[0][0] : undefined}>
                                 <Tabs.List className={`${styles['tab-list']} ${isMobile ? 'horizontal-scrollable-div' : ''}`}>
-                                    {
-                                        groupedCrypto.map(c => (
-                                            <Tabs.Trigger
-                                                key={c[0]}
-                                                value={c[0] || 'Untitled'}
-                                            >
-                                                <span className={styles['instrument-group-tab']}>{c[0]}</span>
-                                            </Tabs.Trigger>
-                                        ))
-                                    }
+                                    {groupedCrypto.map(c => (
+                                        <Tabs.Trigger key={c[0]} value={c[0] || 'Untitled'}>
+                                            <span className={styles['instrument-group-tab']}>{c[0]}</span>
+                                        </Tabs.Trigger>
+                                    ))}
                                 </Tabs.List>
                                 {groupedCrypto.map(c => (
-                                    <Tabs.Content
-                                        key={c[0]}
-                                        value={c[0]}
-                                    >
+                                    <Tabs.Content key={c[0]} value={c[0]}>
                                         <MacroPanelTab
                                             instruments={c[1]}
                                             showCharts={true}
@@ -195,9 +188,9 @@ function MacroPanelTabs() {
                                         />
                                     </Tabs.Content>
                                 ))}
-                            </Tabs.Root>)
-                    }
-                    <hr className={styles['divider']} />
+                            </Tabs.Root>
+                        )}
+                    <hr className={styles['div  ider']} />
                 </div>
             </div>
             <Dialog.Root open={open} onOpenChange={handleOpenChange}>
@@ -208,21 +201,23 @@ function MacroPanelTabs() {
                         <Dialog.Description />
                         <div className={styles['dialog-content']}>
                             {
-                                instrument
-                                    ? <MarketDataTile
-                                            instrument={instrument}
+                                isLoadingMarketData
+                                    ? <div className={styles['dialog-message']}>{i18n.t('Loading')}</div>
+                                    : instrument
+                                        ? <MarketDataTile
+                                            instrument={instrument!}
                                             showFinancialData={false}
                                             showPriceSummary={false}
                                             className={styles['market-data-graph-popup']}
                                             ignoreNegative={false}
-                                            isNegative={instrument.change < 0.0}
-                                        />
-                                    : <div className={styles['dialog-loading']}>Loading...</div>
+                                            isNegative={instrument!.change < 0.0}
+                                          />
+                                        : <div className={styles['dialog-message']}>{i18n.t('NoDataFound')}</div>
                             }
                         </div>
                         <div className={styles['dialog-close']}>
                             <Dialog.DialogClose asChild>
-                                <Cross1Icon  />
+                                <Cross1Icon />
                             </Dialog.DialogClose>
                         </div>
                     </Dialog.Content>

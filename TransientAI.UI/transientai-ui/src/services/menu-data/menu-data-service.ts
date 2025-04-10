@@ -1,22 +1,24 @@
+//src/services/menu-data/menu-data-service.ts
 import { MenuInfo } from "./model";
-
+import i18n from '../../i18n';
 export enum Mode {
   SELL = 'sell',
   BUY = 'buy',
 }
-
+console.log(i18n.t('macro_panel'));
 const menuInfoList: MenuInfo[] = [
   {
     id: 'macro-panel',
     route: '/dashboard/macro-panel',
-    description: 'Macro Panel',
+    description: i18n.t('macro_panel'),
     badgeCount: 1,
     icon: 'fa-solid fa-list-check'
   },
   {
     id: 'research-reports',
     route: '/dashboard/research-reports',
-    description: 'Research Reports',
+    description:i18n.t('research_reports'),  //i18n.t('research_reports'),//
+    // description: i18n.t('research_reports', { defaultValue: 'Research Reports' }), //TODO//TODO
     badgeCount: 1,
     icon: 'fa-solid fa-book'
   },
@@ -29,48 +31,48 @@ const menuInfoList: MenuInfo[] = [
   {
     id: 'risk-reports',
     route: '/dashboard/risk-report-portal',
-    description: 'Risk Report Portal',
+    description: i18n.t('risk_report_portal'),
     badgeCount: 1,
     icon: 'fa-regular fa-file'
   },
   {
     id: 'corporate-actions',
     route: '/dashboard/corporate-actions',
-    description: 'Corporate Actions',
+    description: i18n.t('corporate_actions'),
     badgeCount: 1,
     icon: 'fa-solid fa-microphone-lines'
   },
   {
     id: 'investor-relations',
     route: '/dashboard/investor-relations',
-    description: 'Investor Relations',
+    description: i18n.t('investor_relations'),
     badgeCount: 1,
     icon: 'fa-solid fa-handshake'
   },
   {
     id: 'market-data',
     route: '/dashboard/market-data',
-    description: 'Market Data',
+    description: i18n.t('market_data'),
     badgeCount: 1,
     icon: 'fas fa-chart-line'
   },
   {
     id: 'breaking-news',
-    description: 'Breaking News',
+    description: i18n.t('breaking_news'), // Translated breaking news title
     badgeCount: 5,
     icon: 'fa-solid fa-newspaper',
     route: '/dashboard/breaking-news',
   },
   {
     id: 'risk-metrics',
-    description: 'Margin',
+    description: i18n.t('margin'),
     badgeCount: 1,
     icon: 'fa-solid fa-chart-column',
     route: '/dashboard/risk-metrics',
   },
   {
     id: 'pms-pnl',
-    description: 'PMS',
+    description: i18n.t('pms'),
     badgeCount: 1,
     icon: 'fa-solid fa-briefcase',
     route: '/dashboard/pms-pnl',

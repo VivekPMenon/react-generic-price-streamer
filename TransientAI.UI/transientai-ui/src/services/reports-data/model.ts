@@ -1,6 +1,8 @@
+import i18n from '../../i18n';
+
 export interface ImageItem {
-  url: string,
-  title?: string,
+  url: string;
+  title?: string;
   description?: string;
 }
 
@@ -29,8 +31,16 @@ export interface ReportSummary {
   images?: Array<ImageItem>;
 }
 
+// ✅ Enum for type-safe logic and usage
 export enum ReportType {
-  Abstract = 'Full View',
-  Detailed = 'Detailed',
-  ExecutiveSummary = 'Executive Summary',
+  Abstract = 'abstract',
+  ExecutiveSummary = 'executive_summary',
+  Detailed = 'detailed',
 }
+
+// ✅ Separate label map for translations
+export const ReportTypeLabels = {
+  [ReportType.Abstract]: i18n.t('full_view'),
+  [ReportType.ExecutiveSummary]: i18n.t('executive_summary'),
+  [ReportType.Detailed]: i18n.t('detailed'),
+};

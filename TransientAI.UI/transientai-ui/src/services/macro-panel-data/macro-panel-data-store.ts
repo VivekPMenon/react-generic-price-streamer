@@ -5,7 +5,7 @@ import {useUnseenItemsStore} from "@/services/unseen-items-store/unseen-items-st
 
 export const resourceName = 'bloomberg-email-reports';
 
-const REFRESH_INTERVAL = 60000;
+const REFRESH_INTERVAL = 300000;
 const BBG_REFRESH_INTERVAL = 1200000;
 let lastRefreshMillis: number = 0;
 
@@ -84,19 +84,19 @@ export const useMacroPanelDataStore = create<MacroPanelDataState>((set, get) => 
             treasuryYields: treasuries.concat(foreign)}
           );
         })
-        .catch(() => console.error('Error treasury yields rates'))
+        .catch(() => console.error('Error loading treasury yields rates'))
         .finally(() => set({isTreasuryLoading: false}));
     macroPanelDataService.getFxRates()
         .then(values => set({fxRates: values as FxRate[]}))
-        .catch(() => console.error('Error fx rates'))
+        .catch(() => console.error('Error loading fx rates'))
         .finally(() => set({isFxLoading: false}));
     macroPanelDataService.getCryptos()
         .then(values => set({cryptos: values as CryptoCurrency[]}))
-        .catch(() => console.error('Error cryptos'))
+        .catch(() => console.error('Error loading cryptos'))
         .finally(() => set({isCryptoLoading: false}));
     macroPanelDataService.getGlobalEquityFutures()
         .then(values => set({equityFutures: values as EquityFuture[]}))
-        .catch(() => console.error('Error equity futures'))
+        .catch(() => console.error('Error loading equity futures'))
         .finally(() => set({isEquityFuturesLoading: false}));
 
     if (loadBloombergReports) {
@@ -115,7 +115,7 @@ export const useMacroPanelDataStore = create<MacroPanelDataState>((set, get) => 
               return { bloombergEmailReports: values }; // No need to modify state here, just ensuring correctness
             });
           })
-          .catch(() => console.error('Error bloomberg email reports'))
+          .catch(() => console.error('Error loading bloomberg email reports'))
           .finally(() => set({isLoading: false}));
     }
   },

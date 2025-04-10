@@ -3,9 +3,9 @@ import { UserContext, RoleType } from "./model";
 import msalInstance from "@/app/msal-config";
 import { endpointFinder } from "../web-api-handler/endpoint-finder-service";
 import { AccountInfo } from "@azure/msal-browser";
-import userGroupUsersJson from "./user-group-users.json";
-import axios, { AxiosError } from "axios";
+import axios from "axios";
 import { webApihandler } from "../web-api-handler";
+
 interface UserContextState {
   userContext: UserContext;
   authenticationError: string;
@@ -16,7 +16,7 @@ interface UserContextState {
   loadUserContext: () => Promise<void>;
 }
 
-export const useUserContextStore = create<UserContextState>((set, get) => ({
+export const useUserContextStore = create<UserContextState>((set) => ({
   userContext: {},
   isLoading: false,
   isAuthenticated: false,
@@ -86,10 +86,12 @@ export const useUserContextStore = create<UserContextState>((set, get) => ({
       }
 
       if (!idToken) {
-        throw new Error("Failed to acquire ID token.");
+        set({ isLoading: false, authenticationError: "Failed to acquire ID token." });
+        return;
       }
 
       const bearerTokenRes = await loginAndSetToken(idToken);
+
       const role = bearerTokenRes.loginResponse.user_info.role
       if (bearerTokenRes) {
         sessionStorage.setItem("bearerToken", bearerTokenRes.bearerToken);
@@ -121,6 +123,7 @@ loadUserContext();
 
 async function loginAndSetToken(idToken: string) {
   try {
+
     const currentEnv = endpointFinder.getCurrentEnvInfo();
     const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
     const response = await axios.post(

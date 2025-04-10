@@ -19,7 +19,7 @@ export interface MarketDataStore {
 }
 
 const MAX_INSTRUMENTS = 5;
-const REFRESH_INTERVAL = 30000;
+const REFRESH_INTERVAL = 300000;
 const MAX_INSTRUMENTS_REACHED = `Limit of ${MAX_INSTRUMENTS} charts, please delete some to proceed`;
 
 export const useMarketDataStore = create<MarketDataStore>()(

@@ -1,9 +1,6 @@
-import OpenAI from "openai";
 import { webApihandler } from "../web-api-handler";
 import { endpointFinder } from "../web-api-handler/endpoint-finder-service";
-import { Article, ConsolidatedArticles, FinanceArticle } from "./model";
-import axios from "axios";
-
+import { Article, ConsolidatedArticles } from "./model";
 
 class NewsDataService {
 

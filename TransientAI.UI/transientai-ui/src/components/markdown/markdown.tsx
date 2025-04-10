@@ -1,7 +1,7 @@
 import ReactMarkdown from 'react-markdown';
 import React, { useEffect, useRef, useState } from "react";
 import rehypeRaw from "rehype-raw";
-
+import i18n from '../../i18n';
 export interface SearchableMarkdownProps {
   title?: string;
   className?: string;
@@ -97,7 +97,7 @@ export const SearchableMarkdown = ({ markdownContent, className, title }: Search
         <div className='search-toolbar'>
           <input
             type="text"
-            placeholder="Find..."
+            placeholder={i18n.t("find")}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
 

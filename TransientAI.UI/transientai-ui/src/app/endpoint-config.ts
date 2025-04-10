@@ -1,5 +1,5 @@
 import { EndpointConfig } from "@/services/web-api-handler";
-
+//src/app/endpoint-config.ts
 const devHttpServices = {
   'news-api': 'https://newsapi.org/v2',
   'openai-api': 'https://news-api-r966.onrender.com',
@@ -55,5 +55,17 @@ export const endpointConfigs: { [host: string]: EndpointConfig } = {
       ...devAuthInfo,
       redirectUri: 'https://hurricanecap-eff0hjhehxebcpbf.eastus2-01.azurewebsites.net/'
     }
+  },
+  'next-ts-app-732770042262.us-central1.run.app': {
+  env: 'PROD',
+  httpsEndpoint: 'https://api-demo.thetransient.ai',
+  corpActionApiHeaders: devCorpApiHeaders,
+  randomStr: '',
+  httpsServices: devHttpServices,
+  isAuthDisabled: false,
+  authInfo: {
+    ...devAuthInfo,
+    redirectUri: 'https://next-ts-app-732770042262.us-central1.run.app'
   }
+}
 };
