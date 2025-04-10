@@ -149,7 +149,7 @@ function MacroPanelTabs() {
                                         </Tabs.Trigger>
                                     ))}
                                 </Tabs.List>
-                                {groupedFx.map(fx => { console.log(fx[0]); return (
+                                {groupedFx.map(fx => (
                                     <Tabs.Content key={fx[0]} value={fx[0]}>
                                         <MacroPanelTab
                                             instruments={fx[1]}
@@ -158,7 +158,7 @@ function MacroPanelTabs() {
                                             inverseChange={false}
                                         />
                                     </Tabs.Content>
-                                )})}
+                                ))}
                             </Tabs.Root>
                         )}
                 </div>
