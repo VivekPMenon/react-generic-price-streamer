@@ -1,15 +1,15 @@
-import {Subscription, Message, MessageType} from './SubscriptionTypes';
+import {Subscription, Message, MessageType, Connector, Messenger, Callback} from './SubscriptionTypes';
+import {WorkerBasedConnector} from "@/lib/utility/WorkerBasedConnector";
+// import {LocalBridge} from "@/lib/utility/LocalBridge";
 
-class SubscriptionManager {
-    private readonly subscriptions: Map<string, Map<string, (message: unknown) => void>>;
+class SubscriptionManager implements Messenger {
+    private readonly subscriptions: Map<string, Map<string, Callback>>;
     private readonly pending: Map<string, [resolve: (subscription: Subscription) => void, reject: (reason?: unknown) => void]>
 
-    constructor(private worker: Worker) {
+    constructor(private readonly bridge: Connector) {
         this.subscriptions = new Map();
         this.pending = new Map();
-
-        worker.onmessage = (event) => {
-            const message: Message = event.data;
+        this.bridge.addHandler((message: Message) => {
             switch (message.type) {
                 case MessageType.SUBSCRIBE:
                 case MessageType.UNSUBSCRIBE:
@@ -21,10 +21,11 @@ class SubscriptionManager {
                     this.onMessage(message);
                     break;
             }
-        };
+        });
+        this.bridge.connect();
     }
 
-    public subscribe(topic: string, id: string, callback: (message: unknown) => void): Promise<Subscription|null> {
+    public subscribe(topic: string, id: string, callback: Callback): Promise<Subscription|null> {
         const local_subscribers = this.subscriptions.get(topic);
         if (local_subscribers && local_subscribers.has(id)) {
             return Promise.resolve({topic, id} as Subscription);
@@ -81,13 +82,13 @@ class SubscriptionManager {
                         subscription.clear();
                     }
                     this.subscriptions.clear();
-                    this.worker.terminate();
+                    this.bridge.dispose();
                     resolve();
                 });
         });
     }
 
-    public disposeFor(topic: string): Promise<void> {
+    public clear(topic: string): Promise<void> {
         return new Promise((resolve) => {
             this.send(topic, 'ALL', MessageType.REMOVE_ALL)
                 .finally(() => {
@@ -113,7 +114,7 @@ class SubscriptionManager {
     private sendCore(id: string, messageType: MessageType): Promise<Subscription> {
         return new Promise((resolve, reject) => {
             this.pending.set(id, [resolve, reject]);
-            this.worker.postMessage({ type: messageType, id });
+            this.bridge.send({ type: messageType, id });
         });
     }
 
@@ -136,5 +137,6 @@ class SubscriptionManager {
     }
 }
 
-const worker = new Worker('./SubscriptionWorker.js')
-export const subscriptionManager = new SubscriptionManager(worker);
+const bridge = new WorkerBasedConnector('./SubscriptionWorker.js');
+// const bridge = new LocalBridge('');
+export const subscriptionManager: Messenger = new SubscriptionManager(bridge);
