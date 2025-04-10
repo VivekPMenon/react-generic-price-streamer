@@ -108,7 +108,7 @@ const PLredChartRenderer = (props: ICellRendererParams) => {
           fontWeight: 'bold',
           width: '100%',
           justifyContent: 'space-between',
-          color: isNegative ? '#ff4d4f' : 'inherit', // Add red text color for negative values
+          // color: isNegative ? '#ff4d4f' : 'inherit', // Add red text color for negative values
         }}
       >
         <span>$</span>
