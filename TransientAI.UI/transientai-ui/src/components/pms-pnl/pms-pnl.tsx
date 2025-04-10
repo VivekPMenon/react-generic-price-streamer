@@ -14,7 +14,7 @@ function PmsPnl() {
 
     return (
     <div>
-        <div className={`${styles['header']} sub-header`}>{`${i18n.t('pms_1.pnl_dashboard')}${reportDate?.toLocaleString() ?? ''}`}</div>
+        <div className={`${styles['header']} sub-header`}>{`${i18n.t('pms_1.pnl_dashboard')}${reportDate?.toLocaleDateString() ?? ''}`}</div>
         <div className={`${styles['pms-panel']}`}>
             <DataGrid
                 domLayout={'normal'}
