@@ -248,10 +248,11 @@ function addButtonHandlers(chartOptions: Highcharts.Options, chart: any, ticker:
                                     result.marketData.forEach(data => {
                                         if (data.timestamp) {
                                             const time = data.timestamp!.getTime();
-                                            olhc.addPoint([time, data.open, data.high, data.low, data.close]);
-                                            area.addPoint([time, data.close]);
+                                            olhc.addPoint([time, data.open, data.high, data.low, data.close], false);
+                                            area.addPoint([time, data.close], false);
                                         }
                                     });
+                                    chart.redraw();
                                 }
                             });
                         return true;
