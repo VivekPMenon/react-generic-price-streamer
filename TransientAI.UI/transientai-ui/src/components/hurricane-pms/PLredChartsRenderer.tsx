@@ -7,13 +7,14 @@ const PLredChartRenderer = (props: ICellRendererParams) => {
   const chartRef = useRef<HTMLDivElement>(null);
   const value = props.value || 0;
   const formattedValue = formatInteger(value, '');
+  const isNegative = value < 0;
 
   // Calculate the height proportion for the bar.
-  const maxValue = 1000000; // Maximum value based on your data
+  const maxValue = 1000000; // Maximum value based on data
   const absValue = Math.abs(value);
   
-  // Inverted height for negative P&L (closer to zero = higher bar)
-  const heightPercentage = Math.min(100, (maxValue - absValue) / maxValue * 100);
+  // Calculate percentage of the maximum for visualization
+  const heightPercentage = Math.min(100, (absValue / maxValue) * 100);
 
   useEffect(() => {
     if (chartRef.current) {
@@ -34,17 +35,15 @@ const PLredChartRenderer = (props: ICellRendererParams) => {
         xAxis: {
           categories: [''],
           labels: { enabled: false },
-          reversed: true, // Ensure the bar goes left for negative values
           lineWidth: 0,
           lineColor: 'transparent',
           tickLength: 0,
         },
         yAxis: {
           title: { text: null },
-          reversed: false,
           labels: { enabled: false },
           gridLineWidth: 0,
-          min: 0,
+          min: -maxValue,  // Allow for negative values
           max: maxValue,
         },
         plotOptions: {
@@ -59,13 +58,13 @@ const PLredChartRenderer = (props: ICellRendererParams) => {
           {
             type: 'bar',
             name: 'P&L',
-            data: [absValue],  // Absolute value for bar height
+            data: [value],  // Use actual value, not absolute
             color: {
-              linearGradient: { x1: 1, y1: 0, x2: 0, y2: 0 }, // Gradient effect
+              linearGradient: { x1: 1, y1: 0, x2: 0, y2: 0 },
               stops: [
-                [0, 'rgba(255, 77, 79, 0.9)'],    // Strong red for negative values
-                [0.7, 'rgba(255, 153, 153, 0.6)'], // Lighter red
-                [1, 'rgba(255, 255, 255, 0.3)']    // Fade effect
+                [0, 'rgba(255, 77, 79, 0.9)'],
+                [0.7, 'rgba(255, 153, 153, 0.6)'],
+                [1, 'rgba(255, 255, 255, 0.3)']
               ],
             },
             animation: { duration: 1000 },
@@ -92,10 +91,10 @@ const PLredChartRenderer = (props: ICellRendererParams) => {
         style={{
           position: 'absolute',
           top: 0,
-          [value < 0 ? 'right' : 'left']: 0,  // Negative values expand to the left
+          [isNegative ? 'right' : 'left']: 0,
           width: `${heightPercentage}%`,
           height: '100%',
-          background: 'linear-gradient(to ' + (value < 0 ? 'left' : 'right') + ', rgba(255,77,79,0.9), rgba(255,153,153,0.6), rgba(255,255,255,0.3))',
+          background: `linear-gradient(to ${isNegative ? 'left' : 'right'}, rgba(255,77,79,0.9), rgba(255,153,153,0.6), rgba(255,255,255,0.3))`,
           zIndex: 0,
         }}
       />
@@ -109,10 +108,11 @@ const PLredChartRenderer = (props: ICellRendererParams) => {
           fontWeight: 'bold',
           width: '100%',
           justifyContent: 'space-between',
+          // color: isNegative ? '#ff4d4f' : 'inherit', // Add red text color for negative values
         }}
       >
         <span>$</span>
-        <span className='text-right'>{formattedValue}</span>
+        <span className="text-right">{formattedValue}</span>
       </div>
     </div>
   );

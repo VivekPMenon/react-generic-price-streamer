@@ -236,7 +236,7 @@ export const lossColDefs: ColDef[] = [
             const value = params.data?.pl;
             return value != null ? `$ ${formatInteger(value, '')}` : '';
         },
-        // cellStyle: { color: '#ff4d4f' },
+        cellStyle: { color: '#fff' },
         aggFunc: 'sum'
     },
     {
@@ -251,6 +251,76 @@ export const lossColDefs: ColDef[] = [
         aggFunc: 'sum'
     },
 
+]
+
+export const managerPositionColDefs: ColDef[] = [
+    {
+        field: 'manager_name',
+        headerName: 'Manager',
+        headerClass: `${styles['table-header']} ag-left-aligned-header`,
+        aggFunc: 'sum'
+    },
+    {
+        field: 'company',
+        headerName: 'Legal Entity',
+        headerClass: `${styles['table-header']} ag-left-aligned-header`,
+        aggFunc: 'sum'
+    },
+    {
+        field: 'strategy',
+        headerName: 'Strategy',
+        headerClass: `${styles['table-header']} ag-left-aligned-header`,
+        aggFunc: 'sum'
+    },
+    {
+        field: 'security_type',
+        headerName: 'Security type',
+        headerClass: `${styles['table-header']} ag-left-aligned-header`,
+        aggFunc: 'sum'
+    },
+    {
+        field: 'clearing_broker',
+        headerName: 'Cleaning Broker',
+        headerClass: `${styles['table-header']} ag-left-aligned-header`,
+        aggFunc: 'sum'
+    },
+    {
+        field: 'sid',
+        headerName: 'Sid',
+        headerClass: `${styles['table-header']} ag-left-aligned-header`,
+        aggFunc: 'sum'
+    },
+    {
+        field: 'ticker',
+        headerName: 'Ticker',
+        headerClass: `${styles['table-header']} ag-left-aligned-header`,
+        aggFunc: 'sum'
+    },
+    {
+        field: 'security_description',
+        headerName: 'Security Description',
+        headerClass: `${styles['table-header']} ag-left-aligned-header`,
+        aggFunc: 'sum'
+    },
+    {
+        field: 'Position',
+        headerName: 'Position',
+        headerClass: `${styles['table-header']} ag-left-aligned-header`,
+        valueFormatter: (params) => {
+            if (params.node?.rowPinned === 'top') {
+              return `Total: ${formatInteger(params.value)}`;
+            }
+            return formatInteger(params.value);
+          },
+        aggFunc: 'sum'
+    },
+    {
+        field: 'price',
+        headerName: 'Price',
+        headerClass: `${styles['table-header']} ag-left-aligned-header`,
+        valueFormatter: (params: ValueFormatterParams) => formatInteger(params.data?.price),
+        aggFunc: 'sum'
+    }
 ]
 
 export const defaultGridOptions: GridOptions = {

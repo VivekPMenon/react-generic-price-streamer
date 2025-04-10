@@ -66,7 +66,7 @@ export function Header({ onMenuToggle, isMenuVisible }: HeaderProps) {
             alt="Hurricane logo"
             src="/images/hurricane_logo.png" 
             className='absolute right-1/2 top-1'
-            width={65}
+            width={120}
             height={50}
           />
       </div>}
