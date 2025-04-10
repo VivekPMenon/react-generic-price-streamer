@@ -7,6 +7,8 @@ import LanguageDetector from 'i18next-browser-languagedetector';
 //   console.log('✅ Detected Language (event):', i18n.language);
 // });
 
+const translated = new Map<string, string>();
+
 export const translateText = async (text: string) => {
   // return text;
   const targetLanguage = i18n.language;
@@ -22,6 +24,12 @@ export const translateText = async (text: string) => {
     return text;
   }
 
+  const key = `${targetLanguage}_${text}`
+  const translation = translated.get(key);
+  if (translation) {
+      return translation;
+  }
+
   try {
     const response = await fetch('https://hurricanecap-devfastapi.azurewebsites.net/translate', {
       method: 'POST',
@@ -35,14 +43,17 @@ export const translateText = async (text: string) => {
     });
 
     if (!response.ok) {
-        console.error(`Translation failed: ${response.statusText}`);
+        console?.error(`Translation failed: ${response.statusText}`);
+        translated.set(key, text);
         return text;
     }
 
     const data = await response.json();
+    translated.set(key, data.translated_text);
     return data.translated_text; // Assuming the API returns translated text
   } catch (error) {
-    console.error('Translation error:', error);
+    console?.error('Translation error:', error);
+    translated.set(key, text);
     return text; // Return original text if there's an error
   }
 };
