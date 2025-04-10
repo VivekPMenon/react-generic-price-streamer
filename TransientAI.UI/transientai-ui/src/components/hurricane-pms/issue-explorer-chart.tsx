@@ -12,12 +12,12 @@ const HighchartsReact = dynamic(() => import('highcharts-react-official'), { ssr
 
 function getChartOptions(result: any) {
   // Sort data in descending order
-  const sortedData = [...result].sort((a, b) => b.value - a.value);
+  const sortedData = [...result].sort((a, b) => b.value - a.value).slice(0, 12);
   
   const chartOptions: Highcharts.Options = {
     chart: {
       type: 'bar',
-      height: "525px",
+      height: "525px" ,
       backgroundColor: '#0C101B', 
     },
     title: {
@@ -77,7 +77,8 @@ function getChartOptions(result: any) {
         },
         borderRadius: 2,
         pointWidth: 14,
-        borderWidth: 0  
+        borderWidth: 0,  
+        pointPadding: 0.1      // Space between bars in the same category
       },
       series: {
         color: '#116186'
@@ -101,7 +102,6 @@ function getChartOptions(result: any) {
 }
 
 export const BarChart = (data: any) => {
-  console.log(data)
   const calculateTickerData = (data: any): any[] => {
     const tickerValues: Record<string, number> = {};
     let grandTotal = 0;
@@ -128,7 +128,6 @@ export const BarChart = (data: any) => {
         value: parseFloat(percentage.toFixed(2)), 
       };
     });
-    console.log(tickerData);
     return tickerData;
   };
   const result = calculateTickerData(data.data);
