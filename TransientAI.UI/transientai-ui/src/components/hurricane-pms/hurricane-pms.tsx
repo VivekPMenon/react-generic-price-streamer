@@ -356,13 +356,13 @@ export const HurricanePms = () => {
         <div className="">
           <div className="rounded-md p-2 h-[250px] w-[350px]">
             <h4 className="text-white text-center mb-2">Asset Allocation</h4>
-            <AssetAllocationChart data={managerDetails} />
+            <AssetAllocationChart data={activeTab === 'positions' ? managerPositionDetails : managerDetails} />
           </div>
           <div className="rounded-md p-2 h-[250px]  w-[350px]">
             <h4 className="text-white text-center mb-2">
               Geographic Exposure map
             </h4>
-            <WorldMapChart data={managerDetails} />
+            <WorldMapChart data={activeTab === 'positions' ? managerPositionDetails : managerDetails} />
           </div>
         </div>
       </section>
@@ -396,9 +396,9 @@ export const HurricanePms = () => {
                 },
                 pinnedTopRowData: [
                   managerPositionDetails.reduce((totals, row) => {
-                    const positionValue = row.Position || 0;
-                    totals.Position = (totals.Position || 0) + positionValue;
-                    totals.name = "Total"; // Add a label for the "name" column
+                    const positionValue = row.market_value || 0;
+                    totals.market_value = (totals.market_value || 0) + positionValue;
+                    // totals.name = "Total"; // Add a label for the "name" column
                   return totals;
                   }, {} as Partial<any>),
                 ],
@@ -429,6 +429,20 @@ export const HurricanePms = () => {
               rowData={managerDetails}
               gridOptions={{
                 ...defaultGridOptions,
+                pinnedTopRowData: [
+                  managerDetails.reduce((totals, row) => {
+                    const positionValue = row.market_value || 0;
+                    totals.market_value = (totals.market_value || 0) + positionValue;
+                    // totals.name = "Total"; // Add a label for the "name" column
+                  return totals;
+                  }, {} as Partial<any>),
+                ],
+                getRowClass: (params) => {
+                  if (params.node.rowPinned === "top") {
+                    return styles["pinned-top-row"];
+                  }
+                  return "";
+                },
                 // getRowId: (params) => {
                 //   return `detail-${
                 //     params.data.id || params.data.security || params.data.ticker
@@ -442,7 +456,7 @@ export const HurricanePms = () => {
 
         <div className="rounded-md p-2 h-[500px] w-[350px]">
           <h4 className="text-white text-center mb-2">Manager Exposure</h4>
-          <BarChart data={managerDetails} />
+          <BarChart data={activeTab === 'positions' ? managerPositionDetails : managerDetails} />
         </div>
       </section>
     </div>

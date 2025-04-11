@@ -19,7 +19,7 @@ export const useFilterPmCorporateActions = (
   filterActions: IFilterActions,
   sortByAction: boolean
 ): SortedData => {
-  const applyFilters = (items: CorporateAction[]): CorporateAction[] => {
+  const applyFilters = (items: CorporateAction[] = []): CorporateAction[] => {
     return items.filter((item) => {
       const payDate = item.dates?.pay_date?.split("T")[0] || "";
 
