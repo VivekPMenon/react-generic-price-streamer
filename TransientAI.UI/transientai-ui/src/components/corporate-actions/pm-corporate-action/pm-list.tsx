@@ -86,7 +86,7 @@ export function PmList ({ data }: PmListProps) {
                       {corpAction.eventType}
                     </span>
                     <span className='flex items-center gap-2'>
-                      Deadline: {formatDateString(corpAction?.dates && corpAction?.dates.deadline)}
+                      Deadline: {corpAction?.dates && corpAction?.dates.deadline && new Date(corpAction?.dates.deadline).getFullYear() >= 2000 ? formatDateString(corpAction?.dates.deadline) : 'NA'}
                       <div className={styles['action-buttons']}>
                         <div className={styles['button-container']}>
                           <i className='fa-regular fa-envelope'></i>
