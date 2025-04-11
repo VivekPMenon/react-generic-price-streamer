@@ -9,7 +9,7 @@ const PLHighchartsRenderer = (props: ICellRendererParams) => {
   const isNegative = value < 0;
   const color = isNegative ? '#ff4d4f' : '#caf2b6';
   const formattedValue = formatInteger(value, '');
-  const maxValue = 100000;
+  const maxValue = 32213;
   useEffect(() => {
     if (chartRef.current) {
       Highcharts.chart(chartRef.current, {

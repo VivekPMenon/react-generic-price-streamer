@@ -10,7 +10,7 @@ const PLredChartRenderer = (props: ICellRendererParams) => {
   const isNegative = value < 0;
 
   // Calculate the height proportion for the bar.
-  const maxValue = 1000000; // Maximum value based on data
+  const maxValue = 121270; // Maximum value based on data
   const absValue = Math.abs(value);
   
   // Calculate percentage of the maximum for visualization

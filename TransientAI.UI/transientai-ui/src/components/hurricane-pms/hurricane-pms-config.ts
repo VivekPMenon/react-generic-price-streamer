@@ -181,7 +181,10 @@ export const profitColDefs: ColDef[] = [
         field: 'security',
         headerName: 'Security',
         headerClass: `${styles['table-header']} ag-left-aligned-header`,
-        width: 100,
+        width: 120,
+        minWidth: 100,
+        maxWidth: 150,
+        suppressSizeToFit: true,
         aggFunc: 'sum'
     },
     {
@@ -228,7 +231,10 @@ export const lossColDefs: ColDef[] = [
         field: 'security',
         headerName: 'Security',
         headerClass: `${styles['table-header']} ag-left-aligned-header`,
-        width: 100,
+        width: 120,
+        minWidth: 100,
+        maxWidth: 150,
+        suppressSizeToFit: true,
         aggFunc: 'sum'
     },
     {
