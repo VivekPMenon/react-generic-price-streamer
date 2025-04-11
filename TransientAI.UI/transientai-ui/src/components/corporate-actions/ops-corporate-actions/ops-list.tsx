@@ -85,7 +85,7 @@ export function OpsList ({ data }: OpsListProps) {
                     </div>
                     <div className='text-gray-400'>
                       Holding: {corpAction.holdingQuantity} | Version:
-                      {corpAction.version} | {formatDateString(corpAction.deadlineDate)}
+                      {corpAction.version} | {corpAction.deadlineDate && new Date(corpAction.deadlineDate).getFullYear() >= 2000 ? formatDateString(corpAction.deadlineDate) : 'NA'} 
                     </div>
                   </div>
                   <div className='flex justify-between mt-1'>
@@ -102,7 +102,7 @@ export function OpsList ({ data }: OpsListProps) {
                           : ''}
                       </span>
                       <span className='ml-4'>
-                        Pay Date: {formatDateString(corpAction.dates?.pay_date)}
+                          Pay Date: {corpAction.dates?.pay_date && new Date(corpAction.dates.pay_date).getFullYear() >= 2000 ? formatDateString(corpAction.dates.pay_date) : 'NA'}
                       </span>
                     </div>
                   </div>
