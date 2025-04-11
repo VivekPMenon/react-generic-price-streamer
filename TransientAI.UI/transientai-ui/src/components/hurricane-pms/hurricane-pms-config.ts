@@ -50,7 +50,7 @@ export const columnDefs: ColDef[] = [
         headerClass: `${styles['table-header']} ag-left-aligned-header`,
         valueFormatter: (params: ValueFormatterParams) => {
             const value = params.data?.delta_adj;
-            return value != null ? `$ ${formatInteger(value, '')}` : '';
+            return value != null ? `$ ${value}` : '';
         },
         aggFunc: 'sum'
     },
@@ -136,6 +136,18 @@ export const managerDetailsColDefs: ColDef[] = [
         field: 'settlement_date',
         headerName: 'Settlement Date',
         headerClass: `${styles['table-header']} ag-left-aligned-header`,
+        aggFunc: 'sum'
+    },
+    {
+        field: 'market_value',
+        headerName: 'Market Value',
+        headerClass: `${styles['table-header']} ag-left-aligned-header`,
+        valueFormatter: (params) => {
+            if (params.node?.rowPinned === 'top') {
+                return `Total: ${formatInteger(params.value)}`;
+            }
+            return formatInteger(params.value);
+            },
         aggFunc: 'sum'
     },
     {
@@ -303,24 +315,78 @@ export const managerPositionColDefs: ColDef[] = [
         aggFunc: 'sum'
     },
     {
-        field: 'Position',
-        headerName: 'Position',
+        field: 'quantity',
+        headerName: 'Quantity',
+        headerClass: `${styles['table-header']} ag-left-aligned-header`,
+    },
+    {
+        field: 'end_price_base_usd',
+        headerName: 'End Price Base USD',
+        headerClass: `${styles['table-header']} ag-left-aligned-header`,
+    },
+    {
+        field: 'end_price_[n]',
+        headerName: 'End Price [n]',
+        headerClass: `${styles['table-header']} ag-left-aligned-header`,
+    },
+    {
+        field: 'currency_ticker',
+        headerName: 'Currency Ticker',
+        headerClass: `${styles['table-header']} ag-left-aligned-header`,
+    },
+    {
+        field: 'daily_p&l',
+        headerName: 'Daily P&L',
+        headerClass: `${styles['table-header']} ag-left-aligned-header`,
+    },
+    {
+        field: 'notional',
+        headerName: 'National',
+        headerClass: `${styles['table-header']} ag-left-aligned-header`,
+    },
+    {
+        field: 'contract_size',
+        headerName: 'Contract Size',
         headerClass: `${styles['table-header']} ag-left-aligned-header`,
         valueFormatter: (params) => {
             if (params.node?.rowPinned === 'top') {
-              return `Total: ${formatInteger(params.value)}`;
+                return '';
             }
-            return formatInteger(params.value);
-          },
-        aggFunc: 'sum'
+                return params.data?.contract_size ? params.data?.contract_size  : 'N/A';
+            },
     },
     {
-        field: 'price',
-        headerName: 'Price',
+        field: 'market_value',
+        headerName: 'Market Value',
         headerClass: `${styles['table-header']} ag-left-aligned-header`,
-        valueFormatter: (params: ValueFormatterParams) => formatInteger(params.data?.price),
+        valueFormatter: (params) => {
+            if (params.node?.rowPinned === 'top') {
+                return `Total: ${formatInteger(params.value)}`;
+            }
+            return formatInteger(params.value);
+            },
         aggFunc: 'sum'
-    }
+    },
+    
+    // {
+    //     field: 'Position',
+    //     headerName: 'Position',
+    //     headerClass: `${styles['table-header']} ag-left-aligned-header`,
+    //     valueFormatter: (params) => {
+    //         if (params.node?.rowPinned === 'top') {
+    //           return `Total: ${formatInteger(params.value)}`;
+    //         }
+    //         return formatInteger(params.value);
+    //       },
+    //     aggFunc: 'sum'
+    // },
+    // {
+    //     field: 'price',
+    //     headerName: 'Price',
+    //     headerClass: `${styles['table-header']} ag-left-aligned-header`,
+    //     valueFormatter: (params: ValueFormatterParams) => formatInteger(params.data?.price),
+    //     aggFunc: 'sum'
+    // }
 ]
 
 export const defaultGridOptions: GridOptions = {
