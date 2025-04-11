@@ -323,6 +323,18 @@ export const managerPositionColDefs: ColDef[] = [
         field: 'end_price_base_usd',
         headerName: 'End Price Base USD',
         headerClass: `${styles['table-header']} ag-left-aligned-header`,
+        valueFormatter: (params) => {
+            if (params.node?.rowPinned === 'top') {
+                return '';
+            }
+            const value = params.value;
+        
+            return typeof value === 'number'
+              ? value.toFixed(2)
+              : value
+              ? parseFloat(value).toFixed(2)
+              : 'N/A';
+          },
     },
     {
         field: 'end_price_[n]',
@@ -343,7 +355,19 @@ export const managerPositionColDefs: ColDef[] = [
         field: 'notional',
         headerName: 'National',
         headerClass: `${styles['table-header']} ag-left-aligned-header`,
-    },
+        valueFormatter: (params) => {
+            if (params.node?.rowPinned === 'top') {
+                return '';
+            }
+          const value = params.value;
+      
+          return typeof value === 'number'
+            ? value.toFixed(2)
+            : value
+            ? parseFloat(value).toFixed(2)
+            : 'N/A';
+        },
+      },
     {
         field: 'contract_size',
         headerName: 'Contract Size',
@@ -360,11 +384,18 @@ export const managerPositionColDefs: ColDef[] = [
         headerName: 'Market Value',
         headerClass: `${styles['table-header']} ag-left-aligned-header`,
         valueFormatter: (params) => {
+            const formatValue = (val: any) => {
+              if (val === null || val === undefined || isNaN(val)) return 'N/A';
+              return parseFloat(val).toFixed(2);
+            };
+        
             if (params.node?.rowPinned === 'top') {
-                return `Total: ${formatInteger(params.value)}`;
+              return `Total: ${formatValue(params.value)}`;
             }
-            return formatInteger(params.value);
-            },
+        
+            return formatValue(params.value);
+          },
+            
         aggFunc: 'sum'
     },
     

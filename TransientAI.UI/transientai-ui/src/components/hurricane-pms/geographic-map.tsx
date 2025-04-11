@@ -36,14 +36,13 @@ const options: Highcharts.Options = {
     },
   },
   colorAxis: {
-    min: 0,
+    min: -1000000, // or your real min
+    max: 1000000,  // or your real max
     stops: [
-      [0, '#FFFFFF'],   // Pure white at the top
-      [0.2, '#FFDDDD'], // Darker light pink
-      [0.5, '#FF8888'], // Darker medium pink
-      [0.8, '#FF5555'], // Brighter red
-      [1, '#FF0000'], 
-    ],
+      [0, '#ff0008'],
+      [0.5, '#fb585d'],
+      [1, '#12ff24'],
+    ]
   },
   series: [
     {
