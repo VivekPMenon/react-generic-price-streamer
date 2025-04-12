@@ -191,9 +191,10 @@ class WebApihandler {
   }
 
   async getStream(url: string, params: { [key: string]: any }, options?: WebApihandlerOptions) {
-    const currentEnv = endpointFinder.getCurrentEnvInfo();
+    // const currentEnv = endpointFinder.getCurrentEnvInfo();
     const finalParams = { ...params, user_id: this.userId };
-    const finalUrl = `${currentEnv.httpsEndpoint}/${url}?${new URLSearchParams(finalParams).toString()}`;
+    // const finalUrl = `${currentEnv.httpsEndpoint}/${url}?${new URLSearchParams(finalParams).toString()}`;
+    const finalUrl = `https://api-dev.thetransient.ai/${url}?${new URLSearchParams(finalParams).toString()}`;
 
     return await fetch(finalUrl, {
       method: 'GET',

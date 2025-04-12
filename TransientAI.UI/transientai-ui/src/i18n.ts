@@ -13,14 +13,14 @@ export const translateText = async (text: string) => {
   // return text;
   const targetLanguage = i18n.language;
 
-  // Return original if the text has 5 or fewer words
-  const wordCount = text.trim().split(/\s+/).length;
-  if (wordCount <= 5) {
+  // Only translate if the target language is not 'en' (English)
+  if (targetLanguage.startsWith('en')) {
     return text;
   }
 
-  // Only translate if the target language is not 'en' (English)
-  if (targetLanguage.startsWith('en')) {
+  // Return original if the text has 5 or fewer words
+  const wordCount = text.trim().split(/\s+/).length;
+  if (wordCount <= 5) {
     return text;
   }
 

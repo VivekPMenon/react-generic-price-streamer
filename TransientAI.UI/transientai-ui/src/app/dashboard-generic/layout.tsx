@@ -62,7 +62,6 @@ export default function DashboardLayout({
     setIsMenuVisible(!isMenuVisible);
   }
 
-
   return (
       <MsalProvider instance={msalInstance}>
         {

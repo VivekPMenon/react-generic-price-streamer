@@ -89,7 +89,7 @@ function getChartOptions(instrument: Instrument,
     let areaStart: string;
     let areaEnd: string;
     let line: string;
-    if (ignoreNegative && !isNegative) {
+    if ((ignoreNegative && isNegative) || !isNegative) {
         gradientStart = 'rgba(25, 135, 84, 0.4)';
         gradientEnd = 'rgba(25, 135, 84, 0)';
         areaStart = 'rgba(0, 255, 0, 0.4)';
@@ -240,6 +240,8 @@ function addButtonHandlers(chartOptions: Highcharts.Options, chart: any, ticker:
                             return true;
                         }
                         isClicked = true;
+
+                        chart.showLoading();
                         marketDataService.getIntradayData(ticker, periodType, type, controller.signal)
                             .then(result => {
                                 if (result && result.marketData?.length) {
@@ -254,6 +256,9 @@ function addButtonHandlers(chartOptions: Highcharts.Options, chart: any, ticker:
                                     });
                                     chart.redraw();
                                 }
+                            })
+                            .finally(() => {
+                                chart.hideLoading();
                             });
                         return true;
                     };
@@ -281,12 +286,15 @@ export function MarketDataTile({ instrument, logoUrl, removeInstrument, showFina
         [ignoreNegative, instrument, isNegative]);
 
     useEffect(() => {
+        if (!chartRef.current?.chart) {
+            return;
+        }
         return addButtonHandlers(
             chartOptions,
-            chartRef.current?.chart,
+            chartRef.current.chart,
             instrument.ticker,
             instrument.type);
-    }, [chartOptions, instrument.ticker, instrument.type]);
+    }, [chartRef.current?.chart, chartOptions, instrument.ticker, instrument.type]);
 
     let sign: string = '';
     let style: string;
