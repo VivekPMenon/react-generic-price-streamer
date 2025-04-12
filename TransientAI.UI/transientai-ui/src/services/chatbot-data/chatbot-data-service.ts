@@ -35,7 +35,7 @@ class ChatbotDataService {
           return [...decoded.matchAll(/"response":\s*"(.*?)"/g).map(m => m[1])];
         }),
         filter(matches => matches.length > 0),
-        map(matches => matches.join(' ').replace(/\n/g, '<br>'))
+        map(matches => matches.join(' ')//.replace(/\\n/g, '<br>'))
     );
   }
 }
