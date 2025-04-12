@@ -89,7 +89,6 @@ export function ChatbotResponse(props: ChatbotResponseProps) {
                 conversations: newChatConversations
               });
 
-
               props.onNewQueryExecuted();
             }
           });
