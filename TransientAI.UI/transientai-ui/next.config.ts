@@ -31,7 +31,12 @@ const nextConfig: NextConfig = {
     return [
       {
         source: '/',
-        destination: '/dashboard-generic',
+        destination: '/dashboard',
+        permanent: true,
+      },
+      {
+        source: '/buy',
+        destination: '/dashboard',
         permanent: true,
       },
       {
