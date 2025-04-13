@@ -56,7 +56,7 @@ export function TodaysAxes() {
   const { isTodaysAxesLoading, todaysAxes, loadTodaysAxes } = useProductBrowserStore();
 
   useEffect(() => {
-    loadTodaysAxes(searchData.id);
+    // loadTodaysAxes(searchData.id);
   }, [loadTodaysAxes, searchData.id]);
 
   const [columnDefs] = useState<ColDef[]>(getColumnDef());
