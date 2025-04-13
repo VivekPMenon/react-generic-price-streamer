@@ -2,13 +2,15 @@ import { webApihandler } from "../web-api-handler";
 import { BondInfo, TopRecommendation } from "./model";
 
 class ProductBrowserDataService {
+  private serviceName = 'sell-side-api';
 
-  async getTodaysAxes(isin?: string): Promise<BondInfo[]> {
-    const result = await webApihandler.post('inventory/get_product_browser_data', { isin }, {
+  async getTodaysAxes(): Promise<BondInfo[]> {
+    return await webApihandler.get('inventory', {
       page: 1,
       page_size: 500
+    }, {
+      serviceName: this.serviceName
     });
-    return result.bonds_data;
   }
 
   async getTopRecommendations(): Promise<string[]> {

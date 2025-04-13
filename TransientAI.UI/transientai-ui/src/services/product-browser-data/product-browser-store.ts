@@ -6,16 +6,16 @@ import {productBrowserDataService} from "@/services/product-browser-data/product
 export interface ProductBrowserStore {
     isTodaysAxesLoading: boolean;
     todaysAxes: BondInfo[];
-    loadTodaysAxes: (isin?: string) => Promise<void>;
+    loadTodaysAxes: () => Promise<void>;
 }
 
 export const useProductBrowserStore = create<ProductBrowserStore>((set) => ({
     isTodaysAxesLoading: false,
     todaysAxes: [],
-    loadTodaysAxes: async (isin?: string) => {
+    loadTodaysAxes: async () => {
         try {
             set({ isTodaysAxesLoading: true });
-            const data = await productBrowserDataService.getTodaysAxes(isin);
+            const data = await productBrowserDataService.getTodaysAxes();
 
             const random = Math.floor(Math.random() * data.length);
             data[random].is_golden = true;

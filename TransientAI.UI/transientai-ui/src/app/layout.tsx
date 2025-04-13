@@ -41,6 +41,7 @@ export default function RootLayout({
       </head>
 
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased font-sans dark`}>
+        <div id="google_translate_element"></div>
         <Theme accentColor="teal" className="height-100p">
             <ChatbotDataContextProvider>
               <SearchDataContextProvider>
@@ -56,6 +57,18 @@ export default function RootLayout({
                 theme="dark"
             />
         </Theme>
+
+        <script
+            dangerouslySetInnerHTML={{
+              __html: `
+              function googleTranslateElementInit() {
+                new google.translate.TranslateElement({ pageLanguage: 'en' }, 'google_translate_element');
+              }
+            `,
+            }}
+        />
+        <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
       </body>
     </html>
   );

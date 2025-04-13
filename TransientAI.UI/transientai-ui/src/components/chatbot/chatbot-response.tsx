@@ -83,12 +83,6 @@ export function ChatbotResponse(props: ChatbotResponseProps) {
             complete: () => {
               lastChatHistory.request!.isLoading = false;
               lastChatHistory.response!.timestamp = getCurrentTimestamp();
-
-              setChatbotData({
-                ...chatbotData,
-                conversations: newChatConversations
-              });
-
               props.onNewQueryExecuted();
             }
           });
