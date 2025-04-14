@@ -1,21 +1,17 @@
 'use client';
 
-import { useState, useEffect, useContext } from 'react';
 import {RowClassParams, ColDef, RowClassRules, RowDoubleClickedEvent} from 'ag-grid-community';
-import { DataGrid, getNumberColDefTemplate } from '../data-grid';
+import { DataGrid } from '../data-grid';
 import { BondInfo } from '@/services/product-browser-data';
 import styles from './todays-axes.module.scss';
 import { TopClients } from './top-clients';
-import { Holdings } from './holdings';
-import { SearchDataContext } from '@/services/search-data';
 import {useProductBrowserStore} from "@/services/product-browser-data/product-browser-store";
 
 const rowClassRules: RowClassRules = {};
 rowClassRules[`${styles["axe"]}`] = (params: RowClassParams) => params.data.is_golden !== true;
 rowClassRules[`${styles["golden-axe"]}`] = (params: RowClassParams) => params.data.is_golden === true;
 
-function getColumnDef(): ColDef[] {
-  return [
+const columnDefs: ColDef[] = [
     { field: 'product_id', headerName: 'ID', width: 150 },
     { field: 'product_description', headerName: 'Description', width: 150 },
     { field: 'isin', headerName: 'ISIN', cellClass: 'orange-color', width: 120 },
@@ -48,24 +44,15 @@ function getColumnDef(): ColDef[] {
     // { field: 'moody_rating', headerName: 'Moody Rating', hide: true },
     // { field: 'trader', headerName: 'Trader', hide: true },
     // { field: 'level', headerName: 'Level', hide: true },
-  ];
-}
+];
 
 export function TodaysAxes() {
-  const { searchData, setSearchData } = useContext(SearchDataContext);
-  const { isTodaysAxesLoading, todaysAxes, loadTodaysAxes } = useProductBrowserStore();
-
-  useEffect(() => {
-    // loadTodaysAxes(searchData.id);
-  }, [loadTodaysAxes, searchData.id]);
-
-  const [columnDefs] = useState<ColDef[]>(getColumnDef());
+  const { isAxesLoading, axes, setSelectedBond } = useProductBrowserStore();
 
   function onRowDoubleClicked(event: RowDoubleClickedEvent<BondInfo>) {
-    setSearchData({
-      description: event.data?.product_description,
-      id: event.data?.isin
-    });
+    if (event.data) {
+      setSelectedBond(event.data);
+    }
   }
 
   return (
@@ -75,11 +62,15 @@ export function TodaysAxes() {
 
         <DataGrid
           isSummaryGrid={true}
-          loading={isTodaysAxesLoading}
-          rowData={todaysAxes}
+          loading={isAxesLoading}
+          rowData={axes}
           columnDefs={columnDefs}
-          onRowDoubleClicked={onRowDoubleClicked} >
-        </DataGrid>
+          onRowDoubleClicked={onRowDoubleClicked}
+          rowClassRules={rowClassRules}
+          gridOptions={{
+            suppressRowHoverHighlight: true,
+          }}
+        />
       </div>
 
       <div className={styles['clients-and-holdings']}>

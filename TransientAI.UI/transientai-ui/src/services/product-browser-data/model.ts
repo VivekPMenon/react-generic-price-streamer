@@ -48,3 +48,16 @@ export interface RecommendedClient {
   client_name: string;
   score: number
 }
+
+export interface RecommendedBondInHolding {
+  bond_description: string;
+  bond_isin: string;
+  score: number;
+}
+
+export interface ClientTrade {
+  institution_name: string;
+  security: string;
+  trade_status: string;
+  product_description: string;
+}

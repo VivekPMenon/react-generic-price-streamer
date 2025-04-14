@@ -5,7 +5,6 @@ import styles from './page.module.scss';
 
 import { Chatbot } from '@/components/chatbot/chatbot';
 import { Notifications } from '@/components/notifications';
-import dynamic from 'next/dynamic';
 import {useEffect, useState} from 'react';
 import { News } from '@/components/news';
 import {Mode} from "@/services/menu-data";
@@ -19,9 +18,6 @@ import {ServiceInitializer} from "@/services/startup/initializer";
 import {TradingActivity} from "@/components/trading-activity";
 import {Holdings} from "@/components/axes/holdings";
 import {Traces} from "@/components/market-data";
-
-// dynamic loading to address build issue when importing highcharts
-const PriceGraph = dynamic(() => import("@/components/market-data").then(module => module.PriceGraph), { ssr: false, });
 
 const MODE: Mode = Mode.SELL;
 
@@ -110,7 +106,7 @@ export default function DashboardLayout({
                 <Holdings />
               </div>
               <div className={styles.newsPanel}>
-                <News onExpandCollapse={isExpanded => onExpandCollapse('news', isExpanded)} />
+                <News />
               </div>
               <div className={styles.tracesPanel}>
                 <Traces />

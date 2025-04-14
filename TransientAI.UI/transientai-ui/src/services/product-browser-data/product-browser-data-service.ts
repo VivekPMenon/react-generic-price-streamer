@@ -1,5 +1,12 @@
 import { webApihandler } from "../web-api-handler";
-import {BondInfo, RecommendedClient, TopRecommendation} from "./model";
+import {
+  BondInfo,
+  ClientTrade,
+  RecommendedBondInHolding,
+  RecommendedClient,
+  TopRecommendation
+} from "./model";
+import {TraceData} from "@/services/market-data";
 
 class ProductBrowserDataService {
   private serviceName = 'sell-side-api';
@@ -7,14 +14,35 @@ class ProductBrowserDataService {
   async getTodaysAxes(): Promise<BondInfo[]> {
     return await webApihandler.get('inventory', {
       page: 1,
-      page_size: 500
+      // page_size: 500
     }, {
       serviceName: this.serviceName
     });
   }
 
+  async getTraces(isin?: string): Promise<TraceData[]> {
+    const result = await webApihandler.post(
+        'trace/trace_data',
+        { isin },
+        { page: 1 }, {
+      serviceName: this.serviceName
+    });
+    return result.trace_data;
+  }
+
   async getRecommendedClients(bond: BondInfo): Promise<RecommendedClient[]> {
     const result = await webApihandler.post('recommend-clients-for-bond', {
+      isin: bond.isin,
+      description: bond.product_description
+    }, {}, {
+      serviceName: this.serviceName
+    });
+
+    return result.recommendations;
+  }
+
+  async getRecommendedClientsWithBonds(bond: BondInfo): Promise<RecommendedClient[]> {
+    const result = await webApihandler.post('recommend-clients-with-similar-bonds', {
       isin: bond.isin,
       description: bond.product_description,
       top_n: 10
@@ -25,18 +53,8 @@ class ProductBrowserDataService {
     return result.recommendations;
   }
 
-  async getRecommendedClientsWithBonds(bond: BondInfo): Promise<BondInfo[]> {
-    return await webApihandler.post('recommend-clients-with-similar-bonds', {
-      isin: bond.isin,
-      description: bond.product_description,
-      top_n: 10
-    }, {
-      serviceName: this.serviceName
-    });
-  }
-
-  async getSimilarBondsInHoldings(bond: BondInfo, client_name: string): Promise<BondInfo[]> {
-    return await webApihandler.post('recommend-clients-with-similar-bonds', {
+  async getSimilarBondsInHoldings(bond: BondInfo, client_name: string): Promise<RecommendedBondInHolding[]> {
+    const result = await webApihandler.post('recommend-similar-bonds-in-holdings', {
       client_name,
       bond_isin: bond.isin,
       bond_description: bond.product_description,
@@ -44,9 +62,10 @@ class ProductBrowserDataService {
     }, {
       serviceName: this.serviceName
     });
+    return result.recommendations;
   }
 
-  async getTradesByBond(bond: BondInfo): Promise<BondInfo[]> {
+  async getTradesByBond(bond: BondInfo): Promise<ClientTrade[]> {
     return await webApihandler.post('trades-by-bond', {
       product_description: bond.product_description,
     }, {
@@ -54,7 +73,7 @@ class ProductBrowserDataService {
     });
   }
 
-  async getClientTradesByBond(bond: BondInfo, client_name: string): Promise<BondInfo[]> {
+  async getClientTradesByBond(bond: BondInfo, client_name: string): Promise<ClientTrade[]> {
     return await webApihandler.post('client-trades-by-bond', {
       client_name,
       product_description: bond.product_description,

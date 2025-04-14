@@ -75,6 +75,7 @@ export class ServiceInitializer {
 
     private initializeSell() {
         const productBrowser = useProductBrowserStore.getState();
-        productBrowser.loadTodaysAxes().catch((err) => console.error(err));
+        productBrowser.loadAxes().catch((err) => console.error(err));
+        productBrowser.loadTraces().catch((err) => console.error(err));
     }
 }

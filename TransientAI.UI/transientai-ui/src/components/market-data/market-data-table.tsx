@@ -3,13 +3,11 @@
 import { useContext, useEffect, useState } from "react";
 import { DataGrid, getNumberColDefTemplate } from "../data-grid";
 import { ColDef, RowDoubleClickedEvent } from "ag-grid-community";
-import { BondTrade, ClientHolding, clientHoldingsDataService } from "@/services/client-holding-data";
 import { marketDataService, Price } from "@/services/market-data";
 import { SearchDataContext } from "@/services/search-data";
 
 
-function getColumnDef(): ColDef[] {
-  return [
+const columnDef: ColDef[] = [
     { field: 'bond', headerName: 'Bond', width: 130, cellClass: 'orange-color' },
     { field: 'date', headerName: 'Date', hide: true },
     { field: 'isin', headerName: 'ISIN' },
@@ -17,11 +15,9 @@ function getColumnDef(): ColDef[] {
     { field: 'mid_price', width: 90, headerName: 'Mid Price', ...getNumberColDefTemplate(2) },
     { field: 'mid_spread', width: 90, headerName: 'Mid Spread', ...getNumberColDefTemplate(2) },
     { field: 'mid_yield', width: 90, headerName: 'Mid Yield', ...getNumberColDefTemplate(2) },
-
     { field: 'bond_issuer', headerName: 'Bond Issuer' },
     { field: 'time', headerName: 'Time' },
-  ];
-}
+];
 
 export function MarketDataTable() {
 
@@ -57,7 +53,7 @@ export function MarketDataTable() {
         isSummaryGrid={true}
         loading={isLoading}
         rowData={prices}
-        columnDefs={getColumnDef()}
+        columnDefs={columnDef}
         onRowDoubleClicked={onRowDoubleClicked}>
       </DataGrid>
     </div>
