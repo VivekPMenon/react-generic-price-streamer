@@ -8,6 +8,7 @@ import {usePmsPnlDataStore} from "@/services/pms-pnl-data/pms-pnl-data-store";
 import {useProductBrowserStore} from "@/services/product-browser-data/product-browser-store";
 import {useResearchReportsStore} from "@/services/reports-data";
 import {PollManager} from "@/lib/utility/PollManager";
+import {useRiskDataStore} from "@/services/risk-data/risk-data-store";
 
 export class ServiceInitializer {
     private isInitialized: boolean = false;
@@ -62,6 +63,10 @@ export class ServiceInitializer {
             { hour: 10, minute: 30, seconds: 0 },
             600000
         ).start(1000);
+
+        const riskReports = useRiskDataStore.getState();
+        riskReports.loadRiskMetrics().catch((err) => console.error(err));
+        riskReports.startPolling();
 
         const researchReports = useResearchReportsStore.getState();
         researchReports.loadReports().catch((err) => console.error(err));

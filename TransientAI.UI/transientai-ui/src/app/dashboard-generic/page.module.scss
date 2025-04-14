@@ -50,24 +50,21 @@
   .middle-panel-bottom-widgets > * {
     border: 1px solid $border-color;
     border-radius: 5px;
-    flex: 1 1 400px;
-    height: 50%;
+    flex: 1 1 450px;
+    height: 49%;
+    align-items: stretch;
   }
 
   .trading-activity {
-    //flex: 1 1 200px;
   }
 
   .news-panel {
-    //flex: 1 1 200px;
   }
 
   .holdings-panel {
-    //flex: 1 1 200px;
   }
 
   .traces-panel {
-    //flex: 1 1 200px;
   }
 
   .right-panel {

@@ -76,8 +76,3 @@ export const useRiskDataStore = create<RiskDataState>((set, get) => ({
     }, 120000); // Polls every 2 minutes
   }
 }));
-
-// Initial Load and Start Polling
-const { loadRiskMetrics, startPolling } = useRiskDataStore.getState();
-loadRiskMetrics();
-startPolling();

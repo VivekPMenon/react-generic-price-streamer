@@ -16,14 +16,14 @@ rowClassRules[`${styles["golden-axe"]}`] = (params: RowClassParams) => params.da
 
 function getColumnDef(): ColDef[] {
   return [
-    { field: 'product_id', headerName: 'Product ID', width: 150 },
-    { field: 'product_description', headerName: 'Product Description', width: 150 },
+    { field: 'product_id', headerName: 'ID', width: 150 },
+    { field: 'product_description', headerName: 'Description', width: 150 },
     { field: 'isin', headerName: 'ISIN', cellClass: 'orange-color', width: 120 },
     { field: 'sector', headerName: 'Sector', width: 100 },
-    { field: 's_and_p_rating', headerName: 'S And P Rating' },
-    { field: 'bond_type', headerName: 'Bond Type', width: 100 },
-    { field: 'coupon_rate', headerName: 'Coupon Rate', width: 100 },
-    { field: 'maturity_date', headerName: 'Maturity Date' },
+    { field: 's_and_p_rating', headerName: 'S&P Rating' },
+    { field: 'bond_type', headerName: 'Type', width: 100 },
+    { field: 'coupon_rate', headerName: 'Coupon', width: 100 },
+    { field: 'maturity_date', headerName: 'Maturity' },
 
     // { field: 'bond_issuer', headerName: 'Bond Issuer', width: 180, hide: true },
     // { field: 'coupon_rate', headerName: 'Coupon Rate', width: 100, hide: true },

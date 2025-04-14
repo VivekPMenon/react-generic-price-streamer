@@ -6,7 +6,8 @@ const devHttpServices = {
   'hurricane-api': 'https://hurricanecap-devfastapi.azurewebsites.net',
   'hurricane-api-2-0': 'https://hurricane-dev-api01.purplebay-509ff298.eastus2.azurecontainerapps.io',
   'corp-actions-api': 'https://hcapcorpactionsapi.azure-api.net/CorporateActionsAPIExecutor',
-  'sell-side-api': 'https://sellsidedev-fastapi.azurewebsites.net'
+  'sell-side-api': 'https://sellsidedev-fastapi.azurewebsites.net',
+  'api-dev': 'https://api-dev.thetransient.ai'
 };
 
 const devCorpApiHeaders = {
