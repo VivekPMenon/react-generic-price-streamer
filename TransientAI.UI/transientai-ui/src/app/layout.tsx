@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Theme } from "@radix-ui/themes";
-import "./globals.scss";
 import { ChatbotDataContextProvider } from "@/services/chatbot-data";
 import { SearchDataContextProvider } from "@/services/search-data";
 import {ToastContainer} from "react-toastify";
+import {Translation} from '@/components/translation/translation-component';
+import "./globals.scss";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -41,34 +42,23 @@ export default function RootLayout({
       </head>
 
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased font-sans dark`}>
-        <div id="google_translate_element"></div>
-        <Theme accentColor="teal" className="height-100p">
-            <ChatbotDataContextProvider>
-              <SearchDataContextProvider>
-                {children}
-              </SearchDataContextProvider>
-            </ChatbotDataContextProvider>
-            <ToastContainer
-                position="top-center"
-                autoClose={5000}
-                hideProgressBar={true}
-                newestOnTop={true}
-                closeOnClick={true}
-                theme="dark"
-            />
-        </Theme>
-
-        <script
-            dangerouslySetInnerHTML={{
-              __html: `
-              function googleTranslateElementInit() {
-                new google.translate.TranslateElement({ pageLanguage: 'en' }, 'google_translate_element');
-              }
-            `,
-            }}
-        />
-        <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
-
+        <Translation>
+            <Theme accentColor="teal" className="height-100p">
+                <ChatbotDataContextProvider>
+                  <SearchDataContextProvider>
+                    {children}
+                  </SearchDataContextProvider>
+                </ChatbotDataContextProvider>
+                <ToastContainer
+                    position="top-center"
+                    autoClose={5000}
+                    hideProgressBar={true}
+                    newestOnTop={true}
+                    closeOnClick={true}
+                    theme="dark"
+                />
+            </Theme>
+        </Translation>
       </body>
     </html>
   );
