@@ -84,7 +84,6 @@ export function TodaysAxes() {
 
       <div className={styles['clients-and-holdings']}>
         <TopClients />
-        <Holdings />
       </div>
     </div>
   );

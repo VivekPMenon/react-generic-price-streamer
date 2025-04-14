@@ -43,3 +43,8 @@ export interface TopRecommendation {
   news?: any[];
   current_axes?: any[];
 }
+
+export interface RecommendedClient {
+  client_name: string;
+  score: number
+}

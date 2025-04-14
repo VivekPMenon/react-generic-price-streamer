@@ -136,7 +136,3 @@ export const useMacroPanelDataStore = create<MacroPanelDataState>((set, get) => 
 
 }));
 
-const { loadMacroPanelData, startPolling } = useMacroPanelDataStore.getState();
-loadMacroPanelData(true, true);
-startPolling();
-

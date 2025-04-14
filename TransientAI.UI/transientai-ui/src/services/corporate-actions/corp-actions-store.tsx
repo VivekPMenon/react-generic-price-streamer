@@ -232,7 +232,3 @@ export const useCorpActionsStore = create<CorpActionsDataState>((set, get) => ({
     }, 120000); // Polls every 2 minutes
   }
 }));
-
-// Initial Load and Start Polling
-const { startPolling } = useCorpActionsStore.getState();
-startPolling();

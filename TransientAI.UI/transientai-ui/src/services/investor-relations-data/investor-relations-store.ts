@@ -125,9 +125,3 @@ export const useInvestorRelationsStore = create<InvestorRelationsStore>((set, ge
     );
   }
 }));
-
-// Initial Load and Start Polling
-const { loadInquiries, loadAssignees, startPolling } = useInvestorRelationsStore.getState();
-loadInquiries();
-loadAssignees();
-startPolling();
