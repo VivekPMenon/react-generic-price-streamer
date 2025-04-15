@@ -61,7 +61,7 @@ export function Header({ onMenuToggle, isMenuVisible }: HeaderProps) {
         }
 
       </div>
-      {selectedMenu?.id === 'hurricane-pms' && <div>
+      {selectedMenu?.id === 'hurricane-pms' && deviceType !== 'mobile' && <div>
           <Image 
             alt="Hurricane logo"
             src="/images/hurricane_logo.png" 
