@@ -71,6 +71,7 @@ export const useProductBrowserStore = create<ProductBrowserStore>((set, get) => 
         state.loadRecommendedClients(bond);
         state.loadRecommendedClientsWithBonds(bond);
         state.loadTraces(bond?.isin);
+        state.setSelectedClient(null);
     },
 
     selectedClient: null,

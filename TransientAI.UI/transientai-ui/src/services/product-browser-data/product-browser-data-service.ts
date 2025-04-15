@@ -31,12 +31,18 @@ class ProductBrowserDataService {
   }
 
   async getRecommendedClients(bond: BondInfo): Promise<RecommendedClient[]> {
-    const result = await webApihandler.post('recommend-clients-for-bond', {
-      isin: bond.isin,
-      description: bond.product_description
-    }, {}, {
-      serviceName: this.serviceName
-    });
+    const data = bond.isin ? {
+        isin: bond.isin
+      } : {
+        description: bond.product_description
+      };
+    const result = await webApihandler.post(
+        'recommend-clients-for-bond',
+        data, {
+        },
+        {
+          serviceName: this.serviceName
+        });
 
     return result.recommendations;
   }
