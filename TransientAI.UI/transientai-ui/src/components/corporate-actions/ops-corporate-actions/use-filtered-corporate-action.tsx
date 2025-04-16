@@ -15,6 +15,8 @@ export const useFilteredCorporateActions = (opsData: any, filterActions: any, so
       return opsData.reduce(
         (acc: SortedData, item: any) => {  
           const payDate = item.dates.pay_date.split("T")[0];
+          const deadline = item.dates.deadline?.split("T")[0];
+          
   
           // Apply filters
           const meetsActionTypeFilter = !filterActions.actionType || 
@@ -59,12 +61,24 @@ export const useFilteredCorporateActions = (opsData: any, filterActions: any, so
   
           // Categorize filtered items
           if (passesAllFilters) {
-            if (payDate < today) {
+            // Handle potential invalid dates
+            const validPayDate = payDate && !isNaN(new Date(payDate).getTime());
+            const validDeadline = deadline && !isNaN(new Date(deadline).getTime());
+                        
+            // Check if the item is expired - both dates must be valid and in the past
+            const isExpired = validPayDate && validDeadline && payDate < today && deadline < today;
+            
+            // For active items, at least one date should be in the future or equal to today
+            const isActive = (validPayDate && payDate >= today) || (validDeadline && deadline >= today);
+            
+            if (isExpired) {
               acc.expired.push(item);
-            } else if (item.requirements.action_required) {
-              acc.acquired.push(item);
-            } else {
-              acc.no_action_acquired.push(item);
+            } else if (isActive) {
+              if (item.actionRequired) {
+                acc.acquired.push(item);
+              } else {
+                acc.no_action_acquired.push(item);
+              }
             }
           }
 
@@ -72,7 +86,7 @@ export const useFilteredCorporateActions = (opsData: any, filterActions: any, so
         },
         { acquired: [], no_action_acquired: [], expired: [] }
       );
-    }, [opsData, filterActions, today, sortByAction]);
+    }, [opsData, filterActions, today]);
 
     if (!sortByAction) {
       return { 

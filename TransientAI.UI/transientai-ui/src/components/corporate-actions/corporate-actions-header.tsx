@@ -210,40 +210,38 @@ export const CorporateActionHeader = () => {
         </div>
       </section>
 
-      {userContext.role !== RoleType.PM && (
-        <section>
-          <div className={`${styles['corporate-filter-cont']} mb-3 grid lg:grid-cols-8 md:grid-cols-2 gap-4`}>
-            {filterConfig.map((filter) => (
-              <div key={filter.key} className={`${styles['search-filter-input']}`}>
-                <label className='block mb-1 truncate'>{filter.label}</label>
-                {filter.type === 'dropdown' && (
-                  <FilterDropDown
-                    isSearchable={filter.isSearchable ?? false}
-                    value={
-                      filterActions[filter.key]
-                        ? { value: filterActions[filter.key], label: filterActions[filter.key] }
-                        : null
-                    }
-                    options={filter.options || []}
-                    onChange={(value) => handleFilterChange(filter.key, value)}
-                  />
-                )}
-                {filter.type === 'date' && (
-                  <DatePicker
-                    selectsRange={true}
-                    startDate={startDate}
-                    endDate={endDate}
-                    onChange={(update: any) => handleDateFilter(filter.key, update)}
-                    isClearable={true}
-                    className='w-full'
-                    wrapperClassName='w-full'
-                  />
-                )}
-              </div>
-            ))}
-          </div>
-        </section>
-      )}
+      <section>
+        <div className={`${styles['corporate-filter-cont']} mb-3 grid lg:grid-cols-8 md:grid-cols-2 gap-4`}>
+          {filterConfig.map((filter) => (
+            <div key={filter.key} className={`${styles['search-filter-input']}`}>
+              <label className='block mb-1 truncate'>{filter.label}</label>
+              {filter.type === 'dropdown' && (
+                <FilterDropDown
+                  isSearchable={filter.isSearchable ?? false}
+                  value={
+                    filterActions[filter.key]
+                      ? { value: filterActions[filter.key], label: filterActions[filter.key] }
+                      : null
+                  }
+                  options={filter.options || []}
+                  onChange={(value) => handleFilterChange(filter.key, value)}
+                />
+              )}
+              {filter.type === 'date' && (
+                <DatePicker
+                  selectsRange={true}
+                  startDate={startDate}
+                  endDate={endDate}
+                  onChange={(update: any) => handleDateFilter(filter.key, update)}
+                  isClearable={true}
+                  className='w-full'
+                  wrapperClassName='w-full'
+                />
+              )}
+            </div>
+          ))}
+        </div>
+      </section>
     </div>
   );
 };
