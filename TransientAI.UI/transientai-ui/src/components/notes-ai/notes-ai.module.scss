@@ -1,0 +1,43 @@
+@import '../../assets/variables.scss';
+
+.notes-main-content {
+  display: flex;
+  flex: 1 1 100%;
+  gap: 10px;
+
+ &>div:first-child{
+    width: 350px;
+    border-right: 1px solid $gray-300;
+    padding-right: 5px;
+ }
+ &>div:last-child{
+    flex: 1;
+ }
+
+  @media screen and (max-width: $mobile-breakpoint-max) {
+    flex-direction: column;
+    width: 91vw;
+
+    & > div {
+      flex: 1 1 100%;
+      width: 100%;
+    }
+  }
+}
+
+.notes-content {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  height: calc(100vh - 175px);
+  overflow-y: auto;
+}
+
+
+.notes-detail-view {
+  padding: 0 10px;
+}
+
+.active{
+  border: 1px solid $teal-100;
+}

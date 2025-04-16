@@ -114,3 +114,11 @@ font {
   background-color: transparent !important;
   box-shadow: none !important;
 }
+
+.switch-summary.react-toggle--checked .react-toggle-track {
+  background-color: $green !important;
+}
+
+.switch-summary .react-toggle-track {
+  background-color: $blue !important;
+}

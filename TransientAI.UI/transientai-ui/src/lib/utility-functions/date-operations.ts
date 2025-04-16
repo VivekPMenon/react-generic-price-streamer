@@ -306,3 +306,33 @@ export function parseIsoDate(value: string|null|undefined): Date|null {
       ? value + 'Z'
       : value);
 }
+
+
+// Format date to display in a readable format
+export const formatDateToReadable  = (timeString: string | undefined) => {
+  if (!timeString) {
+    return 'Unknown Date';
+  }
+  
+  const date = new Date(timeString);
+  const today = new Date();
+  const yesterday = new Date(today);
+  yesterday.setDate(yesterday.getDate() - 1);
+  
+  // Check if the date is today
+  if (date.toDateString() === today.toDateString()) {
+    return 'Today';
+  }
+  // Check if the date is yesterday
+  else if (date.toDateString() === yesterday.toDateString()) {
+    return 'Yesterday';
+  }
+  // Otherwise, display the full date
+  else {
+    return date.toLocaleDateString([], { 
+      year: 'numeric', 
+      month: 'long', 
+      day: 'numeric' 
+    });
+  }
+};
