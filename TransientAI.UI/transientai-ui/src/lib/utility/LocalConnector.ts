@@ -10,13 +10,13 @@ import {
     createMessage,
     hasSubscriber
 } from "@/lib/utility/SubscriptionTypes";
-import { io, Socket } from "socket.io-client";
+import { WebPubSubClient } from "@azure/web-pubsub-client";
 
 export class LocalConnector implements Connector {
     private readonly subscriptions: Map<string, SubscriptionLike> = new Map();
 
     private handler: MessageHandler|undefined;
-    private socket: Socket|undefined;
+    private socket: WebPubSubClient|undefined;
 
     constructor(private readonly uri: string) {}
 
@@ -31,6 +31,7 @@ export class LocalConnector implements Connector {
 
     public dispose(): void {
         this.handler = undefined;
+        this.socket?.stop();
     }
 
     public connect(): void {
@@ -38,18 +39,18 @@ export class LocalConnector implements Connector {
             return;
         }
 
-        this.socket = io(this.uri);
-        this.socket.on('data', (data) => {
+        this.socket = new WebPubSubClient(this.uri);
+        this.socket.on('group-message', (data) => {
             if (!this.handler) {
                 throw new Error("Handler must be added");
             }
 
-            if (hasSubscriber(data.topic, this.subscriptions.values())) {
-                this.handler(createMessage(data.topic, data.data));
-            }
+            // if (hasSubscriber(data.message.data.topic, this.subscriptions.values())) {
+            //     this.handler(createMessage(data.message.data.topic, data.message.data.data));
+            // }
         });
 
-        this.socket.connect();
+        this.socket.start();
     }
 
     private handleMessage(message: MessageLike) {

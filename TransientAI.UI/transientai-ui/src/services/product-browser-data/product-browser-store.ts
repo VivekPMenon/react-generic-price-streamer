@@ -2,12 +2,12 @@ import { create } from 'zustand';
 
 import {
     BondInfo,
-    ClientTrade,
+    ClientTrade, NewsArticle, RecommendedBond,
     RecommendedBondInHolding,
     RecommendedClient
 } from "@/services/product-browser-data/model";
 import {productBrowserDataService} from "@/services/product-browser-data/product-browser-data-service";
-import {marketDataService, TraceData} from "@/services/market-data";
+import {TraceData} from "@/services/market-data";
 
 export interface ProductBrowserStore {
     isAxesLoading: boolean;
@@ -24,6 +24,8 @@ export interface ProductBrowserStore {
     recommendedClients: RecommendedClient[];
     loadRecommendedClients(bond: BondInfo|null): Promise<void>;
 
+    loadRecommendedBondsForClient(client_name: string|null): Promise<RecommendedBond[]>;
+
     isRecommendedClientsWithBondsLoading: boolean;
     recommendedClientsWithBonds: RecommendedClient[];
     loadRecommendedClientsWithBonds(bond: BondInfo|null): Promise<void>;
@@ -35,6 +37,10 @@ export interface ProductBrowserStore {
     isTradesForBondLoading: boolean;
     bondTrades: ClientTrade[];
     loadTradesForBonds(bond: BondInfo|null): Promise<void>;
+
+    isNewsForBondLoading: boolean;
+    bondNews: NewsArticle[],
+    loadNewsForBonds(bond: BondInfo|null): Promise<void>;
 
     isClientTradesForBondLoading: boolean;
     clientTrades: ClientTrade[];
@@ -65,18 +71,25 @@ export const useProductBrowserStore = create<ProductBrowserStore>((set, get) => 
 
     selectedBond: null,
     setSelectedBond: (bond: BondInfo|null) => {
-        set({ selectedBond: bond, selectedClient: null });
         const state = get();
+        if (state.selectedBond?.isin === bond?.isin) {
+            return;
+        }
+        set({ selectedBond: bond, selectedClient: null });
         state.loadTradesForBonds(bond);
         state.loadRecommendedClients(bond);
         state.loadRecommendedClientsWithBonds(bond);
         state.loadTraces(bond?.isin);
+        state.loadNewsForBonds(bond);
         state.setSelectedClient(null);
     },
 
     selectedClient: null,
     setSelectedClient: (client: string|null) => {
         const state = get();
+        if (state.selectedClient === client) {
+            return;
+        }
         const selectedClient = state.selectedBond ? client : null;
         set({ selectedClient: selectedClient });
         state.loadClientTrades(state.selectedBond, client);
@@ -97,6 +110,14 @@ export const useProductBrowserStore = create<ProductBrowserStore>((set, get) => 
 
         } finally {
             set({ isRecommendedClientsLoading: false });
+        }
+    },
+
+    loadRecommendedBondsForClient: async (client_name: string|null) => {
+        if (client_name) {
+            return productBrowserDataService.getRecommendedBondsForClient(client_name.toUpperCase());
+        } else {
+            return Promise.resolve([]);
         }
     },
 
@@ -150,6 +171,23 @@ export const useProductBrowserStore = create<ProductBrowserStore>((set, get) => 
         }
     },
 
+    isNewsForBondLoading: false,
+    bondNews: [],
+    loadNewsForBonds: async (bond: BondInfo|null) => {
+        try {
+            set({ isNewsForBondLoading: true });
+            if (bond) {
+                const data = await productBrowserDataService.getNews(bond);
+                set({bondNews: data});
+            } else {
+                set({bondNews: []});
+            }
+
+        } finally {
+            set({ isNewsForBondLoading: false });
+        }
+    },
+
     isClientTradesForBondLoading: false,
     clientTrades: [],
     loadClientTrades: async (bond: BondInfo|null, client_name: string|null) => {
@@ -172,7 +210,7 @@ export const useProductBrowserStore = create<ProductBrowserStore>((set, get) => 
     loadTraces: async (isin?: string) => {
         try {
             set({ isTraceLoading: true });
-            const data = await marketDataService.getTraces(isin);
+            const data = await productBrowserDataService.getTraces(isin);
             set({ traces: data });
 
         } finally {

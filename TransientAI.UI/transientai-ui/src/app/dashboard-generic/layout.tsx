@@ -6,7 +6,6 @@ import styles from './page.module.scss';
 import { Chatbot } from '@/components/chatbot/chatbot';
 import { Notifications } from '@/components/notifications';
 import {useEffect, useState} from 'react';
-import { News } from '@/components/news';
 import {Mode} from "@/services/menu-data";
 import {DashboardTabs} from "@/components/dashboard-tabs/dashboard-tabs";
 import {MsalProvider} from '@azure/msal-react';
@@ -18,6 +17,7 @@ import {ServiceInitializer} from "@/services/startup/initializer";
 import {TradingActivity} from "@/components/trading-activity";
 import {Holdings} from "@/components/axes/holdings";
 import {Traces} from "@/components/market-data";
+import {BondNews} from "@/components/news/bond-news";
 
 const MODE: Mode = Mode.SELL;
 
@@ -97,8 +97,7 @@ export default function DashboardLayout({
               {children}
             </DashboardTabs>
 
-            <div className={styles['middle-panel-bottom-widgets']}>
-              {/*<PriceGraph onExpandCollapse={isExpanded => onExpandCollapse('price-graph', isExpanded)} />*/}
+            <div className={`${styles['middle-panel-bottom-widgets']}`}>
               <div className={styles.tradingActivity}>
                 <TradingActivity />
               </div>
@@ -106,7 +105,7 @@ export default function DashboardLayout({
                 <Holdings />
               </div>
               <div className={styles.newsPanel}>
-                <News />
+                <BondNews />
               </div>
               <div className={styles.tracesPanel}>
                 <Traces />

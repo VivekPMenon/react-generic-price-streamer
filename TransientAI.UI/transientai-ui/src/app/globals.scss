@@ -114,3 +114,9 @@ font {
   background-color: transparent !important;
   box-shadow: none !important;
 }
+
+.prevent-text-selection {
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}

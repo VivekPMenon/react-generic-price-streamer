@@ -1,136 +1,126 @@
 'use client'
 
-import { productBrowserDataService, TopRecommendation } from '@/services/product-browser-data';
-import { useContext, useEffect, useState } from 'react';
-import * as Dialog from "@radix-ui/react-dialog";
-import ReactMarkdown from 'react-markdown';
-import remarkGfm from 'remark-gfm';
-import { ChatbotDataContext } from '@/services/chatbot-data';
-import { SearchDataContext } from '@/services/search-data';
+import {useState} from 'react';
+import {useProductBrowserStore} from "@/services/product-browser-data/product-browser-store";
+import {Spinner} from "@radix-ui/themes";
+import { ChevronDownIcon } from "@radix-ui/react-icons";
+import styles from './todays-axes.module.scss';
+import {RecommendedBond, RecommendedClient} from "@/services/product-browser-data";
+
+interface ClientProps {
+    client: RecommendedClient;
+    selectedClient: string|null;
+    setSelectedClient: (client_name: string) => void;
+    loadRecommendedBondsForClient: (client_name: string) => Promise<RecommendedBond[]>;
+}
+
+function ClientComponent(
+    {
+        client,
+        selectedClient,
+        setSelectedClient,
+        loadRecommendedBondsForClient
+    }: ClientProps) {
+
+    const [isLoadingBonds, setIsLoadingBonds] = useState<boolean>(false);
+    const [open, setOpen] = useState<boolean>(false);
+    const [bonds, setBonds] = useState<RecommendedBond[]|null>(null);
+
+    function loadBonds(client: RecommendedClient) {
+        const newOpen = !open;
+        setOpen(newOpen);
+        if (bonds) {
+            return;
+        }
+
+        if (newOpen) {
+            setIsLoadingBonds(true);
+            setBonds([]);
+            loadRecommendedBondsForClient(client.client_name)
+                .then(bonds => {
+                    setBonds(bonds);
+                })
+                .finally(() => {
+                    setIsLoadingBonds(false);
+                });
+        }
+    }
+
+    return (
+        <div
+            className={`news-item prevent-text-selection ${selectedClient === client.client_name ? styles['selected-client'] : ''}`}
+            key={client.client_name}
+            onDoubleClick={() => setSelectedClient(client.client_name)}
+        >
+            <div className={`${styles['news-header']}`}>
+                <div className={`${styles['header']}`}>
+                    <div className={`news-title ${styles['title']}`}>
+                        {client.client_name}
+                    </div>
+                    <div className={`${styles['expander']}`}>
+                        {
+                            isLoadingBonds
+                            ? (<Spinner size={"1"} />)
+                            : (<ChevronDownIcon
+                                    className={`${styles['expander-button' + (open ? '-open' : '')]}`}
+                                    onClick={() => loadBonds(client)} />)
+                        }
+                    </div>
+                </div>
+                <div
+                    className={`${styles[(!bonds || bonds.length === 0 ? 'no-' : '') + 'bonds']}`}
+                    style={{
+                        display: open ? "block" : "none"
+                    }}>
+                    <hr/>
+                    <div className={`${styles['bonds-container']} scrollable-div`}>
+                    {
+                        !bonds || bonds.length === 0
+                            ? (<span>No bonds</span>)
+                            : (bonds.map(bond => {
+                                return (
+                                    <div key={bond.isin}>{bond.product_description}</div>
+                                );
+                            }))
+                    }
+                    </div>
+                </div>
+            </div>
+        </div>
+    )
+}
 
 export function TopClients() {
+    const { isRecommendedClientsLoading, selectedClient, loadRecommendedBondsForClient, setSelectedClient, recommendedClients } = useProductBrowserStore();
 
-  const { chatbotData, setChatbotData } = useContext(ChatbotDataContext);
-  const { searchData, setSearchData } = useContext(SearchDataContext);
-
-  const [topRecommendations, setTopRecommendations] = useState<TopRecommendation[]>();
-  const [isDetailsVisible, setIsDetailsVisible] = useState<boolean>(false);
-
-  useEffect(() => loadTopRecommendations(), [searchData.id]);
-
-  function loadTopRecommendations() {
-    const loadTopRecommendationsAsync = async () => {
-      let selectedCompany = '';
-      if (searchData.id) {
-        const bondInfo = await productBrowserDataService.getTodaysAxes();
-        // selectedCompany = bondInfo.length ? bondInfo[0].bond_issuer! : '';
-      }
-
-      const topCompanies = await productBrowserDataService.getTopRecommendations();
-      const firstFiveCompanies = selectedCompany ? topCompanies.filter(topCompany => topCompany === selectedCompany) : topCompanies.slice(0, 4);
-
-      const promises = firstFiveCompanies
-        ?.map(companyName => productBrowserDataService.getRecommendationsDetails(companyName));
-
-      const results: TopRecommendation[] = await Promise.all(promises);
-      results.forEach(result => {
-        if (result.clients_to_contact?.length) {
-          result.overview = `Please contact the client(s) ${result.clients_to_contact.join(',')}`;
-          return;
-        }
-
-        if (result.news?.length) {
-          result.overview = result.news[0].headline;
-          return;
-        }
-
-        if (result.current_axes?.length) {
-          result.overview = 'Top Axe: ' + result.current_axes[0].bond_name;
-          return;
-        }
-      });
-
-      setTopRecommendations(results);
-
-      // if security is in context, and a recommendation is found, that will be set in the cahtbot as well
-      if (searchData.id && results?.length) {
-        selectRecommendation(results[0]);
-      } else {
-        setChatbotData({
-          ...chatbotData,
-          isChatbotResponseActive: false
-        });
-      }
-    };
-
-    loadTopRecommendationsAsync();
-  }
-
-  function selectRecommendation(recommendation: TopRecommendation) {
-    setChatbotData({
-      title: recommendation.company,
-      isChatbotResponseActive: true,
-      conversations: [
-        {
-          request: {
-            query: recommendation.company
-          },
-          response: {
-            responseText: recommendation.reasoning
-          }
-        }
-      ]
-    });
-  }
-
-  return (
-    <div>
-      <div className='sub-header'>Top Recommendations</div>
-
-      <div className='news'>
-        {
-          topRecommendations?.map(topRecommendation =>
-            <div className='news-item' onClick={() => selectRecommendation(topRecommendation)}>
-              <div className='news-content'>
-                <div className='news-title'>
-                  {topRecommendation.company}
-                </div>
-                <div className='news-description'>
-                  {topRecommendation.overview}
-                </div>
-              </div>
-
-              <Dialog.Root>
-                <Dialog.Trigger asChild>
-                  <div className='news-menu' onClick={() => setIsDetailsVisible(true)}>
-                    <i className='fa-solid fa-ellipsis-v fa-lg'></i>
-                  </div>
-                </Dialog.Trigger>
-                <Dialog.Portal>
-                  <Dialog.Overlay className="DialogOverlay" />
-                  <Dialog.Content className="DialogContent">
-                    <Dialog.Title className="DialogTitle">{topRecommendation.company} Details</Dialog.Title>
-                    <Dialog.Description className="DialogDescription">
-
-                    </Dialog.Description>
-                    <div>
-                      <ReactMarkdown className='markdown' remarkPlugins={[remarkGfm]}>{topRecommendation.reasoning}</ReactMarkdown>
-                      {/* 
-                      <Dialog.Close asChild>
-                        <button className="Button green">CLOSE</button>
-                      </Dialog.Close> */}
-                    </div>
-                  </Dialog.Content>
-                </Dialog.Portal>
-              </Dialog.Root>
+    let content;
+    if (isRecommendedClientsLoading) {
+        content = (<Spinner />);
+    } else {
+        content = (
+            <div className={`news scrollable-div`} style={{gap: '3px'}}>
+                {
+                    recommendedClients?.map(client =>
+                        <ClientComponent
+                            key={client.client_name}
+                            client={client}
+                            selectedClient={selectedClient}
+                            setSelectedClient={setSelectedClient}
+                            loadRecommendedBondsForClient={loadRecommendedBondsForClient}
+                        />)
+                }
             </div>
-          )
-        }
-      </div>
+        )
+    }
 
-      {
-        isDetailsVisible ? <></> : <></>
-      }
-    </div>
-  );
+    return (
+        <div>
+            <div className='sub-header'>Top Recommendations</div>
+            <div>
+                {
+                    content
+                }
+            </div>
+        </div>
+    );
 }
