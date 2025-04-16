@@ -28,20 +28,20 @@ function ClientComponent(
 
     function loadBonds(client: RecommendedClient) {
         const newOpen = !open;
-        setOpen(newOpen);
         if (bonds) {
+            setOpen(newOpen);
             return;
         }
 
         if (newOpen) {
             setIsLoadingBonds(true);
-            setBonds([]);
             loadRecommendedBondsForClient(client.client_name)
-                .then(bonds => {
-                    setBonds(bonds);
+                .then(result => {
+                    setBonds(result);
                 })
                 .finally(() => {
                     setIsLoadingBonds(false);
+                    setOpen(newOpen);
                 });
         }
     }
@@ -98,7 +98,7 @@ export function TopClients() {
         content = (<Spinner />);
     } else {
         content = (
-            <div className={`news scrollable-div`} style={{gap: '3px'}}>
+            <div className={`news scrollable-div ${styles['recommended-clients']}`}>
                 {
                     recommendedClients?.map(client =>
                         <ClientComponent

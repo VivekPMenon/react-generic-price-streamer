@@ -5,8 +5,7 @@ import {
   NewsArticle,
   RecommendedBond,
   RecommendedBondInHolding,
-  RecommendedClient,
-  TopRecommendation
+  RecommendedClient
 } from "./model";
 import {TraceData} from "@/services/market-data";
 
@@ -15,8 +14,7 @@ class ProductBrowserDataService {
 
   async getTodaysAxes(): Promise<BondInfo[]> {
     return await webApihandler.get('inventory', {
-      page: 1,
-      // page_size: 500
+      page: 1
     }, {
       serviceName: this.serviceName
     });
@@ -25,7 +23,7 @@ class ProductBrowserDataService {
   async getTraces(isin?: string): Promise<TraceData[]> {
     const result = await webApihandler.post(
         'trace_data',
-        {  },
+        undefined,
         { page: 1, isin, limit: 50 }, {
       serviceName: this.serviceName
     });
@@ -33,16 +31,15 @@ class ProductBrowserDataService {
   }
 
   async getRecommendedClients(bond: BondInfo): Promise<RecommendedClient[]> {
-    const data = bond.isin ? {
-        isin: bond.isin,
-        top_n: 5
+    const data: {[key:string] : any} = bond.isin ? {
+        isin: bond.isin
       } : {
-        description: bond.product_description,
-      top_n: 5
+        description: bond.product_description
       };
+    data['top_n'] = 5;
     const result = await webApihandler.post(
         'recommend-clients-for-bond',
-        {}, data,
+        undefined, data,
         {
           serviceName: this.serviceName
         });
@@ -52,13 +49,13 @@ class ProductBrowserDataService {
 
   async getRecommendedBondsForClient(client_name: string): Promise<RecommendedBond[]> {
     const data = {
-      client_name,
+      client_name: client_name.toUpperCase(),
       top_n: 5,
       method: 'profile'
     };
     const result = await webApihandler.post(
-        'recommend-bonds-for-client ',
-        {}, data,
+        'recommend-bonds-for-client',
+        undefined, data,
         {
           serviceName: this.serviceName
         });
@@ -67,13 +64,12 @@ class ProductBrowserDataService {
   }
 
   async getRecommendedClientsWithBonds(bond: BondInfo): Promise<RecommendedClient[]> {
-    const data = bond.isin ? {
-      isin: bond.isin,
-      top_n: 5
+    const data: {[key:string] : any} = bond.isin ? {
+      isin: bond.isin
     } : {
-      description: bond.product_description,
-      top_n: 5
+      description: bond.product_description
     };
+    data['top_n'] = 5;
     const result = await webApihandler.post('recommend-clients-with-similar-bonds', {}, data, {
       serviceName: this.serviceName
     });
@@ -82,15 +78,14 @@ class ProductBrowserDataService {
   }
 
   async getSimilarBondsInHoldings(bond: BondInfo, client_name: string): Promise<RecommendedBondInHolding[]> {
-    const data = bond.isin ? {
+    const data: {[key:string] : any} = bond.isin ? {
       client_name,
-      bond_isin: bond.isin,
-      top_n: 5
+      bond_isin: bond.isin
     } : {
       client_name,
-      bond_description: bond.product_description,
-      top_n: 5
+      bond_description: bond.product_description
     };
+    data['top_n'] = 5;
     const result = await webApihandler.post('recommend-similar-bonds-in-holdings', {}, data, {
       serviceName: this.serviceName
     });
@@ -128,16 +123,6 @@ class ProductBrowserDataService {
       article.date = new Date(article.date);
     })
     return result.articles.sort((a: NewsArticle, b: NewsArticle) => b.date.getTime() - a.date.getTime());
-  }
-
-  async getTopRecommendations(): Promise<string[]> {
-    const result = await webApihandler.get('unsolicited/companies', {});
-    return result;
-  }
-
-  async getRecommendationsDetails(company: string): Promise<TopRecommendation> {
-    const result = await webApihandler.get('unsolicited', { company });
-    return result.top_recommendations[0];
   }
 }
 

@@ -115,7 +115,7 @@ export const useProductBrowserStore = create<ProductBrowserStore>((set, get) => 
 
     loadRecommendedBondsForClient: async (client_name: string|null) => {
         if (client_name) {
-            return productBrowserDataService.getRecommendedBondsForClient(client_name.toUpperCase());
+            return productBrowserDataService.getRecommendedBondsForClient('blackrock');
         } else {
             return Promise.resolve([]);
         }

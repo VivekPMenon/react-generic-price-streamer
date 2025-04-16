@@ -25,6 +25,7 @@
 .clients {
   border: 1px solid $border-color;
   height: 100%;
+  max-height: 200px;
 }
 
 .axe {
@@ -42,16 +43,16 @@
 }
 
 .bonds-container {
-  padding: 10px;
+  padding: 5px;
+  height: auto;
+  max-height: 100px;
 }
 
 .bonds {
-  height: 200px;
 }
 
 .no-bonds {
   @extend .bonds;
-  height: 30px;
 }
 
 .header {
@@ -76,4 +77,9 @@
 
 .expander-button-open {
   transform: rotate(360deg);
+}
+
+.recommended-clients {
+  gap: 3px;
+  max-height: 300px;
 }
