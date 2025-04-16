@@ -48,13 +48,6 @@
   max-height: 100px;
 }
 
-.bonds {
-}
-
-.no-bonds {
-  @extend .bonds;
-}
-
 .header {
   display: inline-block;
   vertical-align: middle;
@@ -82,4 +75,9 @@
 .recommended-clients {
   gap: 3px;
   max-height: 300px;
+}
+
+.bond-item {
+  width: 100%;
+  justify-items: stretch;
 }

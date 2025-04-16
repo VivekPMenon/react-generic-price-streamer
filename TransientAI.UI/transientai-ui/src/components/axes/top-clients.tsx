@@ -68,7 +68,6 @@ function ClientComponent(
                     </div>
                 </div>
                 <div
-                    className={`${styles[(!bonds || bonds.length === 0 ? 'no-' : '') + 'bonds']}`}
                     style={{
                         display: open ? "block" : "none"
                     }}>
@@ -79,7 +78,11 @@ function ClientComponent(
                             ? (<span>No bonds</span>)
                             : (bonds.map(bond => {
                                 return (
-                                    <div key={bond.isin}>{bond.product_description}</div>
+                                    <div
+                                        className={`${styles['bond-item']}`}
+                                        key={bond.isin}>
+                                        <span>{bond.product_description}</span>
+                                    </div>
                                 );
                             }))
                     }
