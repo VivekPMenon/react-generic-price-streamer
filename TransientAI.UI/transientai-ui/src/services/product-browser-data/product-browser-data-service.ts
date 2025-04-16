@@ -32,14 +32,15 @@ class ProductBrowserDataService {
 
   async getRecommendedClients(bond: BondInfo): Promise<RecommendedClient[]> {
     const data = bond.isin ? {
-        isin: bond.isin
+        isin: bond.isin,
+        top_n: 5
       } : {
-        description: bond.product_description
+        description: bond.product_description,
+      top_n: 5
       };
     const result = await webApihandler.post(
         'recommend-clients-for-bond',
-        data, {
-        },
+        {}, data,
         {
           serviceName: this.serviceName
         });
@@ -48,11 +49,14 @@ class ProductBrowserDataService {
   }
 
   async getRecommendedClientsWithBonds(bond: BondInfo): Promise<RecommendedClient[]> {
-    const result = await webApihandler.post('recommend-clients-with-similar-bonds', {
+    const data = bond.isin ? {
       isin: bond.isin,
+      top_n: 5
+    } : {
       description: bond.product_description,
-      top_n: 10
-    }, {
+      top_n: 5
+    };
+    const result = await webApihandler.post('recommend-clients-with-similar-bonds', {}, data, {
       serviceName: this.serviceName
     });
 
@@ -60,19 +64,23 @@ class ProductBrowserDataService {
   }
 
   async getSimilarBondsInHoldings(bond: BondInfo, client_name: string): Promise<RecommendedBondInHolding[]> {
-    const result = await webApihandler.post('recommend-similar-bonds-in-holdings', {
+    const data = bond.isin ? {
       client_name,
       bond_isin: bond.isin,
+      top_n: 5
+    } : {
+      client_name,
       bond_description: bond.product_description,
-      top_n: 10
-    }, {
+      top_n: 5
+    };
+    const result = await webApihandler.post('recommend-similar-bonds-in-holdings', {}, data, {
       serviceName: this.serviceName
     });
     return result.recommendations;
   }
 
   async getTradesByBond(bond: BondInfo): Promise<ClientTrade[]> {
-    return await webApihandler.post('trades-by-bond', {
+    return await webApihandler.get('trades-by-bond', {
       product_description: bond.product_description,
     }, {
       serviceName: this.serviceName
