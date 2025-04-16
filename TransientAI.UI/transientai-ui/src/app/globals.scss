@@ -82,3 +82,35 @@ body {
 .highcharts-credits {
   display: none;
 }
+
+#goog-gt-tt,
+.goog-te-tooltip,
+.goog-te-balloon-frame {
+  display: none !important;
+}
+
+.goog-te-banner-frame, iframe.goog-te-banner-frame {
+  display: none !important;
+}
+
+.goog-te-combo {
+  display: none !important;
+}
+
+#goog-gt-tt, .goog-te-balloon-frame {
+  display: none !important;
+}
+
+body {
+  position: static;
+  top: 0 !important;
+}
+
+iframe.skiptranslate, .goog-te-gadget {
+  display: none !important;
+}
+
+font {
+  background-color: transparent !important;
+  box-shadow: none !important;
+}

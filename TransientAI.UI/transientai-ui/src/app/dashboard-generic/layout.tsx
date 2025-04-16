@@ -5,7 +5,6 @@ import styles from './page.module.scss';
 
 import { Chatbot } from '@/components/chatbot/chatbot';
 import { Notifications } from '@/components/notifications';
-import dynamic from 'next/dynamic';
 import {useEffect, useState} from 'react';
 import { News } from '@/components/news';
 import {Mode} from "@/services/menu-data";
@@ -15,11 +14,14 @@ import msalInstance from '../msal-config';
 import {Spinner} from "@radix-ui/themes";
 import {useUserContextStore} from "@/services/user-context";
 import {useDeviceType} from "@/lib/hooks";
-
-// dynamic loading to address build issue when importing highcharts
-const PriceGraph = dynamic(() => import("@/components/market-data").then(module => module.PriceGraph), { ssr: false, });
+import {ServiceInitializer} from "@/services/startup/initializer";
+import {TradingActivity} from "@/components/trading-activity";
+import {Holdings} from "@/components/axes/holdings";
+import {Traces} from "@/components/market-data";
 
 const MODE: Mode = Mode.SELL;
+
+const serviceInitializer = new ServiceInitializer(MODE);
 
 export default function DashboardLayout({
   children,
@@ -37,6 +39,7 @@ export default function DashboardLayout({
   useEffect(() => {
     if (isAuthenticated) {
       window.history.replaceState({}, document.title, window.location.pathname);
+      serviceInitializer.initialize();
     }
   }, [isAuthenticated]);
 
@@ -61,7 +64,6 @@ export default function DashboardLayout({
   function onMenuToggle() {
     setIsMenuVisible(!isMenuVisible);
   }
-
 
   return (
       <MsalProvider instance={msalInstance}>
@@ -96,8 +98,19 @@ export default function DashboardLayout({
             </DashboardTabs>
 
             <div className={styles['middle-panel-bottom-widgets']}>
-              <PriceGraph onExpandCollapse={isExpanded => onExpandCollapse('price-graph', isExpanded)} />
-              <News onExpandCollapse={isExpanded => onExpandCollapse('news', isExpanded)} />
+              {/*<PriceGraph onExpandCollapse={isExpanded => onExpandCollapse('price-graph', isExpanded)} />*/}
+              <div className={styles.tradingActivity}>
+                <TradingActivity />
+              </div>
+              <div className={styles.holdingsPanel}>
+                <Holdings />
+              </div>
+              <div className={styles.newsPanel}>
+                <News />
+              </div>
+              <div className={styles.tracesPanel}>
+                <Traces />
+              </div>
             </div>
           </div>
 

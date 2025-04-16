@@ -14,8 +14,11 @@ import {Spinner} from '@radix-ui/themes';
 import {ContentCarousel} from '@/components/content-carousel/content-carousel';
 import {EContentTypes} from '@/components/content-carousel/model';
 import {Mode, useMenuStore} from "@/services/menu-data";
+import {ServiceInitializer} from "@/services/startup/initializer";
 
 const MODE: Mode = Mode.BUY;
+
+const serviceInitializer = new ServiceInitializer(MODE);
 
 export default function DashboardLayout({
   children,
@@ -23,7 +26,7 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }>) {
 
-  // todo.. unable to add this to the root of the app, as it is server side rendered, create an intermediate layout that wil act as root for all client dashbaords
+  // todo.. unable to add this to the root of the app, as it is server side rendered, create an intermediate layout that wil act as root for all client dashboards
   const { loadUserContext, isLoading, isAuthenticated } = useUserContextStore();
   const { selectedMenu } = useMenuStore();
   const [hurricanePmsView, setHurricanePmsView] = useState<boolean | null>(null);
@@ -35,6 +38,7 @@ export default function DashboardLayout({
   useEffect(() => {
     if (isAuthenticated) {
       window.history.replaceState({}, document.title, window.location.pathname);
+      serviceInitializer.initialize();
     }
   }, [isAuthenticated]);
 

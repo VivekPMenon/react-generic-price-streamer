@@ -25,12 +25,13 @@ export const AssetAllocationChart = ({ data }: any) => {
   const calculateChartData = (data: TradeItem[]): ChartItem[] => {
     const totals: Record<string, number> = {};
     let grandTotal = 0;
+
     data.forEach(item => {
       const type = item.security_type;
-      const qty = item.quantity || 0;
-      const price = item.price || 0;
-      const value = qty * price;
-  
+      // const qty = item.quantity || 0;
+      // const price = item.price || 0;
+      const value = item.market_value || 0;
+      
       if (!totals[type]) {
         totals[type] = 0;
       }
@@ -51,6 +52,7 @@ export const AssetAllocationChart = ({ data }: any) => {
   };
 
   const chartData = calculateChartData(data);
+  // console.log('chartData', chartData)
   const getChartOptions = () => {
     const options: Highcharts.Options = {
       chart: {

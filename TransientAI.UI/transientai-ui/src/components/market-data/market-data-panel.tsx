@@ -1,3 +1,5 @@
+'use client'
+
 import {MarketDataTable} from "@/components/market-data/market-data-table";
 import {Traces} from "@/components/market-data/traces";
 import styles from './market-data-panel.module.scss';

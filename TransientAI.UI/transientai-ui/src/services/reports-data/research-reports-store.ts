@@ -65,8 +65,3 @@ export const useResearchReportsStore = create<ResearchReportsState>((set, get) =
     }, 120000); // Polls every 2 minutes
   }
 }));
-
-// Initial Load and Start Polling
-const { loadReports, startPolling } = useResearchReportsStore.getState();
-loadReports();
-startPolling();

@@ -107,9 +107,9 @@ export const BarChart = (data: any) => {
     let grandTotal = 0;
     data.forEach((item: any) => {
       const ticker = item.ticker;
-      const qty = item.quantity || 0;
-      const price = item.price || 0;
-      const value = qty * price;
+      // const qty = item.quantity || 0;
+      // const price = item.price || 0;
+      const value = item.market_value || 0;
   
       if (!tickerValues[ticker]) {
         tickerValues[ticker] = 0;

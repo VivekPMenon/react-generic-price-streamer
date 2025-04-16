@@ -1,3 +1,5 @@
+@import '../../assets/variables.scss';
+
 .home {
   display: flex;
   flex-direction: column;
@@ -32,14 +34,37 @@
   .middle-panel {
     display: flex;
     flex-direction: column;
-    flex: 1 1 60%;
+    flex: 1 1 50%;
     gap: 10px;
   }
 
   .middle-panel-bottom-widgets {
     display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    flex: 1 1 50%;
     gap: 10px;
-    flex: 1 1 40%;
+    width: 100%;
+  }
+
+  .middle-panel-bottom-widgets > * {
+    border: 1px solid $border-color;
+    border-radius: 5px;
+    flex: 1 1 450px;
+    height: 49%;
+    align-items: stretch;
+  }
+
+  .trading-activity {
+  }
+
+  .news-panel {
+  }
+
+  .holdings-panel {
+  }
+
+  .traces-panel {
   }
 
   .right-panel {

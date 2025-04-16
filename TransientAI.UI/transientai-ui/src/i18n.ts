@@ -7,65 +7,65 @@ import LanguageDetector from 'i18next-browser-languagedetector';
 //   console.log('✅ Detected Language (event):', i18n.language);
 // });
 
-const translated = new Map<string, string>();
+// const translated = new Map<string, string>();
 
 export const translateText = async (text: string) => {
-  // return text;
-  const targetLanguage = i18n.language;
-
-  // Return original if the text has 5 or fewer words
-  const wordCount = text.trim().split(/\s+/).length;
-  if (wordCount <= 5) {
-    return text;
-  }
-
-  // Only translate if the target language is not 'en' (English)
-  if (targetLanguage.startsWith('en')) {
-    return text;
-  }
-
-  const key = `${targetLanguage}_${text}`
-  const translation = translated.get(key);
-  if (translation) {
-      return translation;
-  }
-
-  try {
-    const response = await fetch('https://hurricanecap-devfastapi.azurewebsites.net/translate', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        text: text,
-        target_language: targetLanguage, // Pass the target language to the API
-      }),
-    });
-
-    if (!response.ok) {
-        console?.error(`Translation failed: ${response.statusText}`);
-        translated.set(key, text);
-        return text;
-    }
-
-    const data = await response.json();
-    translated.set(key, data.translated_text);
-    return data.translated_text; // Assuming the API returns translated text
-  } catch (error) {
-    console?.error('Translation error:', error);
-    translated.set(key, text);
-    return text; // Return original text if there's an error
-  }
+  return text;
+  // const targetLanguage = i18n.language;
+  //
+  // // Only translate if the target language is not 'en' (English)
+  // if (targetLanguage.startsWith('en')) {
+  //   return text;
+  // }
+  //
+  // // Return original if the text has 5 or fewer words
+  // const wordCount = text.trim().split(/\s+/).length;
+  // if (wordCount <= 5) {
+  //   return text;
+  // }
+  //
+  // const key = `${targetLanguage}_${text}`
+  // const translation = translated.get(key);
+  // if (translation) {
+  //     return translation;
+  // }
+  //
+  // try {
+  //   const response = await fetch('https://hurricanecap-devfastapi.azurewebsites.net/translate', {
+  //     method: 'POST',
+  //     headers: {
+  //       'Content-Type': 'application/json',
+  //     },
+  //     body: JSON.stringify({
+  //       text: text,
+  //       target_language: targetLanguage, // Pass the target language to the API
+  //     }),
+  //   });
+  //
+  //   if (!response.ok) {
+  //       console?.error(`Translation failed: ${response.statusText}`);
+  //       translated.set(key, text);
+  //       return text;
+  //   }
+  //
+  //   const data = await response.json();
+  //   translated.set(key, data.translated_text);
+  //   return data.translated_text; // Assuming the API returns translated text
+  // } catch (error) {
+  //   console?.error('Translation error:', error);
+  //   translated.set(key, text);
+  //   return text; // Return original text if there's an error
+  // }
 };
 
 
 // Detect missing keys and translate dynamically
-const customMissingKeyHandler = async (ns: string, key: string) => {
-  const lng = i18n.language;
-  const translated = await translateText(key);
-  // Inject into i18next’s memory store so it's cached
-  i18n.addResource(lng, ns, key, translated);
-};
+// const customMissingKeyHandler = async (ns: string, key: string) => {
+//   const lng = i18n.language;
+//   const translated = await translateText(key);
+//   // Inject into i18next’s memory store so it's cached
+//   i18n.addResource(lng, ns, key, translated);
+// };
 
 i18n
   .use(LanguageDetector)

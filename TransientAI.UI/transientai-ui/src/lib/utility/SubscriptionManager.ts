@@ -1,8 +1,6 @@
 import {Subscription, Message, MessageType, Connector, Messenger, Callback} from './SubscriptionTypes';
-import {WorkerBasedConnector} from "@/lib/utility/WorkerBasedConnector";
-// import {LocalBridge} from "@/lib/utility/LocalBridge";
 
-class SubscriptionManager implements Messenger {
+export class SubscriptionManager implements Messenger {
     private readonly subscriptions: Map<string, Map<string, Callback>>;
     private readonly pending: Map<string, [resolve: (subscription: Subscription) => void, reject: (reason?: unknown) => void]>
 
@@ -136,7 +134,3 @@ class SubscriptionManager implements Messenger {
         }
     }
 }
-
-const bridge = new WorkerBasedConnector('./SubscriptionWorker.js');
-// const bridge = new LocalBridge('');
-export const subscriptionManager: Messenger = new SubscriptionManager(bridge);

@@ -118,9 +118,6 @@ export const useUserContextStore = create<UserContextState>((set) => ({
   },
 }));
 
-const { loadUserContext } = useUserContextStore.getState();
-loadUserContext();
-
 async function loginAndSetToken(idToken: string) {
   try {
 

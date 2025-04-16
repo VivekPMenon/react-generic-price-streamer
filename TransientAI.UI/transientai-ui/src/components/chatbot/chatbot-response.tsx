@@ -66,20 +66,31 @@ export function ChatbotResponse(props: ChatbotResponseProps) {
         conversations: newChatConversations
       });
 
-      const response = await chatbotDataService.getChatbotResponse({ query });
-
       const lastChatHistory = newChatConversations[newChatConversations.length - 1];
-      lastChatHistory.response = response;
-      lastChatHistory.request!.isLoading = false;
-      lastChatHistory.response.timestamp = getCurrentTimestamp();
-
-      setChatbotData({
-        ...chatbotData,
-        conversations: newChatConversations
-      });
-
-      props.onNewQueryExecuted();
-    };
+      if (!lastChatHistory.response) {
+        lastChatHistory.response = {responseText: ''};
+      }
+      chatbotDataService.getChatbotResponseStream({query})
+          .subscribe({
+            next: (response) => {
+              console.log(response);
+              lastChatHistory.response!.responseText += response;
+              setChatbotData({
+                ...chatbotData,
+                conversations: newChatConversations
+              });
+            },
+            complete: () => {
+              lastChatHistory.request!.isLoading = false;
+              lastChatHistory.response!.timestamp = getCurrentTimestamp();
+              setChatbotData({
+                ...chatbotData,
+                conversations: newChatConversations
+              });
+              props.onNewQueryExecuted();
+            }
+          });
+    }
 
     executeChatbotRequestAsync();
   }

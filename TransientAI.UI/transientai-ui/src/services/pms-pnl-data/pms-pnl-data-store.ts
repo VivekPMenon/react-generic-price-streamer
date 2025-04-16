@@ -38,14 +38,3 @@ export const usePmsPnlDataStore = create<PmsPnlDataState>((set, get) => ({
         }, 3600000); // Polls every hour
     }
 }));
-
-const { getReport } = usePmsPnlDataStore.getState();
-getReport();
-
-new PollManager(
-    getReport,
-    3600000,
-    { hour: 9, minute: 0, seconds: 0 },
-    { hour: 10, minute: 30, seconds: 0 },
-    600000
-).start(1000);

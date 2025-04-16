@@ -45,7 +45,3 @@ export const useClientHoldingsStore = create<ClientHoldingStore>((set, get) => (
         }
     }
 }));
-
-const { loadClientHoldings, loadBondTrades } = useClientHoldingsStore.getState();
-loadClientHoldings();
-loadBondTrades();

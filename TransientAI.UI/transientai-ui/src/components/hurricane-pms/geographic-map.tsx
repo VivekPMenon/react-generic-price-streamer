@@ -12,11 +12,11 @@ if (typeof (mapModule as any).default === 'function') {
 
 const staticData: [string, number][] = [
   ['us', 54.6],
-  ['gb', 23.4],
-  ['jp', 15.7],
-  ['fr', 10.2],
-  ['in', 5.6],
-  ['cn', 2.4],
+  ['gb', 33.4],
+  ['jp', 45.7],
+  ['fr', 80.2],
+  ['in', 53.6],
+  ['cn', 23.4],
 ];
 
 const options: Highcharts.Options = {
@@ -36,19 +36,20 @@ const options: Highcharts.Options = {
     },
   },
   colorAxis: {
-    min: 0,
+    min: -1000000, // or your real min
+    max: 1000000,  // or your real max
     stops: [
-      [0, '#EFEFFF'],
-      [0.5, '#FFAAAA'],
-      [1, '#FF0000'],
-    ],
+      [0, '#ff0008'],
+      [0.5, '#fb585d'],
+      [1, '#12ff24'],
+    ]
   },
   series: [
     {
       type: 'map',
-      name: 'Demo Values',
-      data: staticData,
-      joinBy: ['hc-key', '0'],
+      name: 'Price',
+      data: [],
+      joinBy: ['hc-key', 'hc-key'],
       states: {
         hover: {
           color: '#BADA55',
@@ -56,6 +57,7 @@ const options: Highcharts.Options = {
       },
       dataLabels: {
         enabled: false,
+        format: '{point.name}: {point.value}',
       },
     },
   ],
@@ -67,10 +69,10 @@ const WorldMapChart = (data: any) => {
     const totals: Record<string, number> = {};
 
     data.data.forEach((item: any) => {
-      const countryGroup = item.country_group.toLowerCase(); // Normalize the country group name
-      const qty = item.quantity || 0;
-      const price = item.price || 0;
-      const value = qty * price;
+      const countryGroup = item.iso_a2 // Normalize the country group name
+      // const qty = item.quantity || 0;
+      // const price = item.price || 0;
+      const value = item.market_value || 0; 
 
       if (!totals[countryGroup]) {
         totals[countryGroup] = 0;
@@ -91,28 +93,30 @@ const WorldMapChart = (data: any) => {
 
   // Calculate dynamic country group data
   const dynamicDataForMap = calculateCountryGroupData(data);
-  // const transformedData = dynamicDataForMap.map(([country, value]) => ({
-  //   'hc-key': country.toLowerCase(),  // Convert country name to lowercase or map to an appropriate key
-  //   value,
-  // }));
- // console.log(transformedData);
+  const transformedData = dynamicDataForMap.map(([country, value]) => ({
+    'hc-key': country,  // Convert country name to lowercase or map to an appropriate key
+    value,
+  }));
+//  console.log('transformedData', transformedData);
   // Update the map options with dynamic data
   const updatedOptions = {
     ...options,
     series: [
       {
         ...(options.series?.[0] || {}), 
-        data: dynamicDataForMap,  
+        data: transformedData,  
       },
     ],
   };
 
   return (
-    <HighchartsReact
-      highcharts={Highcharts}
-      constructorType="mapChart"
-      options={updatedOptions}
-    />
+    <div className="map-container">
+      <HighchartsReact
+        highcharts={Highcharts}
+        constructorType="mapChart"
+        options={updatedOptions}
+      />
+    </div>
   );
 };
 

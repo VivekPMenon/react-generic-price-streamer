@@ -1,5 +1,7 @@
+'use client'
+
 import { newsDataService } from "@/services/news-data";
-import { Article, ConsolidatedArticles } from "@/services/news-data/model";
+import { ConsolidatedArticles } from "@/services/news-data/model";
 import { useEffect, useState } from "react";
 import styles from './news.module.scss';
 import ReactMarkdown from 'react-markdown';
@@ -10,7 +12,7 @@ export interface NewsProps {
   onExpandCollapse: (state: boolean) => void;
 }
 
-export function News(props: NewsProps) {
+export function News() {
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [articles, setArticles] = useState<ConsolidatedArticles>({});

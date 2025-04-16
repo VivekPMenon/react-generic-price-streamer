@@ -13,6 +13,8 @@
 
   .axes {
     flex: 1 1 55%;
+    border: 1px solid $border-color;
+    border-radius: 5px;
   }
 
   .clients-and-holdings {
@@ -21,6 +23,8 @@
     flex-direction: column;
     height: 100%;
     gap: 10px;
+    border: 1px solid $border-color;
+    border-radius: 5px;
 
     & > div {
       display: flex;
@@ -33,6 +37,7 @@
 
 .golden-axe {
   background-color: $gold;
+  color: $black;
 }
 
 .axe {

@@ -1,5 +1,7 @@
 import { webApihandler } from "../web-api-handler";
-import { ChatbotRequestType, ChatbotResponseType, ChatConversationApiResponse } from "./model";
+import {ChatbotRequestType, ChatbotResponseType, ChatConversationApiResponse} from "./model";
+import {fromStreamedResponse} from "@/lib/utility-functions/observables";
+import {map, filter, Observable} from "rxjs";
 
 
 class ChatbotDataService {
@@ -21,14 +23,20 @@ class ChatbotDataService {
     return result.conversations;
   }
 
-  async streamChatbotResponse(request: ChatbotRequestType): Promise<Response> {
-    const result = await webApihandler.getStream('local_search', {
+  getChatbotResponseStream(request: ChatbotRequestType): Observable<string> {
+    const textDecoder = new TextDecoder();
+    return fromStreamedResponse(webApihandler.getStream('local_search', {
       stream: true,
       response_type: 'Multiple Paragraphs',
       ...request
-    });
-
-    return result;
+    })).pipe(
+        map(chunk => {
+          const decoded = textDecoder.decode(chunk);
+          return [...decoded.matchAll(/"response":\s*"(.*?)"/g).map(m => m[1])];
+        }),
+        filter(matches => matches.length > 0),
+        map(matches => matches.join(' ').replace(/\\n/g, '\n &nbsp;'))
+    );
   }
 }
 

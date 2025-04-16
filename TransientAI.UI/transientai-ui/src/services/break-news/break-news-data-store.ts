@@ -63,8 +63,3 @@ export const useBreakNewsDataStore = create<BreakNewsDataState>((set, get) => ({
     }, 60000); // Polls every 2 minutes
   }
 }));
-
-// Initial Load and Start Polling
-const { loadBreakNews, startPolling } = useBreakNewsDataStore.getState();
-loadBreakNews();
-startPolling();

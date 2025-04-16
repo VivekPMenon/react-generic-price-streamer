@@ -1,3 +1,5 @@
+'use client'
+
 import { productBrowserDataService, TopRecommendation } from '@/services/product-browser-data';
 import { useContext, useEffect, useState } from 'react';
 import * as Dialog from "@radix-ui/react-dialog";
@@ -20,8 +22,8 @@ export function TopClients() {
     const loadTopRecommendationsAsync = async () => {
       let selectedCompany = '';
       if (searchData.id) {
-        const bondInfo = await productBrowserDataService.getTodaysAxes(searchData.id);
-        selectedCompany = bondInfo.length ? bondInfo[0].bond_issuer! : '';
+        const bondInfo = await productBrowserDataService.getTodaysAxes();
+        // selectedCompany = bondInfo.length ? bondInfo[0].bond_issuer! : '';
       }
 
       const topCompanies = await productBrowserDataService.getTopRecommendations();
