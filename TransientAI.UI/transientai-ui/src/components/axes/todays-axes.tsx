@@ -56,9 +56,10 @@ export function TodaysAxes() {
     <div className={styles['todays-axes']}>
       <div className={styles['axes']}>
         <div className='sub-header'>Axes</div>
-
         <DataGrid
           isSummaryGrid={false}
+          height={470}
+          width={'100%'}
           loading={isAxesLoading}
           rowData={axes}
           columnDefs={columnDefs}

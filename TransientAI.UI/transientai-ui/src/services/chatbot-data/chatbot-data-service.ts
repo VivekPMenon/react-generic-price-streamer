@@ -37,10 +37,7 @@ class ChatbotDataService {
               .filter(m => m.length > 0)];
         }),
         filter(matches => matches.length > 0),
-        map(matches => matches.join(' ')
-            .replace(/\\n/g, '  \n')
-            .replace(/\s\*\*(.*?)\*\*\s/gm, '\s**$1**\s')
-        )
+        map(matches => matches.join(''))
     );
   }
 }

@@ -10,6 +10,7 @@ import { ChatbotDataContext } from '@/services/chatbot-data';
 import { useContext } from 'react';
 import { useMenuStore } from '@/services/menu-data/menu-data-store';
 import remarkGfm from 'remark-gfm';
+import remarkBreaks from 'remark-breaks';
 
 export interface ChatbotResponseProps {
   query: string;
@@ -143,7 +144,7 @@ export function ChatbotResponse(props: ChatbotResponseProps) {
                     <p>
                       <ReactMarkdown
                           className='markdown'
-                          remarkPlugins={[remarkGfm]}
+                          remarkPlugins={[remarkGfm, remarkBreaks]}
                       >{chatHistory.response.responseText}</ReactMarkdown>
                     </p>
                   </div>
@@ -173,71 +174,3 @@ export function ChatbotResponse(props: ChatbotResponseProps) {
     </div>
   );
 }
-
-
-
-// function executeChatbotRequest(query: string) {
-//   const executeChatbotRequestAsync = async () => {
-//     const newChatHistories: ChatHistory[] = [
-//       ...chatHistories,
-//       {
-//         request: {
-//           query,
-//           isLoading: true,
-//           timestamp: getCurrentTimestamp()
-//         }
-//       }
-//     ];
-//     setChatHistories(newChatHistories);
-
-//     const response = await chatbotDataService.streamChatbotResponse({ query });
-//     if (!response.body) throw new Error('ReadableStream not supported');
-
-//     const reader = response.body.getReader();
-//     const decoder = new TextDecoder('utf-8');
-//     let chatbotResponse = '';
-
-//     // Read the streamed response
-//     while (true) {
-//       const { done, value } = await reader.read();
-//       if (done) break;
-
-//       // Decode the chunk of data and append it to the chatbot response
-//       chatbotResponse += decoder.decode(value, { stream: true });
-
-//       console.log(chatbotResponse)
-//       const parsedResponse = extractResponse(chatbotResponse);
-//       if (!parsedResponse) {
-//         continue;
-//       }
-
-//       const lastChatHistory = newChatHistories[newChatHistories.length - 1];
-//       lastChatHistory.response = { responseText: parsedResponse };
-
-//       setChatHistories([
-//         ...newChatHistories
-//       ]);
-//     }
-
-//     const lastChatHistory = newChatHistories[newChatHistories.length - 1];
-//     lastChatHistory.request!.isLoading = false;
-//     lastChatHistory.response!.timestamp = getCurrentTimestamp();
-//     setChatHistories([
-//       ...newChatHistories
-//     ]);
-//   };
-
-//   executeChatbotRequestAsync();
-// }
-
-// function extractResponse(jsonString: string) {
-//   const regex = /"response":\s*"([^"]*)"/;
-
-//   const match = jsonString.match(regex);
-
-//   if (match && match[1]) {
-//     return match[1];
-//   } else {
-//     return null;
-//   }
-// }

@@ -59,6 +59,7 @@
     "react-toastify": "^11.0.5",
     "react-toggle": "^4.1.3",
     "rehype-raw": "^7.0.0",
+    "remark-breaks": "^4.0.0",
     "remark-gfm": "^4.0.0",
     "rxjs": "^7.8.2",
     "sass": "^1.83.1",
