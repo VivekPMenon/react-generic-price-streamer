@@ -24,7 +24,7 @@ function NewsArticleComponent({ article }: NewsItemProps) {
                     <a className="hyperlink primary"
                        href={article.url}
                        style={{padding: 0}}
-                       target={article.title}>{article.source}</a>
+                       target="_blank">{article.source}</a>
                 </div>
                 <div className="news-description">
                     {article.text}
