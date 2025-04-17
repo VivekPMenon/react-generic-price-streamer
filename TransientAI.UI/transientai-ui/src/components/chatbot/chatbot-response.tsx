@@ -10,7 +10,6 @@ import { ChatbotDataContext } from '@/services/chatbot-data';
 import { useContext } from 'react';
 import { useMenuStore } from '@/services/menu-data/menu-data-store';
 import remarkGfm from 'remark-gfm';
-import remarkBreaks from 'remark-breaks';
 
 export interface ChatbotResponseProps {
   query: string;
@@ -144,7 +143,7 @@ export function ChatbotResponse(props: ChatbotResponseProps) {
                     <p>
                       <ReactMarkdown
                           className='markdown'
-                          remarkPlugins={[remarkGfm, remarkBreaks]}
+                          remarkPlugins={[remarkGfm]}
                       >{chatHistory.response.responseText}</ReactMarkdown>
                     </p>
                   </div>

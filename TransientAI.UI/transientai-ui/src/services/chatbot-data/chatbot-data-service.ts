@@ -33,7 +33,7 @@ class ChatbotDataService {
         map(chunk => {
           const decoded = textDecoder.decode(chunk);
           return [...decoded.matchAll(/"response":\s*"(.*?)"/g)
-              .map(m => m[1])
+              .map(m => m[1].replace(/\\n/g, '\n'))
               .filter(m => m.length > 0)];
         }),
         filter(matches => matches.length > 0),
