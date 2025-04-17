@@ -64,9 +64,10 @@ export interface RecommendedBond {
 }
 
 export interface RecommendedBondInHolding {
-  bond_description: string;
-  bond_isin: string;
-  score: number;
+  issuer_name: string;
+  par_held: number;
+  security: string;
+  client_name: string;
 }
 
 export interface ClientTrade {
