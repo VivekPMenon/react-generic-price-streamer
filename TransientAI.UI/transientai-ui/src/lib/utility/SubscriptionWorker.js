@@ -1,5 +1,5 @@
 import { MessageType, parseSubscription, EmptySubscription, createMessage, hasSubscriber } from './SubscriptionTypes';
-import { io } from "socket.io-client";
+import { WebPubSubClient } from "@azure/web-pubsub-client";
 
 class SubscriptionWorker {
     subscriptions = new Map();
@@ -51,12 +51,12 @@ class SubscriptionWorker {
     }
 
     connect() {
-        const socket = io('');
+        const socket = new WebPubSubClient('');
 
-        socket.on('data', data => {
-            if (hasSubscriber(data.topic, this.subscriptions.values())) {
-                self.postMessage(createMessage(data.topic, data.data));
-            }
+        socket.on('group-message', data => {
+            // if (hasSubscriber(data.topic, this.subscriptions.values())) {
+            //     self.postMessage(createMessage(data.topic, data.data));
+            // }
         });
 
         socket.connect();

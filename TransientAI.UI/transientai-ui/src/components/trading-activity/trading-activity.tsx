@@ -109,15 +109,17 @@ export function TradingActivity() {
   const { isTradesForBondLoading, bondTrades } = useProductBrowserStore();
 
   return (
-    <div>
-      <div className='sub-header'>Trade Activity</div>
-
-      <DataGrid
-        isSummaryGrid={true}
-        loading={isTradesForBondLoading}
-        rowData={bondTrades}
-        columnDefs={columnDefs}
-      />
+      <div className="height-100p">
+        <div className='sub-header'>Trade Activity</div>
+        <DataGrid
+          height={'100%'}
+          width={'100%'}
+          isSummaryGrid={false}
+          suppressStatusBar={true}
+          loading={isTradesForBondLoading}
+          rowData={bondTrades}
+          columnDefs={columnDefs}
+        />
     </div>
   );
 }

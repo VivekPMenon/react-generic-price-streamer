@@ -8,7 +8,8 @@ import { getCurrentTimestamp } from '@/lib/utility-functions/date-operations';
 import { MenuInfo } from '@/services/menu-data';
 import { ChatbotDataContext } from '@/services/chatbot-data';
 import { useContext } from 'react';
-import { useMenuStore } from '@/services/menu-data/menu-data-store'; // Import the Zustand store
+import { useMenuStore } from '@/services/menu-data/menu-data-store';
+import remarkGfm from 'remark-gfm';
 
 export interface ChatbotResponseProps {
   query: string;
@@ -70,10 +71,10 @@ export function ChatbotResponse(props: ChatbotResponseProps) {
       if (!lastChatHistory.response) {
         lastChatHistory.response = {responseText: ''};
       }
+
       chatbotDataService.getChatbotResponseStream({query})
           .subscribe({
             next: (response) => {
-              console.log(response);
               lastChatHistory.response!.responseText += response;
               setChatbotData({
                 ...chatbotData,
@@ -123,7 +124,6 @@ export function ChatbotResponse(props: ChatbotResponseProps) {
             <p>
               {chatHistory.request?.query}
               {chatHistory.request?.isLoading ? <Spinner size='3' className='ml-2'></Spinner> : <></>}
-
               {
                 index === 0 && !chatHistory.request?.isLoading ?
                   <i onClick={() => clipChatHistory(chatHistory)}
@@ -137,20 +137,19 @@ export function ChatbotResponse(props: ChatbotResponseProps) {
         </div>
 
         {
-          chatHistory.response?.responseText ? <div className={`${styles['chat-message']}}`}>
-            <div className={styles['assistant']}>
-              <p>
-                <ReactMarkdown className='markdown'>{chatHistory.response?.responseText}</ReactMarkdown>
-              </p>
-              {/* <div className={styles['recommendation-card']}>
-                <div className={styles['recommendation-icon']}>✅</div>
-                <div className={styles['recommendation-text']}>Tech Sector Bond Recommendations</div>
-              </div> */}
-              
-            </div>
-
-            <div className={`${styles['assistant-message-time']}`}>{chatHistory.response?.timestamp}</div>
-          </div> : <></>
+          chatHistory.response?.responseText
+              ? <div className={`${styles['chat-message']}}`}>
+                  <div className={styles['assistant']}>
+                    <p>
+                      <ReactMarkdown
+                          className='markdown'
+                          remarkPlugins={[remarkGfm]}
+                      >{chatHistory.response.responseText}</ReactMarkdown>
+                    </p>
+                  </div>
+                  <div className={`${styles['assistant-message-time']}`}>{chatHistory.response?.timestamp}</div>
+                </div>
+              : <></>
         }
       </>
     ))

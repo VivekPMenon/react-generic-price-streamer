@@ -14,3 +14,19 @@
 .spinner {
   margin-right: 10px;
 }
+
+.news-contents {
+  display: flex;
+  flex-direction: column;
+}
+
+.news-subheading {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.news-image {
+  width: 35px;
+  height: 35px;
+}

@@ -1,12 +1,10 @@
-import { useContext, useEffect } from "react";
-import { DataGrid, getNumberColDefTemplate } from "../data-grid";
-import { ColDef, RowDoubleClickedEvent } from "ag-grid-community";
-import { ClientHolding } from "@/services/client-holding-data";
-import { SearchDataContext } from "@/services/search-data";
-import {useClientHoldingsStore} from "@/services/client-holding-data/client-holding-store";
+'use client'
 
-function getColumnDef(): ColDef[] {
-  return [
+import { DataGrid, getNumberColDefTemplate } from "../data-grid";
+import { ColDef } from "ag-grid-community";
+import {useProductBrowserStore} from "@/services/product-browser-data/product-browser-store";
+
+const columnDefs: ColDef[] = [
     {
       field: 'client_name',
       headerName: 'Client',
@@ -30,35 +28,25 @@ function getColumnDef(): ColDef[] {
       headerName: 'Issuer',
       width: 140
     },
-  ];
-}
+];
 
 
 export function Holdings() {
-  const { searchData, setSearchData } = useContext(SearchDataContext);
-  const { isClientHoldingsLoading, clientHoldings, loadClientHoldings } = useClientHoldingsStore();
+  const { isSimilarBondsLoading, similarBonds } = useProductBrowserStore();
 
-  useEffect(() => {
-    loadClientHoldings(searchData.id);
-  }, [loadClientHoldings, searchData.id]);
-
-  function onRowDoubleClicked(event: RowDoubleClickedEvent<ClientHolding>) {
-    setSearchData({
-      description: event.data?.security,
-      id: event.data?.isin
-    });
-  }
   return (
-    <div>
-      <div className='sub-header'>Holdings</div>
+      <div className="height-100p">
+        <div className='sub-header'>Holdings</div>
 
-      <DataGrid
-        isSummaryGrid={true}
-        loading={isClientHoldingsLoading}
-        rowData={clientHoldings}
-        columnDefs={getColumnDef()}
-        onRowDoubleClicked={onRowDoubleClicked}>
-      </DataGrid>
-    </div>
+        <DataGrid
+          height={'100%'}
+          width={'100%'}
+          isSummaryGrid={false}
+          suppressStatusBar={true}
+          loading={isSimilarBondsLoading}
+          rowData={similarBonds}
+          columnDefs={columnDefs}
+        />
+      </div>
   );
 }

@@ -27,50 +27,58 @@
     flex-direction: column;
     flex: 1 1 10%;
     gap: 10px;
-    max-width: 400px;
-    min-width: 400px;
+    max-width: 300px;
+    min-width: 300px;
   }
   
   .middle-panel {
-    display: flex;
-    flex-direction: column;
-    flex: 1 1 50%;
-    gap: 10px;
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    gap: 5px;
+    width: 100%;
+    max-width: 70%;
+    grid-auto-rows: 50%;
   }
 
   .middle-panel-bottom-widgets {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    flex: 1 1 50%;
-    gap: 10px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 5px;
     width: 100%;
+    grid-auto-rows: 50%;
+    grid-gap: 5px;
   }
 
   .middle-panel-bottom-widgets > * {
     border: 1px solid $border-color;
     border-radius: 5px;
-    flex: 1 1 450px;
-    height: 49%;
+    height: 100%;
     align-items: stretch;
   }
 
+  .widget {
+  }
+
   .trading-activity {
+    @extend .widget;
   }
 
   .news-panel {
+    @extend .widget;
   }
 
   .holdings-panel {
+    @extend .widget;
   }
 
   .traces-panel {
+    @extend .widget;
   }
 
   .right-panel {
     display: flex;
     flex-direction: column;
-    flex: 1 1 30%;
+    flex: 1 1 15%;
     gap: 10px;
   }
 }

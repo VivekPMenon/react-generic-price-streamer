@@ -3,35 +3,12 @@
 .todays-axes {
   display: flex;
   height: 100%;
-  gap: 10px;
+  gap: 5px;
 
   & > div {
     display: flex;
     flex-direction: column;
     flex: 100%;
-  }
-
-  .axes {
-    flex: 1 1 55%;
-    border: 1px solid $border-color;
-    border-radius: 5px;
-  }
-
-  .clients-and-holdings {
-    display: flex;
-    flex: 1 1 45%;
-    flex-direction: column;
-    height: 100%;
-    gap: 10px;
-    border: 1px solid $border-color;
-    border-radius: 5px;
-
-    & > div {
-      display: flex;
-      flex-direction: column;
-      height: 100%;
-      flex: 1 1 100%;
-    }
   }
 }
 
@@ -40,6 +17,68 @@
   color: $black;
 }
 
+.axes {
+  border: 1px solid $border-color;
+  height: 100%;
+  max-height: 510px;
+}
+
+.clients {
+  border: 1px solid $border-color;
+  height: 100%;
+  max-height: 510px;
+}
+
 .axe {
   background-color: unset;
+}
+
+.expander {
+  float: right !important;
+}
+
+.selected-client {
+  @extend .prevent-text-selection !optional;
+  border: 1px solid $teal;
+  background-color: #00b0ff33 !important;
+}
+
+.bonds-container {
+  padding: 5px;
+  height: auto;
+  max-height: 100px;
+}
+
+.header {
+  display: inline-block;
+  vertical-align: middle;
+  align-items: center;
+  width:100%;
+  height:100%;
+}
+
+.news-header {
+  width: 100%;
+}
+
+.title {
+  float: left !important;
+}
+
+.expander-button {
+  transform: rotate(180deg);
+}
+
+.expander-button-open {
+  transform: rotate(360deg);
+}
+
+.recommended-clients {
+  gap: 3px;
+  height: 470px;
+}
+
+.bond-item {
+  width: 100%;
+  justify-items: stretch;
 }

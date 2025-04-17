@@ -1,13 +1,10 @@
 'use client';
 
-import { useContext, useEffect, useState } from "react";
 import { DataGrid, getNumberColDefTemplate } from "../data-grid";
-import { ColDef, RowDoubleClickedEvent } from "ag-grid-community";
-import { marketDataService, TraceData } from "@/services/market-data";
-import { SearchDataContext } from "@/services/search-data";
+import { ColDef } from "ag-grid-community";
+import {useProductBrowserStore} from "@/services/product-browser-data/product-browser-store";
 
-function getColumnDef(): ColDef[] {
-  return [
+const columnDef: ColDef[] = [
     { field: 'security', headerName: 'Bond', cellClass: 'orange-color' },
     { field: 'isin', headerName: 'ISIN' },
     { field: 'date', headerName: 'Date', width: 90 },
@@ -24,36 +21,10 @@ function getColumnDef(): ColDef[] {
     { field: 'rating', headerName: 'Rating' },
     { field: 'asw', headerName: 'ASW' },
     { field: 'coupon', headerName: 'Coupon', headerClass: 'ag-right-aligned-header' },
-  ];
-}
+];
 
 export function Traces() {
-
-  const { searchData, setSearchData } = useContext(SearchDataContext);
-
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [traces, setTraces] = useState<TraceData[]>();
-
-  useEffect(() => {
-    const loadTraces = async () => {
-      try {
-        const traces = await marketDataService.getTraces(searchData.id);
-        setTraces(traces);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    setIsLoading(true);
-    loadTraces();
-  }, [searchData.id]);
-
-  function onRowDoubleClicked(event: RowDoubleClickedEvent<TraceData>) {
-    setSearchData({
-      description: event.data?.security,
-      id: event.data?.isin
-    });
-  }
+  const { isTraceLoading, traces } = useProductBrowserStore();
 
   return (
     <div className="height-100p">
@@ -61,11 +32,12 @@ export function Traces() {
 
       <DataGrid
         height={'100%'}
-        isSummaryGrid={true}
-        loading={isLoading}
+        width={'100%'}
+        isSummaryGrid={false}
+        suppressStatusBar={true}
+        loading={isTraceLoading}
         rowData={traces}
-        columnDefs={getColumnDef()}
-        onRowDoubleClicked={onRowDoubleClicked}>
+        columnDefs={columnDef}>
       </DataGrid>
     </div>
   );

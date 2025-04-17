@@ -5,7 +5,6 @@ import styles from './header.module.scss';
 import { SearchDataContext } from '@/services/search-data';
 import { useDeviceType } from '@/lib/hooks';
 import { useUserContextStore } from '@/services/user-context';
-import * as Popover from '@radix-ui/react-popover';
 import ProfilePopover from './profile-popover';
 import Image from 'next/image';
 import { useMenuStore } from '@/services/menu-data';
