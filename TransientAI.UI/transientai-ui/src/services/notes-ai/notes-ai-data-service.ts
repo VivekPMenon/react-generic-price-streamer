@@ -12,6 +12,10 @@ class NotesAIDataService {
         const result = await webApihandler.get(`api/transcripts/${blobName}`, {}, { serviceName: this.serviceName });
         return result
     }
+    async getTranscriptOriginalDetails(blobName?: string){
+        const result = await webApihandler.get(`api/raw-transcripts`, {}, { serviceName: this.serviceName });
+        return result
+    }
 }
 
 export const notesAIDataService = new NotesAIDataService();

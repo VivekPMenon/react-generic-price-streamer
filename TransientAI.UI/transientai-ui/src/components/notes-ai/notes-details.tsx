@@ -2,14 +2,14 @@
 
 import Toggle from 'react-toggle'
 import { useEffect, useState } from 'react'
-import { useNotesAIDataStore } from '@/services/notes-ai/notes-ai-data-store'
-import { notesAIDataService } from '@/services/notes-ai/notes-ai-data-service'
 import { Accordion } from '../accordion/accordion'
 import {
   formatDateToReadable,
   formatTime
 } from '@/lib/utility-functions/date-operations'
 import { Spinner } from '@radix-ui/themes'
+import { IOriginalTranscripts } from '@/services/notes-ai/model'
+import { notesAIDataService, useNotesAIDataStore } from '@/services/notes-ai'
 
 enum ESUMMARY {
   AI = 'AI SUMMARY',
@@ -19,25 +19,31 @@ enum ESUMMARY {
 const NotesDetail = () => {
   const [commentSummary, setCommentSummary] = useState<ESUMMARY>(ESUMMARY.AI)
   const [summary, setSummary] = useState<ESUMMARY>(ESUMMARY.AI)
-  const [transcriptDetails, setTranscriptDetails] = useState<any>(null)
+  const [transcriptAISummaryDetails, setTranscriptAISummaryDetails] =
+    useState<any>(null)
+  const [transcriptOriginalDetails, setTranscriptOriginalDetails] = useState<
+    IOriginalTranscripts[]
+  >([])
   const [accordionItems, setAccordionItems] = useState<any[]>([])
   const [isLoading, setIsLoading] = useState<boolean>(false)
 
-  const { selectedTranscript } = useNotesAIDataStore()
+  const { selectedTranscript, transcriptOriginalSummary } =
+    useNotesAIDataStore()
 
   useEffect(() => {
-    async function fetchTranscriptsDetails () {
+    async function fetchTranscriptsAISummaryDetails () {
       if (!selectedTranscript?.blob_name) {
         return
       }
       try {
         setIsLoading(true)
-        setTranscriptDetails(null)
-        setAccordionItems([])
+        setTranscriptAISummaryDetails(null)
+        setAccordionItems([]);
         const res = await notesAIDataService.getTranscriptDetails(
           selectedTranscript?.blob_name
         )
-        setTranscriptDetails(res?.data)
+        setTranscriptAISummaryDetails(res?.data);
+        setSummary(ESUMMARY.AI);
 
         // Process the meeting data to create accordion items
         if (res?.data?.outline) {
@@ -49,8 +55,22 @@ const NotesDetail = () => {
         setIsLoading(false)
       }
     }
-    fetchTranscriptsDetails()
+    fetchTranscriptsAISummaryDetails()
   }, [selectedTranscript])
+
+  useEffect(() => {
+    // Function moved inside useEffect
+    const handleSetOriginalSummary = () => {
+      if (transcriptOriginalSummary?.length > 0) {
+        const originalSummary = parseTranscript(
+          transcriptOriginalSummary[0]?.content
+        )
+        setTranscriptOriginalDetails(originalSummary || [])
+      }
+    }
+
+    handleSetOriginalSummary()
+  }, [transcriptOriginalSummary, setTranscriptOriginalDetails])
 
   // Function to process meeting data and convert to accordion items
   const processMeetingData = meetingData => {
@@ -151,18 +171,33 @@ const NotesDetail = () => {
     })
   }
 
+  function formatTimeToAmPm(timeStr: string): string { //'input value : 0:30,etc'
+    // If these are actual times of day (assuming 24-hour format)
+    const [hours, minutes] = timeStr.split(':').map(Number);
+    
+    // Option 1: Convert to 12-hour format with AM/PM
+    const period = hours >= 12 ? 'PM' : 'AM';
+    const twelveHour = hours % 12 || 12; // Convert 0 to 12
+    return `${twelveHour}:${minutes.toString().padStart(2, '0')} ${period}`;
+    
+    // Option 2: If these are just minutes:seconds of a recording
+    // return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+  }
+
   const showAISummaryView = () => {
     return (
       <>
         <div className='grid grid-cols-1 gap-4 mt-2'>
           <div>
             <span className='text-base font-medium'>Overview :</span>
-            <p className='text-sm ml-4'>{transcriptDetails?.overview}</p>
+            <p className='text-sm ml-4'>
+              {transcriptAISummaryDetails?.overview}
+            </p>
           </div>
           <div>
             <span className='text-base font-medium'>Meeting Points :</span>
             <ul className='list-disc pl-8 off-white-color-alt'>
-              {transcriptDetails?.action_items?.map(
+              {transcriptAISummaryDetails?.action_items?.map(
                 (item: string, index: number) => (
                   <li key={index}>{item}</li>
                 )
@@ -172,7 +207,7 @@ const NotesDetail = () => {
 
           <div>
             <span className='text-base font-medium'>Details View :</span>
-            <div className='ml-4 max-h-[calc(100vh-500px)] overflow-y-auto scrollable-div'>
+            <div className='ml-4 max-h-[calc(100vh-550px)] overflow-y-auto scrollable-div'>
               <Accordion type='single' items={accordionItems} />
             </div>
           </div>
@@ -182,7 +217,71 @@ const NotesDetail = () => {
   }
 
   const showOriginalSummaryView = () => {
-    return <>under the devolpment</>
+    return (
+      <>
+        {/* Chat Messages Container */}
+        <div className='flex-1 p-4 overflow-y-auto max-h-[calc(100vh-175px)] scrollable-div'>
+          {transcriptOriginalDetails.map((item, index) => (
+            <div key={index} className='mb-6'>
+              <div className='flex items-start'>
+                <div className='flex-1'>
+                  <div className='flex items-baseline text-teal-400'>
+                    <span className='text-base font-medium'>{item.speaker}</span>
+                    <span className='ml-2 text-xs'>{formatTimeToAmPm(item.time)}</span>
+                  </div>
+
+                  <div className='text-sm'>{item.text}</div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </>
+    )
+  }
+
+  function parseTranscript (rawText: string): IOriginalTranscripts[] {
+    const lines = rawText
+      .replace(/\r\n/g, '\n') // Normalize line endings
+      .split('\n')
+      .filter(line => line.trim() !== '')
+
+    const parsed: IOriginalTranscripts[] = []
+    let currentSpeaker: string = ''
+    let currentTime: string = ''
+    let currentText: string[] = []
+
+    const speakerRegex = /^(.+?)\s+(\d+:\d{2})$/
+
+    lines.forEach(line => {
+      const match = line.match(speakerRegex)
+      if (match) {
+        // Save previous speaker's data if it exists
+        if (currentSpeaker && currentText.length) {
+          parsed.push({
+            speaker: currentSpeaker,
+            time: currentTime,
+            text: currentText.join(' ').trim()
+          })
+        }
+        currentSpeaker = match[1].trim()
+        currentTime = match[2]
+        currentText = []
+      } else {
+        currentText.push(line.trim())
+      }
+    })
+
+    // Push the final segment
+    if (currentSpeaker && currentText.length) {
+      parsed.push({
+        speaker: currentSpeaker,
+        time: currentTime,
+        text: currentText.join(' ').trim()
+      })
+    }
+
+    return parsed
   }
 
   return (
@@ -213,7 +312,7 @@ const NotesDetail = () => {
               </span>
             </div>
           </div>
-          
+
           <div className='border-b border-gray-700'>
             <span className='text-xs text-teal-400'>
               Yesterday, 15:05 | Commented by: Manju R
@@ -227,17 +326,17 @@ const NotesDetail = () => {
             <div className='col-span-2 p-4 grid grid-cols-1'>
               <span className='text-xs text-gray-400'>
                 {formatDateToReadable(selectedTranscript?.created_at)},{' '}
-                {formatTime(selectedTranscript?.created_at)} | Original Message:
-                David Kim
+                {formatTime(selectedTranscript?.created_at)} 
+                {/* | Original Message: David Kim */}
               </span>
 
-              <span className='text-sm font-medium flex-1'>
-                {selectedTranscript?.blob_name} | Co-Pilot
+              <span className='text-base font-medium flex-1'>
+                {selectedTranscript?.blob_name}
               </span>
             </div>
             <div className='flex items-center justify-end gap-2 p-3'>
               <Toggle
-                disabled
+                // disabled
                 onChange={value =>
                   setSummary(
                     value.target.checked ? ESUMMARY.AI : ESUMMARY.ORIGINAL
@@ -253,7 +352,7 @@ const NotesDetail = () => {
               </span>
             </div>
           </div>
-          {transcriptDetails && (
+          {transcriptAISummaryDetails && (
             <>
               {summary === ESUMMARY.AI
                 ? showAISummaryView()

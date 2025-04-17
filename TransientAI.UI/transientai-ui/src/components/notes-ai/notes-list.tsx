@@ -1,17 +1,17 @@
 'use client'
 
 import { formatDateToReadable } from '@/lib/utility-functions/date-operations'
-import { notesAIDataService } from '@/services/notes-ai/notes-ai-data-service'
-import { useNotesAIDataStore } from '@/services/notes-ai/notes-ai-data-store'
 import { Skeleton } from '@radix-ui/themes'
 import { useEffect } from 'react'
 import styles from './notes-ai.module.scss'
+import { notesAIDataService, useNotesAIDataStore } from '@/services/notes-ai'
 
 const NotesList = () => {
   const {
     transcriptsList,
     setTranscriptList,
     setSelectedTranscript,
+    setTranscriptOriginalSummary,
     selectedTranscript
   } = useNotesAIDataStore()
 
@@ -23,8 +23,17 @@ const NotesList = () => {
         setTranscriptList(res.transcripts || []);
       } catch {}
     }
-    getTranscriptList()
-  }, [setTranscriptList])
+
+    async function getTranscripOriginalSummary () {
+      
+      try {
+        const res = await notesAIDataService.getTranscriptOriginalDetails();
+        setTranscriptOriginalSummary(res.transcripts || []);
+      } catch {}
+    }
+    getTranscriptList();
+    getTranscripOriginalSummary();
+  }, [setTranscriptList,setTranscriptOriginalSummary]);
 
   return (
     <div className='w-full flex flex-col'>
