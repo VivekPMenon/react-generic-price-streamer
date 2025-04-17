@@ -32,10 +32,15 @@ class ChatbotDataService {
     })).pipe(
         map(chunk => {
           const decoded = textDecoder.decode(chunk);
-          return [...decoded.matchAll(/"response":\s*"(.*?)"/g).map(m => m[1])];
+          return [...decoded.matchAll(/"response":\s*"(.*?)"/g)
+              .map(m => m[1])
+              .filter(m => m.length > 0)];
         }),
         filter(matches => matches.length > 0),
-        map(matches => matches.join(' ').replace(/\\n/g, '\n &nbsp;'))
+        map(matches => matches.join(' ')
+            .replace(/\\n/g, '  \n')
+            .replace(/\s\*\*(.*?)\*\*\s/gm, '\s**$1**\s')
+        )
     );
   }
 }
