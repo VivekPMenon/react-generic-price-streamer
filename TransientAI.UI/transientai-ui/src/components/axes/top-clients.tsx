@@ -79,8 +79,8 @@ function ClientComponent(
                             : (bonds.map(bond => {
                                 return (
                                     <div
-                                        className={`${styles['bond-item']}`}
-                                        key={bond.isin}>
+                                        key={bond.isin}
+                                        className={`${styles['bond-item']}`}>
                                         <span>{bond.product_description}</span>
                                     </div>
                                 );

@@ -8,6 +8,7 @@ import {
   RecommendedClient
 } from "./model";
 import {TraceData} from "@/services/market-data";
+import {removeDuplicates} from "@/lib/utility-functions/array-operations";
 
 class ProductBrowserDataService {
   private serviceName = 'sell-side-api';
@@ -44,7 +45,8 @@ class ProductBrowserDataService {
           serviceName: this.serviceName
         });
 
-    return result.recommendations;
+    return (result.recommendations as RecommendedClient[])
+        .sort((a: RecommendedClient, b: RecommendedClient) => b.score - a.score);
   }
 
   async getRecommendedBondsForClient(client_name: string): Promise<RecommendedBond[]> {
@@ -60,7 +62,8 @@ class ProductBrowserDataService {
           serviceName: this.serviceName
         });
 
-    return result.recommendations;
+    return removeDuplicates<RecommendedBond>(result.recommendations, 'isin')
+        .sort((a: RecommendedBond, b: RecommendedBond) => b.score - a.score);
   }
 
   async getRecommendedClientsWithBonds(bond: BondInfo): Promise<RecommendedClient[]> {
@@ -74,7 +77,8 @@ class ProductBrowserDataService {
       serviceName: this.serviceName
     });
 
-    return result.recommendations;
+    return (result.recommendations as RecommendedClient[])
+        .sort((a: RecommendedClient, b: RecommendedClient) => b.score - a.score);
   }
 
   async getSimilarBondsInHoldings(bond: BondInfo, client_name: string): Promise<RecommendedBondInHolding[]> {
