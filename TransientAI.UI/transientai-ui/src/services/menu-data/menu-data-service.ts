@@ -84,6 +84,13 @@ const menuInfoList: MenuInfo[] = [
     icon: 'fa-solid fa-briefcase',
     route: '/dashboard/hurricane-pms',
   },
+  {
+    id: 'Notes AI',
+    description: 'Notes AI',
+    badgeCount: 1,
+    icon: 'fa-regular fa-comments',
+    route: '/dashboard/notes-ai',
+  }
   // {
   //   description: 'Term Sheets',
   //   displayName: 'Term Sheets',
