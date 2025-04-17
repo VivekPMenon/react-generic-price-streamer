@@ -73,10 +73,10 @@ const NotesDetail = () => {
   }, [transcriptOriginalSummary, setTranscriptOriginalDetails])
 
   // Function to process meeting data and convert to accordion items
-  const processMeetingData = meetingData => {
+  const processMeetingData = (meetingData:any) => {
     if (!meetingData || !Array.isArray(meetingData)) return []
 
-    return meetingData.map((topic, index) => {
+    return meetingData.map((topic:any, index:any) => {
       return {
         value: `topic-${index}`,
         title: topic.topic,
@@ -89,7 +89,7 @@ const NotesDetail = () => {
             {topic.bullet_points && topic.bullet_points.length > 0 && (
               <div className='mb-3'>
                 <ul className='list-disc pl-6 off-white-color-alt'>
-                  {topic.bullet_points.map((point, i) => (
+                  {topic.bullet_points.map((point:any, i:any) => (
                     <li key={i} className='text-sm mb-1'>
                       {point}
                     </li>
@@ -102,7 +102,7 @@ const NotesDetail = () => {
               <div className='ml-3'>
                 <Accordion
                   type='single'
-                  items={topic.subtopics.map((subtopic, subIndex) => ({
+                  items={topic.subtopics.map((subtopic:any, subIndex:any) => ({
                     value: `subtopic-${index}-${subIndex}`,
                     title: subtopic.topic,
                     titleTextStyle: 'text-gray-400',
@@ -117,7 +117,7 @@ const NotesDetail = () => {
                         {subtopic.bullet_points &&
                           subtopic.bullet_points.length > 0 && (
                             <ul className='list-disc pl-6 off-white-color-alt'>
-                              {subtopic.bullet_points.map((point, i) => (
+                              {subtopic.bullet_points.map((point:any, i:any) => (
                                 <li key={i} className='text-sm mb-1'>
                                   {point}
                                 </li>
@@ -130,7 +130,7 @@ const NotesDetail = () => {
                             <Accordion
                               type='single'
                               items={subtopic.subtopics.map(
-                                (nestedSubtopic, nestedIndex) => ({
+                                (nestedSubtopic:any, nestedIndex:any) => ({
                                   value: `nested-subtopic-${index}-${subIndex}-${nestedIndex}`,
                                   title: nestedSubtopic.topic,
                                   titleTextStyle: 'text-gray-400',
@@ -141,7 +141,7 @@ const NotesDetail = () => {
                                           0 && (
                                           <ul className='list-disc pl-6 off-white-color-alt'>
                                             {nestedSubtopic.bullet_points.map(
-                                              (point, i) => (
+                                              (point:any, i:any) => (
                                                 <li
                                                   key={i}
                                                   className='text-sm mb-1'
