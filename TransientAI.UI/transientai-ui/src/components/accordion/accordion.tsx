@@ -26,9 +26,10 @@ const Accordion: React.FC<AccordionProps> = ({
   if (type === 'single') {
     return (
       <AccordionPrimitive.Root 
+        collapsible
         type="single"
         className={`w-full ${className}`}
-        defaultValue={items.length > 0 ? items[0].value : undefined}
+        // defaultValue={items.length > 0 ? items[0].value : undefined}
       >
         {items.map((item) => (
           <AccordionItem key={item.value} item={item} />
@@ -57,7 +58,7 @@ const AccordionItem: React.FC<{ item: AccordionItem }> = ({ item }) => (
   >
     <AccordionPrimitive.Header className={`flex ${item.titleTextStyle}`}>
       <AccordionPrimitive.Trigger
-        className="group flex flex-1 items-center justify-start p-4 text-left 
+        className="group flex flex-1 items-center justify-start p-2 text-left 
                    hover:bg-gray-800 focus:outline-none"
       >
          <DoubleArrowRightIcon

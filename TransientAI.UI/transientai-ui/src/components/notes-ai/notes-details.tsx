@@ -20,8 +20,8 @@ const NotesDetail = () => {
   const [commentSummary, setCommentSummary] = useState<ESUMMARY>(ESUMMARY.AI)
   const [summary, setSummary] = useState<ESUMMARY>(ESUMMARY.AI)
   const [transcriptDetails, setTranscriptDetails] = useState<any>(null)
-  const [accordionItems, setAccordionItems] = useState<any[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [accordionItems, setAccordionItems] = useState<any[]>([])
+  const [isLoading, setIsLoading] = useState<boolean>(false)
 
   const { selectedTranscript } = useNotesAIDataStore()
 
@@ -31,9 +31,9 @@ const NotesDetail = () => {
         return
       }
       try {
-        setIsLoading(true);
-        setTranscriptDetails(null);
-        setAccordionItems([]);
+        setIsLoading(true)
+        setTranscriptDetails(null)
+        setAccordionItems([])
         const res = await notesAIDataService.getTranscriptDetails(
           selectedTranscript?.blob_name
         )
@@ -44,9 +44,9 @@ const NotesDetail = () => {
           const items = processMeetingData(res.data.outline)
           setAccordionItems(items)
         }
-      } catch {}
-      finally{
-        setIsLoading(false);
+      } catch {
+      } finally {
+        setIsLoading(false)
       }
     }
     fetchTranscriptsDetails()
@@ -182,55 +182,105 @@ const NotesDetail = () => {
   }
 
   const showOriginalSummaryView = () => {
-    return <>
-      under the devolpment
-    </>
+    return <>under the devolpment</>
   }
 
   return (
     <>
-      <div className='w-full flex flex-col'>
-        <div className='grid grid-cols-3 items-start'>
-          <div className='col-span-2 p-4 grid grid-cols-1'>
-            <span className='text-xs text-gray-400'>
-              {formatDateToReadable(selectedTranscript?.created_at)},{' '}
-              {formatTime(selectedTranscript?.created_at)} | Original Message:
-              David Kim
-            </span>
-
-            <span className='text-sm font-medium flex-1'>
-              {selectedTranscript?.blob_name} | Co-Pilot
-            </span>
+      {selectedTranscript ? (
+        <div className='w-full flex flex-col'>
+          {/* <div className='grid grid-cols-3 items-start mb-4'>
+            <div className='col-span-2 grid grid-cols-1 text-xs gap-1 text-white'>
+              <span>Yesterday</span>
+              <span>Originator: David Kim</span>
+              <span>Commented by: Manju R</span>
+              <span>Read by: Ashok, Chris N, David K, Manju R, Rob</span>
+            </div>
+            <div className='flex items-center justify-end gap-2 p-3'>
+              <Toggle
+                onChange={value =>
+                  setCommentSummary(
+                    value.target.checked ? ESUMMARY.AI : ESUMMARY.ORIGINAL
+                  )
+                }
+                checked={commentSummary == ESUMMARY.AI}
+                className={'switch-summary'}
+                icons={false}
+                id='Summary'
+              />
+              <span className='min-w-[100px] text-blue-400 font-medium'>
+                {commentSummary}
+              </span>
+            </div>
           </div>
-          <div className='flex items-center justify-end gap-2 p-3'>
-            <Toggle
-              disabled
-              onChange={value =>
-                setSummary(
-                  value.target.checked ? ESUMMARY.AI : ESUMMARY.ORIGINAL
-                )
-              }
-              checked={summary == ESUMMARY.AI}
-              className={'switch-summary'}
-              icons={false}
-              id='Summary'
-            />
-            <span className='min-w-[100px] text-blue-400 font-medium'>
-              {summary}
+          
+          <div className='border-b border-gray-700'>
+            <span className='text-xs text-teal-400'>
+              Yesterday, 15:05 | Commented by: Manju R
             </span>
+            <div className='mt-1 bg-yellow-900 bg-opacity-40 p-2 rounded'>
+              <p className='text-yellow-100'>Comment content here</p>
+            </div>
+          </div> */}
+
+          <div className='grid grid-cols-3 items-start'>
+            <div className='col-span-2 p-4 grid grid-cols-1'>
+              <span className='text-xs text-gray-400'>
+                {formatDateToReadable(selectedTranscript?.created_at)},{' '}
+                {formatTime(selectedTranscript?.created_at)} | Original Message:
+                David Kim
+              </span>
+
+              <span className='text-sm font-medium flex-1'>
+                {selectedTranscript?.blob_name} | Co-Pilot
+              </span>
+            </div>
+            <div className='flex items-center justify-end gap-2 p-3'>
+              <Toggle
+                disabled
+                onChange={value =>
+                  setSummary(
+                    value.target.checked ? ESUMMARY.AI : ESUMMARY.ORIGINAL
+                  )
+                }
+                checked={summary == ESUMMARY.AI}
+                className={'switch-summary'}
+                icons={false}
+                id='Summary'
+              />
+              <span className='min-w-[100px] text-blue-400 font-medium'>
+                {summary}
+              </span>
+            </div>
+          </div>
+          {transcriptDetails && (
+            <>
+              {summary === ESUMMARY.AI
+                ? showAISummaryView()
+                : showOriginalSummaryView()}
+            </>
+          )}
+          {isLoading && (
+            <div className='flex w-full justify-center'>
+              <Spinner />
+            </div>
+          )}
+        </div>
+      ) : (
+        <div className='flex flex-col w-full h-full justify-center items-center p-6'>
+          <div className='max-w-md w-full bg-slate-800 rounded-lg shadow-xl p-8 text-center border border-slate-700'>
+            <div className='flex justify-center mb-4'>
+              <i className='fas fa-file-alt text-blue-400 text-4xl'></i>
+            </div>
+            <h2 className='text-xl font-semibold mb-2'>
+              No Transcripts Selected
+            </h2>
+            <p className='text-slate-300'>
+              Please select a transcript file to view its contents
+            </p>
           </div>
         </div>
-        {transcriptDetails && 
-          <>
-            {summary === ESUMMARY.AI
-              ? showAISummaryView()
-              : showOriginalSummaryView()}
-          </>
-        }
-        {isLoading && <div className='flex w-full justify-center'>
-          <Spinner/>
-          </div>}
-      </div>
+      )}
     </>
   )
 }
