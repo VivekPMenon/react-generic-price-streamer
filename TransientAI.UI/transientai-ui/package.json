@@ -12,7 +12,6 @@
   "dependencies": {
     "@azure/msal-browser": "^4.7.0",
     "@azure/msal-react": "^3.0.6",
-    "@azure/web-pubsub-client": "^1.0.2",
     "@casl/ability": "^6.7.3",
     "@casl/react": "^5.0.0",
     "@coreui/icons": "^3.0.1",
@@ -62,6 +61,7 @@
     "remark-gfm": "^4.0.0",
     "rxjs": "^7.8.2",
     "sass": "^1.83.1",
+    "socket.io-client": "^4.8.1",
     "zustand": "^5.0.3"
   },
   "devDependencies": {
