@@ -33,8 +33,8 @@ import {
 } from '@/services/macro-panel-data/macro-panel-data-store';
 import {RoleType, useUserContextStore} from '@/services/user-context';
 import {usePmsPnlDataStore} from "@/services/pms-pnl-data/pms-pnl-data-store";
-import { useTranslation } from 'react-i18next'; // Import the translation hook
-import { translateText } from '@/i18n';
+import {useTranslation} from 'react-i18next'; // Import the translation hook
+import {translateText} from '@/i18n';
 
 // Helper function to translate text fields within a notification
 const translateNotificationText = async (notification: Notification) => {
@@ -42,8 +42,8 @@ const translateNotificationText = async (notification: Notification) => {
 
   // Translate the title and subtitle
   if (notification.title) {
-  translatedNotification.title = await translateText(notification.title);
-}
+    translatedNotification.title = await translateText(notification.title);
+  }
 
   translatedNotification.subTitle = notification.subTitle
     ? await translateText(notification.subTitle)
@@ -132,7 +132,7 @@ const getFilterTypes = (mode: Mode) => {
       NotificationType.Axes,
       NotificationType.Clients,
       NotificationType.Trades
-    ]
+    ];
   }
 
   return [
@@ -143,7 +143,7 @@ const getFilterTypes = (mode: Mode) => {
     NotificationType.CorpAct,
     NotificationType.Inquiries,
     NotificationType.PmsPnl
-  ]
+  ];
 };
 
 export const filterTypeToResourceMap: { [key: string]: string } = {
@@ -174,7 +174,7 @@ export function Notifications(props: NotificationsProps) {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
   const [selectedNotification, setSelectedNotification] = useState<Notification>({}); // todo..
-  const [selectedType, setSelectedType] = useState<string>(NotificationType.Research);
+  const [selectedType, setSelectedType] = useState<string>(props.mode === Mode.BUY ? NotificationType.Research : NotificationType.Axes);
   const previousSelectedType = useRef<string|null>(null);
 
   const showSpinner = isLoading || isRiskReportLoading || isCorpActionsLoading || isInquiriesLoading || isRiskDataLoading || isPmsPnlReportLoading;
@@ -237,9 +237,10 @@ export function Notifications(props: NotificationsProps) {
   }, [resetUnseenItems, selectedType, unseenItems]);
 
   function loadNotifications(mode: Mode) {
+    let notificationPromises: Promise<Notification>[];
     if (mode === Mode.BUY) {
       // Collect all notification promises in a flat array
-      const notificationPromises: Promise<Notification>[] = [
+      notificationPromises = [
         ...bloombergEmailReports.map(async (bloombergEmailReport) => ({
           id: bloombergEmailReport.received_date,
           resourceName: bloombergReportResourceName,
@@ -309,9 +310,99 @@ export function Notifications(props: NotificationsProps) {
         translatedNotifications.sort((a, b) => (b.timestamp ?? 0) - (a.timestamp ?? 0));
         setNotifications(translatedNotifications);
       });
+    } else {
+      notificationPromises = [
+        {
+          id: crypto.randomUUID(),
+          title: `BA 2.8 03/01/2027`,
+          type: NotificationType.Axes,
+          subTitle: '$10MM at 92.75 (+215bp)',
+          timestamp: 20,
+          highlights: [
+            `Corporate funds shun Boeing short dated bonds despite record purchases of short end IG and UST paper`,
+            `Orders of Airbus 318 surprisingly grow faster than expected`,
+            `Technical support at current levels`
+          ]
+        },
+        {
+          id: crypto.randomUUID(),
+          title: `KR 5 09/15/2034`,
+          type: NotificationType.Axes,
+          subTitle: '$10MM at 92.75 (+215bp)',
+          timestamp: 19,
+          highlights: [
+            `Expected gross margin improvement with latest PPI report indicating lower food input costs`,
+            `Partnership with Ocado's automated solutions yielding results as online orders grow with return to office drive`
+          ]
+        },
+        {
+          id: crypto.randomUUID(),
+          title: `Onboard PIMCO's John Smith`,
+          type: NotificationType.Clients,
+          timestamp: 18,
+          highlights: [
+            `Coordinate with PIMCO team to onboard their new ETF fund trader John Smith`
+          ]
+        },
+        {
+          id: crypto.randomUUID(),
+          title: `BlackRock risk parameter update`,
+          type: NotificationType.Clients,
+          timestamp: 17,
+          highlights: [
+            `BlackRock has updated their risk parameters, so we need to reassess the high-yield bond exposure in their portfolio`
+          ]
+        },
+        {
+          id: crypto.randomUUID(),
+          title: `Vanguard portfolio review`,
+          type: NotificationType.Clients,
+          timestamp: 16,
+          highlights: [
+            `Review Vanguard's bond portfolio to assess the need for any rebalancing or adding treasuries as hedges amid rising inflation expectations`
+          ]
+        },
+        {
+          id: crypto.randomUUID(),
+          title: `Nuveen`,
+          subTitle: '$50MM Buy',
+          type: NotificationType.Trades,
+          timestamp: 15,
+          highlights: [
+            `Bought $5MM worth of California municipal bonds with a 3.5% tax-exempt yield for tax efficiency`
+          ]
+        },
+        {
+          id: crypto.randomUUID(),
+          title: `California State Teachers`,
+          subTitle: '$50MM Acquisition',
+          type: NotificationType.Trades,
+          timestamp: 14,
+          highlights: [
+            `Acquired $50 million in investment-grade corporate bonds from Apple Inc. with a 5-year maturity and a 3.8% yield`
+          ]
+        },
+        {
+          id: crypto.randomUUID(),
+          title: `BlackRock`,
+          subTitle: '$10MM Buy',
+          type: NotificationType.Trades,
+          timestamp: 13,
+          highlights: [
+            `Purchased $10MM in 10-year U.S. Treasury bonds at a 4% coupon rate for a low-risk, stable return`
+          ]
+        }
+      ].map(async (notification) => (Promise.resolve(notification)));
     }
-  
-    // Optionally handle SELL mode if needed
+
+    Promise.all(notificationPromises).then(async (resolvedNotifications) => {
+      const translatedNotifications = await Promise.all(
+          resolvedNotifications.map(translateNotificationText)
+      );
+
+      translatedNotifications.sort((a, b) => (b.timestamp ?? 0) - (a.timestamp ?? 0));
+      setNotifications(translatedNotifications);
+    });
   }
 
   function getResearchReportHighlights(researchReport: ResearchReport): string[] {
@@ -375,7 +466,7 @@ export function Notifications(props: NotificationsProps) {
         break;
 
       case NotificationType.Axes:
-        router.push(newRoute = '/dashboard-generic/axes');
+        router.push(newRoute = '/dashboard-generic/todays-axes');
         break;
 
       case NotificationType.Clients:
@@ -420,7 +511,7 @@ export function Notifications(props: NotificationsProps) {
 
   const items = virtualizer.getVirtualItems();
   return (
-    //TODO .. create a common component for WIdget with transclusion so that widget tiel etc. can be reused
+    //TODO .. create a common component for Widget with transclusion so that widget tiel etc. can be reused
     <div className={`${styles.notifications} widget`}>
           <div className='widget-title'>
       {t('notification.title')}  {/* Translates the title */}
@@ -466,7 +557,6 @@ export function Notifications(props: NotificationsProps) {
                     ref={virtualizer.measureElement}
                     data-index={item.index}
                   >
-
                     <div
                       key={visibleNotifications[item.index].id!}
                       onClick={() => onNotificationClick(visibleNotifications[item.index])}
@@ -475,7 +565,6 @@ export function Notifications(props: NotificationsProps) {
                         <i className={getIconClass(visibleNotifications[item.index].type!)}></i>
                         <span className={`${styles.name} truncate`}>{visibleNotifications[item.index].title}</span>
                         {/* <span className={styles['notification-count']}>(6)</span> */}
-
                         <div className={styles['notification-menu']}>
                           {
                             visibleNotifications[item.index].sideTitle ?

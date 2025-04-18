@@ -15,7 +15,7 @@ class ProductBrowserDataService {
 
   async getTodaysAxes(): Promise<BondInfo[]> {
     return await webApihandler.get('inventory', {
-      page: 1
+      page: 1, page_size: 500,
     }, {
       serviceName: this.serviceName
     });
@@ -37,7 +37,7 @@ class ProductBrowserDataService {
       } : {
         description: bond.product_description
       };
-    data['top_n'] = 5;
+    data['top_n'] = 10;
     const result = await webApihandler.post(
         'recommend-clients-for-bond',
         undefined, data,
@@ -120,6 +120,18 @@ class ProductBrowserDataService {
     const issuer_ticker = bond.issuer_ticker;
     const result = await webApihandler.get(`issuer-news/${issuer_ticker}`, {
       days: 7
+    }, {
+      serviceName: this.serviceName
+    });
+    result.articles.forEach((article: NewsArticle) => {
+      article.date = new Date(article.date);
+    })
+    return result.articles.sort((a: NewsArticle, b: NewsArticle) => b.date.getTime() - a.date.getTime());
+  }
+
+  async getBreakingNews(): Promise<NewsArticle[]> {
+    const result = await webApihandler.get(`breaking-news`, {
+      limit: 20
     }, {
       serviceName: this.serviceName
     });

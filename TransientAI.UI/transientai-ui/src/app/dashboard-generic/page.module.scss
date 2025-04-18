@@ -12,7 +12,7 @@
     align-items: center;
     flex: 0 0 40px;
     align-content: center;
-    padding: 10px 10px 0px 10px;
+    padding: 10px 10px 0 10px;
   }
   
   main {
@@ -33,11 +33,9 @@
   
   .middle-panel {
     display: grid;
-    grid-template-columns: repeat(1, 1fr);
     gap: 5px;
     width: 100%;
-    max-width: 70%;
-    grid-auto-rows: 50%;
+    grid-template-rows: 45% 55%;
   }
 
   .middle-panel-bottom-widgets {
@@ -78,7 +76,7 @@
   .right-panel {
     display: flex;
     flex-direction: column;
-    flex: 1 1 15%;
+    flex: 1 1 25%;
     gap: 10px;
   }
 }
