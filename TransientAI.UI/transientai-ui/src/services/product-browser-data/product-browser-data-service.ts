@@ -15,7 +15,7 @@ class ProductBrowserDataService {
 
   async getTodaysAxes(): Promise<BondInfo[]> {
     return await webApihandler.get('inventory', {
-      page: 1
+      page: 1, page_size: 500,
     }, {
       serviceName: this.serviceName
     });

@@ -28,7 +28,7 @@ export function Traces() {
 
   return (
     <div className="height-100p">
-      <div className='sub-header'>Traces</div>
+      <div className='sub-header'>Trace</div>
 
       <DataGrid
         height={'100%'}

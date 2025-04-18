@@ -42,8 +42,8 @@ const translateNotificationText = async (notification: Notification) => {
 
   // Translate the title and subtitle
   if (notification.title) {
-  translatedNotification.title = await translateText(notification.title);
-}
+    translatedNotification.title = await translateText(notification.title);
+  }
 
   translatedNotification.subTitle = notification.subTitle
     ? await translateText(notification.subTitle)
@@ -132,7 +132,7 @@ const getFilterTypes = (mode: Mode) => {
       NotificationType.Axes,
       NotificationType.Clients,
       NotificationType.Trades
-    ]
+    ];
   }
 
   return [
@@ -143,7 +143,7 @@ const getFilterTypes = (mode: Mode) => {
     NotificationType.CorpAct,
     NotificationType.Inquiries,
     NotificationType.PmsPnl
-  ]
+  ];
 };
 
 export const filterTypeToResourceMap: { [key: string]: string } = {
@@ -237,9 +237,10 @@ export function Notifications(props: NotificationsProps) {
   }, [resetUnseenItems, selectedType, unseenItems]);
 
   function loadNotifications(mode: Mode) {
+    let notificationPromises: Promise<Notification>[];
     if (mode === Mode.BUY) {
       // Collect all notification promises in a flat array
-      const notificationPromises: Promise<Notification>[] = [
+      notificationPromises = [
         ...bloombergEmailReports.map(async (bloombergEmailReport) => ({
           id: bloombergEmailReport.received_date,
           resourceName: bloombergReportResourceName,
@@ -309,9 +310,21 @@ export function Notifications(props: NotificationsProps) {
         translatedNotifications.sort((a, b) => (b.timestamp ?? 0) - (a.timestamp ?? 0));
         setNotifications(translatedNotifications);
       });
+    } else {
+      notificationPromises = [
+
+
+      ];
     }
-  
-    // Optionally handle SELL mode if needed
+
+    Promise.all(notificationPromises).then(async (resolvedNotifications) => {
+      const translatedNotifications = await Promise.all(
+          resolvedNotifications.map(translateNotificationText)
+      );
+
+      translatedNotifications.sort((a, b) => (b.timestamp ?? 0) - (a.timestamp ?? 0));
+      setNotifications(translatedNotifications);
+    });
   }
 
   function getResearchReportHighlights(researchReport: ResearchReport): string[] {
@@ -420,7 +433,7 @@ export function Notifications(props: NotificationsProps) {
 
   const items = virtualizer.getVirtualItems();
   return (
-    //TODO .. create a common component for WIdget with transclusion so that widget tiel etc. can be reused
+    //TODO .. create a common component for Widget with transclusion so that widget tiel etc. can be reused
     <div className={`${styles.notifications} widget`}>
           <div className='widget-title'>
       {t('notification.title')}  {/* Translates the title */}
@@ -466,7 +479,6 @@ export function Notifications(props: NotificationsProps) {
                     ref={virtualizer.measureElement}
                     data-index={item.index}
                   >
-
                     <div
                       key={visibleNotifications[item.index].id!}
                       onClick={() => onNotificationClick(visibleNotifications[item.index])}
@@ -475,7 +487,6 @@ export function Notifications(props: NotificationsProps) {
                         <i className={getIconClass(visibleNotifications[item.index].type!)}></i>
                         <span className={`${styles.name} truncate`}>{visibleNotifications[item.index].title}</span>
                         {/* <span className={styles['notification-count']}>(6)</span> */}
-
                         <div className={styles['notification-menu']}>
                           {
                             visibleNotifications[item.index].sideTitle ?

@@ -72,26 +72,17 @@ export function ChatbotResponse(props: ChatbotResponseProps) {
         lastChatHistory.response = {responseText: ''};
       }
 
-      chatbotDataService.getChatbotResponseStream({query})
-          .subscribe({
-            next: (response) => {
-              lastChatHistory.response!.responseText += response;
-              setChatbotData({
-                ...chatbotData,
-                conversations: newChatConversations
-              });
-            },
-            complete: () => {
-              lastChatHistory.request!.isLoading = false;
-              lastChatHistory.response!.timestamp = getCurrentTimestamp();
-              setChatbotData({
-                ...chatbotData,
-                conversations: newChatConversations
-              });
-              props.onNewQueryExecuted();
-            }
-          });
-    }
+      try {
+        const response = await chatbotDataService.getChatbotResponse(query);
+        lastChatHistory.response!.responseText += response;
+        setChatbotData({
+          ...chatbotData,
+          conversations: newChatConversations
+        });
+      } finally {
+        lastChatHistory.request!.isLoading = false;
+      }
+    };
 
     executeChatbotRequestAsync();
   }
