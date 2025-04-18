@@ -312,9 +312,87 @@ export function Notifications(props: NotificationsProps) {
       });
     } else {
       notificationPromises = [
-
-
-      ];
+        {
+          id: crypto.randomUUID(),
+          title: `BA 2.8 03/01/2027`,
+          type: NotificationType.Axes,
+          subTitle: '$10MM at 92.75 (+215bp)',
+          timestamp: 20,
+          highlights: [
+            `Corporate funds shun Boeing short dated bonds despite record purchases of short end IG and UST paper`,
+            `Orders of Airbus 318 surprisingly grow faster than expected`,
+            `Technical support at current levels`
+          ]
+        },
+        {
+          id: crypto.randomUUID(),
+          title: `KR 5 09/15/2034`,
+          type: NotificationType.Axes,
+          subTitle: '$10MM at 92.75 (+215bp)',
+          timestamp: 19,
+          highlights: [
+            `Expected gross margin improvement with latest PPI report indicating lower food input costs`,
+            `Partnership with Ocado's automated solutions yielding results as online orders grow with return to office drive`
+          ]
+        },
+        {
+          id: crypto.randomUUID(),
+          title: `Onboard PIMCO's John Smith`,
+          type: NotificationType.Clients,
+          timestamp: 18,
+          highlights: [
+            `Coordinate with PIMCO team to onboard their new ETF fund trader John Smith`
+          ]
+        },
+        {
+          id: crypto.randomUUID(),
+          title: `BlackRock risk parameter update`,
+          type: NotificationType.Clients,
+          timestamp: 17,
+          highlights: [
+            `BlackRock has updated their risk parameters, so we need to reassess the high-yield bond exposure in their portfolio`
+          ]
+        },
+        {
+          id: crypto.randomUUID(),
+          title: `Vanguard portfolio review`,
+          type: NotificationType.Clients,
+          timestamp: 16,
+          highlights: [
+            `Review Vanguard's bond portfolio to assess the need for any rebalancing or adding treasuries as hedges amid rising inflation expectations`
+          ]
+        },
+        {
+          id: crypto.randomUUID(),
+          title: `Nuveen`,
+          subTitle: '$50MM Buy',
+          type: NotificationType.Trades,
+          timestamp: 15,
+          highlights: [
+            `Bought $5MM worth of California municipal bonds with a 3.5% tax-exempt yield for tax efficiency`
+          ]
+        },
+        {
+          id: crypto.randomUUID(),
+          title: `California State Teachers`,
+          subTitle: '$50MM Acquisition',
+          type: NotificationType.Trades,
+          timestamp: 14,
+          highlights: [
+            `Acquired $50 million in investment-grade corporate bonds from Apple Inc. with a 5-year maturity and a 3.8% yield`
+          ]
+        },
+        {
+          id: crypto.randomUUID(),
+          title: `BlackRock`,
+          subTitle: '$10MM Buy',
+          type: NotificationType.Trades,
+          timestamp: 13,
+          highlights: [
+            `Purchased $10MM in 10-year U.S. Treasury bonds at a 4% coupon rate for a low-risk, stable return`
+          ]
+        }
+      ].map(async (notification) => (Promise.resolve(notification)));
     }
 
     Promise.all(notificationPromises).then(async (resolvedNotifications) => {
