@@ -4,7 +4,7 @@
   display: flex;
   flex-wrap: wrap;
   padding: 0;
-  max-height: 400px;
+  max-height: calc(100vh - 202px);
   justify-content: space-between;
   color: $font-color-100;
   // & > div {
