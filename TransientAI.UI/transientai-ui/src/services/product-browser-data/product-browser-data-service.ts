@@ -37,7 +37,7 @@ class ProductBrowserDataService {
       } : {
         description: bond.product_description
       };
-    data['top_n'] = 5;
+    data['top_n'] = 10;
     const result = await webApihandler.post(
         'recommend-clients-for-bond',
         undefined, data,
