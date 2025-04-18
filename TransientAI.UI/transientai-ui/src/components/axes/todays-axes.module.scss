@@ -65,16 +65,15 @@
 }
 
 .expander-button {
-  transform: rotate(180deg);
 }
 
 .expander-button-open {
-  transform: rotate(360deg);
+  transform: rotate(180deg);
 }
 
 .recommended-clients {
   gap: 3px;
-  max-height: 475px;
+  max-height: 400px;
 }
 
 .bond-item {

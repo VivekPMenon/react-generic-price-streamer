@@ -33,8 +33,8 @@ import {
 } from '@/services/macro-panel-data/macro-panel-data-store';
 import {RoleType, useUserContextStore} from '@/services/user-context';
 import {usePmsPnlDataStore} from "@/services/pms-pnl-data/pms-pnl-data-store";
-import { useTranslation } from 'react-i18next'; // Import the translation hook
-import { translateText } from '@/i18n';
+import {useTranslation} from 'react-i18next'; // Import the translation hook
+import {translateText} from '@/i18n';
 
 // Helper function to translate text fields within a notification
 const translateNotificationText = async (notification: Notification) => {
@@ -174,7 +174,7 @@ export function Notifications(props: NotificationsProps) {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
   const [selectedNotification, setSelectedNotification] = useState<Notification>({}); // todo..
-  const [selectedType, setSelectedType] = useState<string>(NotificationType.Research);
+  const [selectedType, setSelectedType] = useState<string>(props.mode === Mode.BUY ? NotificationType.Research : NotificationType.Axes);
   const previousSelectedType = useRef<string|null>(null);
 
   const showSpinner = isLoading || isRiskReportLoading || isCorpActionsLoading || isInquiriesLoading || isRiskDataLoading || isPmsPnlReportLoading;
@@ -466,7 +466,7 @@ export function Notifications(props: NotificationsProps) {
         break;
 
       case NotificationType.Axes:
-        router.push(newRoute = '/dashboard-generic/axes');
+        router.push(newRoute = '/dashboard-generic/todays-axes');
         break;
 
       case NotificationType.Clients:
