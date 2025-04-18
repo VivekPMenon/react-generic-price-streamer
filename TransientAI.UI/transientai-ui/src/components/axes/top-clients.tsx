@@ -50,7 +50,10 @@ function ClientComponent(
         <div
             className={`news-item prevent-text-selection ${selectedClient === client.client_name ? styles['selected-client'] : ''}`}
             key={client.client_name}
-            onDoubleClick={() => setSelectedClient(client.client_name)}
+            onDoubleClick={() => {
+                setSelectedClient(client.client_name);
+                loadBonds(client);
+            }}
         >
             <div className={`${styles['news-header']}`}>
                 <div className={`${styles['header']}`}>
