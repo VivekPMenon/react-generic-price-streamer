@@ -20,13 +20,12 @@
 .axes {
   border: 1px solid $border-color;
   height: 100%;
-  max-height: 510px;
 }
 
 .clients {
   border: 1px solid $border-color;
   height: 100%;
-  max-height: 510px;
+  width: 40%;
 }
 
 .axe {
@@ -75,7 +74,7 @@
 
 .recommended-clients {
   gap: 3px;
-  height: 470px;
+  max-height: 475px;
 }
 
 .bond-item {
