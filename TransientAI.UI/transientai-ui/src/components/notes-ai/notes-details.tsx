@@ -227,7 +227,7 @@ const NotesDetail = () => {
                 <div className='flex-1'>
                   <div className='flex items-baseline text-teal-400'>
                     <span className='text-base font-medium'>{item.speaker}</span>
-                    <span className='ml-2 text-xs'>{formatTimeToAmPm(item.time)}</span>
+                    <span className='ml-2 text-xs'>{item.time}</span>
                   </div>
 
                   <div className='text-sm'>{item.text}</div>
