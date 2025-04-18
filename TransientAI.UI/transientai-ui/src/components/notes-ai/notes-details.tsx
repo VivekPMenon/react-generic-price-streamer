@@ -10,6 +10,7 @@ import {
 import { Spinner } from '@radix-ui/themes'
 import { IOriginalTranscripts } from '@/services/notes-ai/model'
 import { notesAIDataService, useNotesAIDataStore } from '@/services/notes-ai'
+import CommentSummary from './comment-summary'
 
 enum ESUMMARY {
   AI = 'AI SUMMARY',
@@ -321,7 +322,7 @@ const NotesDetail = () => {
               <p className='text-yellow-100'>Comment content here</p>
             </div>
           </div> */}
-
+          <CommentSummary />
           <div className='grid grid-cols-3 items-start'>
             <div className='col-span-2 p-4 grid grid-cols-1'>
               <span className='text-xs text-gray-400'>
