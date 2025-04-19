@@ -1,0 +1,3 @@
+[submodule "TransientAI.UI/transientai-ui/messaging"]
+	path = TransientAI.UI/transientai-ui/messaging
+	url = https://github.com/Transient-AI/messaging.git
