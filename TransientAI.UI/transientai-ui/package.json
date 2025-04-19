@@ -4,10 +4,12 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
+    "prebuild": "yarn-or-npm run generate",
     "build": "next build && tsc -p tsconfig.json",
     "start": "next start",
     "lint": "next lint",
-    "lint-fix": "next lint --fix"
+    "lint-fix": "next lint --fix",
+    "generate": "protoc -I=./messaging/proto --ts_out=./src/messages/ ./messaging/proto/*.proto"
   },
   "dependencies": {
     "@azure/msal-browser": "^4.7.0",
@@ -66,6 +68,7 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
+    "@protobuf-ts/plugin": "^2.9.6",
     "@types/express": "^5.0.1",
     "@types/file-saver": "^2.0.7",
     "@types/lodash": "^4.17.16",
@@ -83,6 +86,7 @@
     "postcss": "^8",
     "tailwindcss": "^3.4.1",
     "ts-node": "^10.9.2",
-    "typescript": "^5.8.3"
+    "typescript": "^5.8.3",
+    "yarn-or-npm": "^3.0.1"
   }
 }
