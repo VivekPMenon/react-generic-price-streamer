@@ -6,7 +6,8 @@ class ChatbotDataService {
 
   async getChatbotResponse(request: string): Promise<string> {
     const result = await webApihandler.post('chat', undefined, {
-      message: request
+      message: request,
+      stream: false
     }, {
       serviceName: this.serviceName
     });
