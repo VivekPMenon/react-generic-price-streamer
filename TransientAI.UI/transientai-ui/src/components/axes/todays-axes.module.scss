@@ -84,6 +84,50 @@
 .recommendation-container {
 }
 
+.recommendation-header {
+  padding: 5px 10px;
+  display: flex;
+  flex-direction: column;
+}
+
+.description {
+  color: $yellow;
+}
+
+.size {
+  color: $green;
+
+  ul {
+    padding-left: 20px;
+    display: list-item;
+    list-style-type: disc;
+    li {
+      font-size: 11px;
+    }
+  }
+}
+
+.trace {
+  padding: 5px 10px;
+  display: flex;
+  flex-direction: column;
+
+  ul {
+    padding-left: 20px;
+    display: list-item;
+    list-style-type: disc;
+    li {
+      font-size: 11px;
+    }
+  }
+}
+
+.trace-header {
+  padding: 0 10px;
+  display: flex;
+  flex-direction: row;
+}
+
 .bond-item {
   width: 100%;
   justify-items: stretch;
@@ -92,6 +136,10 @@
 .icons {
   display: flex;
   gap: 10px;
+
+  & > div {
+    cursor: pointer;
+  }
 }
 
 .client-item {

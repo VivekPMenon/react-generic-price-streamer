@@ -97,11 +97,17 @@ class ProductBrowserDataService {
   }
 
   async getTradesByBond(bond: BondInfo): Promise<ClientTrade[]> {
-    return await webApihandler.get('trades-by-bond', {
+    const result = await webApihandler.get('trades-by-bond', {
       product_description: bond.product_description,
     }, {
       serviceName: this.serviceName
     });
+
+    result.forEach((clientTrade: ClientTrade) => {
+      clientTrade.date = new Date(clientTrade.date);
+    });
+
+    return result;
   }
 
   async getClientTradesByBond(bond: BondInfo, client_name: string): Promise<ClientTrade[]> {

@@ -51,10 +51,10 @@ export function NewsComponent({ heading, isLoading, news }: NewsProps) {
         content = (
             <div className="news scrollable-div">
                 {
-                    news.map(article => (
+                    news.map((article: NewsArticle, index: number) => (
                         <div
                             className={`${styles['news-article']} `}
-                            key={article.title}>
+                            key={`${article.title}_${index}`}>
                             <NewsArticleComponent
                                 article={article}
                             />

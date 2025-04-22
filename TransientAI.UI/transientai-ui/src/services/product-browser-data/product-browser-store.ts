@@ -76,7 +76,6 @@ export const useProductBrowserStore = create<ProductBrowserStore>((set, get) => 
             return;
         }
         set({ selectedBond: bond, selectedClient: null });
-        state.loadTradesForBonds(bond);
         state.loadRecommendedClients(bond);
         state.loadRecommendedClientsWithBonds(bond);
         state.loadTraces(bond?.isin);
@@ -92,8 +91,8 @@ export const useProductBrowserStore = create<ProductBrowserStore>((set, get) => 
         }
         const selectedClient = state.selectedBond ? client : null;
         set({ selectedClient: selectedClient });
-        state.loadClientTrades(state.selectedBond, client);
-        state.loadSimilarBondsInHoldings(state.selectedBond, client);
+        // state.loadClientTrades(state.selectedBond, client);
+        // state.loadSimilarBondsInHoldings(state.selectedBond, client);
     },
 
     isRecommendedClientsLoading: false,
