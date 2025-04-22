@@ -40,14 +40,14 @@ export const useRiskDataStore = create<RiskDataState>((set, get) => ({
       const [ibisAllItem] = result.margin_data.splice(ibisAllIndex, 1);
       result.margin_data.unshift(ibisAllItem);
 
-      const userId = useUserContextStore.getState().userContext?.userId;
-      let metrics = result.margin_data;
-      if (userId?.toLowerCase() === 'dkim@hurricanecap.com') {
-        metrics = result.margin_data.filter((item: RiskMetricsItem) => item.name === 'Chris Napoli');
-      }
+      // const userId = useUserContextStore.getState().userContext?.userId;
+      // let metrics = result.margin_data;
+      // if (userId?.toLowerCase() === 'dkim@hurricanecap.com') {
+      //   metrics = result.margin_data.filter((item: RiskMetricsItem) => item.name === 'Chris Napoli');
+      // }
 
       set({
-        riskMetricsItems: metrics,
+        riskMetricsItems: result.margin_data,
         lastUpdatedTimestamp: result?.timestamp,
         isLoading: false,
         riskMetricsItemsFiltered: result?.margin_data?.filter((data: RiskMetricsItem) => {
