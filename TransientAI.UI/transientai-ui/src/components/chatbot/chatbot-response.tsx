@@ -1,14 +1,13 @@
-import { useEffect, useState } from 'react';
+import {useContext, useEffect, useState} from 'react';
 import styles from './chatbot-response.module.scss';
-import { chatbotDataService } from '@/services/chatbot-data/chatbot-data-service';
-import { ChatbotConversation, ChatHistory } from '@/services/chatbot-data/model';
-import { Spinner } from '@radix-ui/themes';
+import {chatbotDataService} from '@/services/chatbot-data/chatbot-data-service';
+import {ChatbotConversation, ChatHistory, ChatResponseType} from '@/services/chatbot-data/model';
+import {Spinner} from '@radix-ui/themes';
 import ReactMarkdown from 'react-markdown';
-import { getCurrentTimestamp } from '@/lib/utility-functions/date-operations';
-import { MenuInfo } from '@/services/menu-data';
-import { ChatbotDataContext } from '@/services/chatbot-data';
-import { useContext } from 'react';
-import { useMenuStore } from '@/services/menu-data/menu-data-store';
+import {getCurrentTimestamp} from '@/lib/utility-functions/date-operations';
+import {MenuInfo} from '@/services/menu-data';
+import {ChatbotDataContext} from '@/services/chatbot-data';
+import {useMenuStore} from '@/services/menu-data/menu-data-store';
 import remarkGfm from 'remark-gfm';
 
 export interface ChatbotResponseProps {
@@ -52,36 +51,76 @@ export function ChatbotResponse(props: ChatbotResponseProps) {
     const executeChatbotRequestAsync = async () => {
 
       const existingConversations = chatbotData.conversations || [];
+      const lastChatHistory: ChatbotConversation =  {
+        request: {
+          query,
+          isLoading: true,
+          timestamp: getCurrentTimestamp()
+        },
+        response: {
+          responseText: ''
+        },
+        status: {
+          status: 'Thinking...',
+          message: '',
+          showLogs: true
+        }
+      };
+
       const newChatConversations: ChatbotConversation[] = [
         ...existingConversations,
-        {
-          request: {
-            query,
-            isLoading: true,
-            timestamp: getCurrentTimestamp()
-          }
-        }
+        lastChatHistory
       ];
+
       setChatbotData({
         ...chatbotData,
         conversations: newChatConversations
       });
 
-      const lastChatHistory = newChatConversations[newChatConversations.length - 1];
-      if (!lastChatHistory.response) {
-        lastChatHistory.response = {responseText: ''};
-      }
+      const startTime = Date.now();
+      let endTime: null|number = null;
+      chatbotDataService.getChatbotResponseStream(query)
+          .subscribe({
+            next: (response) => {
+              switch (response.type) {
+                case ChatResponseType.Log:
+                  lastChatHistory.status!.message += response.text;
+                  break;
+                case ChatResponseType.Final:
+                  if (endTime === null) {
+                    endTime = Date.now();
+                    lastChatHistory.status!.status = `Thought for ${(endTime - startTime) / 1000} seconds`;
+                    lastChatHistory.status!.showLogs = false;
+                  }
+                  lastChatHistory.response!.responseText += response.text;
+                  break;
+              }
+              setChatbotData({
+                ...chatbotData,
+                conversations: newChatConversations
+              });
+            },
+            complete: () => {
+              lastChatHistory.request!.isLoading = false;
+              lastChatHistory.response!.timestamp = getCurrentTimestamp();
+              setChatbotData({
+                ...chatbotData,
+                conversations: newChatConversations
+              });
+              props.onNewQueryExecuted();
+            }
+          });
 
-      try {
-        const response = await chatbotDataService.getChatbotResponse(query);
-        lastChatHistory.response!.responseText += response;
-        setChatbotData({
-          ...chatbotData,
-          conversations: newChatConversations
-        });
-      } finally {
-        lastChatHistory.request!.isLoading = false;
-      }
+      // try {
+      //   const response = await chatbotDataService.getChatbotResponse(query);
+      //   lastChatHistory.response!.responseText += response;
+      //   setChatbotData({
+      //     ...chatbotData,
+      //     conversations: newChatConversations
+      //   });
+      // } finally {
+      //   lastChatHistory.request!.isLoading = false;
+      // }
     };
 
     executeChatbotRequestAsync();
@@ -107,7 +146,7 @@ export function ChatbotResponse(props: ChatbotResponseProps) {
   const chatHistoryElement = chatbotData.conversations?.length ?
     chatbotData.conversations.map((chatHistory, index) => (
       <>
-        <div className={styles['chat-message']}>
+        <div key={index} className={styles['chat-message']}>
           <div className={styles['message-content']}>
             <div className={styles['message-header'] + ' profile-pic'}>
               <img src="/images/ProfilePicAI.png"></img>
@@ -131,12 +170,23 @@ export function ChatbotResponse(props: ChatbotResponseProps) {
           chatHistory.response?.responseText
               ? <div className={`${styles['chat-message']}}`}>
                   <div className={styles['assistant']}>
-                    <p>
-                      <ReactMarkdown
-                          className='markdown'
-                          remarkPlugins={[remarkGfm]}
-                      >{chatHistory.response.responseText}</ReactMarkdown>
-                    </p>
+                    <div>{chatHistory.status!.status}</div>
+                    <div>
+                      <p>
+                        <ReactMarkdown
+                            className='markdown'
+                            remarkPlugins={[remarkGfm]}
+                        >{chatHistory.status!.message}</ReactMarkdown>
+                      </p>
+                    </div>
+                    <div>
+                      <p>
+                        <ReactMarkdown
+                            className='markdown'
+                            remarkPlugins={[remarkGfm]}
+                        >{chatHistory.response.responseText}</ReactMarkdown>
+                      </p>
+                    </div>
                   </div>
                   <div className={`${styles['assistant-message-time']}`}>{chatHistory.response?.timestamp}</div>
                 </div>

@@ -20,12 +20,12 @@
 .axes {
   border: 1px solid $border-color;
   height: 100%;
+  flex: 2 1 auto
 }
 
 .clients {
   border: 1px solid $border-color;
   height: 100%;
-  width: 40%;
 }
 
 .axe {

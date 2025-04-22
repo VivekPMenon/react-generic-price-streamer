@@ -1,5 +1,7 @@
 import { webApihandler } from "../web-api-handler";
-import {ChatConversationApiResponse} from "./model";
+import {ChatConversationApiResponse, ChatResponse, ChatResponseType} from "./model";
+import {mergeMap, Observable} from "rxjs";
+import {fromStreamedResponse} from "@/lib/utility-functions/observables";
 
 class ChatbotDataService {
   private readonly serviceName = 'sell-side-api';
@@ -12,6 +14,29 @@ class ChatbotDataService {
       serviceName: this.serviceName
     });
     return result.response;
+  }
+
+  getChatbotResponseStream(request: string): Observable<ChatResponse> {
+    const textDecoder = new TextDecoder();
+    const response = webApihandler.post('chat', {
+        message: request,
+        history: ['string']
+    }, undefined, {
+        serviceName: this.serviceName
+    });
+    debugger;
+    return fromStreamedResponse(response).pipe(
+        mergeMap((chunk: any) => {
+          const decoded = textDecoder.decode(chunk);
+          return Array.from(
+              decoded.matchAll(/{[^}]*"type"\s*:\s*"([^"]+)"[^}]*"text"\s*:\s*"([^"]+)"[^}]*}/g),
+              ([, type, text]) =>({
+                type,
+                text: text.replace(/\\n/g, '\n')
+              } as ChatResponse))
+              .filter(result => result.type === ChatResponseType.Log || ChatResponseType.Final);
+        })
+    );
   }
 
   // async getChatbotResponse(request: ChatbotRequestType): Promise<ChatbotResponseType> {
