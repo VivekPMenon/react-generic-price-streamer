@@ -17,7 +17,6 @@ interface ClientProps {
 function ClientComponent(
     {
         client,
-        selectedClient,
         setSelectedClient,
         loadRecommendedBondsForClient
     }: ClientProps) {
@@ -48,7 +47,7 @@ function ClientComponent(
 
     return (
         <div
-            className={`news-item prevent-text-selection ${selectedClient === client.client_name ? styles['selected-client'] : ''}`}
+            className={`news-item prevent-text-selection ${styles['client-item']} }`}
             key={client.client_name}
             onDoubleClick={() => {
                 setSelectedClient(client.client_name);
@@ -70,7 +69,15 @@ function ClientComponent(
                         }
                     </div>
                 </div>
+                <div className={`${styles['icons']}`}>
+                    <i className="fa-solid fa-comments"></i>
+                    <i className="fa-solid fa-warehouse"></i>
+                    <i className="fa-solid">B/S</i>
+                    <i className="fa-solid fa-gavel"></i>
+                    <i className="fa-regular fa-address-book"></i>
+                </div>
                 <div
+                    className={`${styles['expanded-section']}`}
                     style={{
                         display: open ? "block" : "none"
                     }}>
@@ -97,7 +104,7 @@ function ClientComponent(
 }
 
 export function TopClients() {
-    const { isRecommendedClientsLoading, selectedClient, loadRecommendedBondsForClient, setSelectedClient, recommendedClients } = useProductBrowserStore();
+    const { isRecommendedClientsLoading, selectedBond, selectedClient, loadRecommendedBondsForClient, setSelectedClient, recommendedClients } = useProductBrowserStore();
 
     let content;
     if (isRecommendedClientsLoading) {
@@ -120,8 +127,12 @@ export function TopClients() {
     }
 
     return (
-        <div>
+        <div className={`${styles['recommendation-container']}`}>
             <div className='sub-header'>Top Recommendations</div>
+            <div>
+                {selectedBond?.product_description}
+                {selectedBond?.a_size_m}
+            </div>
             <div>
                 {
                     content

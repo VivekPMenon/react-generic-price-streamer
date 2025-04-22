@@ -1,7 +1,6 @@
 import { webApihandler } from "../web-api-handler";
 import {ChatConversationApiResponse, ChatResponse, ChatResponseType} from "./model";
-import {mergeMap, Observable} from "rxjs";
-import {fromStreamedResponse} from "@/lib/utility-functions/observables";
+import {mergeMap, Observable, from} from "rxjs";
 
 class ChatbotDataService {
   private readonly serviceName = 'sell-side-api';
@@ -17,19 +16,16 @@ class ChatbotDataService {
   }
 
   getChatbotResponseStream(request: string): Observable<ChatResponse> {
-    const textDecoder = new TextDecoder();
     const response = webApihandler.post('chat', {
         message: request,
         history: ['string']
     }, undefined, {
         serviceName: this.serviceName
     });
-    debugger;
-    return fromStreamedResponse(response).pipe(
-        mergeMap((chunk: any) => {
-          const decoded = textDecoder.decode(chunk);
+    return from(response).pipe(
+        mergeMap((chunk: string) => {
           return Array.from(
-              decoded.matchAll(/{[^}]*"type"\s*:\s*"([^"]+)"[^}]*"text"\s*:\s*"([^"]+)"[^}]*}/g),
+              chunk.matchAll(/{[^}]*"type"\s*:\s*"([^"]+)"[^}]*"text"\s*:\s*"([^"]+)"[^}]*}/g),
               ([, type, text]) =>({
                 type,
                 text: text.replace(/\\n/g, '\n')

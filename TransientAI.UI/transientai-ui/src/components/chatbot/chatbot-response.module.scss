@@ -103,3 +103,19 @@
   height: 78vh;
   overflow-y: auto;
 }
+
+.expander-button {
+}
+
+.expander-button-open {
+  transform: rotate(180deg);
+}
+
+.status {
+  display: flex;
+  flex-direction: row;
+}
+
+.status-message {
+  border: 1px solid $border-color;
+}

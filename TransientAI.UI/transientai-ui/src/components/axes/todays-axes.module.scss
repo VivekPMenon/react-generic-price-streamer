@@ -20,11 +20,12 @@
 .axes {
   border: 1px solid $border-color;
   height: 100%;
-  flex: 2 1 auto
+  min-width: 70%;
 }
 
 .clients {
   border: 1px solid $border-color;
+  min-width: 30%;
   height: 100%;
 }
 
@@ -46,6 +47,10 @@
   padding: 5px;
   height: auto;
   max-height: 100px;
+}
+
+.expanded-section {
+  margin-top: 5px;
 }
 
 .header {
@@ -76,7 +81,19 @@
   max-height: 400px;
 }
 
+.recommendation-container {
+}
+
 .bond-item {
   width: 100%;
   justify-items: stretch;
+}
+
+.icons {
+  display: flex;
+  gap: 10px;
+}
+
+.client-item {
+  cursor: default !important;
 }

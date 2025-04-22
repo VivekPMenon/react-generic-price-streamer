@@ -3,7 +3,6 @@ import { switchMap } from 'rxjs/operators';
 
 export function streamToObservable(stream: ReadableStream): Observable<any> {
     return new Observable(subscriber => {
-        debugger;
         const reader = stream.getReader();
         function read() {
             reader.read().then(({ done, value }) => {

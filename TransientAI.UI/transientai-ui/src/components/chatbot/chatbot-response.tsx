@@ -9,6 +9,55 @@ import {MenuInfo} from '@/services/menu-data';
 import {ChatbotDataContext} from '@/services/chatbot-data';
 import {useMenuStore} from '@/services/menu-data/menu-data-store';
 import remarkGfm from 'remark-gfm';
+import {ChevronDownIcon} from "@radix-ui/react-icons";
+import {formatDecimal} from "@/lib/utility-functions";
+
+interface ChatResponseProps {
+  chatHistory: ChatbotConversation;
+}
+
+function ChatResponseComponent({chatHistory}: ChatResponseProps) {
+  const [open, setOpen] = useState(chatHistory.status!.showLogs);
+
+  function handleClick() {
+    setOpen(!open);
+    chatHistory.status!.showLogs = !open;
+  }
+
+  return (
+      <div className={`${styles['chat-message']}}`}>
+        <div className={styles['assistant']}>
+          <div className={`${styles['status']} prevent-text-selection`}
+               onClick={handleClick}
+          >
+            {chatHistory.status!.status}
+            <ChevronDownIcon
+                className={`${styles['expander-button' + (open  ? '-open' : '')]}`}
+            />
+          </div>
+          <p>
+            {chatHistory.status!.showLogs &&
+              (
+                  <div className={styles['status-message']}>
+                    <ReactMarkdown
+                      className='markdown'
+                      remarkPlugins={[remarkGfm]}
+                      >{chatHistory.status!.message}
+                    </ReactMarkdown>
+                  </div>
+              )
+            }
+            <ReactMarkdown
+                className='markdown'
+                remarkPlugins={[remarkGfm]}
+            >{chatHistory.response!.responseText}</ReactMarkdown>
+          </p>
+        </div>
+        <div className={`${styles['assistant-message-time']}`}>{chatHistory.response?.timestamp}</div>
+      </div>
+  );
+}
+
 
 export interface ChatbotResponseProps {
   query: string;
@@ -89,12 +138,26 @@ export function ChatbotResponse(props: ChatbotResponseProps) {
                 case ChatResponseType.Final:
                   if (endTime === null) {
                     endTime = Date.now();
-                    lastChatHistory.status!.status = `Thought for ${(endTime - startTime) / 1000} seconds`;
+                    lastChatHistory.status!.status = `Thought for ${formatDecimal((endTime - startTime) / 1000)} seconds`;
                     lastChatHistory.status!.showLogs = false;
                   }
                   lastChatHistory.response!.responseText += response.text;
                   break;
               }
+              setChatbotData({
+                ...chatbotData,
+                conversations: newChatConversations
+              });
+            },
+            error: () => {
+              if (endTime === null) {
+                endTime = Date.now();
+                lastChatHistory.status!.status = `Thought for ${(endTime - startTime) / 1000} seconds`;
+                lastChatHistory.status!.showLogs = false;
+              }
+              lastChatHistory.response!.responseText = 'There was an error processing your request';
+              lastChatHistory.request!.isLoading = false;
+              lastChatHistory.response!.timestamp = getCurrentTimestamp();
               setChatbotData({
                 ...chatbotData,
                 conversations: newChatConversations
@@ -168,28 +231,9 @@ export function ChatbotResponse(props: ChatbotResponseProps) {
 
         {
           chatHistory.response?.responseText
-              ? <div className={`${styles['chat-message']}}`}>
-                  <div className={styles['assistant']}>
-                    <div>{chatHistory.status!.status}</div>
-                    <div>
-                      <p>
-                        <ReactMarkdown
-                            className='markdown'
-                            remarkPlugins={[remarkGfm]}
-                        >{chatHistory.status!.message}</ReactMarkdown>
-                      </p>
-                    </div>
-                    <div>
-                      <p>
-                        <ReactMarkdown
-                            className='markdown'
-                            remarkPlugins={[remarkGfm]}
-                        >{chatHistory.response.responseText}</ReactMarkdown>
-                      </p>
-                    </div>
-                  </div>
-                  <div className={`${styles['assistant-message-time']}`}>{chatHistory.response?.timestamp}</div>
-                </div>
+              ? <ChatResponseComponent
+                  chatHistory={chatHistory}
+              />
               : <></>
         }
       </>
