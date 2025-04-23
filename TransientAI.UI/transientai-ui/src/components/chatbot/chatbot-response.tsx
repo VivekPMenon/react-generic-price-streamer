@@ -1,4 +1,4 @@
-import {useContext, useEffect, useState} from 'react';
+import {useCallback, useContext, useEffect, useState} from 'react';
 import styles from './chatbot-response.module.scss';
 import {chatbotDataService} from '@/services/chatbot-data/chatbot-data-service';
 import {ChatbotConversation, ChatHistory, ChatResponseType} from '@/services/chatbot-data/model';
@@ -11,6 +11,7 @@ import {useMenuStore} from '@/services/menu-data/menu-data-store';
 import remarkGfm from 'remark-gfm';
 import {ChevronDownIcon} from "@radix-ui/react-icons";
 import {formatDecimal} from "@/lib/utility-functions";
+import {useChatbotDataStore} from "@/services/chatbot-data/chatbot-data-store";
 
 interface ChatResponseProps {
   chatHistory: ChatbotConversation;
@@ -65,13 +66,11 @@ export interface ChatbotResponseProps {
 }
 
 export function ChatbotResponse(props: ChatbotResponseProps) {
-
+  const { query: externalQuery } = useChatbotDataStore();
   const { fullMenuList, setActiveMenu } = useMenuStore();
   const { chatbotData, setChatbotData } = useContext(ChatbotDataContext);
 
   const [query, setQuery] = useState<string>('');
-
-  useEffect(() => loadChatbotResponse(), [props.query]);
 
   function onKeyDown(event: any) {
     if (event.key !== "Enter") {
@@ -96,7 +95,7 @@ export function ChatbotResponse(props: ChatbotResponseProps) {
     executeChatbotRequest(props.query!);
   }
 
-  function executeChatbotRequest(query: string) {
+  const executeChatbotRequest = useCallback((query: string) => {
     const executeChatbotRequestAsync = async () => {
 
       const existingConversations = chatbotData.conversations || [];
@@ -187,7 +186,8 @@ export function ChatbotResponse(props: ChatbotResponseProps) {
     };
 
     executeChatbotRequestAsync();
-  }
+  }, [chatbotData, props, setChatbotData]);
+
 
   function clipChatHistory(chatHistory: ChatHistory) {
     const newMenuItem: MenuInfo = {
@@ -205,6 +205,14 @@ export function ChatbotResponse(props: ChatbotResponseProps) {
       conversations: []
     });
   }
+
+  useEffect(() => loadChatbotResponse(), [props.query]);
+
+  useEffect(() => {
+    if (externalQuery) {
+      executeChatbotRequest(externalQuery);
+    }
+  }, [externalQuery, executeChatbotRequest]);
 
   const chatHistoryElement = chatbotData.conversations?.length ?
     chatbotData.conversations.map((chatHistory, index) => (

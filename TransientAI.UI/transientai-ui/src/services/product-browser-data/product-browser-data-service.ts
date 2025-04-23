@@ -31,6 +31,25 @@ class ProductBrowserDataService {
     return result.trace_data;
   }
 
+  async getRecommendationExplanation(bond: BondInfo, clientName: string): Promise<string> {
+    const data: {[key:string] : any} = bond.isin ? {
+      bond_isin: bond.isin
+    } : {
+      bond_description: bond.product_description
+    };
+    data['client_name'] = clientName;
+    data['recommendation_type'] = 'model_based';
+    data['score'] = null;
+    const result = await webApihandler.post(
+        'generate-recommendation-explanation',
+        undefined, data,
+        {
+          serviceName: this.serviceName
+        });
+
+    return result.description;
+  }
+
   async getRecommendedClients(bond: BondInfo): Promise<RecommendedClient[]> {
     const data: {[key:string] : any} = bond.isin ? {
         isin: bond.isin

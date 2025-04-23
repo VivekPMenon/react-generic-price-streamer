@@ -48,7 +48,6 @@ export interface TopRecommendation {
 export interface RecommendedClient {
   client_name: string;
   score: number;
-  description: string;
 }
 
 export interface RecommendedBond {
