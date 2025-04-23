@@ -1,4 +1,4 @@
-import {useCallback, useContext, useEffect, useState} from 'react';
+import {useContext, useEffect, useState} from 'react';
 import styles from './chatbot-response.module.scss';
 import {chatbotDataService} from '@/services/chatbot-data/chatbot-data-service';
 import {ChatbotConversation, ChatHistory, ChatResponseType} from '@/services/chatbot-data/model';
@@ -11,7 +11,6 @@ import {useMenuStore} from '@/services/menu-data/menu-data-store';
 import remarkGfm from 'remark-gfm';
 import {ChevronDownIcon} from "@radix-ui/react-icons";
 import {formatDecimal} from "@/lib/utility-functions";
-import {useChatbotDataStore} from "@/services/chatbot-data/chatbot-data-store";
 
 interface ChatResponseProps {
   chatHistory: ChatbotConversation;
@@ -66,8 +65,7 @@ export interface ChatbotResponseProps {
 }
 
 export function ChatbotResponse(props: ChatbotResponseProps) {
-  const { query: externalQuery } = useChatbotDataStore();
-  const { fullMenuList, setActiveMenu } = useMenuStore();
+  const { setActiveMenu } = useMenuStore();
   const { chatbotData, setChatbotData } = useContext(ChatbotDataContext);
 
   const [query, setQuery] = useState<string>('');
@@ -95,9 +93,8 @@ export function ChatbotResponse(props: ChatbotResponseProps) {
     executeChatbotRequest(props.query!);
   }
 
-  const executeChatbotRequest = useCallback((query: string) => {
+  function executeChatbotRequest(query: string) {
     const executeChatbotRequestAsync = async () => {
-
       const existingConversations = chatbotData.conversations || [];
       const lastChatHistory: ChatbotConversation =  {
         request: {
@@ -172,22 +169,10 @@ export function ChatbotResponse(props: ChatbotResponseProps) {
               props.onNewQueryExecuted();
             }
           });
-
-      // try {
-      //   const response = await chatbotDataService.getChatbotResponse(query);
-      //   lastChatHistory.response!.responseText += response;
-      //   setChatbotData({
-      //     ...chatbotData,
-      //     conversations: newChatConversations
-      //   });
-      // } finally {
-      //   lastChatHistory.request!.isLoading = false;
-      // }
     };
 
     executeChatbotRequestAsync();
-  }, [chatbotData, props, setChatbotData]);
-
+  }
 
   function clipChatHistory(chatHistory: ChatHistory) {
     const newMenuItem: MenuInfo = {
@@ -207,12 +192,6 @@ export function ChatbotResponse(props: ChatbotResponseProps) {
   }
 
   useEffect(() => loadChatbotResponse(), [props.query]);
-
-  useEffect(() => {
-    if (externalQuery) {
-      executeChatbotRequest(externalQuery);
-    }
-  }, [externalQuery, executeChatbotRequest]);
 
   const chatHistoryElement = chatbotData.conversations?.length ?
     chatbotData.conversations.map((chatHistory, index) => (
