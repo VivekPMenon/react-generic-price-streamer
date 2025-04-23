@@ -150,7 +150,7 @@ export function TopClients() {
                              (<li>
                                     {
                                         selectedBond.b_axe === 'Y'
-                                            ? ('Axed: +' + (selectedBond?.b_spread ?? '-') + ' Bid ' + (selectedBond?.bid_price?? '-'))
+                                            ? ('Axed: +' + (selectedBond?.b_spread ?? '-') + ' Bid ' + (selectedBond?.b_size_m?? '-'))
                                             : ('Axed: ' + (selectedBond?.a_size_m ?? '-') + ' @ +' + (selectedBond?.a_spread ?? '-'))
                                     }
                              </li>)
