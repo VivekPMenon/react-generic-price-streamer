@@ -105,10 +105,12 @@
 }
 
 .expander-button {
+  cursor: pointer;
 }
 
 .expander-button-open {
   transform: rotate(180deg);
+  cursor: pointer;
 }
 
 .status {

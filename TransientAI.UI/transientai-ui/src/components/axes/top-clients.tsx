@@ -19,6 +19,10 @@ function ClientComponent({ client }: ClientProps) {
     const [description, setDescription] = useState<string>('');
 
     function loadDescription(client: RecommendedClient) {
+        if (isLoadingDescription) {
+            return;
+        }
+
         const newOpen = !open;
         if (description) {
             setOpen(newOpen);
