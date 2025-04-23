@@ -3,12 +3,13 @@
 import { useContext, useEffect, useMemo, useState } from 'react';
 import styles from './chatbot.module.scss';
 import { ChatbotResponse } from './chatbot-response';
-import { ChatbotConversation, ChatHistory } from '@/services/chatbot-data/model';
+import { ChatHistory } from '@/services/chatbot-data/model';
 import { chatbotDataService } from '@/services/chatbot-data/chatbot-data-service';
 import { ChatbotDataContext } from '@/services/chatbot-data';
+import {useChatbotDataStore} from "@/services/chatbot-data/chatbot-data-store";
 
 export function Chatbot() {
-
+  const { query: externalQuery, setQuery: setExternalQuery } = useChatbotDataStore();
   const { chatbotData, setChatbotData } = useContext(ChatbotDataContext);
 
   const [chatHistories, setChatHistories] = useState<ChatHistory[]>([]);
@@ -82,6 +83,17 @@ export function Chatbot() {
       ]
     });
   }
+
+  useEffect(() => {
+    if (externalQuery) {
+      setQuery(externalQuery);
+      setChatbotData({
+        ...chatbotData,
+        isChatbotResponseActive: true
+      });
+      setExternalQuery(null);
+    }
+  }, [externalQuery, setExternalQuery, chatbotData, setChatbotData]);
 
   if (chatbotData?.isChatbotResponseActive) {
     return <div className={`${styles['chatbot-container']} widget`}>

@@ -6,27 +6,41 @@ import {useProductBrowserStore} from "@/services/product-browser-data/product-br
 
 const columnDefs: ColDef[] = [
     {
+        field: 'security',
+        headerName: 'Security',
+        cellClass: 'orange-color',
+        width: 120
+    },
+    {
+        field: 'bond_isin',
+        headerName: 'ISIN',
+        width: 120
+    },
+    {
+        ...getNumberColDefTemplate(2),
+        field: 'par_held',
+        headerName: 'Position',
+        width: 140,
+        sort: 'desc'
+    },
+    {
       field: 'client_name',
       headerName: 'Client',
-      width: 120
+      width: 120,
+      hide: true
     },
-    {
-      field: 'security',
-      headerName: 'Security',
-      cellClass: 'orange-color',
-      width: 120
-    },
-    {
-      ...getNumberColDefTemplate(2),
-      field: 'par_held',
-      headerName: 'Current Holding',
-      width: 140,
-      sort: 'desc'
-    },
+
     {
       field: 'issuer_name',
       headerName: 'Issuer',
-      width: 140
+      width: 140,
+      hide: true
+    },
+    {
+        field: 'bond_description',
+        headerName: 'Security',
+        width: 120,
+        hide: true
     },
 ];
 

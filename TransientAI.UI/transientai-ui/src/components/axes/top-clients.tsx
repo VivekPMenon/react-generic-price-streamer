@@ -5,55 +5,56 @@ import {useProductBrowserStore} from "@/services/product-browser-data/product-br
 import {Spinner} from "@radix-ui/themes";
 import { ChevronDownIcon } from "@radix-ui/react-icons";
 import styles from './todays-axes.module.scss';
-import {RecommendedBond, RecommendedClient} from "@/services/product-browser-data";
+import {productBrowserDataService, RecommendedClient} from "@/services/product-browser-data";
+import {useChatbotDataStore} from "@/services/chatbot-data/chatbot-data-store";
 
 interface ClientProps {
     client: RecommendedClient;
-    selectedClient: string|null;
-    setSelectedClient: (client_name: string) => void;
-    loadRecommendedBondsForClient: (client_name: string) => Promise<RecommendedBond[]>;
 }
 
-function ClientComponent(
-    {
-        client,
-        selectedClient,
-        setSelectedClient,
-        loadRecommendedBondsForClient
-    }: ClientProps) {
-
-    const [isLoadingBonds, setIsLoadingBonds] = useState<boolean>(false);
+function ClientComponent({ client }: ClientProps) {
+    const { loadSimilarBondsInHoldings, loadTradesForBonds, selectedBond } = useProductBrowserStore();
+    const [isLoadingDescription, setIsLoadingDescription] = useState<boolean>(false);
     const [open, setOpen] = useState<boolean>(false);
-    const [bonds, setBonds] = useState<RecommendedBond[]|null>(null);
+    const [description, setDescription] = useState<string>('');
 
-    function loadBonds(client: RecommendedClient) {
+    function loadDescription(client: RecommendedClient) {
         const newOpen = !open;
-        if (bonds) {
+        if (description) {
             setOpen(newOpen);
             return;
         }
 
-        if (newOpen) {
-            setIsLoadingBonds(true);
-            loadRecommendedBondsForClient(client.client_name)
+        if (newOpen && selectedBond) {
+            setIsLoadingDescription(true);
+            productBrowserDataService.getRecommendationExplanation(selectedBond, client.client_name)
                 .then(result => {
-                    setBonds(result);
+                    setDescription(result);
                 })
                 .finally(() => {
-                    setIsLoadingBonds(false);
+                    setIsLoadingDescription(false);
                     setOpen(newOpen);
                 });
         }
     }
 
+    function loadHoldings() {
+        loadSimilarBondsInHoldings(selectedBond, client.client_name);
+    }
+
+    function loadTrades() {
+        loadTradesForBonds(selectedBond);
+    }
+
+    function findBondsOfInterest() {
+        useChatbotDataStore.getState().setQuery(`What other axes should I recommend to ${client.client_name}?`);
+    }
+
     return (
         <div
-            className={`news-item prevent-text-selection ${selectedClient === client.client_name ? styles['selected-client'] : ''}`}
+            className={`news-item prevent-text-selection ${styles['client-item']}`}
             key={client.client_name}
-            onDoubleClick={() => {
-                setSelectedClient(client.client_name);
-                loadBonds(client);
-            }}
+            onDoubleClick={() => loadDescription(client)}
         >
             <div className={`${styles['news-header']}`}>
                 <div className={`${styles['header']}`}>
@@ -62,33 +63,31 @@ function ClientComponent(
                     </div>
                     <div className={`${styles['expander']}`}>
                         {
-                            isLoadingBonds
-                            ? (<Spinner size={"1"} />)
-                            : (<ChevronDownIcon
+                            isLoadingDescription
+                                ? (<Spinner size={"1"} />)
+                                : (<ChevronDownIcon
                                     className={`${styles['expander-button' + (open ? '-open' : '')]}`}
-                                    onClick={() => loadBonds(client)} />)
+                                    onClick={() => loadDescription(client)} />)
                         }
                     </div>
                 </div>
+                <div className={`${styles['icons']}`}>
+                    <div><i className="fa-solid fa-comments" onClick={() => {}}></i></div>
+                    <div><i className="fa-solid fa-warehouse" onClick={loadHoldings}></i></div>
+                    <div><i className="fa-solid" onClick={loadTrades}><span style={{color:'green'}}>B</span>/<span style={{color:'red'}}>S</span></i></div>
+                    <div><i className="fa-solid fa-gavel" onClick={findBondsOfInterest}></i></div>
+                    <div><i className="fa-regular fa-address-book" onClick={() => {}}></i></div>
+                </div>
                 <div
+                    className={`${styles['expanded-section']}`}
                     style={{
                         display: open ? "block" : "none"
                     }}>
                     <hr/>
                     <div className={`${styles['bonds-container']} scrollable-div`}>
-                    {
-                        !bonds || bonds.length === 0
-                            ? (<span>No bonds</span>)
-                            : (bonds.map(bond => {
-                                return (
-                                    <div
-                                        key={bond.isin}
-                                        className={`${styles['bond-item']}`}>
-                                        <span>{bond.product_description}</span>
-                                    </div>
-                                );
-                            }))
-                    }
+                        <div className={`${styles['bond-item']}`}>
+                            <span>{description}</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -97,36 +96,68 @@ function ClientComponent(
 }
 
 export function TopClients() {
-    const { isRecommendedClientsLoading, selectedClient, loadRecommendedBondsForClient, setSelectedClient, recommendedClients } = useProductBrowserStore();
+    const { isRecommendedClientsLoading, selectedBond, recommendedClients, traces } = useProductBrowserStore();
 
     let content;
     if (isRecommendedClientsLoading) {
-        content = (<Spinner />);
+        content = (<div><Spinner /></div>);
     } else {
-        content = (
-            <div className={`news scrollable-div ${styles['recommended-clients']}`}>
-                {
-                    recommendedClients?.map(client =>
-                        <ClientComponent
-                            key={client.client_name}
-                            client={client}
-                            selectedClient={selectedClient}
-                            setSelectedClient={setSelectedClient}
-                            loadRecommendedBondsForClient={loadRecommendedBondsForClient}
-                        />)
-                }
-            </div>
-        )
+        if (!selectedBond) {
+            content = (<div />)
+         } else {
+            content = (
+                <div>
+                    <div className={`${styles['trace-header']}`}>
+                        TRACE
+                        Total {traces.reduce((accumulator, current) => accumulator + (current.size_m || 0), 0)} trd
+                        today
+                    </div>
+                    <div className={`${styles['trace']}`}>
+                        {
+                            traces
+                                .slice(0, 3)
+                                .map((element, index) => (
+                                    <li key={index}>{element.side === 'buy' ? 'DB' : 'DS'} {element.size_m} {element.spread_change}</li>
+                                ))
+                        }
+                    </div>
+                    <div className={`news scrollable-div ${styles['recommended-clients']}`}>
+                        {
+                            recommendedClients?.map(client =>
+                                <ClientComponent
+                                    key={client.client_name}
+                                    client={client}
+                                />)
+                        }
+                    </div>
+                </div>
+            )
+        }
     }
 
     return (
-        <div>
+        <div className={`${styles['recommendation-container']}`}>
             <div className='sub-header'>Top Recommendations</div>
-            <div>
-                {
-                    content
-                }
+            <div className={`${styles['recommendation-header']}`}>
+                <span className={`${styles['description']}`}>{selectedBond?.product_description}</span>
+                <span className={`${styles['size']}`}>
+                         { selectedBond
+                             ?
+                             (<li>
+                                    {
+                                        selectedBond.b_axe === 'Y'
+                                            ? ('Axed: +' + (selectedBond?.b_spread ?? '-') + ' Bid ' + (selectedBond?.bid_price?? '-'))
+                                            : ('Axed: ' + (selectedBond?.a_size_m ?? '-') + ' @ +' + (selectedBond?.a_spread ?? '-'))
+                                    }
+                             </li>)
+                             : null
+                        }
+
+                </span>
             </div>
+            {
+                content
+            }
         </div>
     );
 }

@@ -31,6 +31,25 @@ class ProductBrowserDataService {
     return result.trace_data;
   }
 
+  async getRecommendationExplanation(bond: BondInfo, clientName: string): Promise<string> {
+    const data: {[key:string] : any} = bond.isin ? {
+      bond_isin: bond.isin
+    } : {
+      bond_description: bond.product_description
+    };
+    data['client_name'] = clientName;
+    data['recommendation_type'] = 'model_based';
+    data['score'] = null;
+    const result = await webApihandler.post(
+        'generate-recommendation-explanation',
+        undefined, data,
+        {
+          serviceName: this.serviceName
+        });
+
+    return result.description;
+  }
+
   async getRecommendedClients(bond: BondInfo): Promise<RecommendedClient[]> {
     const data: {[key:string] : any} = bond.isin ? {
         isin: bond.isin
@@ -97,11 +116,17 @@ class ProductBrowserDataService {
   }
 
   async getTradesByBond(bond: BondInfo): Promise<ClientTrade[]> {
-    return await webApihandler.get('trades-by-bond', {
+    const result = await webApihandler.get('trades-by-bond', {
       product_description: bond.product_description,
     }, {
       serviceName: this.serviceName
     });
+
+    result.forEach((clientTrade: ClientTrade) => {
+      clientTrade.date = new Date(clientTrade.date);
+    });
+
+    return result;
   }
 
   async getClientTradesByBond(bond: BondInfo, client_name: string): Promise<ClientTrade[]> {

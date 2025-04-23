@@ -32,6 +32,13 @@ export interface ChatbotData {
 export interface ChatbotConversation {
   request?: ChatbotRequestType;
   response?: ChatbotResponseType;
+  status?: ChatResponseStatus;
+}
+
+export interface ChatResponseStatus {
+  message: string;
+  status: string;
+  showLogs: boolean;
 }
 
 export interface ChatbotDataContextType {
@@ -52,4 +59,15 @@ export interface ChatConversationApiResponse {
 export interface ChatHistoryMessageType {
   role?: string;
   content?: string;
+}
+
+export enum ChatResponseType {
+  Log = 'log',
+  Separator = 'separator',
+  Final = 'final'
+}
+
+export interface ChatResponse {
+  text: string;
+  type: ChatResponseType;
 }
