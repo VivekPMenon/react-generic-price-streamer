@@ -5,7 +5,7 @@ export enum Mode {
   SELL = 'sell',
   BUY = 'buy',
 }
-console.log(i18n.t('macro_panel'));
+// console.log(i18n.t('macro_panel'));
 const menuInfoList: MenuInfo[] = [
   {
     id: 'macro-panel',
@@ -156,6 +156,13 @@ const sellMenuInfoList: MenuInfo[] = [
   },
 ];
 
-export function getMenuItems(mode: Mode) {
-  return mode === Mode.SELL ? sellMenuInfoList : menuInfoList;
+export function getMenuItems(mode: Mode, userRole: string) {
+  const restrictedMenuIds = ['hurricane-pms']; // IDs of restricted menu items
+  const restrictedRoles = ['Center IBIS', 'HUNTER'];
+
+  const filteredMenuInfoList = menuInfoList.filter(menuItem => {
+    return !(restrictedMenuIds.includes(menuItem.id!) && restrictedRoles.includes(userRole));
+  });
+
+  return mode === Mode.SELL ? sellMenuInfoList : filteredMenuInfoList;
 }

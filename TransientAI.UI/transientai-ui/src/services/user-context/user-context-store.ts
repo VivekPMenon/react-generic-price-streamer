@@ -5,6 +5,7 @@ import { endpointFinder } from "../web-api-handler/endpoint-finder-service";
 import { AccountInfo } from "@azure/msal-browser";
 import axios from "axios";
 import { webApihandler } from "../web-api-handler";
+import { getRoleByEmail, UserRole } from "./user-role-data";
 
 interface UserContextState {
   userContext: UserContext;
@@ -148,12 +149,15 @@ async function loginAndSetToken(idToken: string) {
 function mapAccountToUser(account: AccountInfo, role: RoleType): UserContext {
   const parts = account.name?.split(' ') || [];
   const initials = parts[0]?.[0]?.toUpperCase() + (parts.at(-1)?.[0]?.toUpperCase() || '');
+  const email = 'tsandoz@hurricanecap.com';
+  const userRole = getRoleByEmail(email);
 
   return {
     userName: account.name,
     token: account.idToken,
     userId: account.username,
     userInitials: initials,
-    role: role,
+    role: userRole === UserRole.OPERATIONS ? RoleType.Operations : role,
+    userRole: userRole
   };
 }

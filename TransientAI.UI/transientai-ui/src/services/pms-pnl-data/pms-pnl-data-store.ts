@@ -8,6 +8,8 @@ interface PmsPnlDataState {
   isLoading: boolean;
   report: [ReportItem[], ReportItem|null]|null;
   reportDate: Date|null;
+  filteredReport: ReportItem[] | null;
+
   getReport: () => void;
 }
 
@@ -15,6 +17,7 @@ export const usePmsPnlDataStore = create<PmsPnlDataState>((set, get) => ({
   isLoading: false,
   report: null,
   reportDate: null,
+  filteredReport: null,
 
   getReport: () => {
     set({ isLoading: true });
@@ -24,7 +27,8 @@ export const usePmsPnlDataStore = create<PmsPnlDataState>((set, get) => ({
             if (result) {
                 set({
                     report: [result[0].data, result[1]],
-                    reportDate: parseLocalDate(result[0].last_updated) || new Date()
+                    reportDate: parseLocalDate(result[0].last_updated) || new Date(),
+                    filteredReport: result[0].data.filter((report)=> report.manager.includes('S2_C-IBIS'))
                 })
             }
         })
