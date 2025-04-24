@@ -41,7 +41,7 @@ export default function ProtectedRoute({ children, resourceName }: ProtectedRout
   if (userContext.userRole === UserRole.HUNTER) {
     if (resourceName === 'margin' || resourceName === 'pms-pnl') {
       return (
-        <p className='text-base m-auto'>Acsess Restricted please contact admin.</p>
+        <p className='text-base m-auto'>Access Restricted please contact admin.</p>
       );
     }
   }
