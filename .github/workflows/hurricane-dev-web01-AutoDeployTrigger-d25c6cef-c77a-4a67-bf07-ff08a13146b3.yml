@@ -1,0 +1,44 @@
+name: Trigger auto deployment for hurricane-dev-web01
+
+# When this action will be executed
+on:
+  # Automatically trigger it when detected changes in repo
+  push:
+    branches: 
+      [ development ]
+    paths:
+    - '**'
+    - '.github/workflows/hurricane-dev-web01-AutoDeployTrigger-d25c6cef-c77a-4a67-bf07-ff08a13146b3.yml'
+
+  # Allow manual trigger 
+  workflow_dispatch:
+      
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout to the branch
+        uses: actions/checkout@v2
+
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.HURRICANEDEVWEB01_AZURE_CREDENTIALS }}
+
+      - name: Build and push container image to registry
+        uses: azure/container-apps-deploy-action@v2
+        with:
+          appSourcePath: ${{ github.workspace }}/TransientAI.UI/transientai-ui
+          _dockerfilePathKey_: _dockerfilePath_
+          registryUrl: hurricanedevacr01.azurecr.io
+          registryUsername: ${{ secrets.HURRICANEDEVWEB01_REGISTRY_USERNAME }}
+          registryPassword: ${{ secrets.HURRICANEDEVWEB01_REGISTRY_PASSWORD }}
+          containerAppName: hurricane-dev-web01
+          resourceGroup: Hurricane_dev
+          imageToBuild: hurricanedevacr01.azurecr.io/transient_web:${{ github.sha }}
+          
+            
+
+     
+
