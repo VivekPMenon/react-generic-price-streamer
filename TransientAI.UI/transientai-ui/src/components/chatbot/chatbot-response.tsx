@@ -35,7 +35,7 @@ function ChatResponseComponent({chatHistory}: ChatResponseProps) {
                 className={`${styles['expander-button' + (open  ? '-open' : '')]}`}
             />
           </div>
-          <p>
+          <div>
             {chatHistory.status!.showLogs &&
               (
                   <div className={styles['status-message']}>
@@ -51,7 +51,7 @@ function ChatResponseComponent({chatHistory}: ChatResponseProps) {
                 className='markdown'
                 remarkPlugins={[remarkGfm]}
             >{chatHistory.response!.responseText}</ReactMarkdown>
-          </p>
+          </div>
         </div>
         <div className={`${styles['assistant-message-time']}`}>{chatHistory.response?.timestamp}</div>
       </div>
@@ -195,8 +195,8 @@ export function ChatbotResponse(props: ChatbotResponseProps) {
 
   const chatHistoryElement = chatbotData.conversations?.length ?
     chatbotData.conversations.map((chatHistory, index) => (
-      <>
-        <div key={index} className={styles['chat-message']}>
+      <div key={index}>
+        <div className={styles['chat-message']}>
           <div className={styles['message-content']}>
             <div className={styles['message-header'] + ' profile-pic'}>
               <img src="/images/ProfilePicAI.png"></img>
@@ -223,7 +223,7 @@ export function ChatbotResponse(props: ChatbotResponseProps) {
               />
               : <></>
         }
-      </>
+      </div>
     ))
     : <></>;
 
