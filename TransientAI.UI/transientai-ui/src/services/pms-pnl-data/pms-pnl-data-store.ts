@@ -28,7 +28,7 @@ export const usePmsPnlDataStore = create<PmsPnlDataState>((set, get) => ({
                 set({
                     report: [result[0].data, result[1]],
                     reportDate: parseLocalDate(result[0].last_updated) || new Date(),
-                    filteredReport: result[0].data.filter((report)=> report.manager.includes('S2_C-IBIS'))
+                    filteredReport: result[0].data.filter((report)=> report.manager.includes('S2_C'))
                 })
             }
         })
