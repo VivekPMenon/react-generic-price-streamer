@@ -80,28 +80,3 @@ export const useMenuStore = create<MenuState>((set) => ({
       };
     }),
 }));
-
-
-
-// const roles = [
-//   {
-//     id: 1,
-//     role: 'Center IBIS',
-//     emails: ['awolfberg@hurricanecap.com'],
-//   },
-//   {
-//     id: 2,
-//     role: 'HUNTER',
-//     emails: ['tsandoz@hurricanecap.com','jweekes@hurricanecap.com'],
-//   },
-//   {
-//     id: 3,
-//     role: 'Admin',
-//     emails: ['tsandoz@hurricanecap.com','jweekes@hurricanecap.com'],
-//   },
-//   {
-//     id: 4,
-//     role: 'Operations',
-//     emails: ['tsandoz@hurricanecap.com','jweekes@hurricanecap.com'],
-//   }
-// ]
