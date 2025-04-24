@@ -163,7 +163,7 @@ function MacroInstrument({symbol, type, name, value, change, percent, marketData
         } else {
             setIsLoading(false);
         }
-    }, [data, symbol, type]);
+    }, [data, symbol, type, setReportGenerationDate]);
 
     const isNegative = inverseChange === true
         ? ((change ?? 0.0) > 0.0)
