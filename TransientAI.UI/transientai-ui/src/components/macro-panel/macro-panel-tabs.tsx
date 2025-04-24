@@ -12,7 +12,7 @@ import {MarketDataType} from "@/services/macro-panel-data/model";
 import i18n from '../../i18n';
 
 function MacroPanelTabs() {
-    const { reportGenerationDate, treasuryYields, fxRates, cryptos, equityFutures, isTreasuryLoading, isFxLoading, isCryptoLoading, isEquityFuturesLoading } = useMacroPanelDataStore();
+    const { reportGenerationDate, setReportGenerationDate, treasuryYields, fxRates, cryptos, equityFutures, isTreasuryLoading, isFxLoading, isCryptoLoading, isEquityFuturesLoading } = useMacroPanelDataStore();
     const [open, setOpen] = useState(false);
     const [isLoadingMarketData, setIsLoadingMarketData] = useState(false);
     const [instrument, setInstrument] = useState<Instrument | null>(null);
@@ -98,6 +98,7 @@ function MacroPanelTabs() {
                                             showCharts={true}
                                             showPopupAction={showPopup}
                                             inverseChange={false}
+                                            setReportGenerationDate={setReportGenerationDate}
                                         />
                                     </Tabs.Content>
                                 ))}

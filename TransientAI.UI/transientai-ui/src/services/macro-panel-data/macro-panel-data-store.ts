@@ -25,6 +25,7 @@ interface MacroPanelDataState {
   selectedReport?: BloombergEmailReport;
   setSelectedReport: (report: BloombergEmailReport) => void;
   loadMacroPanelData: (showLoading: boolean, loadBloombergReports: boolean) => void,
+  setReportGenerationDate: (value: Date|null) => void;
   startPolling: () => void;
 }
 
@@ -41,6 +42,10 @@ export const useMacroPanelDataStore = create<MacroPanelDataState>((set, get) => 
   isEquityFuturesLoading: false,
   reportGenerationDate: null,
   lastRefreshMillis: 0,
+
+  setReportGenerationDate: (value: Date|null) => {
+    set({reportGenerationDate: value});
+  },
 
   setSelectedReport: (report) => set({ selectedReport: report }),
   loadBloombergEmailReports: async () => {
@@ -77,10 +82,9 @@ export const useMacroPanelDataStore = create<MacroPanelDataState>((set, get) => 
               .map(result => result.status === 'fulfilled'
                   ? [result.value[0] as Date | null, result.value[1] as TreasuryYield[]]
                   : [now, [] as TreasuryYield[]]);
-          const [date, treasuries] = yields[0];
+          const [, treasuries] = yields[0];
           const [, foreign] = yields[1];
           return set({
-            reportGenerationDate: date,
             treasuryYields: treasuries.concat(foreign)}
           );
         })
