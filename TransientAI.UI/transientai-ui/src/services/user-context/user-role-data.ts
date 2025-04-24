@@ -43,6 +43,7 @@ export const userRoleData: UserRoleData[] = [
       "abalasubramanian@hurricanecap.com",
       "vmenon@hurricanecap.com",
       "razam@hurricanecap.com",
+      "GowdhamV@hurricanecap.com"
     ],
   },
 ];

@@ -149,7 +149,7 @@ async function loginAndSetToken(idToken: string) {
 function mapAccountToUser(account: AccountInfo, role: RoleType): UserContext {
   const parts = account.name?.split(' ') || [];
   const initials = parts[0]?.[0]?.toUpperCase() + (parts.at(-1)?.[0]?.toUpperCase() || '');
-  const email = 'tsandoz@hurricanecap.com';
+  const email = account.username;
   const userRole = getRoleByEmail(email);
 
   return {
