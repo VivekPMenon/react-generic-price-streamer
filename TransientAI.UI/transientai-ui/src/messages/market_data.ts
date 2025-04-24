@@ -20,10 +20,12 @@ export interface OHLCDataPoint {
     /**
      * @generated from protobuf field: string date = 1;
      */
-    date: string; // Date string (e.g., "YYYY-MM-DD" or "YYYY-MM-DD HH:MM:SS")    /**
+    date: string; // Date string (e.g., "YYYY-MM-DD" or "YYYY-MM-DD HH:MM:SS")
+    /**
      * @generated from protobuf field: optional double open = 2;
      */
-    open?: number; // Use optional for fields that might be null/missing    /**
+    open?: number; // Use optional for fields that might be null/missing
+    /**
      * @generated from protobuf field: optional double high = 3;
      */
     high?: number;
@@ -57,10 +59,12 @@ export interface MarketDataResponse {
     /**
      * @generated from protobuf field: repeated OHLCDataPoint data = 4;
      */
-    data: OHLCDataPoint[]; // List of OHLC data points    /**
+    data: OHLCDataPoint[]; // List of OHLC data points
+    /**
      * @generated from protobuf field: optional string error = 5;
      */
-    error?: string; // Send error messages if any    /**
+    error?: string; // Send error messages if any
+    /**
      * @generated from protobuf field: optional double current_price = 6;
      */
     currentPrice?: number;
@@ -75,7 +79,8 @@ export interface MarketDataResponse {
     /**
      * @generated from protobuf field: google.protobuf.Timestamp timestamp = 9;
      */
-    timestamp?: Timestamp; // Time the response was generated/data fetched}
+    timestamp?: Timestamp; // Time the response was generated/data fetched
+}
 /**
  * @generated from protobuf message MarketDataRequest
  */
