@@ -5,7 +5,7 @@ import styles from './explorer.module.scss';
 import {useEffect, useState} from 'react';
 import { useRouter } from 'next/navigation';
 import { MenuInfo } from '@/services/menu-data';
-
+import { useUserContextStore } from '@/services/user-context';
 export interface NotificationsProps {
   onExpandCollapse?: (state: boolean) => void;
   onNavigate?: () => void;
@@ -15,6 +15,7 @@ export interface NotificationsProps {
 export function Explorer(props: NotificationsProps) {
   const router = useRouter();
   const { initializeMenus, fullMenuList, selectedMenu, setActiveMenu } = useMenuStore();
+  const { userContext } = useUserContextStore();
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
   const hurricanePmsView = 'hurricane-pms';
 
@@ -30,9 +31,8 @@ export function Explorer(props: NotificationsProps) {
   }
 
   useEffect(() => {
-    initializeMenus(props.mode);
+    initializeMenus(props.mode, userContext.userRole!);
   }, [props.mode])
-
   return (
     <div className={`${styles.explorer} widget`}>
       <div className="widget-title">

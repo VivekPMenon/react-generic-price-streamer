@@ -1,4 +1,6 @@
-import React, {memo} from 'react';
+'use client'
+
+import React, {memo, useEffect, useState} from 'react';
 import {useDeviceType} from "@/lib/hooks";
 import {usePmsPnlDataStore} from "@/services/pms-pnl-data/pms-pnl-data-store";
 import {DataGrid} from "@/components/data-grid";
@@ -7,10 +9,21 @@ import {
 } from './pms-pnl-config';
 import styles from './pms-pnl.module.scss';
 import i18n from '../../i18n'; 
+import { UserRole, useUserContextStore } from '@/services/user-context';
+
 function PmsPnl() {
-    const { reportDate, isLoading, report } = usePmsPnlDataStore();
+    const { reportDate, isLoading, report, filteredReport } = usePmsPnlDataStore();
     const deviceType = useDeviceType();
     const isMobile = deviceType !== 'desktop';
+    const [filtercolumnDefs, setFilterColumnDefs] = useState(columnDefs);
+    const {userContext} = useUserContextStore();
+
+    useEffect(()=>{
+        if(columnDefs.length > 0){
+            const set = userContext.userRole === UserRole.CENTER_IBIS ? columnDefs.filter((item)=> !item.field?.includes('NoFees')) : columnDefs;
+            setFilterColumnDefs(set || []);
+        }
+    },[columnDefs]);
 
     return (
     <div>
@@ -22,8 +35,8 @@ function PmsPnl() {
                 isSummaryGrid={false}
                 suppressStatusBar={true}
                 suppressFloatingFilter={false}
-                rowData={report?.length && report[0]}
-                columnDefs={columnDefs}
+                rowData={userContext.userRole === UserRole.CENTER_IBIS ? filteredReport : report?.length && report[0]}
+                columnDefs={filtercolumnDefs}
                 loading={isLoading}
                 gridOptions={defaultGridOptions}
                 onGridSizeChanged={handleGridSizeChanged}

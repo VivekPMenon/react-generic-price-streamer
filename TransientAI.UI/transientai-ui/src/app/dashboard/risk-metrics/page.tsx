@@ -8,7 +8,7 @@ export default function Page() {
   //   <RiskMetrics></RiskMetrics>
   // </ProtectedRoute>;
 
-  return <ProtectedRoute>
+  return <ProtectedRoute resourceName="margin">
     <RiskMetrics></RiskMetrics>
   </ProtectedRoute>;
 }

@@ -5,11 +5,13 @@ import { ColDef } from "ag-grid-community";
 import { useRiskDataStore } from "@/services/risk-data/risk-data-store";
 import { useDeviceType } from "@/lib/hooks";
 import { useTranslation } from "react-i18next"; // Import i18n for translation
+import { UserRole, useUserContextStore } from "@/services/user-context";
 
 function RiskMetrics() {
   const { t } = useTranslation(); // Initialize translation
   const deviceType = useDeviceType();
-  const { riskMetricsItems } = useRiskDataStore();  
+  const { riskMetricsItems,riskMetricsItemsFiltered } = useRiskDataStore();  
+  const { userContext } =  useUserContextStore();
 
   // Function to get column definitions with translated header text
   const columnDefs = useMemo<ColDef[]>(() => getColumnDef(), [deviceType, t]);
@@ -38,11 +40,15 @@ function RiskMetrics() {
 
   return (
     <div className="height-100p">
-      <DataGrid 
+      <DataGrid
         isSummaryGrid={true}
-        rowData={riskMetricsItems}
-        columnDefs={columnDefs}>
-      </DataGrid>
+        rowData={
+          userContext.userRole === UserRole.CENTER_IBIS
+            ? riskMetricsItemsFiltered
+            : riskMetricsItems
+        }
+        columnDefs={columnDefs}
+      ></DataGrid>
     </div>
   );
 }
