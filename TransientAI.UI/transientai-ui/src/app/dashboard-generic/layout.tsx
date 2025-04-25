@@ -1,15 +1,12 @@
 'use client';
 import { Explorer } from '@/components/explorer/explorer';
 import { Header } from '@/components/header/header'
-import styles from './page.module.scss';
-
 import { Chatbot } from '@/components/chatbot/chatbot';
 import { Notifications } from '@/components/notifications';
 import {useEffect, useState} from 'react';
 import {Mode} from "@/services/menu-data";
 import {DashboardTabs} from "@/components/dashboard-tabs/dashboard-tabs";
 import {MsalProvider} from '@azure/msal-react';
-import msalInstance from '../msal-config';
 import {Spinner} from "@radix-ui/themes";
 import {useUserContextStore} from "@/services/user-context";
 import {useDeviceType} from "@/lib/hooks";
@@ -18,6 +15,10 @@ import {TradingActivity} from "@/components/trading-activity";
 import {Holdings} from "@/components/axes/holdings";
 import {Traces} from "@/components/market-data";
 import {BondNews} from "@/components/news/bond-news";
+
+import msalInstance from '../msal-config';
+import styles from './page.module.scss';
+import 'react-tooltip/dist/react-tooltip.css'
 
 const MODE: Mode = Mode.SELL;
 

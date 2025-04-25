@@ -1,12 +1,11 @@
 'use client';
 
-import {RowClassParams, ColDef, RowClassRules, RowDoubleClickedEvent, GridSizeChangedEvent} from 'ag-grid-community';
+import {RowClassParams, ColDef, RowClassRules, RowDoubleClickedEvent} from 'ag-grid-community';
 import {DataGrid, getNumberColDefTemplate} from '../data-grid';
 import { BondInfo } from '@/services/product-browser-data';
 import styles from './todays-axes.module.scss';
 import { TopClients } from './top-clients';
 import {useProductBrowserStore} from "@/services/product-browser-data/product-browser-store";
-import {handleGridSizeChanged} from "@/components/pms-pnl/pms-pnl-config";
 
 const rowClassRules: RowClassRules = {};
 rowClassRules[`${styles["axe"]}`] = (params: RowClassParams) => params.data.is_golden !== true;

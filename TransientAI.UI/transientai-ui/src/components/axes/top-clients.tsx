@@ -1,19 +1,22 @@
 'use client'
 
-import {useState} from 'react';
+import {useCallback, useState} from 'react';
 import {useProductBrowserStore} from "@/services/product-browser-data/product-browser-store";
 import {Spinner} from "@radix-ui/themes";
 import { ChevronDownIcon } from "@radix-ui/react-icons";
-import styles from './todays-axes.module.scss';
 import {productBrowserDataService, RecommendedClient} from "@/services/product-browser-data";
 import {useChatbotDataStore} from "@/services/chatbot-data/chatbot-data-store";
+import { Tooltip } from 'react-tooltip'
+
+import styles from './todays-axes.module.scss';
+import {formatDecimal, formatShortenedRoman} from "@/lib/utility-functions";
 
 interface ClientProps {
     client: RecommendedClient;
 }
 
 function ClientComponent({ client }: ClientProps) {
-    const { loadSimilarBondsInHoldings, loadTradesForBonds, selectedBond } = useProductBrowserStore();
+    const { loadSimilarBondsInHoldings, loadClientTrades, selectedBond } = useProductBrowserStore();
     const [isLoadingDescription, setIsLoadingDescription] = useState<boolean>(false);
     const [open, setOpen] = useState<boolean>(false);
     const [description, setDescription] = useState<string>('');
@@ -42,17 +45,14 @@ function ClientComponent({ client }: ClientProps) {
         }
     }
 
-    function loadHoldings() {
-        loadSimilarBondsInHoldings(selectedBond, client.client_name);
-    }
+    const loadHoldings = useCallback(() => loadSimilarBondsInHoldings(selectedBond, client.client_name),
+        [client.client_name, loadSimilarBondsInHoldings, selectedBond]);
 
-    function loadTrades() {
-        loadTradesForBonds(selectedBond);
-    }
+    const loadTrades = useCallback(() => loadClientTrades(selectedBond, client.client_name),
+        [client.client_name, loadClientTrades, selectedBond]);
 
-    function findBondsOfInterest() {
-        useChatbotDataStore.getState().setQuery(`What other axes should I recommend to ${client.client_name}?`);
-    }
+    const findBondsOfInterest = useCallback(() => useChatbotDataStore.getState().setQuery(`What other axes should I recommend to ${client.client_name}?`),
+        [client.client_name]);
 
     return (
         <div
@@ -76,11 +76,26 @@ function ClientComponent({ client }: ClientProps) {
                     </div>
                 </div>
                 <div className={`${styles['icons']}`}>
-                    <div><i className="fa-solid fa-comments" onClick={() => {}}></i></div>
-                    <div><i className="fa-solid fa-warehouse" onClick={loadHoldings}></i></div>
-                    <div><i className="fa-solid" onClick={loadTrades}><span style={{color:'green'}}>B</span>/<span style={{color:'red'}}>S</span></i></div>
-                    <div><i className="fa-solid fa-gavel" onClick={findBondsOfInterest}></i></div>
-                    <div><i className="fa-regular fa-address-book" onClick={() => {}}></i></div>
+                    <div
+                        data-tooltip-id="clients-tooltip"
+                        data-tooltip-content="Voice/Chat"
+                        data-tooltip-place="top"><i className="fa-solid fa-comments" onClick={() => {}}></i></div>
+                    <div
+                        data-tooltip-id="clients-tooltip"
+                        data-tooltip-content="Check client holdings"
+                        data-tooltip-place="top"><i className="fa-solid fa-warehouse" onClick={loadHoldings}></i></div>
+                    <div
+                        data-tooltip-id="clients-tooltip"
+                        data-tooltip-content="Check client trades"
+                        data-tooltip-place="top"><i className="fa-solid" onClick={loadTrades}><span style={{color:'green'}}>B</span>/<span style={{color:'red'}}>S</span></i></div>
+                    <div
+                        data-tooltip-id="clients-tooltip"
+                        data-tooltip-content="Find other bonds of interest"
+                        data-tooltip-place="top"><i className="fa-solid fa-gavel" onClick={findBondsOfInterest} /></div>
+                    <div
+                        data-tooltip-id="clients-tooltip"
+                        data-tooltip-content="Client info"
+                        data-tooltip-place="top"><i className="fa-regular fa-address-book" onClick={() => {}}></i></div>
                 </div>
                 <div
                     className={`${styles['expanded-section']}`}
@@ -113,7 +128,7 @@ export function TopClients() {
                 <div>
                     <div className={`${styles['trace-header']}`}>
                         TRACE
-                        Total {traces.reduce((accumulator, current) => accumulator + (current.size_m || 0), 0)} trd
+                        Total {formatShortenedRoman(traces.reduce((accumulator, current) => accumulator + (current.size_m || 0), 0), 1, '-')} trd
                         today
                     </div>
                     <div className={`${styles['trace']}`}>
@@ -121,7 +136,7 @@ export function TopClients() {
                             traces
                                 .slice(0, 3)
                                 .map((element, index) => (
-                                    <li key={index}>{element.side === 'buy' ? 'DB' : 'DS'} {element.size_m} {element.spread_change}</li>
+                                    <li key={index}>{element.side === 'buy' ? 'DB' : 'DS'} {formatShortenedRoman(element.size_m, 1, '-')} {formatDecimal(element.spread_change, '-', 2)}</li>
                                 ))
                         }
                     </div>
@@ -134,6 +149,7 @@ export function TopClients() {
                                 />)
                         }
                     </div>
+                    <Tooltip id='clients-tooltip' variant='light'/>
                 </div>
             )
         }
@@ -150,13 +166,12 @@ export function TopClients() {
                              (<li>
                                     {
                                         selectedBond.b_axe === 'Y'
-                                            ? ('Axed: +' + (selectedBond?.b_spread ?? '-') + ' Bid ' + (selectedBond?.b_size_m?? '-'))
-                                            : ('Axed: ' + (selectedBond?.a_size_m ?? '-') + ' @ +' + (selectedBond?.a_spread ?? '-'))
+                                            ? ('Axed: +' + (selectedBond?.b_spread ?? '-') + ' Bid ' + (formatShortenedRoman(selectedBond?.b_size_m, 1,  '-')))
+                                            : ('Axed: ' + (formatShortenedRoman(selectedBond?.a_size_m, 1, '-')) + ' @ +' + (selectedBond?.a_spread ?? '-'))
                                     }
                              </li>)
                              : null
                         }
-
                 </span>
             </div>
             {

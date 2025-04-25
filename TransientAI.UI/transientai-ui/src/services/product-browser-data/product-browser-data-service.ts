@@ -100,14 +100,15 @@ class ProductBrowserDataService {
         .sort((a: RecommendedClient, b: RecommendedClient) => b.score - a.score);
   }
 
-  async getSimilarBondsInHoldings(bond: BondInfo, client_name: string): Promise<RecommendedBondInHolding[]> {
+  async getSimilarBondsInHoldings(bond: BondInfo, client_name?: string|null): Promise<RecommendedBondInHolding[]> {
     const data: {[key:string] : any} = bond.isin ? {
-      client_name,
       bond_isin: bond.isin
     } : {
-      client_name,
       bond_description: bond.product_description
     };
+    if (client_name) {
+      data['client_name'] = client_name;
+    }
     data['top_n'] = 5;
     const result = await webApihandler.post('recommend-similar-bonds-in-holdings', {}, data, {
       serviceName: this.serviceName

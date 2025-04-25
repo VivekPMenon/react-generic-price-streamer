@@ -2,19 +2,21 @@
 
 import {Explorer} from '@/components/explorer/explorer';
 import {Header} from '@/components/header/header'
-import styles from './layout.module.scss';
 import {Notifications} from '@/components/notifications';
 import {useEffect, useState} from 'react';
 import {DashboardTabs} from '@/components/dashboard-tabs/dashboard-tabs';
 import {useDeviceType} from '@/lib/hooks';
 import {useUserContextStore} from '@/services/user-context';
 import {MsalProvider} from '@azure/msal-react';
-import msalInstance from '../msal-config';
 import {Spinner} from '@radix-ui/themes';
 import {ContentCarousel} from '@/components/content-carousel/content-carousel';
 import {EContentTypes} from '@/components/content-carousel/model';
 import {Mode, useMenuStore} from "@/services/menu-data";
 import {ServiceInitializer} from "@/services/startup/initializer";
+
+import msalInstance from '../msal-config';
+import styles from './layout.module.scss';
+import 'react-tooltip/dist/react-tooltip.css'
 
 const MODE: Mode = Mode.BUY;
 

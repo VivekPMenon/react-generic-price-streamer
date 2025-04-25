@@ -78,6 +78,14 @@
   cursor: pointer;
 }
 
+.axe-icon {
+  -webkit-transform: scaleX(-1);
+  transform: scaleX(-1);
+  height: 15px;
+  width: 15px;
+  background-color: $white;
+}
+
 .recommended-clients {
   gap: 3px;
   max-height: 400px;

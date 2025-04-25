@@ -32,7 +32,7 @@ export interface ProductBrowserStore {
 
     isSimilarBondsLoading: boolean;
     similarBonds: RecommendedBondInHolding[];
-    loadSimilarBondsInHoldings(bond: BondInfo|null, client_name: string|null): Promise<void>;
+    loadSimilarBondsInHoldings(bond: BondInfo|null, client_name?: string|null): Promise<void>;
 
     isTradesForBondLoading: boolean;
     bondTrades: ClientTrade[];
@@ -78,6 +78,9 @@ export const useProductBrowserStore = create<ProductBrowserStore>((set, get) => 
         set({ selectedBond: bond, selectedClient: null });
         state.loadRecommendedClients(bond);
         state.loadRecommendedClientsWithBonds(bond);
+        state.loadTradesForBonds(bond);
+        state.loadSimilarBondsInHoldings(bond);
+
         state.loadTraces(bond?.isin);
         state.loadNewsForBonds(bond);
         state.setSelectedClient(null);
@@ -139,10 +142,10 @@ export const useProductBrowserStore = create<ProductBrowserStore>((set, get) => 
 
     isSimilarBondsLoading: false,
     similarBonds: [],
-    loadSimilarBondsInHoldings: async (bond: BondInfo|null, client_name: string|null) => {
+    loadSimilarBondsInHoldings: async (bond: BondInfo|null, client_name?: string|null) => {
         try {
             set({ isSimilarBondsLoading: true });
-            if (bond && client_name) {
+            if (bond) {
                 const data = await productBrowserDataService.getSimilarBondsInHoldings(bond, client_name);
                 set({similarBonds: data});
             } else {
