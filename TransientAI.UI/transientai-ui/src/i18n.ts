@@ -188,7 +188,7 @@ i18n
                   risk_metrics: {
                       MANAGER: "Manager",
                       ENTITY: "Entity",
-                      GS_MARGIN_EXCESS: "GS Margin Excess",
+                      GS_MARGIN_EXCESS: "Margin Excess",
                       // Add other translations for this section
                   },
                   "pms_1": {
@@ -320,7 +320,7 @@ i18n
                   risk_metrics: {
                       MANAGER: "マネージャー",
                       ENTITY: "エンティティ",
-                      GS_MARGIN_EXCESS: "GS 証拠金超過額",
+                      GS_MARGIN_EXCESS: "証拠金超過額",
                       // Add other translations for this section
                   },
                   "pms_1": {

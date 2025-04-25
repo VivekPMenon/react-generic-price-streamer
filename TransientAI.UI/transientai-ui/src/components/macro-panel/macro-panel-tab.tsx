@@ -10,9 +10,10 @@ export interface MacroPanelTabProps {
     showPopupAction: (symbol: string, type?: MarketDataType, marketData?: MarketData[]) => void;
     changeSuffix?: string
     inverseChange?: boolean;
+    setReportGenerationDate?: (value: Date|null) => void;
 }
 
-function MacroPanelTab({instruments, showCharts, showPopupAction, changeSuffix, inverseChange} : MacroPanelTabProps) {
+function MacroPanelTab({instruments, showCharts, showPopupAction, changeSuffix, inverseChange, setReportGenerationDate} : MacroPanelTabProps) {
     return (
         <div className={`${styles['macro-tab']}`}>
             {
@@ -23,6 +24,7 @@ function MacroPanelTab({instruments, showCharts, showPopupAction, changeSuffix, 
                         showPopupAction={showPopupAction}
                         changeSuffix={changeSuffix}
                         inverseChange={inverseChange}
+                        setReportGenerationDate={setReportGenerationDate}
                         {...instrument}
                     />
                 ))
