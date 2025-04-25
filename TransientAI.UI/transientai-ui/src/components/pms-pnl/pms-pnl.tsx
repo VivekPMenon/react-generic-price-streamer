@@ -42,7 +42,7 @@ function PmsPnl() {
                 onGridSizeChanged={handleGridSizeChanged}
                 onFirstDataRendered={handleFirstDataRendered}
                 suppressStickyTotalRow={false}
-                pinnedTopRowData={report?.length && [report[1]]}
+                pinnedTopRowData={userContext.userRole !== UserRole.CENTER_IBIS && report?.length ? [report[1]] : undefined}
             />
         </div>
     </div>);
