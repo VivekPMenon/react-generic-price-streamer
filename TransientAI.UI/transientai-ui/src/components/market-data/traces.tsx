@@ -7,15 +7,16 @@ import {useProductBrowserStore} from "@/services/product-browser-data/product-br
 const columnDef: ColDef[] = [
     { field: 'security', headerName: 'Bond', cellClass: 'orange-color' },
     { field: 'side', headerName: 'Side', width: 70 },
-    { field: 'spread_change', headerName: 'Spd Change', wrapHeaderText: true, width: 130, ...getNumberColDefTemplate(2, false, '-') },
-    { field: 'price_change', headerName: 'Px Change', wrapHeaderText: true,  },
+    { field: 'traded_price', headerName: 'Px', wrapHeaderText: true, width: 100, ...getNumberColDefTemplate(2, false, '-') },
+    { field: 'traded_spread', headerName: 'Spd', wrapHeaderText: true, width: 100, ...getNumberColDefTemplate(2, false, '-') },
     { field: 'date', headerName: 'Date', width: 90 },
     { field: 'time', headerName: 'Time', width: 90 },
 
     { field: 'isin', headerName: 'ISIN', hide: true },
     { field: 'size_m', headerName: 'Size (K)', width: 90, hide: true, ...getNumberColDefTemplate(0, false, '-') },
-    { field: 'traded_price', headerName: 'Px', wrapHeaderText: true, hide: true, width: 100, ...getNumberColDefTemplate(2, false, '-') },
-    { field: 'traded_spread', headerName: 'Spd', wrapHeaderText: true, hide: true, width: 100, ...getNumberColDefTemplate(2, false, '-') },
+
+    { field: 'spread_change', headerName: 'Spd Change', wrapHeaderText: true, hide: true, width: 130, ...getNumberColDefTemplate(2, false, '-') },
+    { field: 'price_change', headerName: 'Px Change', wrapHeaderText: true, hide: true, },
     { field: 'traded_yield', headerName: 'Yield', wrapHeaderText: true, hide: true, width: 100, ...getNumberColDefTemplate(2, false, '-') },
     { field: 'yield_change', headerName: 'Yield Change', wrapHeaderText: true, hide: true,  },
     { field: 'maturity', headerName: 'Maturity', hide: true },
