@@ -38,6 +38,13 @@
     grid-template-rows: 45% 55%;
   }
 
+  .middle-panel-top {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 40%;
+    gap: 10px;
+  }
+
   .middle-panel-bottom-widgets {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
