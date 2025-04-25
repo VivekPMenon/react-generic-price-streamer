@@ -14,9 +14,9 @@ const columnDef: ColDef[] = [
 
     { field: 'isin', headerName: 'ISIN', hide: true },
     { field: 'size_m', headerName: 'Size (K)', width: 90, hide: true, ...getNumberColDefTemplate(0, false, '-') },
-    { field: 'traded_price', headerName: 'Traded Px', wrapHeaderText: true, hide: true, width: 100, ...getNumberColDefTemplate(2, false, '-') },
-    { field: 'traded_spread', headerName: 'Traded Spd', wrapHeaderText: true, hide: true, width: 100, ...getNumberColDefTemplate(2, false, '-') },
-    { field: 'traded_yield', headerName: 'Traded Yield', wrapHeaderText: true, hide: true, width: 100, ...getNumberColDefTemplate(2, false, '-') },
+    { field: 'traded_price', headerName: 'Px', wrapHeaderText: true, hide: true, width: 100, ...getNumberColDefTemplate(2, false, '-') },
+    { field: 'traded_spread', headerName: 'Spd', wrapHeaderText: true, hide: true, width: 100, ...getNumberColDefTemplate(2, false, '-') },
+    { field: 'traded_yield', headerName: 'Yield', wrapHeaderText: true, hide: true, width: 100, ...getNumberColDefTemplate(2, false, '-') },
     { field: 'yield_change', headerName: 'Yield Change', wrapHeaderText: true, hide: true,  },
     { field: 'maturity', headerName: 'Maturity', hide: true },
     { field: 'rating', headerName: 'Rating', hide: true },
