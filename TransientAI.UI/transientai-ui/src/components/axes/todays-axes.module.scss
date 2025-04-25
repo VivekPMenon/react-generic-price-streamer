@@ -26,7 +26,6 @@
 .clients {
   border: 1px solid $border-color;
   min-width: 30%;
-  height: 100%;
 }
 
 .axe {
@@ -78,20 +77,16 @@
   cursor: pointer;
 }
 
-.axe-icon {
-  -webkit-transform: scaleX(-1);
-  transform: scaleX(-1);
-  height: 15px;
-  width: 15px;
-  background-color: $white;
-}
-
 .recommended-clients {
   gap: 3px;
-  max-height: 400px;
+
 }
 
 .recommendation-container {
+  max-height: 300px;
+  display: grid;
+  gap: 10px;
+  grid-auto-rows: auto auto minmax(75px, 150px);
 }
 
 .recommendation-header {

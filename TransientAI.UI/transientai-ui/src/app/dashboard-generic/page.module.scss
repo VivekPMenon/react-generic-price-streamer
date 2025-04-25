@@ -32,21 +32,22 @@
   }
   
   .middle-panel {
-    display: grid;
+    display: flex;
+    flex-direction: column;
     gap: 5px;
-    width: 100%;
-    grid-template-rows: 45% 55%;
+    flex: 1 1 90%;
   }
 
   .middle-panel-top {
     display: flex;
     flex-direction: column;
-    flex: 1 1 40%;
     gap: 10px;
+    flex: 1 1 45%;
   }
 
   .middle-panel-bottom-widgets {
     display: grid;
+    flex: 1 1 55%;
     grid-template-columns: repeat(2, 1fr);
     gap: 5px;
     width: 100%;
