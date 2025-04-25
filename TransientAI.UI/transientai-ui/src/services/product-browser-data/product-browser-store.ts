@@ -42,8 +42,6 @@ export interface ProductBrowserStore {
     bondNews: NewsArticle[],
     loadNewsForBonds(bond: BondInfo|null): Promise<void>;
 
-    isClientTradesForBondLoading: boolean;
-    clientTrades: ClientTrade[];
     loadClientTrades(bond: BondInfo|null, client_name: string|null): Promise<void>;
 
     isTraceLoading: boolean;
@@ -190,20 +188,18 @@ export const useProductBrowserStore = create<ProductBrowserStore>((set, get) => 
         }
     },
 
-    isClientTradesForBondLoading: false,
-    clientTrades: [],
     loadClientTrades: async (bond: BondInfo|null, client_name: string|null) => {
         try {
-            set({ isClientTradesForBondLoading: true });
+            set({ isTradesForBondLoading: true });
             if (bond && client_name) {
                 const data = await productBrowserDataService.getClientTradesByBond(bond, client_name);
-                set({ clientTrades: data });
+                set({ bondTrades: data });
             } else {
-                set({clientTrades: []});
+                set({bondTrades: []});
             }
 
         } finally {
-            set({ isClientTradesForBondLoading: false });
+            set({ isTradesForBondLoading: false });
         }
     },
 

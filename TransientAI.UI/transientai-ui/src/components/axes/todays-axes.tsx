@@ -21,8 +21,8 @@ const columnDefs: ColDef[] = [
     { field: 'ask_price', headerName: 'Ask Price', width: 80, ...getNumberColDefTemplate(2) },
     { field: 'b_yield', headerName: 'B Yield', width: 80, ...getNumberColDefTemplate(2) },
     { field: 'a_yield', headerName: 'A Yield', width: 80, ...getNumberColDefTemplate(2) },
-    { field: 'b_size_m', headerName: 'B Size M', width: 80, ...getNumberColDefTemplate(2) },
-    { field: 'a_size_m', headerName: 'A Size M', width: 80, ...getNumberColDefTemplate(2) },
+    { field: 'b_size_m', headerName: 'B Size (K)', width: 80, ...getNumberColDefTemplate(2) },
+    { field: 'a_size_m', headerName: 'A Size (K)', width: 80, ...getNumberColDefTemplate(2) },
     { field: 'b_axe', headerName: 'B Axe' },
     { field: 's_axe', headerName: 'S Axe' },
 
