@@ -128,7 +128,7 @@ export function TopClients() {
                 <div>
                     <div className={`${styles['trace-header']}`}>
                         TRACE
-                        Total {formatShortenedRoman(traces.reduce((accumulator, current) => accumulator + (current.size_m || 0), 0), 1, '-')} trd
+                        Total {formatShortenedRoman(traces.reduce((accumulator, current) => accumulator + (current.size_m || 0), 0), 1, '-', true, 1)} trd
                         today
                     </div>
                     <div className={`${styles['trace']}`}>
@@ -136,7 +136,7 @@ export function TopClients() {
                             traces
                                 .slice(0, 3)
                                 .map((element, index) => (
-                                    <li key={index}>{element.side === 'buy' ? 'DB' : 'DS'} {formatShortenedRoman(element.size_m, 1, '-')} {formatDecimal(element.spread_change, '-', 2)}</li>
+                                    <li key={index}>{element.side === 'buy' ? 'DB' : 'DS'} {formatShortenedRoman(element.size_m, 1, '-', true, 1)} {formatDecimal(element.spread_change, '-', 2)}</li>
                                 ))
                         }
                     </div>
@@ -166,8 +166,8 @@ export function TopClients() {
                              (<li>
                                     {
                                         selectedBond.b_axe === 'Y'
-                                            ? ('Axed: +' + (selectedBond?.b_spread ?? '-') + ' Bid ' + (formatShortenedRoman(selectedBond?.b_size_m, 1,  '-')))
-                                            : ('Axed: ' + (formatShortenedRoman(selectedBond?.a_size_m, 1, '-')) + ' @ +' + (selectedBond?.a_spread ?? '-'))
+                                            ? ('Axed: +' + (selectedBond?.b_spread ?? '-') + ' Bid ' + (formatShortenedRoman(selectedBond?.b_size_m, 1,  '-', true, 1)))
+                                            : ('Axed: ' + (formatShortenedRoman(selectedBond?.a_size_m, 1, '-', true, 1)) + ' @ +' + (selectedBond?.a_spread ?? '-'))
                                     }
                              </li>)
                              : null

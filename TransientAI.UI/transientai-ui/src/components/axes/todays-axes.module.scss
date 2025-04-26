@@ -83,10 +83,10 @@
 }
 
 .recommendation-container {
-  max-height: 300px;
+  max-height: 375px;
   display: grid;
   gap: 10px;
-  grid-auto-rows: auto auto minmax(75px, 150px);
+  grid-auto-rows: auto auto minmax(75px, 225px);
 }
 
 .recommendation-header {

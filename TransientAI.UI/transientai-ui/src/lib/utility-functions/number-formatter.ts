@@ -52,14 +52,14 @@ export function formatShortened(amount: number|undefined|null, defaultValue: str
     }
 }
 
-export function formatShortenedRoman(value: number|undefined|null, decimals: number = 1, defaultValue: string = '', isThousands: boolean = true) {
+export function formatShortenedRoman(value: number|undefined|null, decimals: number = 1, defaultValue: string = '', isThousands: boolean = true, limit: number = Number.POSITIVE_INFINITY) {
     if (value === undefined || value === null || Number.isNaN(value)) {
         return defaultValue;
     }
 
     let amount = value;
     let count = isThousands ? 1 : 0;
-    while (amount > 1000) {
+    while (amount > 1000 && count < limit) {
         amount /= 1000;
         count++
     }

@@ -97,9 +97,9 @@ export default function DashboardLayout({
 
           <div className={`${styles['middle-panel']}`}>
             <div className={`${styles['middle-panel-top']} ${isMenuVisible && deviceType === 'mobile' ? styles['collapsed'] : ''}`}>
-              <ContentCarousel
-                  contentType={EContentTypes.NOTIFICATION}
-              />
+              {/*<ContentCarousel*/}
+              {/*    contentType={EContentTypes.NOTIFICATION}*/}
+              {/*/>*/}
               <DashboardTabs>
                 {children}
               </DashboardTabs>
