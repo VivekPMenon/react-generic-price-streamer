@@ -62,6 +62,8 @@ export const useProductBrowserStore = create<ProductBrowserStore>((set, get) => 
 
             set({ axes: data });
 
+        } catch(e: any) {
+            set({axes: []});
         } finally {
             set({ isAxesLoading: false });
         }
@@ -108,6 +110,8 @@ export const useProductBrowserStore = create<ProductBrowserStore>((set, get) => 
                 set({recommendedClients: []});
             }
 
+        } catch(e: any) {
+            set({recommendedClients: []});
         } finally {
             set({ isRecommendedClientsLoading: false });
         }
@@ -133,6 +137,8 @@ export const useProductBrowserStore = create<ProductBrowserStore>((set, get) => 
                 set({recommendedClientsWithBonds: []});
             }
 
+        } catch(e: any) {
+            set({recommendedClientsWithBonds: []});
         } finally {
             set({ isRecommendedClientsLoading: false });
         }
@@ -149,6 +155,8 @@ export const useProductBrowserStore = create<ProductBrowserStore>((set, get) => 
             } else {
                 set({similarBonds: []});
             }
+        } catch(e: any) {
+            set({similarBonds: []});
         } finally {
             set({ isSimilarBondsLoading: false });
         }
@@ -166,6 +174,8 @@ export const useProductBrowserStore = create<ProductBrowserStore>((set, get) => 
                 set({bondTrades: []});
             }
 
+        } catch(e: any) {
+            set({bondTrades: []});
         } finally {
             set({ isTradesForBondLoading: false });
         }
@@ -183,6 +193,8 @@ export const useProductBrowserStore = create<ProductBrowserStore>((set, get) => 
                 set({bondNews: []});
             }
 
+        } catch(e: any) {
+            set({bondNews: []});
         } finally {
             set({ isNewsForBondLoading: false });
         }
@@ -198,6 +210,8 @@ export const useProductBrowserStore = create<ProductBrowserStore>((set, get) => 
                 set({bondTrades: []});
             }
 
+        } catch(e: any) {
+            set({bondTrades: []});
         } finally {
             set({ isTradesForBondLoading: false });
         }
@@ -211,7 +225,9 @@ export const useProductBrowserStore = create<ProductBrowserStore>((set, get) => 
             const data = await productBrowserDataService.getTraces(isin);
             set({ traces: data });
 
-        } finally {
+        } catch(e: any) {
+            set({traces: []});
+        }  finally {
             set({ isTraceLoading: false });
         }
     }
