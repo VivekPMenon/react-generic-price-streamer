@@ -1,15 +1,15 @@
 'use client';
 
 import { useContext, useEffect, useMemo, useState } from 'react';
-import styles from './chatbot.module.scss';
 import { ChatbotResponse } from './chatbot-response';
 import { ChatHistory } from '@/services/chatbot-data/model';
-import { chatbotDataService } from '@/services/chatbot-data/chatbot-data-service';
 import { ChatbotDataContext } from '@/services/chatbot-data';
 import {useChatbotDataStore} from "@/services/chatbot-data/chatbot-data-store";
+import humanizeDuration from 'humanize-duration';
+import styles from './chatbot.module.scss';
 
 export function Chatbot() {
-  const { query: externalQuery, setQuery: setExternalQuery } = useChatbotDataStore();
+  const { query: externalQuery, setQuery: setExternalQuery, chatThreads } = useChatbotDataStore();
   const { chatbotData, setChatbotData } = useContext(ChatbotDataContext);
 
   const [chatHistories, setChatHistories] = useState<ChatHistory[]>([]);
@@ -25,14 +25,13 @@ export function Chatbot() {
 
   function loadChatHistories() {
     const loadChatHistoriesAsync = async () => {
-      const rawChatHistories = await chatbotDataService.getChatHistory();
-
-      const chatHistories = rawChatHistories.map(rawChatHistory => {
+      const chatHistories = chatThreads.map(rawChatHistory => {
         return {
-          title: rawChatHistory.title,
-          conversation_id: rawChatHistory.conversation_id,
+          title: rawChatHistory.thread_name,
+          conversation_id: rawChatHistory.id,
           request: {
-            query: rawChatHistory.messages?.length ? rawChatHistory.messages[0].content : 'not available'
+            query: rawChatHistory.messages?.length ? rawChatHistory.messages[0].content : 'not available',
+            timestampDate: rawChatHistory.messages?.length ? rawChatHistory.messages[0].timestamp : undefined
           },
           response: {
             responseText: rawChatHistory.messages?.length! > 1 ? rawChatHistory.messages![1].content : 'not available'
@@ -118,10 +117,10 @@ export function Chatbot() {
       <div className={`${styles['workflow-list']} scrollable-div`}>
         <h2>Past chats & workflows</h2>
         {
-          visisbleChatHistories.map(chatHistory => (
-            <div className={styles['workflow-item']} onClick={() => selectPastQuery(chatHistory)} key={chatHistory.title}>
+          visisbleChatHistories.map((chatHistory, index) => (
+            <div className={styles['workflow-item']} onClick={() => selectPastQuery(chatHistory)} key={`${chatHistory.title}_${index}`}>
               <p>{chatHistory.title}</p>
-              <span>2 days</span>
+              <span>{chatHistory.request?.timestampDate ? humanizeDuration(chatHistory.request?.timestampDate.getTime()) : ''}</span>
             </div>
           ))
         }

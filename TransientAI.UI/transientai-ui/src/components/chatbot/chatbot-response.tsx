@@ -1,6 +1,5 @@
 import {useContext, useEffect, useState} from 'react';
 import styles from './chatbot-response.module.scss';
-import {chatbotDataService} from '@/services/chatbot-data/chatbot-data-service';
 import {ChatbotConversation, ChatHistory, ChatResponseType} from '@/services/chatbot-data/model';
 import {Spinner} from '@radix-ui/themes';
 import ReactMarkdown from 'react-markdown';
@@ -11,6 +10,7 @@ import {useMenuStore} from '@/services/menu-data/menu-data-store';
 import remarkGfm from 'remark-gfm';
 import {ChevronDownIcon} from "@radix-ui/react-icons";
 import {formatDecimal} from "@/lib/utility-functions";
+import {useChatbotDataStore} from "@/services/chatbot-data/chatbot-data-store";
 
 interface ChatResponseProps {
   chatHistory: ChatbotConversation;
@@ -67,8 +67,8 @@ export interface ChatbotResponseProps {
 export function ChatbotResponse(props: ChatbotResponseProps) {
   const { setActiveMenu } = useMenuStore();
   const { chatbotData, setChatbotData } = useContext(ChatbotDataContext);
-
   const [query, setQuery] = useState<string>('');
+  const {getChatbotResponseStream} = useChatbotDataStore();
 
   function onKeyDown(event: any) {
     if (event.key !== "Enter") {
@@ -124,7 +124,7 @@ export function ChatbotResponse(props: ChatbotResponseProps) {
 
       const startTime = Date.now();
       let endTime: null|number = null;
-      chatbotDataService.getChatbotResponseStream(query)
+      getChatbotResponseStream(query)
           .subscribe({
             next: (response) => {
               switch (response.type) {
@@ -138,6 +138,8 @@ export function ChatbotResponse(props: ChatbotResponseProps) {
                     lastChatHistory.status!.showLogs = false;
                   }
                   lastChatHistory.response!.responseText += response.text;
+                  lastChatHistory.response!.thread_id = response.thread_id;
+                  console.log('', response);
                   break;
               }
               setChatbotData({

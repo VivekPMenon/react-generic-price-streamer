@@ -79,11 +79,11 @@ function ClientComponent({ client }: ClientProps) {
                     <div
                         data-tooltip-id="clients-tooltip"
                         data-tooltip-content="Voice/Chat"
-                        data-tooltip-place="top"><i className="fa-solid fa-comments" onClick={() => {}}></i></div>
+                        data-tooltip-place="top"><i className="fa-solid fa-comments" onClick={() => {}}/></div>
                     <div
                         data-tooltip-id="clients-tooltip"
                         data-tooltip-content="Check client holdings"
-                        data-tooltip-place="top"><i className="fa-solid fa-warehouse" onClick={loadHoldings}></i></div>
+                        data-tooltip-place="top"><i className="fa-solid fa-warehouse" onClick={loadHoldings} /></div>
                     <div
                         data-tooltip-id="clients-tooltip"
                         data-tooltip-content="Check client trades"
@@ -95,7 +95,7 @@ function ClientComponent({ client }: ClientProps) {
                     <div
                         data-tooltip-id="clients-tooltip"
                         data-tooltip-content="Client info"
-                        data-tooltip-place="top"><i className="fa-regular fa-address-book" onClick={() => {}}></i></div>
+                        data-tooltip-place="top"><i className="fa-regular fa-address-book" onClick={() => {}} /></div>
                 </div>
                 <div
                     className={`${styles['expanded-section']}`}

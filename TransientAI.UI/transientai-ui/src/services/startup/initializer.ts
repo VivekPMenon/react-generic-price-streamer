@@ -9,6 +9,7 @@ import {useProductBrowserStore} from "@/services/product-browser-data/product-br
 import {useResearchReportsStore} from "@/services/reports-data";
 import {PollManager} from "@/lib/utility/PollManager";
 import {useRiskDataStore} from "@/services/risk-data/risk-data-store";
+import {useChatbotDataStore} from "@/services/chatbot-data/chatbot-data-store";
 
 export class ServiceInitializer {
     private isInitialized: boolean = false;
@@ -78,8 +79,7 @@ export class ServiceInitializer {
         productBrowser.loadAxes().catch((err) => console.error(err));
         productBrowser.loadTraces().catch((err) => console.error(err));
 
-        const breakingNews = useBreakNewsDataStore.getState();
-        breakingNews.loadBreakNews().catch((err) => console.error(err));
-        breakingNews.startPolling();
+        const chat = useChatbotDataStore.getState();
+        chat.loadUserThreads().catch((err) => console.error(err));
     }
 }

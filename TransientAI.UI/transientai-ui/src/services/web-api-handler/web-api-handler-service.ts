@@ -224,7 +224,7 @@ class WebApihandler {
     return this.executeRequest(config);
   }
 
-  async delete(url: string, webApiOptions?: WebApihandlerOptions) {
+  async delete(url: string, webApiOptions?: WebApihandlerOptions, params?: { [key: string]: any }) {
     const finalUrl = this.getUrl(url, webApiOptions);
     const config: AxiosRequestConfig = {
       url: finalUrl,
@@ -232,7 +232,8 @@ class WebApihandler {
       headers: {
         Authorization: `Bearer ${this.bearerToken}`,
         ...webApiOptions?.headers
-      }
+      },
+      params
     };
     return this.executeRequest(config);
   }

@@ -3,6 +3,7 @@
 export interface ChatbotRequestType {
   query?: string;
   timestamp?: string;
+  timestampDate?: Date;
   user_id?: string;
   conversation_id?: string;
   stream?: boolean;
@@ -13,6 +14,7 @@ export interface ChatbotRequestType {
 export interface ChatbotResponseType {
   responseText?: string;
   timestamp?: string;
+  thread_id?: string;
 }
 
 export interface ChatHistory {
@@ -69,5 +71,21 @@ export enum ChatResponseType {
 
 export interface ChatResponse {
   text: string;
+  thread_id?: string;
   type: ChatResponseType;
+}
+
+export interface ChatThread {
+  id: string;
+  user_id: string;
+  thread_name: string;
+  messages: ChatMessage[];
+  created_at: Date;
+  updated_at: Date;
+}
+
+export interface ChatMessage {
+  role: string;
+  content: string;
+  timestamp: Date;
 }
