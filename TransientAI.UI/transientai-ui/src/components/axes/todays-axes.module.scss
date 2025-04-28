@@ -85,8 +85,8 @@
   max-height: 375px;
   display: grid;
   gap: 10px;
-  grid-auto-rows: auto auto minmax(75px, 225px);
   overflow-y: auto;
+  grid-auto-rows: auto auto minmax(75px, 200px);
 }
 
 .recommendation-header {
@@ -97,6 +97,12 @@
 
 .description {
   color: $yellow;
+}
+
+.issuer {
+  color: $yellow;
+  text-decoration: underline;
+  text-transform: uppercase;
 }
 
 .size {
