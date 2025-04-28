@@ -48,7 +48,6 @@ export interface TopRecommendation {
 export interface RecommendedClient {
   client_name: string;
   score: number;
-  description: string;
 }
 
 export interface RecommendedBond {
@@ -70,6 +69,7 @@ export interface RecommendedBondInHolding {
   score: number;
   issuer_name: string;
   par_held: number;
+  par_change: number;
   security: string;
   client_name: string;
 }

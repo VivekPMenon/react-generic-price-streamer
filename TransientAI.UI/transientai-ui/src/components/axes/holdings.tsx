@@ -1,6 +1,6 @@
 'use client'
 
-import { DataGrid, getNumberColDefTemplate } from "../data-grid";
+import {DataGrid, getNumberColDefTemplate, getRomanNumberColDefTemplate} from "../data-grid";
 import { ColDef } from "ag-grid-community";
 import {useProductBrowserStore} from "@/services/product-browser-data/product-browser-store";
 
@@ -17,9 +17,16 @@ const columnDefs: ColDef[] = [
         width: 120
     },
     {
-        ...getNumberColDefTemplate(2),
+        ...getRomanNumberColDefTemplate(0, true, '', false, 1),
         field: 'par_held',
-        headerName: 'Position',
+        headerName: 'Holding',
+        width: 140,
+        sort: 'desc'
+    },
+    {
+        ...getNumberColDefTemplate(2),
+        field: 'par_change',
+        headerName: 'Change',
         width: 140,
         sort: 'desc'
     },

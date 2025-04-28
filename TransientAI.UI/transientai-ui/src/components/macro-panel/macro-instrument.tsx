@@ -129,9 +129,10 @@ export interface MacroInstrumentProps {
     changeSuffix?: string
     inverseChange?: boolean;
     type?: MarketDataType;
+    setReportGenerationDate?: (value: Date|null) => void;
 }
 
-function MacroInstrument({symbol, type, name, value, change, percent, marketData: data, showCharts, showPopupAction, changeSuffix, inverseChange}: MacroInstrumentProps) {
+function MacroInstrument({symbol, type, name, value, change, percent, marketData: data, showCharts, showPopupAction, changeSuffix, inverseChange, setReportGenerationDate}: MacroInstrumentProps) {
     const [marketData, setMarketData] = useState<MarketData[]|undefined>(undefined);
     const [isLoading, setIsLoading] = useState<boolean>(true);
 
@@ -147,6 +148,9 @@ function MacroInstrument({symbol, type, name, value, change, percent, marketData
             marketDataService.getIntradayData(symbol, PeriodType.ONE_DAY, type, controller.signal)
                 .then(result => {
                     if (result) {
+                        if (setReportGenerationDate && symbol === 'YMUSD') {
+                            setReportGenerationDate(result.timestamp);
+                        }
                         setMarketData(result.marketData);
                     }
                 })
@@ -159,7 +163,7 @@ function MacroInstrument({symbol, type, name, value, change, percent, marketData
         } else {
             setIsLoading(false);
         }
-    }, [data, symbol, type]);
+    }, [data, symbol, type, setReportGenerationDate]);
 
     const isNegative = inverseChange === true
         ? ((change ?? 0.0) > 0.0)

@@ -35,7 +35,7 @@ function ChatResponseComponent({chatHistory}: ChatResponseProps) {
                 className={`${styles['expander-button' + (open  ? '-open' : '')]}`}
             />
           </div>
-          <p>
+          <div>
             {chatHistory.status!.showLogs &&
               (
                   <div className={styles['status-message']}>
@@ -51,7 +51,7 @@ function ChatResponseComponent({chatHistory}: ChatResponseProps) {
                 className='markdown'
                 remarkPlugins={[remarkGfm]}
             >{chatHistory.response!.responseText}</ReactMarkdown>
-          </p>
+          </div>
         </div>
         <div className={`${styles['assistant-message-time']}`}>{chatHistory.response?.timestamp}</div>
       </div>
@@ -65,13 +65,10 @@ export interface ChatbotResponseProps {
 }
 
 export function ChatbotResponse(props: ChatbotResponseProps) {
-
-  const { fullMenuList, setActiveMenu } = useMenuStore();
+  const { setActiveMenu } = useMenuStore();
   const { chatbotData, setChatbotData } = useContext(ChatbotDataContext);
 
   const [query, setQuery] = useState<string>('');
-
-  useEffect(() => loadChatbotResponse(), [props.query]);
 
   function onKeyDown(event: any) {
     if (event.key !== "Enter") {
@@ -98,7 +95,6 @@ export function ChatbotResponse(props: ChatbotResponseProps) {
 
   function executeChatbotRequest(query: string) {
     const executeChatbotRequestAsync = async () => {
-
       const existingConversations = chatbotData.conversations || [];
       const lastChatHistory: ChatbotConversation =  {
         request: {
@@ -173,17 +169,6 @@ export function ChatbotResponse(props: ChatbotResponseProps) {
               props.onNewQueryExecuted();
             }
           });
-
-      // try {
-      //   const response = await chatbotDataService.getChatbotResponse(query);
-      //   lastChatHistory.response!.responseText += response;
-      //   setChatbotData({
-      //     ...chatbotData,
-      //     conversations: newChatConversations
-      //   });
-      // } finally {
-      //   lastChatHistory.request!.isLoading = false;
-      // }
     };
 
     executeChatbotRequestAsync();
@@ -206,10 +191,12 @@ export function ChatbotResponse(props: ChatbotResponseProps) {
     });
   }
 
+  useEffect(() => loadChatbotResponse(), [props.query]);
+
   const chatHistoryElement = chatbotData.conversations?.length ?
     chatbotData.conversations.map((chatHistory, index) => (
-      <>
-        <div key={index} className={styles['chat-message']}>
+      <div key={index}>
+        <div className={styles['chat-message']}>
           <div className={styles['message-content']}>
             <div className={styles['message-header'] + ' profile-pic'}>
               <img src="/images/ProfilePicAI.png"></img>
@@ -236,7 +223,7 @@ export function ChatbotResponse(props: ChatbotResponseProps) {
               />
               : <></>
         }
-      </>
+      </div>
     ))
     : <></>;
 

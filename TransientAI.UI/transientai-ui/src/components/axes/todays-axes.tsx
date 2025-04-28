@@ -1,12 +1,11 @@
 'use client';
 
-import {RowClassParams, ColDef, RowClassRules, RowDoubleClickedEvent, GridSizeChangedEvent} from 'ag-grid-community';
+import {RowClassParams, ColDef, RowClassRules, RowDoubleClickedEvent, RowClickedEvent} from 'ag-grid-community';
 import {DataGrid, getNumberColDefTemplate} from '../data-grid';
 import { BondInfo } from '@/services/product-browser-data';
 import styles from './todays-axes.module.scss';
 import { TopClients } from './top-clients';
 import {useProductBrowserStore} from "@/services/product-browser-data/product-browser-store";
-import {handleGridSizeChanged} from "@/components/pms-pnl/pms-pnl-config";
 
 const rowClassRules: RowClassRules = {};
 rowClassRules[`${styles["axe"]}`] = (params: RowClassParams) => params.data.is_golden !== true;
@@ -22,8 +21,8 @@ const columnDefs: ColDef[] = [
     { field: 'ask_price', headerName: 'Ask Price', width: 80, ...getNumberColDefTemplate(2) },
     { field: 'b_yield', headerName: 'B Yield', width: 80, ...getNumberColDefTemplate(2) },
     { field: 'a_yield', headerName: 'A Yield', width: 80, ...getNumberColDefTemplate(2) },
-    { field: 'b_size_m', headerName: 'B Size M', width: 80, ...getNumberColDefTemplate(2) },
-    { field: 'a_size_m', headerName: 'A Size M', width: 80, ...getNumberColDefTemplate(2) },
+    { field: 'b_size_m', headerName: 'B Size (K)', width: 80, ...getNumberColDefTemplate(2) },
+    { field: 'a_size_m', headerName: 'A Size (K)', width: 80, ...getNumberColDefTemplate(2) },
     { field: 'b_axe', headerName: 'B Axe' },
     { field: 's_axe', headerName: 'S Axe' },
 
@@ -48,15 +47,15 @@ const columnDefs: ColDef[] = [
 export function TodaysAxes() {
   const { isAxesLoading, axes, setSelectedBond } = useProductBrowserStore();
 
-  function onRowDoubleClicked(event: RowDoubleClickedEvent<BondInfo>) {
+  function onRowDoubleClicked(event: RowClickedEvent<BondInfo>) {
     if (event.data) {
       setSelectedBond(event.data);
     }
   }
 
   return (
-    <div className={styles['todays-axes']}>
-      <div className={styles['axes']}>
+    <div className={`${styles['todays-axes']} grid md:grid-cols-3`}>
+      <div className={`${styles['axes']} md:col-span-2`}>
         <div className='sub-header'>Axes</div>
         <DataGrid
           isSummaryGrid={false}
@@ -64,11 +63,13 @@ export function TodaysAxes() {
           loading={isAxesLoading}
           rowData={axes}
           columnDefs={columnDefs}
-          onRowDoubleClicked={onRowDoubleClicked}
+          // onRowDoubleClicked={onRowDoubleClicked}
+          onRowClicked={onRowDoubleClicked}
           rowClassRules={rowClassRules}
           suppressStatusBar={true}
           gridOptions={{
             suppressRowHoverHighlight: true,
+            rowSelection: 'single'
           }}
         />
       </div>

@@ -51,7 +51,7 @@ export const useRiskDataStore = create<RiskDataState>((set, get) => ({
         lastUpdatedTimestamp: result?.timestamp,
         isLoading: false,
         riskMetricsItemsFiltered: result?.margin_data?.filter((data: RiskMetricsItem) => {
-          return data.name === 'Chris Napoli' || data.name === 'IBIS_ALL*';
+          return data.name === 'IBIS_ALL*';
         })
       });
     } catch (error) {

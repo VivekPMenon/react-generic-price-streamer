@@ -1,4 +1,4 @@
-import React, {useMemo, useState, memo} from 'react';
+import React, {useMemo, useState, memo, useCallback} from 'react';
 import { Spinner, Tabs } from '@radix-ui/themes';
 import { useMacroPanelDataStore } from "@/services/macro-panel-data/macro-panel-data-store";
 import styles from './macro-panel-tabs.module.scss';
@@ -12,13 +12,13 @@ import {MarketDataType} from "@/services/macro-panel-data/model";
 import i18n from '../../i18n';
 
 function MacroPanelTabs() {
-    const { reportGenerationDate, treasuryYields, fxRates, cryptos, equityFutures, isTreasuryLoading, isFxLoading, isCryptoLoading, isEquityFuturesLoading } = useMacroPanelDataStore();
+    const { reportGenerationDate, setReportGenerationDate, treasuryYields, fxRates, cryptos, equityFutures, isTreasuryLoading, isFxLoading, isCryptoLoading, isEquityFuturesLoading } = useMacroPanelDataStore();
     const [open, setOpen] = useState(false);
     const [isLoadingMarketData, setIsLoadingMarketData] = useState(false);
     const [instrument, setInstrument] = useState<Instrument | null>(null);
     const deviceType = useDeviceType();
 
-    function showPopup(symbol: string, type?: MarketDataType, marketData?: MarketData[]) {
+    const showPopup = useCallback((symbol: string, type?: MarketDataType, marketData?: MarketData[])=> {
         if (symbol) {
             setIsLoadingMarketData(true);
             setOpen(true);
@@ -54,14 +54,14 @@ function MacroPanelTabs() {
                     setIsLoadingMarketData(false);
                 });
         }
-    }
+    }, []);
 
-    function handleOpenChange(open: boolean) {
+    const handleOpenChange = useCallback((open: boolean)=> {
         setOpen(open);
         if (!open) {
             setInstrument(null);
         }
-    }
+    }, []);
 
     const isMobile = deviceType !== 'desktop';
     const groupedEquityFutures = useMemo(() => [...Map.groupBy(equityFutures, item => item.group_name).entries()], [equityFutures]);
@@ -98,6 +98,7 @@ function MacroPanelTabs() {
                                             showCharts={true}
                                             showPopupAction={showPopup}
                                             inverseChange={false}
+                                            setReportGenerationDate={setReportGenerationDate}
                                         />
                                     </Tabs.Content>
                                 ))}
@@ -219,7 +220,7 @@ function MacroPanelTabs() {
                             }
                         </div>
                         <div className={styles['dialog-close']}>
-                            <Dialog.DialogClose asChild>
+                            <Dialog.DialogClose>
                                 <Cross1Icon />
                             </Dialog.DialogClose>
                         </div>

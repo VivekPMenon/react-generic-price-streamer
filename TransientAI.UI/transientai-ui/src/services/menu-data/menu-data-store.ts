@@ -9,7 +9,7 @@ interface MenuState {
   defaultMenu: MenuInfo;
   setActiveMenu: (menu: MenuInfo) => void;
   closeTab: (menuId: string) => void;
-  initializeMenus: (mode: Mode) => void;
+  initializeMenus: (mode: Mode, userRole: string) => void;
 }
 
 function calculateDefaultMenu(menuInfoList: MenuInfo[], defaultMenuId: string) {
@@ -38,10 +38,12 @@ export const useMenuStore = create<MenuState>((set) => ({
   selectedMenu: [],
   defaultMenu: [],
 
-  initializeMenus: (mode: Mode) => {
-    const menuInfoList = getMenuItems(mode);
+  initializeMenus: (mode: Mode, userRole: string) => {
+    const menuInfoList = getMenuItems(mode, userRole);
 
-    const defaultMenuId = mode === Mode.BUY ? 'hurricane-pms' : 'todays-axes';
+    const defaultMenuId = mode === Mode.BUY 
+    ? (menuInfoList.some(menu => menu.id === 'hurricane-pms') ? 'hurricane-pms' : 'macro-panel') 
+    : 'todays-axes';
 
     set({
         activeMenuList: calculateActiveMenuList(menuInfoList, defaultMenuId),

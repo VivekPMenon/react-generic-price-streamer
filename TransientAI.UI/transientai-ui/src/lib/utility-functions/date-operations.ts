@@ -302,9 +302,12 @@ export function parseIsoDate(value: string|null|undefined): Date|null {
   if (!value) {
     return null;
   }
-  return new Date(value.endsWith('T00:00:00')
+
+  const regex = /^(?!.*Z$)\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d+$/;
+  const toParse = regex.test(value)
       ? value + 'Z'
-      : value);
+      : value
+  return new Date(toParse);
 }
 
 

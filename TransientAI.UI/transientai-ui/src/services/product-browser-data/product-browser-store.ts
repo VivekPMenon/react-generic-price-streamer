@@ -32,7 +32,7 @@ export interface ProductBrowserStore {
 
     isSimilarBondsLoading: boolean;
     similarBonds: RecommendedBondInHolding[];
-    loadSimilarBondsInHoldings(bond: BondInfo|null, client_name: string|null): Promise<void>;
+    loadSimilarBondsInHoldings(bond: BondInfo|null, client_name?: string|null): Promise<void>;
 
     isTradesForBondLoading: boolean;
     bondTrades: ClientTrade[];
@@ -42,8 +42,6 @@ export interface ProductBrowserStore {
     bondNews: NewsArticle[],
     loadNewsForBonds(bond: BondInfo|null): Promise<void>;
 
-    isClientTradesForBondLoading: boolean;
-    clientTrades: ClientTrade[];
     loadClientTrades(bond: BondInfo|null, client_name: string|null): Promise<void>;
 
     isTraceLoading: boolean;
@@ -64,6 +62,8 @@ export const useProductBrowserStore = create<ProductBrowserStore>((set, get) => 
 
             set({ axes: data });
 
+        } catch(e: any) {
+            set({axes: []});
         } finally {
             set({ isAxesLoading: false });
         }
@@ -78,6 +78,9 @@ export const useProductBrowserStore = create<ProductBrowserStore>((set, get) => 
         set({ selectedBond: bond, selectedClient: null });
         state.loadRecommendedClients(bond);
         state.loadRecommendedClientsWithBonds(bond);
+        state.loadTradesForBonds(bond);
+        state.loadSimilarBondsInHoldings(bond);
+
         state.loadTraces(bond?.isin);
         state.loadNewsForBonds(bond);
         state.setSelectedClient(null);
@@ -107,6 +110,8 @@ export const useProductBrowserStore = create<ProductBrowserStore>((set, get) => 
                 set({recommendedClients: []});
             }
 
+        } catch(e: any) {
+            set({recommendedClients: []});
         } finally {
             set({ isRecommendedClientsLoading: false });
         }
@@ -132,6 +137,8 @@ export const useProductBrowserStore = create<ProductBrowserStore>((set, get) => 
                 set({recommendedClientsWithBonds: []});
             }
 
+        } catch(e: any) {
+            set({recommendedClientsWithBonds: []});
         } finally {
             set({ isRecommendedClientsLoading: false });
         }
@@ -139,15 +146,17 @@ export const useProductBrowserStore = create<ProductBrowserStore>((set, get) => 
 
     isSimilarBondsLoading: false,
     similarBonds: [],
-    loadSimilarBondsInHoldings: async (bond: BondInfo|null, client_name: string|null) => {
+    loadSimilarBondsInHoldings: async (bond: BondInfo|null, client_name?: string|null) => {
         try {
             set({ isSimilarBondsLoading: true });
-            if (bond && client_name) {
+            if (bond) {
                 const data = await productBrowserDataService.getSimilarBondsInHoldings(bond, client_name);
                 set({similarBonds: data});
             } else {
                 set({similarBonds: []});
             }
+        } catch(e: any) {
+            set({similarBonds: []});
         } finally {
             set({ isSimilarBondsLoading: false });
         }
@@ -165,6 +174,8 @@ export const useProductBrowserStore = create<ProductBrowserStore>((set, get) => 
                 set({bondTrades: []});
             }
 
+        } catch(e: any) {
+            set({bondTrades: []});
         } finally {
             set({ isTradesForBondLoading: false });
         }
@@ -182,25 +193,27 @@ export const useProductBrowserStore = create<ProductBrowserStore>((set, get) => 
                 set({bondNews: []});
             }
 
+        } catch(e: any) {
+            set({bondNews: []});
         } finally {
             set({ isNewsForBondLoading: false });
         }
     },
 
-    isClientTradesForBondLoading: false,
-    clientTrades: [],
     loadClientTrades: async (bond: BondInfo|null, client_name: string|null) => {
         try {
-            set({ isClientTradesForBondLoading: true });
+            set({ isTradesForBondLoading: true });
             if (bond && client_name) {
                 const data = await productBrowserDataService.getClientTradesByBond(bond, client_name);
-                set({ clientTrades: data });
+                set({ bondTrades: data });
             } else {
-                set({clientTrades: []});
+                set({bondTrades: []});
             }
 
+        } catch(e: any) {
+            set({bondTrades: []});
         } finally {
-            set({ isClientTradesForBondLoading: false });
+            set({ isTradesForBondLoading: false });
         }
     },
 
@@ -212,7 +225,9 @@ export const useProductBrowserStore = create<ProductBrowserStore>((set, get) => 
             const data = await productBrowserDataService.getTraces(isin);
             set({ traces: data });
 
-        } finally {
+        } catch(e: any) {
+            set({traces: []});
+        }  finally {
             set({ isTraceLoading: false });
         }
     }

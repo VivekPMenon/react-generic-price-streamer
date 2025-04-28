@@ -77,5 +77,9 @@ export class ServiceInitializer {
         const productBrowser = useProductBrowserStore.getState();
         productBrowser.loadAxes().catch((err) => console.error(err));
         productBrowser.loadTraces().catch((err) => console.error(err));
+
+        const breakingNews = useBreakNewsDataStore.getState();
+        breakingNews.loadBreakNews().catch((err) => console.error(err));
+        breakingNews.startPolling();
     }
 }

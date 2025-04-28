@@ -15,7 +15,15 @@
   --ag-checkbox-background-color: white;
   --ag-balham-active-color: #00b2ac;
   --ag-odd-row-background-color: #{$body-bg};
+  --ag-even-row-background-color: #{$blue-alt};
 
+  .ag-row-odd {
+    background-color: $grid-odd-row-color;
+  }
+
+  .ag-row-even {
+    background-color: $body-bg;
+  }
 
   ::-webkit-scrollbar {
     width: 7px;

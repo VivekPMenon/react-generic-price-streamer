@@ -4,7 +4,7 @@
   display: flex;
   flex-direction: column;
   height: 100%;
-  
+
   // move this to the header class
   header {
     display: flex;
@@ -12,14 +12,30 @@
     align-items: center;
     flex: 0 0 40px;
     align-content: center;
-    padding: 10px 10px 0 10px;
+    padding: 10px 10px 0px 10px;
+    background-color: $body-bg;
+    z-index: 99;
+    width: 100%;
+
+    // fixed header for phones
+    @media screen and (max-width: $mobile-breakpoint-max) {
+      position: fixed;
+      padding: 10px 10px 10px 10px;
+    }
   }
-  
+
   main {
     flex: 1 1 90%;
     display: flex;
     padding: 10px;
     gap: 10px;
+    background-color: $body-bg;
+
+    // fixed header for phones
+    @media screen and (max-width: $mobile-breakpoint-max) {
+
+      margin-top: 60px;
+    }
   }
 
   .left-panel {
@@ -27,35 +43,41 @@
     flex-direction: column;
     flex: 1 1 10%;
     gap: 10px;
-    max-width: 300px;
-    min-width: 300px;
-  }
-  
-  .middle-panel {
-    display: grid;
-    gap: 5px;
-    width: 100%;
-    grid-template-rows: 45% 55%;
-  }
-
-  .middle-panel-bottom-widgets {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 5px;
-    width: 100%;
-    grid-auto-rows: 50%;
-    grid-gap: 5px;
-  }
-
-  .middle-panel-bottom-widgets > * {
-    border: 1px solid $border-color;
-    border-radius: 5px;
+    max-width: 425px;
+    z-index: 10;
+    background-color: $body-bg;
+    transition: transform 0.3s ease-in-out;
     height: 100%;
-    align-items: stretch;
+
+    @media screen and (max-width: $mobile-breakpoint-max) {
+      max-width: unset;
+      position: fixed;
+      transform: translateX(0);
+      right: 5px;
+      left: 5px;
+    }
+
+    &.collapsed {
+      position: fixed;
+      transform: translateX(-100%);
+      right: 5px;
+      left: 5px;
+    }
   }
 
-  .widget {
+  .middle-panel {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 90% !important;
+    gap: 10px;
+    
+    &.collapsed {
+      display: none;
+    }
   }
+
+  
+  .widget {}
 
   .trading-activity {
     @extend .widget;
@@ -72,11 +94,37 @@
   .traces-panel {
     @extend .widget;
   }
+}
 
-  .right-panel {
-    display: flex;
-    flex-direction: column;
-    flex: 1 1 25%;
-    gap: 10px;
+
+$popup-margin-bolck: 70px;
+
+.right-panel {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 30%;
+  gap: 10px;
+  transition: transform 0.5s ease-in;
+  background-color: $body-bg;
+  z-index: 10;
+  right: 0;
+
+  @media screen and (max-width: $mobile-breakpoint-max) {
+    position: fixed;
+    transform: translateX(100%);
+    width: 100%;
+    height: 85vh;
+    border-radius: 30px;
+    // height: calc(100vh - ($popup-margin-bolck + $popup-margin-bolck));
+    box-shadow: 0px 0px 19px -3px #f3f3f3;
+    padding: 0px 10px;
+    overflow-y: auto; // Enable vertical scrolling
+    max-height: 90vh; // Control maximum height
+    // margin-block: $popup-margin-bolck;
+  }
+
+  &.collapsed {
+    position: fixed;
+    transform: translateX(0%);
   }
 }
