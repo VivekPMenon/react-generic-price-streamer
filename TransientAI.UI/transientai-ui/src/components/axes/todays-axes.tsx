@@ -1,6 +1,6 @@
 'use client';
 
-import {RowClassParams, ColDef, RowClassRules, RowDoubleClickedEvent} from 'ag-grid-community';
+import {RowClassParams, ColDef, RowClassRules, RowDoubleClickedEvent, RowClickedEvent} from 'ag-grid-community';
 import {DataGrid, getNumberColDefTemplate} from '../data-grid';
 import { BondInfo } from '@/services/product-browser-data';
 import styles from './todays-axes.module.scss';
@@ -47,15 +47,15 @@ const columnDefs: ColDef[] = [
 export function TodaysAxes() {
   const { isAxesLoading, axes, setSelectedBond } = useProductBrowserStore();
 
-  function onRowDoubleClicked(event: RowDoubleClickedEvent<BondInfo>) {
+  function onRowDoubleClicked(event: RowClickedEvent<BondInfo>) {
     if (event.data) {
       setSelectedBond(event.data);
     }
   }
 
   return (
-    <div className={styles['todays-axes']}>
-      <div className={styles['axes']}>
+    <div className={`${styles['todays-axes']} grid md:grid-cols-3`}>
+      <div className={`${styles['axes']} md:col-span-2`}>
         <div className='sub-header'>Axes</div>
         <DataGrid
           isSummaryGrid={false}
@@ -63,11 +63,13 @@ export function TodaysAxes() {
           loading={isAxesLoading}
           rowData={axes}
           columnDefs={columnDefs}
-          onRowDoubleClicked={onRowDoubleClicked}
+          // onRowDoubleClicked={onRowDoubleClicked}
+          onRowClicked={onRowDoubleClicked}
           rowClassRules={rowClassRules}
           suppressStatusBar={true}
           gridOptions={{
             suppressRowHoverHighlight: true,
+            rowSelection: 'single'
           }}
         />
       </div>

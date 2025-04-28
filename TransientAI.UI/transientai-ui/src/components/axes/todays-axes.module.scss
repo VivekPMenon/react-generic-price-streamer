@@ -1,7 +1,6 @@
 @import '../../assets/variables.scss';
 
 .todays-axes {
-  display: flex;
   height: 100%;
   gap: 5px;
 
@@ -87,6 +86,7 @@
   display: grid;
   gap: 10px;
   grid-auto-rows: auto auto minmax(75px, 225px);
+  overflow-y: auto;
 }
 
 .recommendation-header {
