@@ -159,6 +159,7 @@ export function TopClients() {
         <div className={`${styles['recommendation-container']}`}>
             <div className='sub-header'>Top Recommendations</div>
             <div className={`${styles['recommendation-header']}`}>
+                <span className={`${styles['issuer']}`}>{selectedBond?.bond_issuer}</span>
                 <span className={`${styles['description']}`}>{selectedBond?.product_description}</span>
                 <span className={`${styles['size']}`}>
                          { selectedBond
