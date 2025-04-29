@@ -145,7 +145,6 @@ export function MacroPanel() {
                                     showFinancialData={false}
                                     showPriceSummary={false}
                                     className={styles['market-data-graph']}
-                                    enableChartExport={false}
                                 />
                            )
                         }

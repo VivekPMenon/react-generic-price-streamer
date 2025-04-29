@@ -12,7 +12,7 @@ export interface ChatbotDataStore {
 
     getChatbotResponseStream(request: string): Observable<ChatResponse>;
     loadThreadMessages(thread_id: string): Promise<ChatThread|null>;
-    clearThread(thread_id: string): Promise<boolean>;
+    clearThread(thread_id: string): Promise<void>;
     createThread(): Promise<ChatThread|null>;
 }
 
@@ -45,8 +45,13 @@ export const useChatbotDataStore = create<ChatbotDataStore>((set, get) => ({
         return chatbotDataService.createThread(user_id!)
     },
 
-    clearThread: (thread_id: string) => {
+    clearThread: async (thread_id: string) => {
         const user_id = useUserContextStore.getState().userContext.userId;
-        return chatbotDataService.clearThread(thread_id, user_id!)
+        const success = await chatbotDataService.clearThread(thread_id, user_id!)
+        if (success) {
+            set({
+                chatThreads : get().chatThreads.filter(thread => thread.id !== thread_id)
+            });
+        }
     }
 }));

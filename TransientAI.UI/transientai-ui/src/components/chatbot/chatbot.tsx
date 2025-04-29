@@ -23,7 +23,7 @@ const formatOptions: FormatDistanceOptions = {
 }
 
 export function Chatbot() {
-  const { query: externalQuery, setQuery: setExternalQuery, chatThreads, loadUserThreads } = useChatbotDataStore();
+  const { query: externalQuery, setQuery: setExternalQuery, chatThreads, loadUserThreads, clearThread } = useChatbotDataStore();
   const { chatbotData, setChatbotData } = useContext(ChatbotDataContext);
 
   const [chatHistories, setChatHistories] = useState<ChatHistory[]>([]);
@@ -33,23 +33,6 @@ export function Chatbot() {
   const visibleChatHistories = useMemo<ChatHistory[]>(
       () => calculateVisibleHistories(chatHistories, isAllChatsShown),
       [isAllChatsShown, chatHistories])
-
-  useEffect(() => {
-    const chatHistories = chatThreads.map(rawChatHistory => {
-      return {
-        title: rawChatHistory.thread_name,
-        conversation_id: rawChatHistory.id,
-        request: {
-          query: rawChatHistory.messages?.length ? rawChatHistory.messages[0].content : 'not available',
-          timestampDate: rawChatHistory.messages?.length ? rawChatHistory.messages[0].timestamp : undefined
-        },
-        response: {
-          responseText: rawChatHistory.messages?.length! > 1 ? rawChatHistory.messages![1].content : 'not available'
-        }
-      } as ChatHistory;
-    });
-    setChatHistories(chatHistories);
-  }, [chatThreads]);
 
   function onKeyDown(event: any) {
     if (event.key !== "Enter") {
@@ -87,6 +70,10 @@ export function Chatbot() {
     });
   }
 
+  function deleteThread(chatHistory: ChatHistory) {
+    clearThread(chatHistory.conversation_id!);
+  }
+
   useEffect(() => {
     if (externalQuery) {
       setQuery(externalQuery);
@@ -97,6 +84,23 @@ export function Chatbot() {
       setExternalQuery(null);
     }
   }, [externalQuery, setExternalQuery, chatbotData, setChatbotData]);
+
+  useEffect(() => {
+    const chatHistories = chatThreads.map(rawChatHistory => {
+      return {
+        title: rawChatHistory.thread_name,
+        conversation_id: rawChatHistory.id,
+        request: {
+          query: rawChatHistory.messages?.length ? rawChatHistory.messages[0].content : 'not available',
+          timestampDate: rawChatHistory.messages?.length ? rawChatHistory.messages[0].timestamp : undefined
+        },
+        response: {
+          responseText: rawChatHistory.messages?.length! > 1 ? rawChatHistory.messages![1].content : 'not available'
+        }
+      } as ChatHistory;
+    });
+    setChatHistories(chatHistories);
+  }, [chatThreads]);
 
   if (chatbotData?.isChatbotResponseActive) {
     return <div className={`${styles['chatbot-container']} widget`}>
@@ -122,9 +126,10 @@ export function Chatbot() {
         <h2>Past chats & workflows</h2>
         {
           visibleChatHistories.map((chatHistory, index) => (
-            <div className={styles['workflow-item']} onClick={() => selectPastQuery(chatHistory)} key={`${chatHistory.title}_${index}`}>
-              <p>{chatHistory.title}</p>
+            <div className={styles['workflow-item']} key={`${chatHistory.title}_${index}`}>
+              <p onClick={() => selectPastQuery(chatHistory)}>{chatHistory.title}</p>
               <span>{chatHistory.request?.timestampDate ? formatDistanceToNow(chatHistory.request?.timestampDate, formatOptions) : ''}</span>
+              <span onClick={() => deleteThread(chatHistory)}>X</span>
             </div>
           ))
         }
