@@ -6,11 +6,15 @@ import {parseIsoDate} from "@/lib/utility-functions/date-operations";
 class ChatbotDataService {
   private readonly serviceName = 'sell-side-api';
 
-  getChatbotResponseStream(request: string, user_id: string): Observable<ChatResponse> {
-    const response = webApihandler.post('chat', {
-        message: request,
-        user_id
-    }, undefined, {
+  getChatbotResponseStream(request: string, thread_id: string|undefined, user_id: string): Observable<ChatResponse> {
+      const data: {[key: string]: any} = {
+          message: request,
+          user_id
+      };
+      if (thread_id) {
+          data['thread_id'] = thread_id;
+      }
+      const response = webApihandler.post('chat', data, undefined, {
         serviceName: this.serviceName
     });
     return from(response).pipe(

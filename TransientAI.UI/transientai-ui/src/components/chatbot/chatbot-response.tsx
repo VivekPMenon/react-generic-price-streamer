@@ -117,6 +117,11 @@ export function ChatbotResponse(props: ChatbotResponseProps) {
         lastChatHistory
       ];
 
+      const chatWithId = newChatConversations
+          .find(chat => chat.response?.thread_id);
+
+      const thread_id = chatWithId?.response?.thread_id;
+
       setChatbotData({
         ...chatbotData,
         conversations: newChatConversations
@@ -124,7 +129,7 @@ export function ChatbotResponse(props: ChatbotResponseProps) {
 
       const startTime = Date.now();
       let endTime: null|number = null;
-      getChatbotResponseStream(query)
+      getChatbotResponseStream(query, thread_id)
           .subscribe({
             next: (response) => {
               switch (response.type) {

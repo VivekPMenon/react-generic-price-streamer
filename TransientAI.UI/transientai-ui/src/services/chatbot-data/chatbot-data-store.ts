@@ -10,7 +10,7 @@ export interface ChatbotDataStore {
     loadUserThreads: () => Promise<void>;
     chatThreads: ChatThread[];
 
-    getChatbotResponseStream(request: string): Observable<ChatResponse>;
+    getChatbotResponseStream(request: string, thread_id?: string): Observable<ChatResponse>;
     loadThreadMessages(thread_id: string): Promise<ChatThread|null>;
     clearThread(thread_id: string): Promise<void>;
     createThread(): Promise<ChatThread|null>;
@@ -29,9 +29,9 @@ export const useChatbotDataStore = create<ChatbotDataStore>((set, get) => ({
     },
 
     chatThreads: [],
-    getChatbotResponseStream: (request: string) => {
+    getChatbotResponseStream: (request: string, thread_id?: string) => {
         const user_id = useUserContextStore.getState().userContext.userId;
-        return chatbotDataService.getChatbotResponseStream(request, user_id!)
+        return chatbotDataService.getChatbotResponseStream(request, thread_id, user_id!)
             .pipe(finalize(() => get().loadUserThreads()));
     },
 
