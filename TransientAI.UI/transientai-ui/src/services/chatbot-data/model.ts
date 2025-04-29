@@ -6,7 +6,6 @@ export interface ChatbotRequestType {
   timestampDate?: Date;
   user_id?: string;
   conversation_id?: string;
-  stream?: boolean;
   response_type?: string;
   isLoading?: boolean;
 }

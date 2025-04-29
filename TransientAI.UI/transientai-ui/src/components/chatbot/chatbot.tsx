@@ -5,52 +5,51 @@ import { ChatbotResponse } from './chatbot-response';
 import { ChatHistory } from '@/services/chatbot-data/model';
 import { ChatbotDataContext } from '@/services/chatbot-data';
 import {useChatbotDataStore} from "@/services/chatbot-data/chatbot-data-store";
-import humanizeDuration from 'humanize-duration';
+import { formatDistanceToNow } from 'date-fns';
+import {FormatDistanceOptions} from "date-fns/formatDistance";
 import styles from './chatbot.module.scss';
 
+function calculateVisibleHistories(chatHistories: ChatHistory[], isAllChatsShown: boolean): ChatHistory[] {
+  if (isAllChatsShown) {
+    return chatHistories;
+  }
+
+  return chatHistories.slice(0, 10);
+}
+
+const formatOptions: FormatDistanceOptions = {
+  includeSeconds: false,
+  addSuffix: true
+}
+
 export function Chatbot() {
-  const { query: externalQuery, setQuery: setExternalQuery, chatThreads } = useChatbotDataStore();
+  const { query: externalQuery, setQuery: setExternalQuery, chatThreads, loadUserThreads } = useChatbotDataStore();
   const { chatbotData, setChatbotData } = useContext(ChatbotDataContext);
 
   const [chatHistories, setChatHistories] = useState<ChatHistory[]>([]);
   const [query, setQuery] = useState<string>();
   const [isAllChatsShown, setIsAllChatsShown] = useState<boolean>(false);
 
-  const visisbleChatHistories = useMemo<ChatHistory[]>(() => calculateVisibleHistories(), [
-    isAllChatsShown,
-    chatHistories
-  ])
+  const visibleChatHistories = useMemo<ChatHistory[]>(
+      () => calculateVisibleHistories(chatHistories, isAllChatsShown),
+      [isAllChatsShown, chatHistories])
 
-  useEffect(() => loadChatHistories(), []);
-
-  function loadChatHistories() {
-    const loadChatHistoriesAsync = async () => {
-      const chatHistories = chatThreads.map(rawChatHistory => {
-        return {
-          title: rawChatHistory.thread_name,
-          conversation_id: rawChatHistory.id,
-          request: {
-            query: rawChatHistory.messages?.length ? rawChatHistory.messages[0].content : 'not available',
-            timestampDate: rawChatHistory.messages?.length ? rawChatHistory.messages[0].timestamp : undefined
-          },
-          response: {
-            responseText: rawChatHistory.messages?.length! > 1 ? rawChatHistory.messages![1].content : 'not available'
-          }
-        } as ChatHistory;
-      });
-      setChatHistories(chatHistories);
-    };
-
-    loadChatHistoriesAsync();
-  }
-
-  function calculateVisibleHistories(): ChatHistory[] {
-    if (isAllChatsShown) {
-      return chatHistories;
-    }
-
-    return chatHistories.slice(0, 10);
-  }
+  useEffect(() => {
+    const chatHistories = chatThreads.map(rawChatHistory => {
+      return {
+        title: rawChatHistory.thread_name,
+        conversation_id: rawChatHistory.id,
+        request: {
+          query: rawChatHistory.messages?.length ? rawChatHistory.messages[0].content : 'not available',
+          timestampDate: rawChatHistory.messages?.length ? rawChatHistory.messages[0].timestamp : undefined
+        },
+        response: {
+          responseText: rawChatHistory.messages?.length! > 1 ? rawChatHistory.messages![1].content : 'not available'
+        }
+      } as ChatHistory;
+    });
+    setChatHistories(chatHistories);
+  }, [chatThreads]);
 
   function onKeyDown(event: any) {
     if (event.key !== "Enter") {
@@ -77,6 +76,11 @@ export function Chatbot() {
           },
           response: {
             responseText: chatConversation.response?.responseText
+          },
+          status: {
+            message: '',
+            status: '',
+            showLogs: false
           }
         }
       ]
@@ -98,7 +102,7 @@ export function Chatbot() {
     return <div className={`${styles['chatbot-container']} widget`}>
       <ChatbotResponse
         query={query!}
-        onNewQueryExecuted={loadChatHistories}>
+        onNewQueryExecuted={loadUserThreads}>
       </ChatbotResponse>
     </div>;
   }
@@ -117,10 +121,10 @@ export function Chatbot() {
       <div className={`${styles['workflow-list']} scrollable-div`}>
         <h2>Past chats & workflows</h2>
         {
-          visisbleChatHistories.map((chatHistory, index) => (
+          visibleChatHistories.map((chatHistory, index) => (
             <div className={styles['workflow-item']} onClick={() => selectPastQuery(chatHistory)} key={`${chatHistory.title}_${index}`}>
               <p>{chatHistory.title}</p>
-              <span>{chatHistory.request?.timestampDate ? humanizeDuration(chatHistory.request?.timestampDate.getTime()) : ''}</span>
+              <span>{chatHistory.request?.timestampDate ? formatDistanceToNow(chatHistory.request?.timestampDate, formatOptions) : ''}</span>
             </div>
           ))
         }

@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import {ChatResponse, ChatThread} from "@/services/chatbot-data/model";
 import {useUserContextStore} from "@/services/user-context";
-import {Observable} from "rxjs";
+import {finalize, Observable} from "rxjs";
 import {chatbotDataService} from "@/services/chatbot-data/chatbot-data-service";
 
 export interface ChatbotDataStore {
@@ -16,7 +16,7 @@ export interface ChatbotDataStore {
     createThread(): Promise<ChatThread|null>;
 }
 
-export const useChatbotDataStore = create<ChatbotDataStore>((set) => ({
+export const useChatbotDataStore = create<ChatbotDataStore>((set, get) => ({
     query: null,
     setQuery: (query) => {
         set({query});
@@ -31,7 +31,8 @@ export const useChatbotDataStore = create<ChatbotDataStore>((set) => ({
     chatThreads: [],
     getChatbotResponseStream: (request: string) => {
         const user_id = useUserContextStore.getState().userContext.userId;
-        return chatbotDataService.getChatbotResponseStream(request, user_id!);
+        return chatbotDataService.getChatbotResponseStream(request, user_id!)
+            .pipe(finalize(() => get().loadUserThreads()));
     },
 
     loadThreadMessages: (thread_id: string) => {

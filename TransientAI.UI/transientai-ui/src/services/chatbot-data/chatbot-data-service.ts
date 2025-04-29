@@ -1,19 +1,10 @@
 import { webApihandler } from "../web-api-handler";
-import {ChatConversationApiResponse, ChatMessage, ChatResponse, ChatResponseType, ChatThread} from "./model";
+import {ChatResponse, ChatResponseType, ChatThread} from "./model";
 import {mergeMap, Observable, from} from "rxjs";
+import {parseIsoDate} from "@/lib/utility-functions/date-operations";
 
 class ChatbotDataService {
   private readonly serviceName = 'sell-side-api';
-
-  async getChatbotResponse(request: string): Promise<string> {
-    const result = await webApihandler.post('chat', undefined, {
-      message: request,
-      stream: false
-    }, {
-      serviceName: this.serviceName
-    });
-    return result.response;
-  }
 
   getChatbotResponseStream(request: string, user_id: string): Observable<ChatResponse> {
     const response = webApihandler.post('chat', {
@@ -46,11 +37,11 @@ class ChatbotDataService {
               serviceName: this.serviceName
           });
 
-          result.threads.forEach((thread: ChatThread) => {
+          result.threads.forEach((thread: any) => {
               thread.created_at = new Date(result.created_at);
               thread.updated_at = new Date(result.updated_at);
-              thread.messages.forEach(message => {
-                  message.timestamp = new Date(message.timestamp);
+              thread.messages.forEach((message: any) => {
+                  message.timestamp = parseIsoDate(message.timestamp);
               });
           })
 
@@ -69,11 +60,11 @@ class ChatbotDataService {
               serviceName: this.serviceName
           });
 
-          result.created_at = new Date(result.created_at);
-          result.updated_at = new Date(result.updated_at);
-          result.messages.forEach((message: ChatMessage) => {
-              message.timestamp = new Date(message.timestamp);
-          })
+          result.created_at = parseIsoDate(result.created_at);
+          result.updated_at = parseIsoDate(result.updated_at);
+          result.messages.forEach((message: any) => {
+              message.timestamp = parseIsoDate(message.timestamp);
+          });
 
           return result;
       } catch (e: any) {
@@ -89,11 +80,11 @@ class ChatbotDataService {
                 serviceName: this.serviceName
             });
 
-            result.created_at = new Date(result.created_at);
-            result.updated_at = new Date(result.updated_at);
-            result.messages.forEach((message: ChatMessage) => {
-                message.timestamp = new Date(message.timestamp);
-            })
+            result.created_at = parseIsoDate(result.created_at);
+            result.updated_at = parseIsoDate(result.updated_at);
+            result.messages.forEach((message: any) => {
+                message.timestamp = parseIsoDate(message.timestamp);
+            });
 
             return result;
         } catch (e: any) {
@@ -114,41 +105,6 @@ class ChatbotDataService {
             return false;
         }
     }
-
-  // async getChatbotResponse(request: ChatbotRequestType): Promise<ChatbotResponseType> {
-  //   const result = await webApihandler.get('local_search', {
-  //     stream: false,
-  //     response_type: 'Multiple Paragraphs',
-  //     ...request
-  //   });
-  //
-  //   return {
-  //     responseText: result.response
-  //   };
-  // }
-
-  async getChatHistory(): Promise<ChatConversationApiResponse[]> {
-    const result = await webApihandler.get('chat_history/' + webApihandler.userId, {});
-    return result.conversations;
-  }
-
-  // getChatbotResponseStream(request: ChatbotRequestType): Observable<string> {
-  //   const textDecoder = new TextDecoder();
-  //   return fromStreamedResponse(webApihandler.getStream('local_search', {
-  //     stream: true,
-  //     response_type: 'Multiple Paragraphs',
-  //     ...request
-  //   })).pipe(
-  //       map(chunk => {
-  //         const decoded = textDecoder.decode(chunk);
-  //         return [...decoded.matchAll(/"response":\s*"(.*?)"/g)
-  //             .map(m => m[1].replace(/\\n/g, '\n'))
-  //             .filter(m => m.length > 0)];
-  //       }),
-  //       filter(matches => matches.length > 0),
-  //       map(matches => matches.join(''))
-  //   );
-  // }
 }
 
 export const chatbotDataService = new ChatbotDataService();
