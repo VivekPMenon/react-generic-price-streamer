@@ -11,13 +11,12 @@ export interface ChatbotDataStore {
     setSelectedThread: (thread: ChatThread|null) => void;
 
     isLoading: boolean;
-    setIsLoading: (isLoading: boolean) => void;
 
     isChatbotResponseActive: boolean;
     setIsChatbotResponseActive: (isChatbotResponseActive: boolean) => void;
 
     getChatbotResponseStream(request: string, thread_id?: string): Observable<ChatResponse>;
-    loadThreadMessages(thread_id: string): Promise<ChatThread|null>;
+    // loadThreadMessages(thread_id: string): Promise<ChatThread|null>;
     clearThread(thread_id: string): Promise<void>;
     createThread(query: string): Promise<void>;
     addToThread: (query: string, thread: ChatThread) => void;
@@ -27,7 +26,6 @@ export const PROCESSING_VALUE = 'Thinking...';
 
 export const useChatbotDataStore = create<ChatbotDataStore>((set, get) => ({
     isLoading: false,
-    setIsLoading: (isLoading: boolean) => set({isLoading}),
 
     loadUserThreads: async () => {
         const user_id = useUserContextStore.getState().userContext.userId;
@@ -52,10 +50,10 @@ export const useChatbotDataStore = create<ChatbotDataStore>((set, get) => ({
       set({isChatbotResponseActive});
     },
 
-    loadThreadMessages: (thread_id: string) => {
-        const user_id = useUserContextStore.getState().userContext.userId;
-        return chatbotDataService.getThreadMessages(thread_id, user_id!);
-    },
+    // loadThreadMessages: (thread_id: string) => {
+    //     const user_id = useUserContextStore.getState().userContext.userId;
+    //     return chatbotDataService.getThreadMessages(thread_id, user_id!);
+    // },
 
     createThread: async (query: string) => {
         const user_id = useUserContextStore.getState().userContext.userId;
@@ -66,7 +64,7 @@ export const useChatbotDataStore = create<ChatbotDataStore>((set, get) => ({
     },
 
     addToThread: (query: string, thread: ChatThread) => {
-        const { setSelectedThread, setIsLoading, setIsChatbotResponseActive, getChatbotResponseStream } = get();
+        const { getChatbotResponseStream } = get();
 
         const request: ChatMessage = {
             role: ChatRole.USER,
@@ -83,9 +81,11 @@ export const useChatbotDataStore = create<ChatbotDataStore>((set, get) => ({
         };
         thread.messages.push(message);
 
-        setSelectedThread(thread);
-        setIsLoading(true);
-        setIsChatbotResponseActive(true);
+        set({
+            isLoading: true,
+            isChatbotResponseActive: true,
+            selectedThread: thread,
+        })
 
         const thread_id = thread.id;
         const startTime = Date.now();
@@ -113,7 +113,7 @@ export const useChatbotDataStore = create<ChatbotDataStore>((set, get) => ({
                     thread.messages[thread.messages.length - 1] = {...message};
                     thread.messages = [...thread.messages];
 
-                    setSelectedThread(thread);
+                    set({selectedThread: thread});
                 },
                 error: () => {
                     if (endTime === null) {
@@ -121,21 +121,19 @@ export const useChatbotDataStore = create<ChatbotDataStore>((set, get) => ({
                         message.response_time = (endTime - startTime) / 1000;
                     }
                     message.content = 'There was an error processing your request';
-                    setIsLoading(false);
                     message.timestamp = new Date();
                     message.reasoning = undefined;
 
                     thread.messages[thread.messages.length - 1] = {...message};
                     thread.messages = [...thread.messages];
 
-                    setSelectedThread(thread);
+                    set({isLoading: false, selectedThread: thread});
                 },
                 complete: () => {
-                    setIsLoading(false);
                     message.timestamp = new Date();
                     thread.messages[thread.messages.length - 1] = {...message};
                     thread.messages = [...thread.messages];
-                    setSelectedThread(thread);
+                    set({isLoading: false, selectedThread: thread});
                 }
             });
     },
