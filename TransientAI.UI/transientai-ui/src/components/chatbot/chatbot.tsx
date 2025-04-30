@@ -31,8 +31,9 @@ export function Chatbot() {
     createThread
   } = useChatbotDataStore();
   const [chatHistories, setChatHistories] = useState<ChatThread[]>([]);
-  const [query, setQuery] = useState<string>();
+  const [, setQuery] = useState<string>();
   const [isAllChatsShown, setIsAllChatsShown] = useState<boolean>(false);
+  const [idBeingDeleted, setIdBeingDeleted] = useState<string|null>(null);
 
   const visibleChatHistories = useMemo<ChatThread[]>(
       () => calculateVisibleHistories(chatHistories, isAllChatsShown),
@@ -54,7 +55,14 @@ export function Chatbot() {
   }
 
   function deleteThread(chatHistory: ChatThread) {
-    clearThread(chatHistory.id!).catch(error => console.error(error));
+    const id = chatHistory.id;
+    if (idBeingDeleted === id || idBeingDeleted !== null) {
+      return;
+    }
+    setIdBeingDeleted(id!);
+    clearThread(id!)
+        .catch(error => console.error(error))
+        .finally(() => setIdBeingDeleted(null));
   }
 
   useEffect(() => {
@@ -87,7 +95,7 @@ export function Chatbot() {
                 <div className={styles['workflow-item']} key={`${chatHistory.id}_${index}`}>
                   <p onClick={() => selectPastQuery(chatHistory)}>{chatHistory.thread_name}</p>
                   <span>{chatHistory.updated_at ? formatDistanceToNow(chatHistory.updated_at, formatOptions) : ''}</span>
-                  <i className='fa-solid fa-xs fa-trash' onClick={() => deleteThread(chatHistory)} />
+                  <i className={`fa-solid fa-xs fa-trash`} onClick={() => deleteThread(chatHistory)} />
                 </div>
             ))
           }

@@ -48,7 +48,6 @@ class ChatbotDataService {
                   message.timestamp = parseIsoDate(message.timestamp);
               });
           })
-
           return result.threads;
       } catch (e: any) {
           return [];

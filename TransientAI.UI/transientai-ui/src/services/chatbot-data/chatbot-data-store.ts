@@ -23,6 +23,8 @@ export interface ChatbotDataStore {
     addToThread: (query: string, thread: ChatThread) => void;
 }
 
+export const PROCESSING_VALUE = 'Thinking...';
+
 export const useChatbotDataStore = create<ChatbotDataStore>((set, get) => ({
     isLoading: false,
     setIsLoading: (isLoading: boolean) => set({isLoading}),
@@ -42,9 +44,7 @@ export const useChatbotDataStore = create<ChatbotDataStore>((set, get) => ({
 
     selectedThread: null,
     setSelectedThread: (thread: ChatThread|null) => {
-        if (get().selectedThread !== thread) {
-            set({selectedThread: thread});
-        }
+        set({selectedThread: thread});
     },
 
     isChatbotResponseActive: false,
@@ -77,6 +77,7 @@ export const useChatbotDataStore = create<ChatbotDataStore>((set, get) => ({
 
         const message: ChatMessage = {
             role: ChatRole.ASSISTANT,
+            reasoning: PROCESSING_VALUE,
             content: '',
             timestamp: new Date(),
         };
@@ -94,7 +95,11 @@ export const useChatbotDataStore = create<ChatbotDataStore>((set, get) => ({
                 next: (response) => {
                     switch (response.type) {
                         case ChatResponseType.Log:
-                            message.reasoning += response.text;
+                            if (message.reasoning === PROCESSING_VALUE) {
+                                message.reasoning = response.text;
+                            } else {
+                                message.reasoning += response.text;
+                            }
                             break;
                         case ChatResponseType.Final:
                             if (endTime === null) {
@@ -104,6 +109,10 @@ export const useChatbotDataStore = create<ChatbotDataStore>((set, get) => ({
                             message.content += response.text;
                             break;
                     }
+
+                    thread.messages[thread.messages.length - 1] = {...message};
+                    thread.messages = [...thread.messages];
+
                     setSelectedThread(thread);
                 },
                 error: () => {
@@ -114,11 +123,18 @@ export const useChatbotDataStore = create<ChatbotDataStore>((set, get) => ({
                     message.content = 'There was an error processing your request';
                     setIsLoading(false);
                     message.timestamp = new Date();
+                    message.reasoning = undefined;
+
+                    thread.messages[thread.messages.length - 1] = {...message};
+                    thread.messages = [...thread.messages];
+
                     setSelectedThread(thread);
                 },
                 complete: () => {
                     setIsLoading(false);
                     message.timestamp = new Date();
+                    thread.messages[thread.messages.length - 1] = {...message};
+                    thread.messages = [...thread.messages];
                     setSelectedThread(thread);
                 }
             });
@@ -128,7 +144,7 @@ export const useChatbotDataStore = create<ChatbotDataStore>((set, get) => ({
         const user_id = useUserContextStore.getState().userContext.userId;
         const success = await chatbotDataService.clearThread(thread_id, user_id!)
         if (success) {
-            get().loadUserThreads();
+            await get().loadUserThreads();
         }
     }
 }));
