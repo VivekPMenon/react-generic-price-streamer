@@ -3,15 +3,7 @@ import { EndpointConfig } from "@/services/web-api-handler";
 export const getConfig = (): EndpointConfig => {
   const env = process.env.NEXT_PUBLIC_ENV || 'LOCAL';
     
-  let redirectUri = process.env.NEXT_PUBLIC_LOCAL_REDIRECT_URI || 'http://localhost:3000';
-  
-  if (env === 'DEV') {
-    redirectUri = process.env.NEXT_PUBLIC_DEV_REDIRECT_URI || redirectUri;
-  } else if (env === 'UAT') {
-    redirectUri = process.env.NEXT_PUBLIC_UAT_REDIRECT_URI || redirectUri;
-  } else if (env === 'PROD') {
-    redirectUri = process.env.NEXT_PUBLIC_PROD_REDIRECT_URI || redirectUri;
-  }
+  const redirectUri = process.env.NEXT_PUBLIC_REDIRECT_URI || 'http://localhost:3000';
 
   return {
     env,
