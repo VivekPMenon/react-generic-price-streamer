@@ -42,8 +42,8 @@ class ChatbotDataService {
           });
 
           result.threads.forEach((thread: any) => {
-              thread.created_at = new Date(result.created_at);
-              thread.updated_at = new Date(result.updated_at);
+              thread.created_at = parseIsoDate(thread.created_at);
+              thread.updated_at = parseIsoDate(thread.updated_at);
               thread.messages.forEach((message: any) => {
                   message.timestamp = parseIsoDate(message.timestamp);
               });

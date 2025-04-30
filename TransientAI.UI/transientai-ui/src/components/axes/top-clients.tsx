@@ -51,7 +51,7 @@ function ClientComponent({ client }: ClientProps) {
     const loadTrades = useCallback(() => loadClientTrades(selectedBond, client.client_name),
         [client.client_name, loadClientTrades, selectedBond]);
 
-    const findBondsOfInterest = useCallback(() => useChatbotDataStore.getState().setQuery(`What other axes should I recommend to ${client.client_name}?`),
+    const findBondsOfInterest = useCallback(() => useChatbotDataStore.getState().createThread(`What other axes should I recommend to ${client.client_name}?`),
         [client.client_name]);
 
     return (

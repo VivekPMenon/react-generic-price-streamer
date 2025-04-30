@@ -1,26 +1,31 @@
-import { create } from 'zustand';
-import {ChatResponse, ChatThread} from "@/services/chatbot-data/model";
+import {create} from 'zustand';
+import {ChatMessage, ChatResponse, ChatResponseType, ChatRole, ChatThread} from "@/services/chatbot-data/model";
 import {useUserContextStore} from "@/services/user-context";
 import {finalize, Observable} from "rxjs";
 import {chatbotDataService} from "@/services/chatbot-data/chatbot-data-service";
 
 export interface ChatbotDataStore {
-    query: string|null;
-    setQuery: (query: string|null) => void;
     loadUserThreads: () => Promise<void>;
     chatThreads: ChatThread[];
+    selectedThread: ChatThread|null;
+    setSelectedThread: (thread: ChatThread|null) => void;
+
+    isLoading: boolean;
+    setIsLoading: (isLoading: boolean) => void;
+
+    isChatbotResponseActive: boolean;
+    setIsChatbotResponseActive: (isChatbotResponseActive: boolean) => void;
 
     getChatbotResponseStream(request: string, thread_id?: string): Observable<ChatResponse>;
     loadThreadMessages(thread_id: string): Promise<ChatThread|null>;
     clearThread(thread_id: string): Promise<void>;
-    createThread(): Promise<ChatThread|null>;
+    createThread(query: string): Promise<void>;
+    addToThread: (query: string, thread: ChatThread) => void;
 }
 
 export const useChatbotDataStore = create<ChatbotDataStore>((set, get) => ({
-    query: null,
-    setQuery: (query) => {
-        set({query});
-    },
+    isLoading: false,
+    setIsLoading: (isLoading: boolean) => set({isLoading}),
 
     loadUserThreads: async () => {
         const user_id = useUserContextStore.getState().userContext.userId;
@@ -35,23 +40,95 @@ export const useChatbotDataStore = create<ChatbotDataStore>((set, get) => ({
             .pipe(finalize(() => get().loadUserThreads()));
     },
 
+    selectedThread: null,
+    setSelectedThread: (thread: ChatThread|null) => {
+        if (get().selectedThread !== thread) {
+            set({selectedThread: thread});
+        }
+    },
+
+    isChatbotResponseActive: false,
+    setIsChatbotResponseActive: (isChatbotResponseActive: boolean) => {
+      set({isChatbotResponseActive});
+    },
+
     loadThreadMessages: (thread_id: string) => {
         const user_id = useUserContextStore.getState().userContext.userId;
         return chatbotDataService.getThreadMessages(thread_id, user_id!);
     },
 
-    createThread: () => {
+    createThread: async (query: string) => {
         const user_id = useUserContextStore.getState().userContext.userId;
-        return chatbotDataService.createThread(user_id!)
+        const thread = await chatbotDataService.createThread(user_id!);
+        if (thread)  {
+            get().addToThread(query, thread);
+        }
+    },
+
+    addToThread: (query: string, thread: ChatThread) => {
+        const { setSelectedThread, setIsLoading, setIsChatbotResponseActive, getChatbotResponseStream } = get();
+
+        const request: ChatMessage = {
+            role: ChatRole.USER,
+            content: query,
+            timestamp: new Date(),
+        };
+        thread.messages.push(request);
+
+        const message: ChatMessage = {
+            role: ChatRole.ASSISTANT,
+            content: '',
+            timestamp: new Date(),
+        };
+        thread.messages.push(message);
+
+        setSelectedThread(thread);
+        setIsLoading(true);
+        setIsChatbotResponseActive(true);
+
+        const thread_id = thread.id;
+        const startTime = Date.now();
+        let endTime: null | number = null;
+        getChatbotResponseStream(query, thread_id)
+            .subscribe({
+                next: (response) => {
+                    switch (response.type) {
+                        case ChatResponseType.Log:
+                            message.reasoning += response.text;
+                            break;
+                        case ChatResponseType.Final:
+                            if (endTime === null) {
+                                endTime = Date.now();
+                                message.response_time = (endTime - startTime) / 1000;
+                            }
+                            message.content += response.text;
+                            break;
+                    }
+                    setSelectedThread(thread);
+                },
+                error: () => {
+                    if (endTime === null) {
+                        endTime = Date.now();
+                        message.response_time = (endTime - startTime) / 1000;
+                    }
+                    message.content = 'There was an error processing your request';
+                    setIsLoading(false);
+                    message.timestamp = new Date();
+                    setSelectedThread(thread);
+                },
+                complete: () => {
+                    setIsLoading(false);
+                    message.timestamp = new Date();
+                    setSelectedThread(thread);
+                }
+            });
     },
 
     clearThread: async (thread_id: string) => {
         const user_id = useUserContextStore.getState().userContext.userId;
         const success = await chatbotDataService.clearThread(thread_id, user_id!)
         if (success) {
-            set({
-                chatThreads : get().chatThreads.filter(thread => thread.id !== thread_id)
-            });
+            get().loadUserThreads();
         }
     }
 }));
