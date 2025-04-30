@@ -8,7 +8,7 @@ on:
       [ development ]
     paths:
     - '**'
-    - '.github/workflows/hurricane-dev-web01-AutoDeployTrigger-ef4ba394-1b12-4c34-a6a3-2e77f75e9289.yml'
+    - '.github/workflows/hurricane-dev-web01-AutoDeployTrigger-0d4ec8df-2271-4f12-a22f-978b4e57c1d9.yml'
 
   # Allow manual trigger 
   workflow_dispatch:
@@ -36,7 +36,7 @@ jobs:
           registryPassword: ${{ secrets.HURRICANEDEVWEB01_REGISTRY_PASSWORD }}
           containerAppName: hurricane-dev-web01
           resourceGroup: Hurricane_dev
-          imageToBuild: hurricanedevacr01.azurecr.io/hurricane-dev-web01:${{ github.sha }}
+          imageToBuild: hurricanedevacr01.azurecr.io/transient_web:${{ github.sha }}
           
             
 
