@@ -7,7 +7,7 @@ class ChatbotDataService {
   private readonly serviceName = 'sell-side-api';
 
   getChatbotResponseStream(request: string, thread_id: string|undefined, user_id: string): Observable<ChatResponse> {
-      const data: {[key: string]: any} = {
+      const data: { [key: string]: any } = {
           message: request,
           user_id
       };
@@ -15,22 +15,22 @@ class ChatbotDataService {
           data['thread_id'] = thread_id;
       }
       const response = webApihandler.post('chat', data, undefined, {
-        serviceName: this.serviceName
-    });
-    return from(response).pipe(
-        mergeMap((chunk: string) => {
-          const match = chunk.match(/"thread_id"\s*:\s*"([^"]+)"[^}]*/g);
-          const thread_id = (match && match.length) ? match[1] : null;
-          return Array.from(
-              chunk.matchAll(/{[^}]*"type"\s*:\s*"([^"]+)"[^}]*"text"\s*:\s*"([^"]+)"[^}]*}/g),
-              ([, type, text]) =>({
-                type,
-                text: text.replace(/\\n/g, '\n'),
-                thread_id
-              } as ChatResponse))
-              .filter(result => result.type === ChatResponseType.Log || ChatResponseType.Final);
-        })
-    );
+          serviceName: this.serviceName
+      });
+      return from(response).pipe(
+          mergeMap((chunk: string) => {
+              const match = chunk.match(/"thread_id"\s*:\s*"([^"]+)"[^}]*/g);
+              const thread_id = (match && match.length) ? match[1] : null;
+              return Array.from(
+                  chunk.matchAll(/{[^}]*"type"\s*:\s*"([^"]+)"[^}]*"text"\s*:\s*"([^"]+)"[^}]*}/g),
+                  ([, type, text]) => ({
+                      type,
+                      text: text.replace(/\\n/g, '\n'),
+                      thread_id
+                  } as ChatResponse))
+                  .filter(result => result.type === ChatResponseType.Log || ChatResponseType.Final);
+          })
+      );
   }
 
   async getUserThreads(user_id: string): Promise<ChatThread[]> {
