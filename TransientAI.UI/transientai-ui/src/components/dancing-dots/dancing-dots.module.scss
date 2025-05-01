@@ -14,15 +14,15 @@
   background-color: $font-color-gray;
   border-radius: 50%;
   opacity: 1;
-  animation: bounce 1.5s infinite ease-in-out;
+  animation: bounce 1.25s infinite ease-in-out;
 }
 
 .dot:nth-child(2) {
-  animation-delay: 0.5s;
+  animation-delay: 0.25s;
 }
 
 .dot:nth-child(3) {
-  animation-delay: 1s;
+  animation-delay: 0.5s;
 }
 
 @keyframes bounce {
@@ -31,6 +31,6 @@
   }
   40% {
     opacity: 0.1;
-    transform: translateY(-10px);
+    transform: translateY(-5px);
   }
 }

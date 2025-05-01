@@ -1,7 +1,12 @@
 import { webApihandler } from "../web-api-handler";
 import {ChatResponse, ChatResponseType, ChatThread} from "./model";
-import {mergeMap, Observable, from, Subject} from "rxjs";
+import {Observable, mergeMap} from "rxjs";
 import {parseIsoDate} from "@/lib/utility-functions/date-operations";
+import {fromStreamedResponse} from "@/lib/utility-functions/observables";
+
+const THREAD_ID_MATCHER = /"thread_id"\s*:\s*"([^"]+)"[^}]*/g;
+const TYPE_TEXT_MATCHER = /{[^}]*"type"\s*:\s*"([^"]+)"[^}]*"text"\s*:\s*"([^"]+)"[^}]*}/g;
+const NEWLINE_MATCHER = /\\n/g;
 
 class ChatbotDataService {
   private readonly serviceName = 'sell-side-api';
@@ -14,31 +19,31 @@ class ChatbotDataService {
       if (thread_id) {
           data['thread_id'] = thread_id;
       }
-      const response = webApihandler.post('chat', data, undefined, {
-          serviceName: this.serviceName,
-          // responseType: 'stream',
-          // adapter: 'fetch'
-      });
 
-      // response.then(result => {
-      //     debugger;
-      //     console.log(result);
-      // });
-      //
-      // return new Subject<ChatResponse>()
-      return from(response).pipe(
-          mergeMap((chunk: string) => {
-              const match = chunk.match(/"thread_id"\s*:\s*"([^"]+)"[^}]*/g);
-              const thread_id = (match && match.length) ? match[1] : null;
-              return Array.from(
-                  chunk.matchAll(/{[^}]*"type"\s*:\s*"([^"]+)"[^}]*"text"\s*:\s*"([^"]+)"[^}]*}/g),
-                  ([, type, text]) => ({
-                      type,
-                      text: text.replace(/\\n/g, '\n'),
-                      thread_id
-                  } as ChatResponse))
-                  .filter(result => result.type === ChatResponseType.Log || ChatResponseType.Final);
-          })
+      const response = webApihandler.execute(
+          'chat',
+          'POST',
+          data,
+          undefined,
+          {'Content-Type': 'application/json'},
+          this.serviceName
+      );
+
+      const textDecoder = new TextDecoder();
+      return fromStreamedResponse(response).pipe(
+        mergeMap(data => {
+            const chunk = textDecoder.decode(data);
+            const match = chunk.match(THREAD_ID_MATCHER);
+            const thread_id = (match && match.length) ? match[1] : null;
+            return Array.from(
+                chunk.matchAll(TYPE_TEXT_MATCHER),
+                ([, type, text]) => ({
+                    type,
+                    text: text.replace(NEWLINE_MATCHER, '\n'),
+                    thread_id
+                } as ChatResponse))
+                .filter(result => result.type === ChatResponseType.Log || ChatResponseType.Final);
+        })
       );
   }
 

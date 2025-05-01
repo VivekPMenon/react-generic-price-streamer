@@ -5,11 +5,20 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import {ChatMessage} from "@/services/chatbot-data";
 import {PROCESSING_VALUE} from "@/services/chatbot-data/chatbot-data-store";
-import styles from "@/components/chatbot/chatbot-response.module.scss";
 import {DancingDots} from "@/components/dancing-dots/dancing-dots";
+import styles from "@/components/chatbot/chatbot-response.module.scss";
 
 export interface ChatResponseProps {
     message: ChatMessage;
+}
+
+function PendingDisplay() {
+    return (
+        <div className={styles['pending-display']}>
+            <span>Thinking</span>
+            <DancingDots />
+        </div>
+    );
 }
 
 export function ChatResponseComponent({message}: ChatResponseProps) {
@@ -34,7 +43,7 @@ export function ChatResponseComponent({message}: ChatResponseProps) {
                      onClick={handleClick}
                 >
                     {isProcessing
-                        ? (<DancingDots />)
+                        ? (<PendingDisplay/>)
                         : (!message.response_time
                             ? message.response_time === 0 ? `Thought for 0 seconds` : ''
                             : `Thought for ${formatDecimal(message.response_time)} seconds`)}
