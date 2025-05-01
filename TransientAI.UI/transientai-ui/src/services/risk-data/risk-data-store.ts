@@ -1,8 +1,7 @@
 import { create } from 'zustand';
 import { RiskMetricsItem } from './model';
 import { riskDataService } from './risk-data-service';
-import { useUnseenItemsStore } from '../unseen-items-store/unseen-items-store';
-import { useUserContextStore } from '@/services/user-context';
+import { unseenItemsStore } from '../unseen-items-store/unseen-items-store';
 
 export const resourceNameRiskMetrics = 'risk-metrics';
 
@@ -40,12 +39,6 @@ export const useRiskDataStore = create<RiskDataState>((set, get) => ({
       const [ibisAllItem] = result.margin_data.splice(ibisAllIndex, 1);
       result.margin_data.unshift(ibisAllItem);
 
-      // const userId = useUserContextStore.getState().userContext?.userId;
-      // let metrics = result.margin_data;
-      // if (userId?.toLowerCase() === 'dkim@hurricanecap.com') {
-      //   metrics = result.margin_data.filter((item: RiskMetricsItem) => item.name === 'Chris Napoli');
-      // }
-
       set({
         riskMetricsItems: result.margin_data,
         lastUpdatedTimestamp: result?.timestamp,
@@ -69,7 +62,7 @@ export const useRiskDataStore = create<RiskDataState>((set, get) => ({
       // Ensure we fetch the latest timestamp after the state is updated
       set((state) => {
         if (state.lastUpdatedTimestamp && state.lastUpdatedTimestamp !== prevTimestamp) {
-          useUnseenItemsStore.getState().addUnseenItems(resourceNameRiskMetrics, 1);
+          unseenItemsStore.getState().addUnseenItems(resourceNameRiskMetrics, 1);
         }
         return {}; // No need to modify state, just ensuring correctness
       });

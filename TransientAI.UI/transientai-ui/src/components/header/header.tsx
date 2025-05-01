@@ -7,7 +7,7 @@ import { useDeviceType } from '@/lib/hooks';
 import { useUserContextStore } from '@/services/user-context';
 import ProfilePopover from './profile-popover';
 import Image from 'next/image';
-import { useMenuStore } from '@/services/menu-data';
+import { menuStore } from '@/services/menu-data';
 export interface HeaderProps {
   onMenuToggle?: () => void;
   isMenuVisible?: boolean;
@@ -18,7 +18,7 @@ export function Header({ onMenuToggle, isMenuVisible }: HeaderProps) {
   const { searchData, setSearchData } = useContext(SearchDataContext);
   const { userContext } = useUserContextStore();
   const deviceType = useDeviceType();
-  const {selectedMenu} = useMenuStore();
+  const selectedMenu = menuStore.use.selectedMenu();
 
   return (
     <header>

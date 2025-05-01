@@ -11,7 +11,7 @@ import {MsalProvider} from '@azure/msal-react';
 import {Spinner} from '@radix-ui/themes';
 import {ContentCarousel} from '@/components/content-carousel/content-carousel';
 import {EContentTypes} from '@/components/content-carousel/model';
-import {Mode, useMenuStore} from "@/services/menu-data";
+import {Mode, menuStore} from "@/services/menu-data";
 import {ServiceInitializer} from "@/services/startup/initializer";
 
 import msalInstance from '../msal-config';
@@ -30,8 +30,8 @@ export default function DashboardLayout({
 
   // todo.. unable to add this to the root of the app, as it is server side rendered, create an intermediate layout that wil act as root for all client dashboards
   const { loadUserContext, isLoading, isAuthenticated } = useUserContextStore();
-  const { selectedMenu } = useMenuStore();
   const [hurricanePmsView, setHurricanePmsView] = useState<boolean | null>(null);
+  const selectedMenu = menuStore.use.selectedMenu();
 
   useEffect(() => {
     loadUserContext();
