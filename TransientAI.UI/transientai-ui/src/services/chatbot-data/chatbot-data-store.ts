@@ -3,6 +3,7 @@ import {ChatMessage, ChatResponse, ChatResponseType, ChatRole, ChatThread} from 
 import {useUserContextStore} from "@/services/user-context";
 import {finalize, Observable} from "rxjs";
 import {chatbotDataService} from "@/services/chatbot-data/chatbot-data-service";
+import {createSelectors} from "@/lib/utility-functions/store-operations";
 
 export interface ChatbotDataStore {
     loadUserThreads: () => Promise<void>;
@@ -24,7 +25,7 @@ export interface ChatbotDataStore {
 
 export const PROCESSING_VALUE = 'Thinking...';
 
-export const useChatbotDataStore = create<ChatbotDataStore>((set, get) => ({
+const useChatbotDataStore = create<ChatbotDataStore>()((set, get) => ({
     isLoading: false,
 
     loadUserThreads: async () => {
@@ -146,3 +147,5 @@ export const useChatbotDataStore = create<ChatbotDataStore>((set, get) => ({
         }
     }
 }));
+
+export const chatbotStore = createSelectors(useChatbotDataStore);

@@ -1,7 +1,7 @@
 import {ChangeEvent, useLayoutEffect, useRef, useState} from 'react';
 import styles from './chatbot-response.module.scss';
 import {ChatRole, ChatThread} from '@/services/chatbot-data/model';
-import {useChatbotDataStore} from "@/services/chatbot-data/chatbot-data-store";
+import {chatbotStore} from "@/services/chatbot-data/chatbot-data-store";
 import {ChatRequestComponent} from "@/components/chatbot/chat-request-component";
 import {ChatResponseComponent} from "@/components/chatbot/chat-response-component";
 
@@ -10,12 +10,11 @@ export function ChatbotResponse() {
   const scrollDiv = useRef<HTMLDivElement>(null);
   const [scrollHeight, setScrollHeight] = useState(0);
   const [, setScrollHeightChanged] = useState(false);
-  const {
-    setIsChatbotResponseActive,
-    selectedThread,
-    isLoading,
-    addToThread
-  } = useChatbotDataStore();
+  const setIsChatbotResponseActive =  chatbotStore.use.setIsChatbotResponseActive();
+  const selectedThread = chatbotStore.use.selectedThread();
+  const isLoading = chatbotStore.use.isLoading();
+  const addToThread = chatbotStore.use.addToThread();
+
   const [thread, setThread] = useState<ChatThread | null>(selectedThread);
 
   useLayoutEffect(() => {

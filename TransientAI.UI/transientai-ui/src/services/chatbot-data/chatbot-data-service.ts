@@ -1,6 +1,6 @@
 import { webApihandler } from "../web-api-handler";
 import {ChatResponse, ChatResponseType, ChatThread} from "./model";
-import {mergeMap, Observable, from} from "rxjs";
+import {mergeMap, Observable, from, Subject} from "rxjs";
 import {parseIsoDate} from "@/lib/utility-functions/date-operations";
 
 class ChatbotDataService {
@@ -15,8 +15,17 @@ class ChatbotDataService {
           data['thread_id'] = thread_id;
       }
       const response = webApihandler.post('chat', data, undefined, {
-          serviceName: this.serviceName
+          serviceName: this.serviceName,
+          // responseType: 'stream',
+          // adapter: 'fetch'
       });
+
+      // response.then(result => {
+      //     debugger;
+      //     console.log(result);
+      // });
+      //
+      // return new Subject<ChatResponse>()
       return from(response).pipe(
           mergeMap((chunk: string) => {
               const match = chunk.match(/"thread_id"\s*:\s*"([^"]+)"[^}]*/g);

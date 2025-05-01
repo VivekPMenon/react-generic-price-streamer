@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { ChatbotResponse } from './chatbot-response';
 import { ChatThread } from '@/services/chatbot-data/model';
-import {useChatbotDataStore} from "@/services/chatbot-data/chatbot-data-store";
+import {chatbotStore} from "@/services/chatbot-data/chatbot-data-store";
 import { formatDistanceToNow } from 'date-fns';
 import {FormatDistanceOptions} from "date-fns/formatDistance";
 import styles from './chatbot.module.scss';
@@ -22,14 +22,14 @@ const formatOptions: FormatDistanceOptions = {
 }
 
 export function Chatbot() {
-  const {
-    isChatbotResponseActive,
-    setIsChatbotResponseActive,
-    setSelectedThread,
-    chatThreads,
-    clearThread,
-    createThread
-  } = useChatbotDataStore();
+
+  const isChatbotResponseActive = chatbotStore.use.isChatbotResponseActive();
+  const setIsChatbotResponseActive =  chatbotStore.use.setIsChatbotResponseActive();
+  const setSelectedThread = chatbotStore.use.setSelectedThread();
+  const chatThreads = chatbotStore.use.chatThreads();
+  const clearThread = chatbotStore.use.clearThread();
+  const createThread =  chatbotStore.use.createThread();
+
   const [chatHistories, setChatHistories] = useState<ChatThread[]>([]);
   const [, setQuery] = useState<string>();
   const [isAllChatsShown, setIsAllChatsShown] = useState<boolean>(false);

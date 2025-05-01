@@ -5,7 +5,7 @@ import {useProductBrowserStore} from "@/services/product-browser-data/product-br
 import {Spinner} from "@radix-ui/themes";
 import { ChevronDownIcon } from "@radix-ui/react-icons";
 import {productBrowserDataService, RecommendedClient} from "@/services/product-browser-data";
-import {useChatbotDataStore} from "@/services/chatbot-data/chatbot-data-store";
+import {chatbotStore} from "@/services/chatbot-data/chatbot-data-store";
 import { Tooltip } from 'react-tooltip'
 
 import styles from './todays-axes.module.scss';
@@ -20,6 +20,7 @@ function ClientComponent({ client }: ClientProps) {
     const [isLoadingDescription, setIsLoadingDescription] = useState<boolean>(false);
     const [open, setOpen] = useState<boolean>(false);
     const [description, setDescription] = useState<string>('');
+    const createThread = chatbotStore.use.createThread();
 
     function loadDescription(client: RecommendedClient) {
         if (isLoadingDescription) {
@@ -51,8 +52,8 @@ function ClientComponent({ client }: ClientProps) {
     const loadTrades = useCallback(() => loadClientTrades(selectedBond, client.client_name),
         [client.client_name, loadClientTrades, selectedBond]);
 
-    const findBondsOfInterest = useCallback(() => useChatbotDataStore.getState().createThread(`What other axes should I recommend to ${client.client_name}?`),
-        [client.client_name]);
+    const findBondsOfInterest = useCallback(() => createThread(`What other axes should I recommend to ${client.client_name}?`),
+        [client.client_name, createThread]);
 
     return (
         <div
