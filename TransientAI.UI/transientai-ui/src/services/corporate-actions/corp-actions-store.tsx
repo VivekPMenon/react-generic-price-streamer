@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { CorporateAction } from './model';
 import { corpActionsDataService } from './corporate-actions-data';
-import { useUnseenItemsStore } from '../unseen-items-store/unseen-items-store';
+import { unseenItemsStore } from '../unseen-items-store/unseen-items-store';
 import { areObjectsEqual } from '@/lib/utility-functions';
 import { RoleType, useUserContextStore } from '../user-context';
 
@@ -227,7 +227,7 @@ export const useCorpActionsStore = create<CorpActionsDataState>((set, get) => ({
       const newCount = newCorpActions.length;
       const unseenDiff = newCount - prevCount;
 
-      useUnseenItemsStore.getState().addUnseenItems(resourceName, unseenDiff);
+      unseenItemsStore.getState().addUnseenItems(resourceName, unseenDiff);
 
     }, 120000); // Polls every 2 minutes
   }

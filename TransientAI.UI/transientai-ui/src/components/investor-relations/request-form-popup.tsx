@@ -3,7 +3,7 @@ import * as Dialog from '@radix-ui/react-dialog';
 import * as Form from '@radix-ui/react-form';
 import { TextArea } from "@radix-ui/themes";
 import styles from './request-form-popup.module.scss';
-import {useInvestorRelationsStore} from "@/services/investor-relations-data/investor-relations-store";
+import {investorRelationsStore} from "@/services/investor-relations-data/investor-relations-store";
 import {InquiryFlag, InquiryStatus} from "@/services/investor-relations-data/model";
 import {enumToKeyValuePair} from "@/lib/utility-functions/enum-operations";
 
@@ -28,7 +28,11 @@ export function RequestFormPopup({children, onSubmitted}: RequestPopupProps) {
     const [flagError, setFlagError] = useState('');
     const [assignee, setAssignee] = useState<string>('');
     const [assigneeError, setAssigneeError] = useState('');
-    const { isSaving, save, assignees } = useInvestorRelationsStore();
+
+    const isSaving = investorRelationsStore.use.isSaving();
+    const save  = investorRelationsStore.use.save();
+    const assignees = investorRelationsStore.use.assignees();
+
     const [selectableAssignees, setSelectableAssignees] = useState<string[]>([]);
 
     const handleSubjectChange = (event:any) => {

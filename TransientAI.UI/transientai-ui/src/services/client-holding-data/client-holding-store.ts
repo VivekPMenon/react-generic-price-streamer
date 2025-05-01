@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import {ClientHolding, BondTrade} from "@/services/client-holding-data/model";
 import {clientHoldingsDataService} from "@/services/client-holding-data/client-holding-data-service";
+import {createSelectors} from "@/lib/utility-functions/store-operations";
 
 export interface ClientHoldingStore {
     isClientHoldingsLoading: boolean;
@@ -12,7 +13,7 @@ export interface ClientHoldingStore {
     error: string;
 }
 
-export const useClientHoldingsStore = create<ClientHoldingStore>((set, get) => ({
+const useClientHoldingsStore = create<ClientHoldingStore>()((set, get) => ({
     isClientHoldingsLoading: false,
     clientHoldings: [],
     isBondTradesLoading: false,
@@ -45,3 +46,5 @@ export const useClientHoldingsStore = create<ClientHoldingStore>((set, get) => (
         }
     }
 }));
+
+export const clientHoldingsStore = createSelectors(useClientHoldingsStore);
