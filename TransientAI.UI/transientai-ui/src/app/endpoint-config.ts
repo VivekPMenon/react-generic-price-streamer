@@ -1,73 +1,32 @@
 import { EndpointConfig } from "@/services/web-api-handler";
-//src/app/endpoint-config.ts
-const devHttpServices = {
-  'news-api': 'https://newsapi.org/v2',
-  'openai-api': 'https://news-api-r966.onrender.com',
-  'hurricane-api': 'https://hurricanecap-devfastapi.azurewebsites.net',
-  'hurricane-api-2-0': 'https://hurricane-dev-api01.purplebay-509ff298.eastus2.azurecontainerapps.io',
-  'corp-actions-api': 'https://hcapcorpactionsapi.azure-api.net/CorporateActionsAPIExecutor',
-  'sell-side-api': 'https://sellsidedev-fastapi.azurewebsites.net',
-  'api-dev': 'https://api-dev.thetransient.ai'
-};
 
-const devCorpApiHeaders = {
-  'Ocp-Apim-Subscription-Key': '633e69ff878e439c8c52bc5a5600a031'
-};
+export const getConfig = (): EndpointConfig => {
+  const env = process.env.NEXT_PUBLIC_ENV || 'LOCAL';
+    
+  const redirectUri = process.env.NEXT_PUBLIC_REDIRECT_URI || 'http://localhost:3000';
 
-const devAuthInfo = {
-  clientId: '0c97ab31-64c5-4b64-9bf3-487aa1263b61',
-  tenantId: '93d4e288-2dde-4182-acf6-653a54c2da69',
-  redirectUri: 'http://localhost:3000',
-  scope: 'https://graph.microsoft.com/.default'
-};
-
-export const endpointConfigs: { [host: string]: EndpointConfig } = {
-  'localhost': {
-    env: 'LOCAL',
-    httpsEndpoint: 'https://api-demo.thetransient.ai',
-    corpActionApiHeaders: devCorpApiHeaders,
+  return {
+    env,
+    httpsEndpoint: process.env.NEXT_PUBLIC_API_ENDPOINT || '',
+    corpActionApiHeaders: {
+      'Ocp-Apim-Subscription-Key': process.env.NEXT_PUBLIC_CORP_API_SUBSCRIPTION_KEY || ''
+    },
     randomStr: '',
-    httpsServices: devHttpServices,
+    httpsServices: {
+      'news-api': process.env.NEXT_PUBLIC_NEWS_API_URL || '',
+      'openai-api': process.env.NEXT_PUBLIC_OPENAI_API_URL || '',
+      'hurricane-api': process.env.NEXT_PUBLIC_HURRICANE_API_URL || '',
+      'hurricane-api-2-0': process.env.NEXT_PUBLIC_HURRICANE_API_2_0_URL || '',
+      'corp-actions-api': process.env.NEXT_PUBLIC_CORP_ACTIONS_API_URL || '',
+      'sell-side-api': process.env.NEXT_PUBLIC_SELL_SIDE_API_URL || '',
+      'api-dev': process.env.NEXT_PUBLIC_API_DEV_URL || ''
+    },
     isAuthDisabled: false,
     authInfo: {
-      ...devAuthInfo,
-      redirectUri: 'http://localhost:3000'
+      clientId: process.env.NEXT_PUBLIC_AUTH_CLIENT_ID || '',
+      tenantId: process.env.NEXT_PUBLIC_AUTH_TENANT_ID || '',
+      redirectUri,
+      scope: process.env.NEXT_PUBLIC_AUTH_SCOPE || ''
     }
-  },
-  'react-generic-price-streamer.vercel.app': {
-    env: 'DEV',
-    httpsEndpoint: 'https://api-demo.thetransient.ai',
-    corpActionApiHeaders: devCorpApiHeaders,
-    randomStr: '',
-    httpsServices: devHttpServices,
-    isAuthDisabled: false,
-    authInfo: {
-      ...devAuthInfo,
-      redirectUri: 'https://react-generic-price-streamer.vercel.app'
-    }
-  },
-  'hurricanecap-eff0hjhehxebcpbf.eastus2-01.azurewebsites.net': {
-    env: 'UAT',
-    httpsEndpoint: 'https://api-demo.thetransient.ai',
-    corpActionApiHeaders: devCorpApiHeaders,
-    randomStr: '',
-    httpsServices: devHttpServices,
-    isAuthDisabled: false,
-    authInfo: {
-      ...devAuthInfo,
-      redirectUri: 'https://hurricanecap-eff0hjhehxebcpbf.eastus2-01.azurewebsites.net/'
-    }
-  },
-  'next-ts-app-732770042262.us-central1.run.app': {
-  env: 'PROD',
-  httpsEndpoint: 'https://api-demo.thetransient.ai',
-  corpActionApiHeaders: devCorpApiHeaders,
-  randomStr: '',
-  httpsServices: devHttpServices,
-  isAuthDisabled: false,
-  authInfo: {
-    ...devAuthInfo,
-    redirectUri: 'https://next-ts-app-732770042262.us-central1.run.app'
-  }
-}
+  };
 };
