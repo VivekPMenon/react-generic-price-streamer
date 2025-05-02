@@ -2,7 +2,7 @@
 
 import {DataGrid, getNumberColDefTemplate, getRomanNumberColDefTemplate} from "../data-grid";
 import { ColDef } from "ag-grid-community";
-import {useProductBrowserStore} from "@/services/product-browser-data/product-browser-store";
+import {productBrowserStore} from "@/services/product-browser-data/product-browser-store";
 
 const columnDefs: ColDef[] = [
     {
@@ -53,7 +53,8 @@ const columnDefs: ColDef[] = [
 
 
 export function Holdings() {
-  const { isSimilarBondsLoading, similarBonds } = useProductBrowserStore();
+  const isSimilarBondsLoading = productBrowserStore.use.isSimilarBondsLoading();
+  const similarBonds = productBrowserStore.use.similarBonds();
 
   return (
       <div className="height-100p">

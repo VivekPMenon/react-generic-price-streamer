@@ -37,11 +37,11 @@ export default function RootLayout({
         lang="en"
         wm-editor-extension-available="true"
     >
-      <head>
-        <script src="https://kit.fontawesome.com/9a71b0f99c.js" crossOrigin="anonymous" async></script>
-      </head>
+    <head>
+        <script src="https://kit.fontawesome.com/f60360a779.js" crossOrigin="anonymous" async></script>
+    </head>
 
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased font-sans dark`}>
+    <body className={`${geistSans.variable} ${geistMono.variable} antialiased font-sans dark`}>
         <Translation>
             <Theme accentColor="teal" className="height-100p">
                 <ChatbotDataContextProvider>

@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import { pmsPnlPanelDataService } from './pms-pnl-data-service';
 import {ReportItem} from "@/services/pms-pnl-data/model";
 import {parseLocalDate} from "@/lib/utility-functions/date-operations";
-import {PollManager} from "@/lib/utility/PollManager";
+import { createSelectors } from '@/lib/utility-functions/store-operations';
 
 interface PmsPnlDataState {
   isLoading: boolean;
@@ -13,7 +13,7 @@ interface PmsPnlDataState {
   getReport: () => void;
 }
 
-export const usePmsPnlDataStore = create<PmsPnlDataState>((set, get) => ({
+const usePmsPnlDataStore = create<PmsPnlDataState>((set, get) => ({
   isLoading: false,
   report: null,
   reportDate: null,
@@ -42,3 +42,5 @@ export const usePmsPnlDataStore = create<PmsPnlDataState>((set, get) => ({
         }, 3600000); // Polls every hour
     }
 }));
+
+export const pmsPnlDataStore = createSelectors(usePmsPnlDataStore);
