@@ -27,7 +27,7 @@ function PmsPnl() {
             const set = userContext.userRole === UserRole.CENTER_IBIS ? columnDefs.filter((item)=> !item.field?.includes('NoFees')) : columnDefs;
             setFilterColumnDefs(set || []);
         }
-    },[columnDefs]);
+    },[userContext.userRole]);
 
     return (
     <div>
@@ -39,14 +39,14 @@ function PmsPnl() {
                 isSummaryGrid={false}
                 suppressStatusBar={true}
                 suppressFloatingFilter={false}
-                rowData={userContext.userRole === UserRole.CENTER_IBIS ? filteredReport : report?.length && report[0]}
+                rowData={userContext.userRole === UserRole.CENTER_IBIS ? filteredReport : report?.data}
                 columnDefs={filtercolumnDefs}
                 loading={isLoading}
                 gridOptions={defaultGridOptions}
                 onGridSizeChanged={handleGridSizeChanged}
                 onFirstDataRendered={handleFirstDataRendered}
                 suppressStickyTotalRow={false}
-                pinnedTopRowData={userContext.userRole !== UserRole.CENTER_IBIS && report?.length ? [report[1]] : undefined}
+                grandTotalRow='top'
             />
         </div>
     </div>);
