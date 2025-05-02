@@ -64,6 +64,8 @@ export const columnDefs: ColDef[] = [
         pinned: true,
         width: 150,
         aggFunc: () => 'TOTAL',
+        cellDataType: 'text',
+        filter: 'agTextColumnFilter'
     },
     {
         field: 'dayPnl',
@@ -73,7 +75,8 @@ export const columnDefs: ColDef[] = [
         valueFormatter: (params: ValueFormatterParams) => formatInteger(params.value, ''),
         width: 85,
         aggFunc: 'sum',
-        cellDataType: 'number'
+        cellDataType: 'number',
+        filter: 'agNumberColumnFilter'
     },
     {
         field: 'mtdPnl',
@@ -83,7 +86,8 @@ export const columnDefs: ColDef[] = [
         valueFormatter: (params: ValueFormatterParams) => formatInteger(params.value, ''),
         width: 85,
         aggFunc: 'sum',
-        cellDataType: 'number'
+        cellDataType: 'number',
+        filter: 'agNumberColumnFilter'
     },
     {
         field: 'ytdPnl',
@@ -93,7 +97,8 @@ export const columnDefs: ColDef[] = [
         valueFormatter: (params: ValueFormatterParams) => formatInteger(params.value, ''),
         width: 85,
         aggFunc: 'sum',
-        cellDataType: 'number'
+        cellDataType: 'number',
+        filter: 'agNumberColumnFilter'
     },
     {
         field: 'dayPnlNoFees',
@@ -105,7 +110,8 @@ export const columnDefs: ColDef[] = [
         wrapHeaderText: true,
         autoHeaderHeight: true,
         aggFunc: 'sum',
-        cellDataType: 'number'
+        cellDataType: 'number',
+        filter: 'agNumberColumnFilter'
     },
     {
         field: 'mtdPnlNoFees',
@@ -117,7 +123,8 @@ export const columnDefs: ColDef[] = [
         wrapHeaderText: true,
         autoHeaderHeight: true,
         aggFunc: 'sum',
-        cellDataType: 'number'
+        cellDataType: 'number',
+        filter: 'agNumberColumnFilter'
     },
     {
         field: 'ytdPnlNoFees',
@@ -129,7 +136,8 @@ export const columnDefs: ColDef[] = [
         wrapHeaderText: true,
         autoHeaderHeight: true,
         aggFunc: 'sum',
-        cellDataType: 'number'
+        cellDataType: 'number',
+        filter: 'agNumberColumnFilter'
     },
 ];
 
