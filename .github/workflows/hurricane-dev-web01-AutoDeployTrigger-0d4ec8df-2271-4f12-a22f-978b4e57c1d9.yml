@@ -1,18 +1,15 @@
 name: Trigger auto deployment for hurricane-dev-web01
 
-# When this action will be executed
 on:
-  # Automatically trigger it when detected changes in repo
   push:
     branches: 
-      [ development ]
+      - development
     paths:
-    - '**'
-    - '.github/workflows/hurricane-dev-web01-AutoDeployTrigger-0d4ec8df-2271-4f12-a22f-978b4e57c1d9.yml'
+      - '**'
+      - '.github/workflows/hurricane-dev-web01-AutoDeployTrigger-0d4ec8df-2271-4f12-a22f-978b4e57c1d9.yml'
 
-  # Allow manual trigger 
   workflow_dispatch:
-      
+
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
@@ -21,13 +18,36 @@ jobs:
       - name: Checkout to the branch
         uses: actions/checkout@v2
         with:
-          submodules: 'true'
+          submodules: true
           token: ${{ secrets.GH_TOKEN }}
 
       - name: Azure Login
         uses: azure/login@v1
         with:
           creds: ${{ secrets.HURRICANEDEVWEB01_AZURE_CREDENTIALS }}
+
+      - name: Create .env file from secrets
+        run: |
+          cat <<EOF > ./TransientAI.UI/transientai-ui/.env
+          NEXT_PUBLIC_ENV=${{ secrets.NEXT_PUBLIC_ENV }}
+          NEXT_PUBLIC_APP_NAME=${{ secrets.NEXT_PUBLIC_APP_NAME }}
+          NEXT_PUBLIC_NEWS_API_URL=${{ secrets.NEXT_PUBLIC_NEWS_API_URL }}
+          NEXT_PUBLIC_OPENAI_API_URL=${{ secrets.NEXT_PUBLIC_OPENAI_API_URL }}
+          NEXT_PUBLIC_HURRICANE_API_URL=${{ secrets.NEXT_PUBLIC_HURRICANE_API_URL }}
+          NEXT_PUBLIC_HURRICANE_API_2_0_URL=${{ secrets.NEXT_PUBLIC_HURRICANE_API_2_0_URL }}
+          NEXT_PUBLIC_CORP_ACTIONS_API_URL=${{ secrets.NEXT_PUBLIC_CORP_ACTIONS_API_URL }}
+          NEXT_PUBLIC_SELL_SIDE_API_URL=${{ secrets.NEXT_PUBLIC_SELL_SIDE_API_URL }}
+          NEXT_PUBLIC_API_DEV_URL=${{ secrets.NEXT_PUBLIC_API_DEV_URL }}
+          NEXT_PUBLIC_CORP_API_SUBSCRIPTION_KEY=${{ secrets.NEXT_PUBLIC_CORP_API_SUBSCRIPTION_KEY }}
+          NEXT_PUBLIC_AUTH_CLIENT_ID=${{ secrets.NEXT_PUBLIC_AUTH_CLIENT_ID }}
+          NEXT_PUBLIC_AUTH_TENANT_ID=${{ secrets.NEXT_PUBLIC_AUTH_TENANT_ID }}
+          NEXT_PUBLIC_AUTH_SCOPE=${{ secrets.NEXT_PUBLIC_AUTH_SCOPE }}
+          NEXT_PUBLIC_REDIRECT_URI=${{ secrets.NEXT_PUBLIC_REDIRECT_URI }}
+          EOF
+
+          echo "✅ .env file created. Contents (redacted):"
+          cat ./TransientAI.UI/transientai-ui/.env
+        shell: bash
 
       - name: Build and push container image to registry
         uses: azure/container-apps-deploy-action@v2
@@ -40,8 +60,3 @@ jobs:
           containerAppName: hurricane-dev-web01
           resourceGroup: Hurricane_dev
           imageToBuild: hurricanedevacr01.azurecr.io/transient_web:${{ github.sha }}
-          
-            
-
-     
-
