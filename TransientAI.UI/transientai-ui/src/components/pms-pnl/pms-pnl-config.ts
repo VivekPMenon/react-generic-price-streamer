@@ -15,7 +15,7 @@ import { executeAsync } from "@/lib/utility-functions/async";
 import i18n from "../../i18n";  // Import i18n
 
 function isPinned(node: IRowNode): boolean {
-    return node.rowPinned === 'top';
+    return node.footer === true;
 }
 
 function isManagerField(colDef: ColDef): boolean {
