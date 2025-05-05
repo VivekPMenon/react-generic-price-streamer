@@ -10,12 +10,12 @@ class UserService {
 
     // To save the user role
     savePreviewUserRoleId(role: string) {
-        localStorage.setItem('previewUserRoleId', role);
+        sessionStorage.setItem('previewUserRoleId', role);
     }
 
     // To retrieve the user role
     getPreviewUserRoleId() {
-        return localStorage.getItem('previewUserRoleId');
+        return sessionStorage.getItem('previewUserRoleId');
     }
   
   
