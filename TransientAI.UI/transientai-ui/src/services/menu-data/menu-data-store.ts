@@ -14,7 +14,7 @@ interface MenuState {
 
 function calculateDefaultMenu(menuInfoList: MenuInfo[], defaultMenuId: string) {
   return menuInfoList
-    .find(menuInfo => menuInfo.id === defaultMenuId)!;
+    .find(menuInfo => menuInfo.key === defaultMenuId) || menuInfoList[0];
 }
 
 function calculateCurrentMenu(menuInfoList: MenuInfo[]) {
@@ -38,11 +38,11 @@ export const useMenuStore = create<MenuState>((set) => ({
   selectedMenu: [],
   defaultMenu: [],
 
-  initializeMenus: (mode: Mode, userRole: string) => {
-    const menuInfoList = getMenuItems(mode, userRole);
+  initializeMenus: async (mode: Mode, userRole: string) => {
+    const menuInfoList = await getMenuItems(mode);
 
     const defaultMenuId = mode === Mode.BUY 
-    ? (menuInfoList.some(menu => menu.id === 'hurricane-pms') ? 'hurricane-pms' : 'macro-panel') 
+    ? (menuInfoList.some((menu) => menu.key === 'hurricane-pms') ? 'hurricane-pms' : 'macro-panel') 
     : 'todays-axes';
 
     set({
@@ -55,7 +55,7 @@ export const useMenuStore = create<MenuState>((set) => ({
 
   setActiveMenu: (menu) =>
     set((state) => {
-      const isExisting = state.activeMenuList.some((m) => m.id === menu.id);
+      const isExisting = state.activeMenuList.some((m) => m.key === menu.key);
       const updatedMenuList = isExisting
         ? state.activeMenuList
         : [...state.activeMenuList, menu];

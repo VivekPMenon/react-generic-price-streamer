@@ -45,7 +45,7 @@ export default function DashboardLayout({
   }, [isAuthenticated]);
 
   useEffect(() => {
-    setHurricanePmsView(selectedMenu?.id === 'hurricane-pms');
+    setHurricanePmsView(selectedMenu?.key === 'hurricane-pms');
   }, [selectedMenu]);
 
   const deviceType = useDeviceType();

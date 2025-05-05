@@ -6,6 +6,7 @@ import {useEffect, useState} from 'react';
 import { useRouter } from 'next/navigation';
 import { MenuInfo } from '@/services/menu-data';
 import { useUserContextStore } from '@/services/user-context';
+import { Skeleton } from '@radix-ui/themes';
 export interface NotificationsProps {
   onExpandCollapse?: (state: boolean) => void;
   onNavigate?: () => void;
@@ -40,7 +41,7 @@ export function Explorer(props: NotificationsProps) {
       </div>
 
       <div className="menu">
-        {fullMenuList.map(menuInfo => (
+        {fullMenuList.length > 0 ? fullMenuList.map(menuInfo => (
           <div className="menu-item" key={menuInfo.id}>
 
             <div 
@@ -48,7 +49,7 @@ export function Explorer(props: NotificationsProps) {
               onClick={() => onMenuClick(menuInfo)}
             >
               <span className={`icon ${menuInfo.icon}`}></span>
-              {selectedMenu?.id !== hurricanePmsView && <span className="text">{menuInfo.description}</span>}
+              {selectedMenu?.key !== hurricanePmsView && <span className="text">{menuInfo.description}</span>}
               {menuInfo.badgeCount && menuInfo.badgeCount > 0 && (
                 <span className="badge">{menuInfo.badgeCount}</span>
               )}
@@ -64,7 +65,17 @@ export function Explorer(props: NotificationsProps) {
             ))}
 
           </div>
-        ))}
+        )) : (
+          <div className='w-full gap-4 grid grid-cols-1 justify-center p-4'>
+            <Skeleton height={"20px"} width={"100%"}/>
+            <Skeleton height={"20px"} width={"100%"}/>
+            <Skeleton height={"20px"} width={"100%"}/>
+            <Skeleton height={"20px"} width={"100%"}/>
+            <Skeleton height={"20px"} width={"100%"}/>
+            <Skeleton height={"20px"} width={"100%"}/>
+            <Skeleton height={"20px"} width={"100%"}/>
+          </div>
+        )}
       </div>
     </div>
   );

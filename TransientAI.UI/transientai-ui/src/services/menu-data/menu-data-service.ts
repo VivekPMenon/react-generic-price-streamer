@@ -1,11 +1,12 @@
 //src/services/menu-data/menu-data-service.ts
 import { MenuInfo } from "./model";
 import i18n from '../../i18n';
+import { webApihandler } from "../web-api-handler";
 export enum Mode {
   SELL = 'sell',
   BUY = 'buy',
 }
-// console.log(i18n.t('macro_panel'));
+
 const menuInfoList: MenuInfo[] = [
   {
     id: 'macro-panel',
@@ -156,13 +157,42 @@ const sellMenuInfoList: MenuInfo[] = [
   },
 ];
 
-export function getMenuItems(mode: Mode, userRole: string) {
-  const restrictedMenuIds = ['hurricane-pms']; // IDs of restricted menu items
-  const restrictedRoles = ['Center IBIS', 'HUNTER'];
+export async function getMenuItems(mode: Mode) {
+  if (mode === Mode.SELL) {
+    return sellMenuInfoList;
+  }
+  const query = `
+  {
+    getScreensForRole {
+      id
+      key
+      icon
+      route
+      priorityId
+      description 
+      badgeCount
+    }
+  }
+`;
+  const serviceName = 'hurricane-api-2-0';
+  try {
+    const response = await webApihandler.post(
+      'graphql', 
+      { query }, 
+      undefined,
+      { serviceName } 
+    );
+    
+    const menuList = response.data.getScreensForRole || [];
+    const translatedMenuList: MenuInfo[] = menuList.map((menuItem: MenuInfo) => ({
+      ...menuItem,
+      description: i18n.t(menuItem.description || ''),
+    }));
 
-  const filteredMenuInfoList = menuInfoList.filter(menuItem => {
-    return !(restrictedMenuIds.includes(menuItem.id!) && restrictedRoles.includes(userRole));
-  });
-
-  return mode === Mode.SELL ? sellMenuInfoList : filteredMenuInfoList;
-}
+    // const sortedMenuList = translatedMenuList.sort((a, b) => (a.priorityId || 0) - (b.priorityId || 0));
+    return translatedMenuList;
+  } catch (error) { 
+    console.error('Error fetching screens for role:', error);
+    throw error;
+  }
+};
