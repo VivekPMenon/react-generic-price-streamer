@@ -11,7 +11,8 @@ export enum RoleType {
   Trader ='Trader',
   PM ='Portfolio Manager',
   Operations = 'Operations',
-  Admin = 'admin'
+  Admin = 'admin',
+  SuperAdmin = 'Super Admin'
 }
 
 export interface Resource {

@@ -4,18 +4,23 @@ import { useCallback, useContext, useEffect, useState } from 'react';
 import styles from './header.module.scss';
 import { SearchDataContext } from '@/services/search-data';
 import { useDeviceType } from '@/lib/hooks';
-import { useUserContextStore } from '@/services/user-context';
+import { RoleType, useUserContextStore } from '@/services/user-context';
 import ProfilePopover from './profile-popover';
 import Image from 'next/image';
 import { menuStore } from '@/services/menu-data';
 import SharedDropdown, { DropdownOption } from '../shared/ta-select/ta-select';
+import { userService } from '@/services/user-context/user-service';
 
 // Example user interface
 interface User {
   id: number;
-  name: string;
   email: string;
-  role: string;
+  first_name: string;
+  last_name: string;
+  is_active: boolean;
+  is_external: boolean;
+  role_id: number;
+  is_superadmin: boolean;
 }
 
 export interface HeaderProps {
@@ -37,15 +42,15 @@ export function Header({ onMenuToggle, isMenuVisible }: HeaderProps) {
   // Convert users to dropdown options format
   const userOptions: DropdownOption<User>[] = previewUserList.map(user => ({
     value: user.id,
-    label: `${user.name} (${user.role})`,
+    label: `${user.first_name} (${user.last_name})`,
     data: user
   }));
 
   // Find the currently selected option
   const selectedOption = selectedPreviewUser 
     ? {
-        value: selectedPreviewUser.id,
-        label: `${selectedPreviewUser.name} (${selectedPreviewUser.role})`,
+        value: selectedPreviewUser.role_id,
+        label: `${selectedPreviewUser.first_name} ${selectedPreviewUser.last_name}`,
         data: selectedPreviewUser
       } 
     : null;
@@ -53,8 +58,10 @@ export function Header({ onMenuToggle, isMenuVisible }: HeaderProps) {
     const handleSelectChange = (selected: DropdownOption<User> | null) => {
       if (selected) {
         setSelectedPreviewUser(selected.data);
+        userService.savePreviewUserRoleId(selected.value.toString());
       } else {
         setSelectedPreviewUser(null);
+        userService.savePreviewUserRoleId('');
       }
     };
 
@@ -65,15 +72,40 @@ export function Header({ onMenuToggle, isMenuVisible }: HeaderProps) {
     try {
       // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 800));
+      // const response = await userService.getUserList();
       
       // Mock user data
-      const mockUsers: User[] = [
-        { id: 1, name: 'John Doe', email: 'john@example.com', role: 'Admin' },
-        { id: 2, name: 'Jane Smith', email: 'jane@example.com', role: 'Editor' },
-        { id: 3, name: 'Robert Johnson', email: 'robert@example.com', role: 'Viewer' },
-        { id: 4, name: 'Sarah Williams', email: 'sarah@example.com', role: 'Editor' },
-        { id: 5, name: 'Michael Brown', email: 'michael@example.com', role: 'Admin' },
-      ];
+      const mockUsers: User[] =[
+        {
+            "id": 45,
+            "email": "torenstein@hurricanecap.com",
+            "first_name": "Ted",
+            "last_name": "Orenstein",
+            "is_active": true,
+            "is_external": true,
+            "role_id": 2,
+            "is_superadmin": false
+        },
+        {
+            "id": 46,
+            "email": "tsandoz@hurricanecap.com",
+            "first_name": "Todd",
+            "last_name": "Sandoz",
+            "is_active": true,
+            "is_external": true,
+            "role_id": 2,
+            "is_superadmin": false
+        },
+        {
+            "id": 47,
+            "email": "tsoliman@hurricanecap.com",
+            "first_name": "Tim",
+            "last_name": "Soliman (Inactive)",
+            "is_active": true,
+            "is_external": true,
+            "role_id": 2,
+            "is_superadmin": false
+        }]
       
       setPreviewUserList(mockUsers);
       
@@ -87,8 +119,10 @@ export function Header({ onMenuToggle, isMenuVisible }: HeaderProps) {
   }, []);
 
   useEffect(() => {
-    fetchUsers();
-  }, [fetchUsers]);
+    if (userContext.role === RoleType.SuperAdmin) {
+      fetchUsers();
+    }
+  }, [fetchUsers, userContext.role]);
 
   return (
     <header>
