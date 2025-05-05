@@ -6,7 +6,7 @@ import {useEffect, useMemo, useRef, useState} from 'react';
 import styles from './notifications.module.scss';
 import {Notification, NotificationType} from '@/services/notifications';
 import {resourceName as corpActionResourceName, useCorpActionsStore} from "@/services/corporate-actions";
-import {Mode, useMenuStore} from "@/services/menu-data";
+import {Mode, menuStore} from "@/services/menu-data";
 import {NotificationPopup} from './notification-popup';
 import {useRouter} from 'next/navigation';
 import {
@@ -19,20 +19,20 @@ import {
 import {Spinner} from '@radix-ui/themes';
 import {
   resourceNameInvestorRelations,
-  useInvestorRelationsStore
+  investorRelationsStore
 } from "@/services/investor-relations-data/investor-relations-store";
 import {InquiryFlag} from "@/services/investor-relations-data";
 import {useVirtualizer, VirtualItem} from "@tanstack/react-virtual";
 import {resourceNameRiskMetrics, useRiskDataStore} from '@/services/risk-data/risk-data-store';
 import {formatDate} from '@/lib/utility-functions/date-operations';
-import {useUnseenItemsStore} from '@/services/unseen-items-store/unseen-items-store';
+import {unseenItemsStore} from '@/services/unseen-items-store/unseen-items-store';
 import {resourceName as BreakNewsresourceName} from '@/services/break-news/break-news-data-store';
 import {
   resourceName as bloombergReportResourceName,
-  useMacroPanelDataStore
+  macroPanelDataStore
 } from '@/services/macro-panel-data/macro-panel-data-store';
 import {RoleType, useUserContextStore} from '@/services/user-context';
-import {usePmsPnlDataStore} from "@/services/pms-pnl-data/pms-pnl-data-store";
+import {pmsPnlDataStore} from "@/services/pms-pnl-data/pms-pnl-data-store";
 import {useTranslation} from 'react-i18next'; // Import the translation hook
 import {translateText} from '@/i18n';
 
@@ -162,13 +162,24 @@ export function Notifications(props: NotificationsProps) {
   const { isLoading, reports: researchReports, setSelectedReport: setSelectedResearchReport } = useResearchReportsStore();
   const { isLoading: isRiskReportLoading, riskReports, setSelectedReport: setSelectedRiskReport } = useRiskReportsSlice();
   const { isLoading: isCorpActionsLoading, loadedCorpActions, selectedCorpAction, setSelectedCorpAction, loadCorpActions, loadPmCorpActions } = useCorpActionsStore();
-  const { isLoading: isInquiriesLoading, inquiries } = useInvestorRelationsStore();
+
+  const isInquiriesLoading = investorRelationsStore.use.isLoading();
+  const inquiries = investorRelationsStore.use.inquiries();
+
   const { isLoading: isRiskDataLoading, lastUpdatedTimestamp } = useRiskDataStore();
-  const { isLoading: isPmsPnlReportLoading, reportDate } = usePmsPnlDataStore();
+  const isPmsPnlReportLoading = pmsPnlDataStore.use.isLoading();
+  const reportDate = pmsPnlDataStore.use.reportDate();
   // const { isLoading: isBreakingNewsLoading, breakNewsItems, setSelectedBreakNewsItem, setGroupId } = useBreakNewsDataStore();
-  const { isLoading: isBloombergEmailReportsLoading, bloombergEmailReports, setSelectedReport } = useMacroPanelDataStore();
-  const { resetUnseenItems, unseenItems } = useUnseenItemsStore();
-  const { fullMenuList, activeMenuList, setActiveMenu } = useMenuStore();
+  // const isBloombergEmailReportsLoading = macroPanelDataStore.use.isLoading();
+  const bloombergEmailReports = macroPanelDataStore.use.bloombergEmailReports();
+  const setSelectedReport = macroPanelDataStore.use.setSelectedReport();
+  const unseenItems = unseenItemsStore.use.unseenItems();
+  const resetUnseenItems = unseenItemsStore.use.resetUnseenItems();
+
+  const fullMenuList = menuStore.use.fullMenuList();
+  const activeMenuList = menuStore.use.activeMenuList();
+  const setActiveMenu = menuStore.use.setActiveMenu();
+
   const { userContext } = useUserContextStore();
 
   const [notifications, setNotifications] = useState<Notification[]>([]);

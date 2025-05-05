@@ -19,8 +19,6 @@ import {BondNews} from "@/components/news/bond-news";
 import msalInstance from '../msal-config';
 import styles from './page.module.scss';
 import 'react-tooltip/dist/react-tooltip.css'
-import {EContentTypes} from "@/components/content-carousel/model";
-import {ContentCarousel} from "@/components/content-carousel/content-carousel";
 
 const MODE: Mode = Mode.SELL;
 

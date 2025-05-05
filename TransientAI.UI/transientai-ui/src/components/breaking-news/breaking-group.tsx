@@ -1,6 +1,6 @@
 'use client';
 import { breakNewsDataService } from '@/services/break-news/break-news-data-service';
-import { useBreakNewsDataStore } from '@/services/break-news/break-news-data-store';
+import { breakNewsStore } from '@/services/break-news/break-news-data-store';
 import React, { useCallback, useEffect, useState } from 'react';
 import { IGroupList } from './models';
 import Select from 'react-select';
@@ -9,7 +9,8 @@ const WhatsAppGroupDropdown = () => {
   const [groupList, setGroupList] = useState<IGroupList[]>([]);
   const [selectedGroup, setSelectedGroup] = useState<IGroupList | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const { setGroupId, selectedGroupId } = useBreakNewsDataStore();
+  const setGroupId = breakNewsStore.use.setGroupId();
+  const selectedGroupId = breakNewsStore.use.selectedGroupId();
 
   // Convert group list to format required by react-select
   const groupOptions = groupList.map(group => ({

@@ -8,6 +8,7 @@ import {
 } from "@/services/product-browser-data/model";
 import {productBrowserDataService} from "@/services/product-browser-data/product-browser-data-service";
 import {TraceData} from "@/services/market-data";
+import {createSelectors} from "@/lib/utility-functions/store-operations";
 
 export interface ProductBrowserStore {
     isAxesLoading: boolean;
@@ -49,7 +50,7 @@ export interface ProductBrowserStore {
     loadTraces: (isin?: string) => Promise<void>;
 }
 
-export const useProductBrowserStore = create<ProductBrowserStore>((set, get) => ({
+const useProductBrowserStore = create<ProductBrowserStore>((set, get) => ({
     isAxesLoading: false,
     axes: [],
     loadAxes: async () => {
@@ -232,3 +233,5 @@ export const useProductBrowserStore = create<ProductBrowserStore>((set, get) => 
         }
     }
 }));
+
+export const productBrowserStore = createSelectors(useProductBrowserStore);

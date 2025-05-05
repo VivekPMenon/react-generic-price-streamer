@@ -1,6 +1,6 @@
 import React, {useMemo, useState, memo, useCallback} from 'react';
 import { Spinner, Tabs } from '@radix-ui/themes';
-import { useMacroPanelDataStore } from "@/services/macro-panel-data/macro-panel-data-store";
+import { macroPanelDataStore } from "@/services/macro-panel-data/macro-panel-data-store";
 import styles from './macro-panel-tabs.module.scss';
 import MacroPanelTab from "@/components/macro-panel/macro-panel-tab";
 import * as Dialog from "@radix-ui/react-dialog";
@@ -12,13 +12,23 @@ import {MarketDataType} from "@/services/macro-panel-data/model";
 import i18n from '../../i18n';
 
 function MacroPanelTabs() {
-    const { reportGenerationDate, setReportGenerationDate, treasuryYields, fxRates, cryptos, equityFutures, isTreasuryLoading, isFxLoading, isCryptoLoading, isEquityFuturesLoading } = useMacroPanelDataStore();
     const [open, setOpen] = useState(false);
     const [isLoadingMarketData, setIsLoadingMarketData] = useState(false);
     const [instrument, setInstrument] = useState<Instrument | null>(null);
     const deviceType = useDeviceType();
 
-    const showPopup = useCallback((symbol: string, type?: MarketDataType, marketData?: MarketData[])=> {
+    const reportGenerationDate = macroPanelDataStore.use.reportGenerationDate();
+    const setReportGenerationDate = macroPanelDataStore.use.setReportGenerationDate();
+    const treasuryYields = macroPanelDataStore.use.treasuryYields();
+    const fxRates = macroPanelDataStore.use.fxRates();
+    const cryptos = macroPanelDataStore.use.cryptos();
+    const equityFutures = macroPanelDataStore.use.equityFutures();
+    const isTreasuryLoading = macroPanelDataStore.use.isTreasuryLoading();
+    const isFxLoading = macroPanelDataStore.use.isFxLoading();
+    const isCryptoLoading = macroPanelDataStore.use.isCryptoLoading();
+    const isEquityFuturesLoading = macroPanelDataStore.use.isEquityFuturesLoading();
+
+    const showPopup = useCallback((symbol: string, type?: MarketDataType, marketData?: MarketData[]) => {
         if (symbol) {
             setIsLoadingMarketData(true);
             setOpen(true);
@@ -56,7 +66,7 @@ function MacroPanelTabs() {
         }
     }, []);
 
-    const handleOpenChange = useCallback((open: boolean)=> {
+    const handleOpenChange = useCallback((open: boolean) => {
         setOpen(open);
         if (!open) {
             setInstrument(null);
@@ -76,15 +86,17 @@ function MacroPanelTabs() {
             </div>
             <div className={`${styles['macro-panel']} scrollable-div`}>
                 <div className={styles['equity-futures-container']}>
-                    <hr className={styles['divider']} />
+                    <hr className={styles['divider']}/>
                     <div className={`${styles['section-header']} sub-header`}>
                         {i18n.t('Global_Equity_Index_Futures')}
                     </div>
                     {isEquityFuturesLoading
-                        ? <Spinner />
+                        ? <Spinner/>
                         : (
-                            <Tabs.Root defaultValue={groupedEquityFutures?.length ? groupedEquityFutures[0][0] : undefined}>
-                                <Tabs.List className={`${styles['tab-list']} ${isMobile ? 'horizontal-scrollable-div' : ''}`}>
+                            <Tabs.Root
+                                defaultValue={groupedEquityFutures?.length ? groupedEquityFutures[0][0] : undefined}>
+                                <Tabs.List
+                                    className={`${styles['tab-list']} ${isMobile ? 'horizontal-scrollable-div' : ''}`}>
                                     {groupedEquityFutures.map(ef => (
                                         <Tabs.Trigger key={ef[0]} value={ef[0] || 'Untitled'}>
                                             <span className={styles['instrument-group-tab']}>{ef[0]}</span>
@@ -107,15 +119,17 @@ function MacroPanelTabs() {
                 </div>
 
                 <div className={styles['yields-container']}>
-                    <hr className={styles['divider']} />
+                    <hr className={styles['divider']}/>
                     <div className={`${styles['section-header']} sub-header`}>
                         {i18n.t('Rates_Yield')}
                     </div>
                     {isTreasuryLoading
-                        ? <Spinner />
+                        ? <Spinner/>
                         : (
-                            <Tabs.Root defaultValue={groupedYields?.find(groups => groups[0] === 'Notes/Bonds')?.[0] ?? (groupedYields?.length ? groupedYields[0][0] : undefined)}>
-                                <Tabs.List className={`${styles['tab-list']} ${isMobile ? 'horizontal-scrollable-div' : ''}`}>
+                            <Tabs.Root
+                                defaultValue={groupedYields?.find(groups => groups[0] === 'Notes/Bonds')?.[0] ?? (groupedYields?.length ? groupedYields[0][0] : undefined)}>
+                                <Tabs.List
+                                    className={`${styles['tab-list']} ${isMobile ? 'horizontal-scrollable-div' : ''}`}>
                                     {groupedYields.map(y => (
                                         <Tabs.Trigger key={y[0]} value={y[0] || 'Untitled'}>
                                             <span className={styles['instrument-group-tab']}>{y[0]}</span>
@@ -138,15 +152,16 @@ function MacroPanelTabs() {
                 </div>
 
                 <div className={styles['fx-container']}>
-                    <hr className={styles['divider']} />
+                    <hr className={styles['divider']}/>
                     <div className={`${styles['section-header']} sub-header`}>
                         {i18n.t('FX')}
                     </div>
                     {isFxLoading
-                        ? <Spinner />
+                        ? <Spinner/>
                         : (
                             <Tabs.Root defaultValue={groupedFx?.length ? groupedFx[0][0] : undefined}>
-                                <Tabs.List className={`${styles['tab-list']} ${isMobile ? 'horizontal-scrollable-div' : ''}`}>
+                                <Tabs.List
+                                    className={`${styles['tab-list']} ${isMobile ? 'horizontal-scrollable-div' : ''}`}>
                                     {groupedFx.map(fx => (
                                         <Tabs.Trigger key={fx[0]} value={fx[0] || 'Untitled'}>
                                             <span className={styles['instrument-group-tab']}>{fx[0]}</span>
@@ -168,15 +183,16 @@ function MacroPanelTabs() {
                 </div>
 
                 <div className={styles['crypto-container']}>
-                    <hr className={styles['divider']} />
+                    <hr className={styles['divider']}/>
                     <div className={`${styles['section-header']} sub-header`}>
                         {i18n.t('Crypto')}
                     </div>
                     {isCryptoLoading
-                        ? <Spinner />
+                        ? <Spinner/>
                         : (
                             <Tabs.Root defaultValue={groupedCrypto?.length ? groupedCrypto[0][0] : undefined}>
-                                <Tabs.List className={`${styles['tab-list']} ${isMobile ? 'horizontal-scrollable-div' : ''}`}>
+                                <Tabs.List
+                                    className={`${styles['tab-list']} ${isMobile ? 'horizontal-scrollable-div' : ''}`}>
                                     {groupedCrypto.map(c => (
                                         <Tabs.Trigger key={c[0]} value={c[0] || 'Untitled'}>
                                             <span className={styles['instrument-group-tab']}>{c[0]}</span>
@@ -194,15 +210,15 @@ function MacroPanelTabs() {
                                 ))}
                             </Tabs.Root>
                         )}
-                    <hr className={styles['div  ider']} />
+                    <hr className={styles['div  ider']}/>
                 </div>
             </div>
             <Dialog.Root open={open} onOpenChange={handleOpenChange}>
                 <Dialog.Portal>
-                    <Dialog.Overlay className="DialogOverlay" />
+                    <Dialog.Overlay className="DialogOverlay"/>
                     <Dialog.Content className={styles['dialog']}>
-                        <Dialog.Title />
-                        <Dialog.Description />
+                        <Dialog.Title/>
+                        <Dialog.Description/>
                         <div className={styles['dialog-content']}>
                             {
                                 isLoadingMarketData
@@ -215,13 +231,13 @@ function MacroPanelTabs() {
                                             className={styles['market-data-graph-popup']}
                                             ignoreNegative={false}
                                             isNegative={instrument!.change < 0.0}
-                                          />
+                                        />
                                         : <div className={styles['dialog-message']}>{i18n.t('NoDataFound')}</div>
                             }
                         </div>
                         <div className={styles['dialog-close']}>
                             <Dialog.DialogClose>
-                                <Cross1Icon />
+                                <Cross1Icon/>
                             </Dialog.DialogClose>
                         </div>
                     </Dialog.Content>

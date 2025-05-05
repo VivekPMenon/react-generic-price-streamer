@@ -2,7 +2,7 @@
 
 import {DataGrid, getNumberColDefTemplate} from "../data-grid";
 import { ColDef } from "ag-grid-community";
-import {useProductBrowserStore} from "@/services/product-browser-data/product-browser-store";
+import {productBrowserStore} from "@/services/product-browser-data/product-browser-store";
 
 function getColumnDef(): ColDef[] {
   return [
@@ -68,7 +68,8 @@ function getColumnDef(): ColDef[] {
 const columnDefs = getColumnDef();
 
 export function TradingActivity() {
-  const { isTradesForBondLoading, bondTrades } = useProductBrowserStore();
+  const isTradesForBondLoading = productBrowserStore.use.isTradesForBondLoading();
+  const bondTrades = productBrowserStore.use.bondTrades();
 
   return (
       <div className="height-100p">

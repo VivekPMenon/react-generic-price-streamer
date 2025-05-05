@@ -2,14 +2,20 @@
 
 import React, {useEffect, useState, memo} from 'react';
 import styles from './market-data.module.scss';
-import {useMarketDataStore} from "@/services/market-data/market-data-store";
+import {marketDataStore} from "@/services/market-data/market-data-store";
 import {MarketDataTile} from "@/components/market-data/market-data-tile";
 import {ImageType, PeriodType} from "@/services/market-data";
 import { Spinner } from '@radix-ui/themes';
 
 function MarketData() {
     const [searchQuery, setSearchQuery] = useState<string>('');
-    const {instruments, isLoading, error, findInstrument, removeInstrument, getInstrumentLogoUrl, clearAllInstruments} = useMarketDataStore();
+    const instruments = marketDataStore.use.instruments();
+    const isLoading = marketDataStore.use.isLoading();
+    const error = marketDataStore.use.error();
+    const findInstrument = marketDataStore.use.findInstrument();
+    const removeInstrument = marketDataStore.use.removeInstrument();
+    const getInstrumentLogoUrl = marketDataStore.use.getInstrumentLogoUrl();
+    const clearAllInstruments = marketDataStore.use.clearAllInstruments();
 
     useEffect(() => {
         if (!isLoading) {
@@ -37,21 +43,21 @@ function MarketData() {
                 <div className={styles['filter']}>
                     <div className={styles['search-box']}>
                         <input
-                           type='text'
-                           disabled={isLoading}
-                           placeholder='Search Ticker/Company name or ask the AI Chatbot'
-                           autoFocus={true}
-                           autoComplete='on'
-                           value={searchQuery}
-                           onChange={event => setSearchQuery(event.target.value)}
-                           onKeyDown={event => search(event)}
+                            type='text'
+                            disabled={isLoading}
+                            placeholder='Search Ticker/Company name or ask the AI Chatbot'
+                            autoFocus={true}
+                            autoComplete='on'
+                            value={searchQuery}
+                            onChange={event => setSearchQuery(event.target.value)}
+                            onKeyDown={event => search(event)}
                         />
                         {
                             isLoading
                                 ? (<Spinner size='3' className='ml-2'></Spinner>)
                                 : searchQuery ? <i className='fa-solid fa-remove' onClick={() => {
                                     setSearchQuery('');
-                                  }}></i> : <i className='fa-solid fa-magnifying-glass'></i>
+                                }}></i> : <i className='fa-solid fa-magnifying-glass'></i>
                         }
                     </div>
                     <div className={`${styles['error']}`}>{error}</div>
@@ -61,7 +67,8 @@ function MarketData() {
                         disabled={instruments.length === 0}
                         content={'Clear All'}
                         onClick={() => clearAllInstruments()}
-                    >Clear All</button>
+                    >Clear All
+                    </button>
                 </div>
             </div>
             <div className={`horizontal-scrollable-div scrollable-div ${styles['market-data-tiles-container']}`}>
@@ -80,7 +87,7 @@ function MarketData() {
                 }
             </div>
         </div>
-   );
+    );
 }
 
 export default memo(MarketData);

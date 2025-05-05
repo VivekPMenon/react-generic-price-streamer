@@ -1,6 +1,7 @@
 import {create} from 'zustand';
 import {MenuInfo} from './model';
 import {getMenuItems, Mode} from './menu-data-service';
+import { createSelectors } from '@/lib/utility-functions/store-operations';
 
 interface MenuState {
   activeMenuList: MenuInfo[];
@@ -32,7 +33,7 @@ function calculateActiveMenuList(menuInfoList: MenuInfo[], defaultMenuId: string
   return menuItems.filter(menu => menu !== undefined);
 }
 
-export const useMenuStore = create<MenuState>((set) => ({
+const useMenuStore = create<MenuState>((set) => ({
   activeMenuList: [],
   fullMenuList: [],
   selectedMenu: [],
@@ -80,3 +81,5 @@ export const useMenuStore = create<MenuState>((set) => ({
       };
     }),
 }));
+
+export const menuStore = createSelectors(useMenuStore);

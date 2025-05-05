@@ -2,7 +2,7 @@ import styles from './breaking-news.module.scss';
 import { useEffect, useState, useRef, useCallback } from 'react';
 import { Button, Spinner } from '@radix-ui/themes';
 import { Message } from './models';
-import { useBreakNewsDataStore } from '@/services/break-news/break-news-data-store';
+import { breakNewsStore } from '@/services/break-news/break-news-data-store';
 import { breakNewsDataService } from '@/services/break-news/break-news-data-service';
 import WhatsAppGroupDropdown from './breaking-group';
 import { formatTime } from '@/lib/utility-functions/date-operations';
@@ -14,7 +14,6 @@ export interface BreakingNewsProps {
 export function BreakingNews({ isExpanded }: BreakingNewsProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
-  const { selectedGroupId, selectedBreakNewsItem } = useBreakNewsDataStore();
   const [messages, setMessages] = useState<Message[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
@@ -26,6 +25,8 @@ export function BreakingNews({ isExpanded }: BreakingNewsProps) {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const loadingTriggerRef = useRef<HTMLDivElement>(null);
   const prevScrollHeightRef = useRef(0);
+  const selectedGroupId = breakNewsStore.use.selectedGroupId();
+  const selectedBreakNewsItem  = breakNewsStore.use.selectedBreakNewsItem();
   const MESSAGES_PER_PAGE = 20;
   const hasMoreMessages = currentPage < totalPages;
 

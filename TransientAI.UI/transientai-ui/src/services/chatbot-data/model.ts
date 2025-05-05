@@ -16,12 +16,12 @@ export interface ChatbotResponseType {
   thread_id?: string;
 }
 
-export interface ChatHistory {
-  request?: ChatbotRequestType;
-  response?: ChatbotResponseType;
-  title?: string;
-  conversation_id?: string;
-}
+// export interface ChatHistory {
+//   request?: ChatbotRequestType;
+//   response?: ChatbotResponseType;
+//   title?: string;
+//   conversation_id?: string;
+// }
 
 export interface ChatbotData {
   title?: string;
@@ -83,8 +83,15 @@ export interface ChatThread {
   updated_at: Date;
 }
 
+export enum ChatRole {
+  USER ='user',
+  ASSISTANT = 'assistant',
+}
+
 export interface ChatMessage {
-  role: string;
-  content: string;
-  timestamp: Date;
+  role?: ChatRole;
+  content?: string;
+  timestamp?: Date;
+  reasoning?: string;
+  response_time?: number;
 }

@@ -1,6 +1,6 @@
 'use client';
 
-import {Mode, useMenuStore} from '@/services/menu-data';
+import {Mode, menuStore} from '@/services/menu-data';
 import styles from './explorer.module.scss';
 import {useEffect, useState} from 'react';
 import { useRouter } from 'next/navigation';
@@ -15,7 +15,11 @@ export interface NotificationsProps {
 
 export function Explorer(props: NotificationsProps) {
   const router = useRouter();
-  const { initializeMenus, fullMenuList, selectedMenu, setActiveMenu } = useMenuStore();
+
+  const initializeMenus = menuStore.use.initializeMenus();
+  const fullMenuList = menuStore.use.fullMenuList();
+  const selectedMenu = menuStore.use.selectedMenu();
+  const setActiveMenu = menuStore.use.setActiveMenu();
   const { userContext } = useUserContextStore();
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
   const hurricanePmsView = 'hurricane-pms';
