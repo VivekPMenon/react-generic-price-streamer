@@ -22,3 +22,4 @@ export interface InquiryRequest {
     due_date?: string;
     date_edited?: string;
 }
+
