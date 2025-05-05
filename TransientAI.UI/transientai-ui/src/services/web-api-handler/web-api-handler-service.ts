@@ -11,12 +11,17 @@ class WebApihandler {
   private bearerToken = '';
   private isRefreshing = false;
   private refreshPromise: Promise<string> | null = null;
+  private previewId: number | null  = null;
 
   constructor() {}
 
   setBearerToken(token: string) {
     this.bearerToken = token;
   }
+
+  setPreviewId(previewId: number | null) {
+    this.previewId = previewId || null;
+  };
 
   private async ensureToken(): Promise<void> {
     while (!this.bearerToken) {
@@ -105,6 +110,7 @@ class WebApihandler {
           config.headers = {
             ...config.headers,
             Authorization: `Bearer ${this.bearerToken}`,
+            preview_id: this.previewId,
           };
           const retryResponse = await axios(config);
           return retryResponse.data;
@@ -131,6 +137,7 @@ class WebApihandler {
       method: 'GET',
       headers: {
         Authorization: `Bearer ${this.bearerToken}`,
+        preview_id: this.previewId,
         ...options?.headers
       }
     };
@@ -181,6 +188,7 @@ class WebApihandler {
       },
       headers: {
         Authorization: `Bearer ${this.bearerToken}`,
+        preview_id: this.previewId,
         ...options?.headers
       },
       data,
@@ -248,6 +256,7 @@ class WebApihandler {
       },
       headers: {
         Authorization: `Bearer ${this.bearerToken}`,
+        preview_id: this.previewId,
       },
       data,
       ...webApiOptions
@@ -262,6 +271,7 @@ class WebApihandler {
       method: 'DELETE',
       headers: {
         Authorization: `Bearer ${this.bearerToken}`,
+        preview_id: this.previewId,
         ...webApiOptions?.headers
       },
       params

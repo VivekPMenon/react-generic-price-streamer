@@ -171,7 +171,7 @@ export async function getMenuItems(mode: Mode) {
       priorityId
       description 
       badgeCount
-    }
+    },
   }
 `;
   const serviceName = 'hurricane-api-2-0';

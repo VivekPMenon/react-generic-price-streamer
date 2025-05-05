@@ -36,7 +36,7 @@ export function Explorer(props: NotificationsProps) {
   }
 
   useEffect(() => {
-    initializeMenus(props.mode, userContext.userRole!);
+    initializeMenus(props.mode);
   }, [props.mode])
   return (
     <div className={`${styles.explorer} widget`}>

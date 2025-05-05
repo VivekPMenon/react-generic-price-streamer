@@ -10,7 +10,7 @@ interface MenuState {
   defaultMenu: MenuInfo;
   setActiveMenu: (menu: MenuInfo) => void;
   closeTab: (menuId: string) => void;
-  initializeMenus: (mode: Mode, userRole: string) => void;
+  initializeMenus: (mode: Mode) => void;
 }
 
 function calculateDefaultMenu(menuInfoList: MenuInfo[], defaultMenuId: string) {
@@ -39,7 +39,7 @@ const useMenuStore = create<MenuState>((set) => ({
   selectedMenu: [],
   defaultMenu: [],
 
-  initializeMenus: async (mode: Mode, userRole: string) => {
+  initializeMenus: async (mode: Mode) => {
     const menuInfoList = await getMenuItems(mode);
 
     const defaultMenuId = mode === Mode.BUY 
