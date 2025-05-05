@@ -1,44 +1,50 @@
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import styles from './investor-relations-revised.module.scss';
 import { Spinner } from '@radix-ui/themes';
-import { InquiryRequest } from '@/services/investor-relations-data';
+import { InquiryRequest, investorRelationsService, IREmailMessage } from '@/services/investor-relations-data';
+import EmailHeader from '../email-header/email-header';
+import Toggle from 'react-toggle';
+import { useInvestorRelationsStore } from '@/services/investor-relations-data/investor-relations-store';
+import { formatDate } from '@/lib/utility-functions/date-operations';
+import { researchReportsDataService } from '@/services/reports-data';
+import EmailViewer from '../email-parser/email-viewer';
+import { SearchableMarkdown } from '../markdown';
 
 export function InvestorRelationsRevised() {
 
   const [searchQuery, setSearchQuery] = useState<string>('');
-  const [emails, setEmails] = useState<InquiryRequest[]>([{
-    subject: 'Test Me',
-    assignee_name: 'Vivek Menon'
-  },
-  {
-    subject: 'Test Me',
-    assignee_name: 'ViGovvek Menon'
-  }]);
+  const [emailHtml, setEmailHtml] = useState<string>('');
+  const [aiSummary, setAiSummary] = useState<string>('');
+  const [isAiSummaryShown, setIsAiSummaryShown] = useState<boolean>(false);
 
-  const messages = [
-    {
-      sender: 'David Kim via Otter.ai',
-      subject: 'Reminder: David Kim has invited …',
-      time: 'Fri 12:03 PM',
-      content: 'Join thetransient.ai David Kim (davidk@thetransient.ai)…',
-      selected: true,
-    },
-    {
-      sender: 'Linear',
-      subject: 'davidk@thetransient.ai commented o…',
-      time: 'Thu 5/1',
-      content: 'You have 1 unread notification on Linear. Open …',
-      selected: false,
-    },
-    {
-      sender: 'Linear',
-      subject: 'davidk@thetransient.ai commented …',
-      time: 'Thu 5/1',
-      content: 'You have 1 unread notification on Linear. Open …',
-      selected: false,
-    },
-  ];
+  const { irEmails, selectedIrEmail, setSelectedIrEmail } = useInvestorRelationsStore();
+
+  useEffect(() => {
+    if (selectedIrEmail)
+      onEmailSelection(selectedIrEmail);
+  }, [selectedIrEmail]);
+
+  async function onEmailSelection(email: IREmailMessage) {
+    const [emailContent, aiContent] = await Promise.all([
+      researchReportsDataService.getEmailContentAsHtml(email.id!, 'awolfberg@hurricanecap.com'),
+      investorRelationsService.getIRSummary(email.id!, 'awolfberg@hurricanecap.com')
+    ]);
+
+    setAiSummary(aiContent.ir_summary);
+    setEmailHtml(emailContent);
+  }
+
+  const toggleElement =
+    <div className={styles['ir-response-toggler']}>
+      Show AI Summary
+      <Toggle
+        id='sort-action'
+        defaultChecked={isAiSummaryShown}
+        checked={isAiSummaryShown}
+        onChange={() => setIsAiSummaryShown(!isAiSummaryShown)}
+      />
+    </div>;
 
   return (
     <div className={styles['investor-relations']}>
@@ -67,26 +73,34 @@ export function InvestorRelationsRevised() {
 
         <div className={styles['mail-inbox']}>
           <div className={styles['title']}>
-            <div className='action-button bg-outlook-blue'>
-              <i className='fa-regular fa-envelope'></i>
-            </div>
+            <i className='fa-regular fa-envelope'></i>
             Inbox
           </div>
 
-
-          <div className='bg-[#0d1117] text-white rounded-md overflow-hidden divide-y divide-gray-700'>
-            {messages.map((msg, idx) => (
+          <div className={`${styles['messages']} message-list scrollable-div`}>
+            {irEmails.map((msg, idx) => (
               <div
                 key={idx}
-                className={`flex flex-col px-4 py-3 cursor-pointer ${msg.selected ? 'bg-[#0078D4]/20 border-l-4 border-[#0078D4]' : 'hover:bg-white/5'
-                  }`}
+                className={`message ${selectedIrEmail?.id === msg.id ? 'selected' : ''}`}
+                onClick={() => setSelectedIrEmail(msg)}
               >
-                <div className='flex justify-between items-center'>
-                  <span className='font-medium'>{msg.sender}</span>
-                  <span className='text-xs text-gray-400'>{msg.time}</span>
+                <input
+                  className=''
+                  type='checkbox'
+                  checked={true}
+                />
+
+                <div className='content'>
+                  <div className='header'>
+                    <span className='sender'>
+                      {msg.important && <span className='priority'>❗</span>}
+                      {msg.sender}
+                    </span>
+                    <span className='time'>{formatDate(msg.received)}</span>
+                  </div>
+                  <div className='subject'>{msg.subject}</div>
+                  <div className='body'>{msg.concise_summary}</div>
                 </div>
-                <div className='text-sm text-gray-200 truncate'>{msg.subject}</div>
-                <div className='text-xs text-gray-500 truncate'>{msg.content}</div>
               </div>
             ))}
           </div>
@@ -94,10 +108,23 @@ export function InvestorRelationsRevised() {
         </div>
       </div>
 
-      <div className={styles['ir-responses']}>
-        IR Responses
-      </div>
+      {
+        selectedIrEmail &&
+        <div className={styles['ir-responses']}>
+          {
+            isAiSummaryShown ?
+              <SearchableMarkdown className={styles['summary-viewer']} markdownContent={aiSummary}>
+                {toggleElement}
+              </SearchableMarkdown>
+              :
+              <EmailViewer className={styles['summary-viewer']} emailHtml={emailHtml}>
+                {toggleElement}
+              </EmailViewer>
+          }
 
-    </div>
+        </div>
+      }   
+      
+      </div>
   );
 }

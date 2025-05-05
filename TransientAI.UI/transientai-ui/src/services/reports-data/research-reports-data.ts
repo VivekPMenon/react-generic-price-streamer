@@ -28,8 +28,8 @@ class ResearchReportsDataService {
     })) as ResearchReport[];
   }
 
-  async getEmailContentAsHtml(emailGuid: string): Promise<string> {
-    const result = await webApihandler.get(`email-html/${emailGuid}`, {}, { serviceName: this.serviceName });
+  async getEmailContentAsHtml(emailGuid: string, emailId?: string): Promise<string> {
+    const result = await webApihandler.get(`email-html/${emailGuid}?research_email=${emailId}`, {}, { serviceName: this.serviceName });
     return result.html_content;
   }
 
