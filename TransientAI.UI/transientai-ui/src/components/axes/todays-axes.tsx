@@ -5,7 +5,7 @@ import {DataGrid, getNumberColDefTemplate} from '../data-grid';
 import { BondInfo } from '@/services/product-browser-data';
 import styles from './todays-axes.module.scss';
 import { TopClients } from './top-clients';
-import {useProductBrowserStore} from "@/services/product-browser-data/product-browser-store";
+import {productBrowserStore} from "@/services/product-browser-data/product-browser-store";
 
 const rowClassRules: RowClassRules = {};
 rowClassRules[`${styles["axe"]}`] = (params: RowClassParams) => params.data.is_golden !== true;
@@ -45,37 +45,37 @@ const columnDefs: ColDef[] = [
 ];
 
 export function TodaysAxes() {
-  const { isAxesLoading, axes, setSelectedBond } = useProductBrowserStore();
+    const isAxesLoading = productBrowserStore.use.isAxesLoading();
+    const axes = productBrowserStore.use.axes();
+    const setSelectedBond = productBrowserStore.use.setSelectedBond();
 
-  function onRowDoubleClicked(event: RowClickedEvent<BondInfo>) {
-    if (event.data) {
-      setSelectedBond(event.data);
+    function onRowDoubleClicked(event: RowDoubleClickedEvent<BondInfo>) {
+        if (event.data) {
+            setSelectedBond(event.data);
+        }
     }
-  }
 
-  return (
-    <div className={`${styles['todays-axes']} grid md:grid-cols-3`}>
-      <div className={`${styles['axes']} md:col-span-2`}>
-        <div className='sub-header'>Axes</div>
-        <DataGrid
-          isSummaryGrid={false}
-          width={'100%'}
-          loading={isAxesLoading}
-          rowData={axes}
-          columnDefs={columnDefs}
-          // onRowDoubleClicked={onRowDoubleClicked}
-          onRowClicked={onRowDoubleClicked}
-          rowClassRules={rowClassRules}
-          suppressStatusBar={true}
-          gridOptions={{
-            suppressRowHoverHighlight: true,
-            rowSelection: 'single'
-          }}
-        />
-      </div>
-      <div className={styles['clients']}>
-        <TopClients />
-      </div>
-    </div>
-  );
-} 
+    return (
+        <div className={styles['todays-axes']}>
+            <div className={styles['axes']}>
+                <div className='sub-header'>Axes</div>
+                <DataGrid
+                    isSummaryGrid={false}
+                    width={'100%'}
+                    loading={isAxesLoading}
+                    rowData={axes}
+                    columnDefs={columnDefs}
+                    onRowDoubleClicked={onRowDoubleClicked}
+                    rowClassRules={rowClassRules}
+                    suppressStatusBar={true}
+                    gridOptions={{
+                        suppressRowHoverHighlight: true,
+                    }}
+                />
+            </div>
+            <div className={styles['clients']}>
+                <TopClients/>
+            </div>
+        </div>
+    );
+}

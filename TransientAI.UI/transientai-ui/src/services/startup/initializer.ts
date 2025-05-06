@@ -1,14 +1,15 @@
 import {Mode} from "@/services/menu-data";
-import {useBreakNewsDataStore} from "@/services/break-news/break-news-data-store";
-import {useClientHoldingsStore} from "@/services/client-holding-data/client-holding-store";
+import {breakNewsStore} from "@/services/break-news/break-news-data-store";
+import {clientHoldingsStore} from "@/services/client-holding-data/client-holding-store";
 import {useCorpActionsStore} from "@/services/corporate-actions";
-import {useInvestorRelationsStore} from "@/services/investor-relations-data/investor-relations-store";
-import {useMacroPanelDataStore} from "@/services/macro-panel-data/macro-panel-data-store";
-import {usePmsPnlDataStore} from "@/services/pms-pnl-data/pms-pnl-data-store";
-import {useProductBrowserStore} from "@/services/product-browser-data/product-browser-store";
-import {useResearchReportsStore} from "@/services/reports-data";
+import {investorRelationsStore} from "@/services/investor-relations-data/investor-relations-store";
+import {macroPanelDataStore} from "@/services/macro-panel-data/macro-panel-data-store";
+import {pmsPnlDataStore} from "@/services/pms-pnl-data/pms-pnl-data-store";
+import {productBrowserStore} from "@/services/product-browser-data/product-browser-store";
+import {useResearchReportsStore, useRiskReportsSlice} from "@/services/reports-data";
 import {PollManager} from "@/lib/utility/PollManager";
 import {useRiskDataStore} from "@/services/risk-data/risk-data-store";
+import {chatbotStore} from "@/services/chatbot-data/chatbot-data-store";
 
 export class ServiceInitializer {
     private isInitialized: boolean = false;
@@ -33,28 +34,28 @@ export class ServiceInitializer {
     }
 
     private initializeBuy() {
-        const breakingNews = useBreakNewsDataStore.getState();
+        const breakingNews = breakNewsStore.getState();
         breakingNews.loadBreakNews().catch((err) => console.error(err));
         breakingNews.startPolling();
 
-        const clientHoldings = useClientHoldingsStore.getState();
+        const clientHoldings = clientHoldingsStore.getState();
         clientHoldings.loadClientHoldings().catch((err) => console.error(err));
         clientHoldings.loadBondTrades().catch((err) => console.error(err));
 
         const corpActions = useCorpActionsStore.getState();
         corpActions.startPolling();
 
-        const investorRelations = useInvestorRelationsStore.getState();
+        const investorRelations = investorRelationsStore.getState();
         investorRelations.loadInquiries().catch((err) => console.error(err));
         investorRelations.loadAssignees().catch((err) => console.error(err));
         investorRelations.loadEmails().catch((err) => console.error(err));
         investorRelations.startPolling();
 
-        const macroPanel = useMacroPanelDataStore.getState();
+        const macroPanel = macroPanelDataStore.getState();
         macroPanel.loadMacroPanelData(true, true);
         macroPanel.startPolling();
 
-        const pmsPnl = usePmsPnlDataStore.getState();
+        const pmsPnl = pmsPnlDataStore.getState();
         pmsPnl.getReport();
 
         new PollManager(
@@ -69,18 +70,21 @@ export class ServiceInitializer {
         riskReports.loadRiskMetrics().catch((err) => console.error(err));
         riskReports.startPolling();
 
+        const riskReportSlice = useRiskReportsSlice.getState();
+        riskReportSlice.loadRiskReports();
+        riskReportSlice.startPolling();
+
         const researchReports = useResearchReportsStore.getState();
         researchReports.loadReports().catch((err) => console.error(err));
         researchReports.startPolling();
     }
 
     private initializeSell() {
-        const productBrowser = useProductBrowserStore.getState();
+        const productBrowser = productBrowserStore.getState();
         productBrowser.loadAxes().catch((err) => console.error(err));
         productBrowser.loadTraces().catch((err) => console.error(err));
 
-        const breakingNews = useBreakNewsDataStore.getState();
-        breakingNews.loadBreakNews().catch((err) => console.error(err));
-        breakingNews.startPolling();
+        const loadUserThreads = chatbotStore.getState().loadUserThreads;
+        loadUserThreads().catch((err) => console.error(err));
     }
 }

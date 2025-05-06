@@ -15,7 +15,7 @@ import { executeAsync } from "@/lib/utility-functions/async";
 import i18n from "../../i18n";  // Import i18n
 
 function isPinned(node: IRowNode): boolean {
-    return node.rowPinned === 'top';
+    return node.footer === true;
 }
 
 function isManagerField(colDef: ColDef): boolean {
@@ -63,66 +63,81 @@ export const columnDefs: ColDef[] = [
         cellClassRules: cellClassRules,
         pinned: true,
         width: 150,
+        aggFunc: () => 'TOTAL',
+        cellDataType: 'text',
+        filter: 'agTextColumnFilter'
     },
     {
         field: 'dayPnl',
         headerName: i18n.t('dayPnl'),  // Use i18n for 'Day PnL'
         headerClass: `${styles['table-header']} ag-right-aligned-header`,
         cellClassRules: cellClassRules,
-        valueFormatter: (params: ValueFormatterParams) => formatInteger(params.data?.dayPnl, ''),
+        valueFormatter: (params: ValueFormatterParams) => formatInteger(params.value, ''),
         width: 85,
-        aggFunc: 'sum'
+        aggFunc: 'sum',
+        cellDataType: 'number',
+        filter: 'agNumberColumnFilter'
     },
     {
         field: 'mtdPnl',
         headerName: i18n.t('mtdPnl'),  // Use i18n for 'MTD PnL'
         headerClass: `${styles['table-header']} ag-right-aligned-header`,
         cellClassRules: cellClassRules,
-        valueFormatter: (params: ValueFormatterParams) => formatInteger(params.data?.mtdPnl, ''),
+        valueFormatter: (params: ValueFormatterParams) => formatInteger(params.value, ''),
         width: 85,
-        aggFunc: 'sum'
+        aggFunc: 'sum',
+        cellDataType: 'number',
+        filter: 'agNumberColumnFilter'
     },
     {
         field: 'ytdPnl',
         headerName: i18n.t('ytdPnl'),  // Use i18n for 'YTD PnL'
         headerClass: `${styles['table-header']} ag-right-aligned-header`,
         cellClassRules: cellClassRules,
-        valueFormatter: (params: ValueFormatterParams) => formatInteger(params.data?.ytdPnl, ''),
+        valueFormatter: (params: ValueFormatterParams) => formatInteger(params.value, ''),
         width: 85,
-        aggFunc: 'sum'
+        aggFunc: 'sum',
+        cellDataType: 'number',
+        filter: 'agNumberColumnFilter'
     },
     {
         field: 'dayPnlNoFees',
         headerName: i18n.t('dayPnlNoFees'),  // Use i18n for 'Day PnL w/o Fees'
         headerClass: `${styles['table-header']} ag-right-aligned-header`,
         cellClassRules: cellClassRules,
-        valueFormatter: (params: ValueFormatterParams) => formatInteger(params.data?.dayPnlNoFees, ''),
+        valueFormatter: (params: ValueFormatterParams) => formatInteger(params.value, ''),
         width: 85,
         wrapHeaderText: true,
         autoHeaderHeight: true,
-        aggFunc: 'sum'
+        aggFunc: 'sum',
+        cellDataType: 'number',
+        filter: 'agNumberColumnFilter'
     },
     {
         field: 'mtdPnlNoFees',
         headerName: i18n.t('mtdPnlNoFees'),  // Use i18n for 'MTD PnL w/o Fees'
         headerClass: `${styles['table-header']} ag-right-aligned-header`,
         cellClassRules: cellClassRules,
-        valueFormatter: (params: ValueFormatterParams) => formatInteger(params.data?.mtdPnlNoFees, ''),
+        valueFormatter: (params: ValueFormatterParams) => formatInteger(params.value, ''),
         width: 85,
         wrapHeaderText: true,
         autoHeaderHeight: true,
-        aggFunc: 'sum'
+        aggFunc: 'sum',
+        cellDataType: 'number',
+        filter: 'agNumberColumnFilter'
     },
     {
         field: 'ytdPnlNoFees',
         headerName: i18n.t('ytdPnlNoFees'),  // Use i18n for 'YTD PnL w/o Fees'
         headerClass: `${styles['table-header']} ag-right-aligned-header`,
         cellClassRules: cellClassRules,
-        valueFormatter: (params: ValueFormatterParams) => formatInteger(params.data?.ytdPnlNoFees, ''),
+        valueFormatter: (params: ValueFormatterParams) => formatInteger(params.value, ''),
         width: 85,
         wrapHeaderText: true,
         autoHeaderHeight: true,
-        aggFunc: 'sum'
+        aggFunc: 'sum',
+        cellDataType: 'number',
+        filter: 'agNumberColumnFilter'
     },
 ];
 

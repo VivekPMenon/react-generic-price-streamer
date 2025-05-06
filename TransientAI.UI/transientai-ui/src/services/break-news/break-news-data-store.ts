@@ -2,7 +2,8 @@
 import { create } from 'zustand';
 import { BreakNewsItem } from './model'
 import { breakNewsDataService } from './break-news-data-service';
-import { useUnseenItemsStore } from '../unseen-items-store/unseen-items-store';
+import { unseenItemsStore } from '../unseen-items-store/unseen-items-store';
+import {createSelectors} from "@/lib/utility-functions/store-operations";
 
 
 export const resourceName = 'break-news';
@@ -20,7 +21,7 @@ export interface BreakNewsDataState {
   startPolling: () => void;
 }
 
-export const useBreakNewsDataStore = create<BreakNewsDataState>((set, get) => ({
+const useBreakNewsDataStore = create<BreakNewsDataState>()((set, get) => ({
   breakNewsItems: [],
   selectedBreakNewsItem: null,
   lastUpdatedTimestamp: '',
@@ -56,10 +57,12 @@ export const useBreakNewsDataStore = create<BreakNewsDataState>((set, get) => ({
       // Ensure we fetch the latest timestamp after the state is updated
       set((state) => {
         if (state.lastUpdatedTimestamp && state.lastUpdatedTimestamp !== prevTimestamp) {
-          useUnseenItemsStore.getState().addUnseenItems(resourceName, 1);
+          unseenItemsStore.getState().addUnseenItems(resourceName, 1);
         }
         return {}; // No need to modify state, just ensuring correctness
       });
     }, 60000); // Polls every 2 minutes
   }
 }));
+
+export const breakNewsStore = createSelectors(useBreakNewsDataStore);

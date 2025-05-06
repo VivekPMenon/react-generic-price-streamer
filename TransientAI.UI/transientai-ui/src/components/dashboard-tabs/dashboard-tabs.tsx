@@ -6,8 +6,8 @@ import { TabInfo } from './model';
 import {ReactNode, useEffect, useMemo, useRef, useState} from 'react';
 import { useRouter } from 'next/navigation';
 import { useDeviceType } from '@/lib/hooks';
-import { useUnseenItemsStore } from '@/services/unseen-items-store/unseen-items-store';
-import { useMenuStore } from '@/services/menu-data';
+import { unseenItemsStore } from '@/services/unseen-items-store/unseen-items-store';
+import { menuStore } from '@/services/menu-data';
 
 export interface DashboardTabsProps {
   children?: ReactNode;
@@ -17,10 +17,15 @@ export function DashboardTabs({ children }: DashboardTabsProps) {
   const router = useRouter();
   const deviceType = useDeviceType();
 
-  const { unseenItems: unseen, resetUnseenItems } = useUnseenItemsStore();
-  const { activeMenuList, selectedMenu, setActiveMenu, closeTab, defaultMenu } = useMenuStore();
+  const unseen = unseenItemsStore.use.unseenItems();
+  const resetUnseenItems = unseenItemsStore.use.resetUnseenItems();
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
   const previousSelectedMenu = useRef<string|undefined>(undefined);
+  const activeMenuList = menuStore.use.activeMenuList();
+  const selectedMenu = menuStore.use.selectedMenu();
+  const setActiveMenu = menuStore.use.setActiveMenu();
+  const closeTab = menuStore.use.closeTab();
+  const defaultMenu = menuStore.use.defaultMenu();
 
   const tabs = useMemo<TabInfo[]>(() => calculateTabs(), [activeMenuList, selectedMenu]);
 

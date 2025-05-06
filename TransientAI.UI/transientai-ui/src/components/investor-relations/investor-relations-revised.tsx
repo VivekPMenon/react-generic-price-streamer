@@ -4,7 +4,7 @@ import { Spinner } from '@radix-ui/themes';
 import { InquiryFlag, InquiryRequest, investorRelationsService, IREmailMessage } from '@/services/investor-relations-data';
 import EmailHeader from '../email-header/email-header';
 import Toggle from 'react-toggle';
-import { useInvestorRelationsStore } from '@/services/investor-relations-data/investor-relations-store';
+import { investorRelationsStore } from '@/services/investor-relations-data/investor-relations-store';
 import { formatDate } from '@/lib/utility-functions/date-operations';
 import { researchReportsDataService } from '@/services/reports-data';
 import EmailViewer from '../email-parser/email-viewer';
@@ -23,7 +23,13 @@ export function InvestorRelationsRevised() {
 
   const createTaskRef = useRef<HTMLInputElement>(null);
 
-  const { irEmails, inquiries, selectedIrEmail, selectedInquiry, setSelectedInquiry, setSelectedIrEmail, loadInquiries } = useInvestorRelationsStore();
+  const irEmails = investorRelationsStore.use.irEmails();
+  const inquiries = investorRelationsStore.use.inquiries();
+  const selectedIrEmail = investorRelationsStore.use.selectedIrEmail();
+  const selectedInquiry = investorRelationsStore.use.selectedInquiry();
+  const setSelectedIrEmail = investorRelationsStore.use.setSelectedIrEmail();
+  const setSelectedInquiry = investorRelationsStore.use.setSelectedInquiry();
+  const loadInquiries = investorRelationsStore.use.loadInquiries();
 
   useEffect(() => {
     if (selectedIrEmail)
@@ -148,42 +154,42 @@ export function InvestorRelationsRevised() {
             {inquiries
               .filter(msg => isCompletedItemsShown ? msg.completed : true)
               .map((msg, idx) => (
-              <div
-                key={idx}
-                className={`message ${selectedInquiry?.id === msg.id ? 'selected' : ''}`}
-                onClick={() => {
-                  setSelectedIrEmail(null);
-                  setSelectedInquiry(msg);
-                  setIsTaskOpen(true);
-                }}
-              >
-                <div className={`radio-button-container ${msg.completed ? 'checked' : ''}`} title='Mark as Completed' onClick={(event) => markTaskComplete(event)}>
-                  <i className="fa-solid fa-check"></i>
-                </div>
-
-                <div className='content'>
-                  <div className='header'>
-                    <span className='sender'>
-                      {msg.flag === InquiryFlag.Important && <span className='priority'>❗</span>}
-                      {msg.owner_name}
-                    </span>
-                    <span className='time'>{formatDate(msg.date)}</span>
+                <div
+                  key={idx}
+                  className={`message ${selectedInquiry?.id === msg.id ? 'selected' : ''}`}
+                  onClick={() => {
+                    setSelectedIrEmail(null);
+                    setSelectedInquiry(msg);
+                    setIsTaskOpen(true);
+                  }}
+                >
+                  <div className={`radio-button-container ${msg.completed ? 'checked' : ''}`} title='Mark as Completed' onClick={(event) => markTaskComplete(event)}>
+                    <i className="fa-solid fa-check"></i>
                   </div>
-                  <div className='subject'>{msg.subject}</div>
 
-                  <div className='body'>
-                    <div className='body-content-left'>
-                      <span>Assignee: {msg.assignee_name}</span>
-                      <span>Due Date: {formatDate(msg.due_date)}</span>
+                  <div className='content'>
+                    <div className='header'>
+                      <span className='sender'>
+                        {msg.flag === InquiryFlag.Important && <span className='priority'>❗</span>}
+                        {msg.owner_name}
+                      </span>
+                      <span className='time'>{formatDate(msg.date)}</span>
                     </div>
+                    <div className='subject'>{msg.subject}</div>
 
-                    <div className='body-content-right'>
-                      <div className='pill teal'>TASK</div>
+                    <div className='body'>
+                      <div className='body-content-left'>
+                        <span>Assignee: {msg.assignee_name}</span>
+                        <span>Due Date: {formatDate(msg.due_date)}</span>
+                      </div>
+
+                      <div className='body-content-right'>
+                        <div className='pill teal'>TASK</div>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              ))}
           </div>
 
         </div>

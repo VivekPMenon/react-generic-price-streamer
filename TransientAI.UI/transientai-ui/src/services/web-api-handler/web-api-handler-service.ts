@@ -1,4 +1,4 @@
-import axios, { AxiosRequestConfig } from "axios";
+import axios, {AxiosRequestConfig, Method} from "axios";
 import { WebApihandlerOptions} from "./model";
 import { endpointFinder } from "./endpoint-finder-service";
 import { useUserContextStore } from '@/services/user-context'
@@ -137,6 +137,37 @@ class WebApihandler {
     return this.executeRequest(config);
   }
 
+  async execute(
+      url: string,
+      method: Method | string,
+      data?: any,
+      params?: { [key: string]: any },
+      headers?: { [key: string]: string },
+      serviceName?: string) {
+    await this.ensureToken();
+
+    if (!params) {
+      params = {};
+    }
+
+    params = {
+      bank_id: this.bankId,
+      view_id: this.viewId,
+      user_id: this.userId,
+      ...params
+    };
+
+    const finalUrl = this.getUrl(url, {serviceName}, params);
+    const headers_ = new Headers(headers);
+    headers_.append('Authorization', `Bearer ${this.bearerToken}`);
+
+    return fetch(finalUrl, {
+      method,
+      headers: headers_,
+      body: data ? JSON.stringify(data) : undefined,
+    });
+  }
+
   async post(url: string, data: any, params?: { [key: string]: any }, options?: WebApihandlerOptions) {
     await this.ensureToken();
     const finalUrl = this.getUrl(url, options);
@@ -180,11 +211,11 @@ class WebApihandler {
     return result.translated_text;
   }
 
-  getUrl(url: string, options?: WebApihandlerOptions, params?: { [key: string]: any }): string {
+  getUrl(url: string, options?: {serviceName?: string}, params?: { [key: string]: any }): string {
     const currentEnv = endpointFinder.getCurrentEnvInfo();
     const httpsEndpoint = options?.serviceName ? currentEnv.httpsServices![options.serviceName] : currentEnv.httpsEndpoint;
     let finalUrl = `${httpsEndpoint}/${url}`;
-    if (params && params.length) {
+    if (params && Object.keys(params).length) {
       finalUrl += `?${new URLSearchParams(params).toString()}`
     }
     return finalUrl;
@@ -224,7 +255,7 @@ class WebApihandler {
     return this.executeRequest(config);
   }
 
-  async delete(url: string, webApiOptions?: WebApihandlerOptions) {
+  async delete(url: string, webApiOptions?: WebApihandlerOptions, params?: { [key: string]: any }) {
     const finalUrl = this.getUrl(url, webApiOptions);
     const config: AxiosRequestConfig = {
       url: finalUrl,
@@ -232,7 +263,8 @@ class WebApihandler {
       headers: {
         Authorization: `Bearer ${this.bearerToken}`,
         ...webApiOptions?.headers
-      }
+      },
+      params
     };
     return this.executeRequest(config);
   }

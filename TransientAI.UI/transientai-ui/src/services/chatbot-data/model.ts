@@ -3,9 +3,9 @@
 export interface ChatbotRequestType {
   query?: string;
   timestamp?: string;
+  timestampDate?: Date;
   user_id?: string;
   conversation_id?: string;
-  stream?: boolean;
   response_type?: string;
   isLoading?: boolean;
 }
@@ -13,14 +13,15 @@ export interface ChatbotRequestType {
 export interface ChatbotResponseType {
   responseText?: string;
   timestamp?: string;
+  thread_id?: string;
 }
 
-export interface ChatHistory {
-  request?: ChatbotRequestType;
-  response?: ChatbotResponseType;
-  title?: string;
-  conversation_id?: string;
-}
+// export interface ChatHistory {
+//   request?: ChatbotRequestType;
+//   response?: ChatbotResponseType;
+//   title?: string;
+//   conversation_id?: string;
+// }
 
 export interface ChatbotData {
   title?: string;
@@ -69,5 +70,28 @@ export enum ChatResponseType {
 
 export interface ChatResponse {
   text: string;
+  thread_id?: string;
   type: ChatResponseType;
+}
+
+export interface ChatThread {
+  id: string;
+  user_id: string;
+  thread_name: string;
+  messages: ChatMessage[];
+  created_at: Date;
+  updated_at: Date;
+}
+
+export enum ChatRole {
+  USER ='user',
+  ASSISTANT = 'assistant',
+}
+
+export interface ChatMessage {
+  role?: ChatRole;
+  content?: string;
+  timestamp?: Date;
+  reasoning?: string;
+  response_time?: number;
 }

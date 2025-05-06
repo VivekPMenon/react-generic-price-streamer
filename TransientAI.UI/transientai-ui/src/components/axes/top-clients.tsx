@@ -1,11 +1,11 @@
 'use client'
 
 import {useCallback, useState} from 'react';
-import {useProductBrowserStore} from "@/services/product-browser-data/product-browser-store";
+import {productBrowserStore} from "@/services/product-browser-data/product-browser-store";
 import {Spinner} from "@radix-ui/themes";
 import { ChevronDownIcon } from "@radix-ui/react-icons";
 import {productBrowserDataService, RecommendedClient} from "@/services/product-browser-data";
-import {useChatbotDataStore} from "@/services/chatbot-data/chatbot-data-store";
+import {chatbotStore} from "@/services/chatbot-data/chatbot-data-store";
 import { Tooltip } from 'react-tooltip'
 
 import styles from './todays-axes.module.scss';
@@ -16,10 +16,14 @@ interface ClientProps {
 }
 
 function ClientComponent({ client }: ClientProps) {
-    const { loadSimilarBondsInHoldings, loadClientTrades, selectedBond } = useProductBrowserStore();
     const [isLoadingDescription, setIsLoadingDescription] = useState<boolean>(false);
     const [open, setOpen] = useState<boolean>(false);
     const [description, setDescription] = useState<string>('');
+
+    const loadSimilarBondsInHoldings = productBrowserStore.use.loadSimilarBondsInHoldings();
+    const loadClientTrades = productBrowserStore.use.loadClientTrades();
+    const selectedBond = productBrowserStore.use.selectedBond();
+    const createThread = chatbotStore.use.createThread();
 
     function loadDescription(client: RecommendedClient) {
         if (isLoadingDescription) {
@@ -51,8 +55,8 @@ function ClientComponent({ client }: ClientProps) {
     const loadTrades = useCallback(() => loadClientTrades(selectedBond, client.client_name),
         [client.client_name, loadClientTrades, selectedBond]);
 
-    const findBondsOfInterest = useCallback(() => useChatbotDataStore.getState().setQuery(`What other axes should I recommend to ${client.client_name}?`),
-        [client.client_name]);
+    const findBondsOfInterest = useCallback(() => createThread(`What other axes should I recommend to ${client.client_name}?`),
+        [client.client_name, createThread]);
 
     return (
         <div
@@ -79,11 +83,11 @@ function ClientComponent({ client }: ClientProps) {
                     <div
                         data-tooltip-id="clients-tooltip"
                         data-tooltip-content="Voice/Chat"
-                        data-tooltip-place="top"><i className="fa-solid fa-comments" onClick={() => {}}></i></div>
+                        data-tooltip-place="top"><i className="fa-solid fa-comments" onClick={() => {}}/></div>
                     <div
                         data-tooltip-id="clients-tooltip"
                         data-tooltip-content="Check client holdings"
-                        data-tooltip-place="top"><i className="fa-solid fa-warehouse" onClick={loadHoldings}></i></div>
+                        data-tooltip-place="top"><i className="fa-solid fa-warehouse" onClick={loadHoldings} /></div>
                     <div
                         data-tooltip-id="clients-tooltip"
                         data-tooltip-content="Check client trades"
@@ -95,7 +99,7 @@ function ClientComponent({ client }: ClientProps) {
                     <div
                         data-tooltip-id="clients-tooltip"
                         data-tooltip-content="Client info"
-                        data-tooltip-place="top"><i className="fa-regular fa-address-book" onClick={() => {}}></i></div>
+                        data-tooltip-place="top"><i className="fa-regular fa-address-book" onClick={() => {}} /></div>
                 </div>
                 <div
                     className={`${styles['expanded-section']}`}
@@ -115,7 +119,10 @@ function ClientComponent({ client }: ClientProps) {
 }
 
 export function TopClients() {
-    const { isRecommendedClientsLoading, selectedBond, recommendedClients, traces } = useProductBrowserStore();
+    const isRecommendedClientsLoading = productBrowserStore.use.isRecommendedClientsLoading();
+    const selectedBond = productBrowserStore.use.selectedBond();
+    const recommendedClients = productBrowserStore.use.recommendedClients();
+    const traces = productBrowserStore.use.traces();
 
     let content;
     if (isRecommendedClientsLoading) {

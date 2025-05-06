@@ -2,7 +2,8 @@ import { create } from 'zustand';
 import { InquiryRequest, InquiryStatus, IREmailMessage } from './model';
 import { investorRelationsService } from '@/services/investor-relations-data/investor-relations-service';
 import { useUserContextStore } from '@/services/user-context';
-import { useUnseenItemsStore } from '../unseen-items-store/unseen-items-store';
+import { unseenItemsStore } from '../unseen-items-store/unseen-items-store';
+import {createSelectors} from "@/lib/utility-functions/store-operations";
 
 export const resourceNameInvestorRelations = 'investor-relations';
 
@@ -28,7 +29,7 @@ export interface InvestorRelationsStore {
   startPolling: () => void;
 }
 
-export const useInvestorRelationsStore = create<InvestorRelationsStore>((set, get) => ({
+const useInvestorRelationsStore = create<InvestorRelationsStore>()((set, get) => ({
   inquiries: [],
   irEmails: [],
   selectedInquiry: null,
@@ -147,8 +148,10 @@ export const useInvestorRelationsStore = create<InvestorRelationsStore>((set, ge
           const newCount = get().inquiries.length;
           const unseenDiff = newCount - prevCount;
 
-          useUnseenItemsStore.getState().addUnseenItems(resourceNameInvestorRelations, unseenDiff);
+          unseenItemsStore.getState().addUnseenItems(resourceNameInvestorRelations, unseenDiff);
         }, 120000
     );
   }
 }));
+
+export const investorRelationsStore = createSelectors(useInvestorRelationsStore);

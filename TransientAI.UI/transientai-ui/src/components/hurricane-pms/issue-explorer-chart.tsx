@@ -1,14 +1,8 @@
 'use client';
-// BarChart.tsx
-import dynamic from 'next/dynamic';
+
 import React from 'react';
 import Highcharts from 'highcharts';
-
-// Use dynamic import for client-side rendering
-const HighchartsReact = dynamic(() => import('highcharts-react-official'), { ssr: false });
-
-
-
+import {HighchartsReact} from "@/lib/utility-functions/highcharts-operations";
 
 function getChartOptions(result: any) {
   // Sort data in descending order

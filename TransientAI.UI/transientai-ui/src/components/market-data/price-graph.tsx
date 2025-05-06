@@ -1,9 +1,5 @@
 import styles from './price-graph.module.scss';
-
-import dynamic from 'next/dynamic';
-
-// Dynamically import HighchartsReact with SSR disabled
-const HighchartsReact = dynamic(() => import('highcharts-react-official'), { ssr: false });
+import {HighchartsReact} from "@/lib/utility-functions/highcharts-operations";
 import Highstock from 'highcharts/highstock';
 import { useContext, useEffect, useMemo, useState } from 'react';
 import { GraphDataPoint, marketDataService } from '@/services/market-data';

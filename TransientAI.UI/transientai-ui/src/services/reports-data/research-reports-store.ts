@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { ResearchReport } from './model';
 import { researchReportsDataService } from './research-reports-data';
-import { useUnseenItemsStore } from '../unseen-items-store/unseen-items-store';
+import { unseenItemsStore } from '../unseen-items-store/unseen-items-store';
 import { areObjectsEqual } from '@/lib/utility-functions';
 
 export const resourceName = 'research-reports';
@@ -57,7 +57,7 @@ export const useResearchReportsStore = create<ResearchReportsState>((set, get) =
         const unseenDiff = Math.abs(newCount - prevCount);
 
         if (unseenDiff > 0) {
-          useUnseenItemsStore.getState().addUnseenItems(resourceName, unseenDiff);
+          unseenItemsStore.getState().addUnseenItems(resourceName, unseenDiff);
         }
 
         return {}; // No need to modify state here, just ensuring correctness
