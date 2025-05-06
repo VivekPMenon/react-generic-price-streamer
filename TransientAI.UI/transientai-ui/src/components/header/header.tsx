@@ -119,10 +119,10 @@ export function Header({ onMenuToggle, isMenuVisible }: HeaderProps) {
   }, []);
 
   useEffect(() => {
-    if (userContext.role === RoleType.SuperAdmin) {
+    if (userContext.userInfo.superadmin) {
       fetchUsers();
     }
-  }, [fetchUsers, userContext.role]);
+  }, [fetchUsers, userContext.userInfo.superadmin]);
 
   return (
     <header>
@@ -179,19 +179,20 @@ export function Header({ onMenuToggle, isMenuVisible }: HeaderProps) {
         {/* <div className={styles['welcome-message']}>
           Hi {userContext?.userName}
         </div> */}
-
-        <SharedDropdown
-          options={userOptions}
-          value={selectedOption}
-          onChange={handleSelectChange}
-          isLoading={isLoading}
-          placeholder="Select a user"
-          noOptionsMessage={() => "No users available"}
-          // Optional customizations
-          className="text-base"
-          isSearchable={true}
-          darkMode={true}
-        />
+        {
+          userContext.userInfo.superadmin && <SharedDropdown
+            options={userOptions}
+            value={selectedOption}
+            onChange={handleSelectChange}
+            isLoading={isLoading}
+            placeholder="Select a user"
+            noOptionsMessage={() => "No users available"}
+            // Optional customizations
+            className="text-base"
+            isSearchable={true}
+            darkMode={true}
+          />
+        }
 
         <div className={styles['client-logo']}>
           <img src="/images/HurricaneLogo_Brightened.png"  alt='logo'/>
