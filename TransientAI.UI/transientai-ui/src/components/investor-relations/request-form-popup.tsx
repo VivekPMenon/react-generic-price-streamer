@@ -3,9 +3,9 @@ import * as Dialog from '@radix-ui/react-dialog';
 import * as Form from '@radix-ui/react-form';
 import { TextArea } from "@radix-ui/themes";
 import styles from './request-form-popup.module.scss';
-import {investorRelationsStore} from "@/services/investor-relations-data/investor-relations-store";
-import {InquiryFlag, InquiryStatus} from "@/services/investor-relations-data/model";
-import {enumToKeyValuePair} from "@/lib/utility-functions/enum-operations";
+import { useInvestorRelationsStore } from "@/services/investor-relations-data/investor-relations-store";
+import { InquiryFlag, InquiryStatus } from "@/services/investor-relations-data/model";
+import { enumToKeyValuePair } from "@/lib/utility-functions/enum-operations";
 
 export interface RequestPopupProps {
     open?: boolean;
@@ -36,10 +36,8 @@ export function RequestFormPopup(props: RequestPopupProps) {
     const [assignee, setAssignee] = useState<string>(props.assignee || '');
     const [assigneeError, setAssigneeError] = useState('');
 
-    const isSaving = investorRelationsStore.use.isSaving();
-    const save  = investorRelationsStore.use.save();
-    const assignees = investorRelationsStore.use.assignees();
-
+    const {isSaving, save, assignees} = useInvestorRelationsStore();
+    
     const [selectableAssignees, setSelectableAssignees] = useState<string[]>([]);
 
     const handleSubjectChange = (event: any) => {

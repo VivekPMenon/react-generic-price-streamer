@@ -29,7 +29,7 @@ export interface InvestorRelationsStore {
   startPolling: () => void;
 }
 
-const useInvestorRelationsStore = create<InvestorRelationsStore>()((set, get) => ({
+export const useInvestorRelationsStore = create<InvestorRelationsStore>()((set, get) => ({
   inquiries: [],
   irEmails: [],
   selectedInquiry: null,
@@ -153,5 +153,3 @@ const useInvestorRelationsStore = create<InvestorRelationsStore>()((set, get) =>
     );
   }
 }));
-
-export const investorRelationsStore = createSelectors(useInvestorRelationsStore);
