@@ -8,6 +8,7 @@ export const resourceNameInvestorRelations = 'investor-relations';
 
 export interface InvestorRelationsStore {
   inquiries: InquiryRequest[];
+  selectedInquiry: InquiryRequest | null;
   irEmails: IREmailMessage[];
   selectedIrEmail: IREmailMessage | null;
   assignees: string[];
@@ -15,6 +16,7 @@ export interface InvestorRelationsStore {
   isSaving: boolean;
   error: string;
   setInquiries: (inquiries: InquiryRequest[]) => void;
+  setSelectedInquiry: (inquiry: InquiryRequest | null) => void;
   setSelectedIrEmail: (email: IREmailMessage | null) => void;
   loadInquiries: () => Promise<void>;
   loadEmails: () => Promise<void>;
@@ -29,6 +31,7 @@ export interface InvestorRelationsStore {
 export const useInvestorRelationsStore = create<InvestorRelationsStore>((set, get) => ({
   inquiries: [],
   irEmails: [],
+  selectedInquiry: null,
   assignees: [],
   selectedIrEmail: null,
   isLoading: false,
@@ -36,6 +39,8 @@ export const useInvestorRelationsStore = create<InvestorRelationsStore>((set, ge
   error: '',
 
   setInquiries: (inquiries: InquiryRequest[]) => set({ inquiries }),
+
+  setSelectedInquiry: (inquiry: InquiryRequest | null) => set({ selectedInquiry: inquiry }),
 
   setSelectedIrEmail: (email: IREmailMessage | null) => set({ selectedIrEmail: email }),
 

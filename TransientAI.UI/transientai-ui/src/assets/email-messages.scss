@@ -15,6 +15,8 @@
   border-left: 4px solid transparent;
   transition: background 0.2s;
   cursor: pointer;
+  box-shadow: 0 0 3px $border-color;
+  min-height: 80px;
 
   &:hover {
     background-color: rgba(255, 255, 255, 0.05);
@@ -64,11 +66,24 @@
     }
 
     .body {
-      font-size: 0.75rem;
-      color: #6b7280;
+      font-size: 0.85rem;
+      color: $font-color-200;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+      display: flex;
+      justify-content: space-between;
+    }
+      
+    .body-content-left, .body-content-right {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .body-content-right {
+      justify-content: flex-end;
+      align-items: flex-end;
     }
   }
 

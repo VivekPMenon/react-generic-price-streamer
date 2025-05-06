@@ -1,8 +1,8 @@
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import styles from './investor-relations-revised.module.scss';
 import { Spinner } from '@radix-ui/themes';
-import { InquiryRequest, investorRelationsService, IREmailMessage } from '@/services/investor-relations-data';
+import { InquiryFlag, InquiryRequest, investorRelationsService, IREmailMessage } from '@/services/investor-relations-data';
 import EmailHeader from '../email-header/email-header';
 import Toggle from 'react-toggle';
 import { useInvestorRelationsStore } from '@/services/investor-relations-data/investor-relations-store';
@@ -10,6 +10,8 @@ import { formatDate } from '@/lib/utility-functions/date-operations';
 import { researchReportsDataService } from '@/services/reports-data';
 import EmailViewer from '../email-parser/email-viewer';
 import { SearchableMarkdown } from '../markdown';
+import { RequestFormPopup } from './request-form-popup';
+import { toast } from 'react-toastify';
 
 export function InvestorRelationsRevised() {
 
@@ -17,8 +19,11 @@ export function InvestorRelationsRevised() {
   const [emailHtml, setEmailHtml] = useState<string>('');
   const [aiSummary, setAiSummary] = useState<string>('');
   const [isAiSummaryShown, setIsAiSummaryShown] = useState<boolean>(false);
+  const [isTaskOpen, setIsTaskOpen] = useState<boolean>(false);
 
-  const { irEmails, selectedIrEmail, setSelectedIrEmail } = useInvestorRelationsStore();
+  const createTaskRef = useRef<HTMLInputElement>(null);
+
+  const { irEmails, inquiries, selectedIrEmail, selectedInquiry, setSelectedInquiry, setSelectedIrEmail, loadInquiries } = useInvestorRelationsStore();
 
   useEffect(() => {
     if (selectedIrEmail)
@@ -51,7 +56,23 @@ export function InvestorRelationsRevised() {
       <div className={styles['ir-requests']}>
         <div className={styles['title']}>
           IR Requests
-          <i className='fa-regular fa-pen-to-square'></i>
+
+          <i className='fa-regular fa-pen-to-square' ref={createTaskRef} onClick={() => setIsTaskOpen(true)}></i>
+
+          {
+            isTaskOpen && <RequestFormPopup
+              open={true}
+              onSubmitted={(msg) => { loadInquiries(); toast.success(msg) }}
+              subject={selectedInquiry?.subject}
+              inquiry={selectedInquiry?.inquiry}
+              dueDate={selectedInquiry?.due_date}
+              flag={selectedInquiry?.flag}
+              assignee={selectedInquiry?.assignee_name}
+              isReadOnly={!!selectedInquiry}
+              onClose={() => { setSelectedInquiry(null); setIsTaskOpen(false); }}>
+            </RequestFormPopup>
+          }
+
         </div>
 
         <div className={styles['search-box']}>
@@ -82,7 +103,7 @@ export function InvestorRelationsRevised() {
               <div
                 key={idx}
                 className={`message ${selectedIrEmail?.id === msg.id ? 'selected' : ''}`}
-                onClick={() => setSelectedIrEmail(msg)}
+                onClick={() => { setSelectedIrEmail(msg); setSelectedInquiry(null) }}
               >
                 <input
                   className=''
@@ -99,7 +120,47 @@ export function InvestorRelationsRevised() {
                     <span className='time'>{formatDate(msg.received)}</span>
                   </div>
                   <div className='subject'>{msg.subject}</div>
-                  <div className='body'>{msg.concise_summary}</div>
+                  {/* <div className='body'>{msg.concise_summary}</div> */}
+                </div>
+              </div>
+            ))}
+
+            {inquiries.map((msg, idx) => (
+              <div
+                key={idx}
+                className={`message ${selectedInquiry?.id === msg.id ? 'selected' : ''}`}
+                onClick={() => {
+                  setSelectedIrEmail(null);
+                  setSelectedInquiry(msg);
+                  setIsTaskOpen(true);
+                }}
+              >
+                <input
+                  className=''
+                  type='checkbox'
+                  checked={true}
+                />
+
+                <div className='content'>
+                  <div className='header'>
+                    <span className='sender'>
+                      {msg.flag === InquiryFlag.Important && <span className='priority'>❗</span>}
+                      {msg.owner_name}
+                    </span>
+                    <span className='time'>{formatDate(msg.date)}</span>
+                  </div>
+                  <div className='subject'>{msg.subject}</div>
+
+                  <div className='body'>
+                    <div className='body-content-left'>
+                      <span>Assignee: {msg.assignee_name}</span>
+                      <span>Due Date: {formatDate(msg.due_date)}</span>
+                    </div>
+
+                    <div className='body-content-right'>
+                      <div className='pill teal'>TASK</div>
+                    </div>
+                  </div>
                 </div>
               </div>
             ))}
@@ -123,8 +184,8 @@ export function InvestorRelationsRevised() {
           }
 
         </div>
-      }   
-      
-      </div>
+      }
+
+    </div>
   );
 }
