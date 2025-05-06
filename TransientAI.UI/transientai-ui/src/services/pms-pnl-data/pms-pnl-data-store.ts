@@ -9,6 +9,7 @@ interface PmsPnlDataState {
   report: Report|null;
   reportDate: Date|null;
   filteredReport: ReportItem[] | null;
+  columnsList: string[];
 
   getReport: () => void;
   getColumnDefs: () => void;
@@ -19,7 +20,7 @@ const usePmsPnlDataStore = create<PmsPnlDataState>((set, get) => ({
   report: null,
   reportDate: null,
   filteredReport: null,
-
+  columnsList: [],
   getReport: () => {
     set({ isLoading: true });
     pmsPnlPanelDataService.getReport()
@@ -44,8 +45,8 @@ const usePmsPnlDataStore = create<PmsPnlDataState>((set, get) => ({
 
     getColumnDefs: async () => {
         try {
-            const result = pmsPnlPanelDataService.getColumnDefs();
-            return result;
+            const result = await pmsPnlPanelDataService.getColumnDefs();
+            set({ columnsList: result.data.getAllowedColumns.allowedColumns });
         } catch (error: any) {
             console.error(error);
         }  

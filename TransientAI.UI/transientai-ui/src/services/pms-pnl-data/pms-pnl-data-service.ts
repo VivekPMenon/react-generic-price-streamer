@@ -7,8 +7,8 @@ class PmsPnlDataService {
 
   async getReport(): Promise<Report|null> {
     try {
-      const result = await webApihandler.get('performance-dashboard', {}, {
-        serviceName: this.serviceName
+      const result = await webApihandler.get('pms/performance-dashboard', {}, {
+        serviceName: this.getColumnServiceName
       });
 
       result.data = result.data.filter((item: ReportItem) => item.manager !== 'Total');
@@ -21,8 +21,16 @@ class PmsPnlDataService {
   }
 
   async getColumnDefs(): Promise<any> {
-    const result = await webApihandler.get(
-      '',
+    const query = `
+    {
+      getAllowedColumns {
+        allowedColumns
+      }
+    }
+    `
+    const result = await webApihandler.post(
+      'graphql',
+      {query},
       {},
       {serviceName: this.getColumnServiceName},
     )

@@ -138,7 +138,7 @@ export const columnDefs: ColDef[] = [
         aggFunc: 'sum',
         cellDataType: 'number',
         filter: 'agNumberColumnFilter'
-    },
+    }
 ];
 
 export function handleFirstDataRendered(params: FirstDataRenderedEvent) {

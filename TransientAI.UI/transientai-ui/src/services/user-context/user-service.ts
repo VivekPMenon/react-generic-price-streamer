@@ -4,7 +4,7 @@ class UserService {
     private serviceName = 'hurricane-api-2-0';
 
    async getUserList(): Promise<any> {
-      const results = await webApihandler.get('user/list-users',{}, { serviceName: this.serviceName });
+      const results = await webApihandler.get('user/list-users/',{}, { serviceName: this.serviceName });
       return results;
     }
 

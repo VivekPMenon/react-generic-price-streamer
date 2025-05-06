@@ -10,7 +10,6 @@ import Image from 'next/image';
 import { menuStore } from '@/services/menu-data';
 import SharedDropdown, { DropdownOption } from '../shared/ta-select/ta-select';
 import { userService } from '@/services/user-context/user-service';
-import { webApihandler } from '@/services/web-api-handler';
 
 // Example user interface
 interface User {
@@ -68,11 +67,9 @@ export function Header({ onMenuToggle, isMenuVisible }: HeaderProps) {
       if (selected) {
         setSelectedPreviewUser(selected.data);
         userService.savePreviewUserRoleId(selected.value.toString());
-        webApihandler.setPreviewId(selected.value.toString());
       } else {
         setSelectedPreviewUser(null);
         userService.savePreviewUserRoleId('');
-        webApihandler.setPreviewId('');
       }
       window.location.reload();
     } catch (err) {
@@ -97,15 +94,12 @@ export function Header({ onMenuToggle, isMenuVisible }: HeaderProps) {
       // Initialize selected preview user from stored ID
       const previewId = userService.getPreviewUserRoleId();
       if (previewId) {
-        const previewUser = response.find(user => user.id === parseInt(previewId));
+        const previewUser = response.find((user: User) => user.id === parseInt(previewId));
         if (previewUser) {
           setSelectedPreviewUser(previewUser);
-          webApihandler.setPreviewId(previewId);
         } else {
           // Handle case where stored ID doesn't match any user
-          console.warn(`Stored preview user ID ${previewId} not found in user list`);
           userService.savePreviewUserRoleId('');
-          webApihandler.setPreviewId('');
         }
       }
     } catch (err) {

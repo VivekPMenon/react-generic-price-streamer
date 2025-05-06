@@ -3,6 +3,7 @@ import { WebApihandlerOptions} from "./model";
 import { endpointFinder } from "./endpoint-finder-service";
 import { useUserContextStore } from '@/services/user-context'
 import msalInstance from "@/app/msal-config";
+import { userService } from "../user-context/user-service";
 
 class WebApihandler {
   private readonly bankId = 123;
@@ -11,17 +12,12 @@ class WebApihandler {
   private bearerToken = '';
   private isRefreshing = false;
   private refreshPromise: Promise<string> | null = null;
-  private previewId: string | null  = null;
-
   constructor() {}
 
   setBearerToken(token: string) {
     this.bearerToken = token;
   }
 
-  setPreviewId(previewId: string | null) {
-    this.previewId = previewId || null;
-  };
 
   private async ensureToken(): Promise<void> {
     while (!this.bearerToken) {
@@ -117,7 +113,7 @@ class WebApihandler {
           config.headers = {
             ...config.headers,
             Authorization: `Bearer ${this.bearerToken}`,
-            preview_id: this.previewId,
+            preview_id: userService.getPreviewUserRoleId() || null,
           };
           const retryResponse = await axios(config);
           return retryResponse.data;
@@ -144,7 +140,7 @@ class WebApihandler {
       method: 'GET',
       headers: {
         Authorization: `Bearer ${this.bearerToken}`,
-        preview_id: this.previewId,
+        preview_id: userService.getPreviewUserRoleId() || null ,
         ...options?.headers
       }
     };
@@ -195,7 +191,7 @@ class WebApihandler {
       },
       headers: {
         Authorization: `Bearer ${this.bearerToken}`,
-        preview_id: this.previewId,
+        preview_id: userService.getPreviewUserRoleId() || null ,
         ...options?.headers
       },
       data,
@@ -263,7 +259,7 @@ class WebApihandler {
       },
       headers: {
         Authorization: `Bearer ${this.bearerToken}`,
-        preview_id: this.previewId,
+        preview_id: userService.getPreviewUserRoleId() || null,
       },
       data,
       ...webApiOptions
@@ -278,7 +274,7 @@ class WebApihandler {
       method: 'DELETE',
       headers: {
         Authorization: `Bearer ${this.bearerToken}`,
-        preview_id: this.previewId,
+        preview_id: userService.getPreviewUserRoleId() || null,
         ...webApiOptions?.headers
       },
       params
