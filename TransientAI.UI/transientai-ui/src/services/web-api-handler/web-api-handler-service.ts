@@ -11,7 +11,7 @@ class WebApihandler {
   private bearerToken = '';
   private isRefreshing = false;
   private refreshPromise: Promise<string> | null = null;
-  private previewId: number | null  = null;
+  private previewId: string | null  = null;
 
   constructor() {}
 
@@ -19,7 +19,7 @@ class WebApihandler {
     this.bearerToken = token;
   }
 
-  setPreviewId(previewId: number | null) {
+  setPreviewId(previewId: string | null) {
     this.previewId = previewId || null;
   };
 

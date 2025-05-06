@@ -4,12 +4,13 @@ import { useCallback, useContext, useEffect, useState } from 'react';
 import styles from './header.module.scss';
 import { SearchDataContext } from '@/services/search-data';
 import { useDeviceType } from '@/lib/hooks';
-import { RoleType, useUserContextStore } from '@/services/user-context';
+import { useUserContextStore } from '@/services/user-context';
 import ProfilePopover from './profile-popover';
 import Image from 'next/image';
 import { menuStore } from '@/services/menu-data';
 import SharedDropdown, { DropdownOption } from '../shared/ta-select/ta-select';
 import { userService } from '@/services/user-context/user-service';
+import { webApihandler } from '@/services/web-api-handler';
 
 // Example user interface
 interface User {
@@ -21,6 +22,7 @@ interface User {
   is_external: boolean;
   role_id: number;
   is_superadmin: boolean;
+  full_name: string
 }
 
 export interface HeaderProps {
@@ -42,15 +44,15 @@ export function Header({ onMenuToggle, isMenuVisible }: HeaderProps) {
   // Convert users to dropdown options format
   const userOptions: DropdownOption<User>[] = previewUserList.map(user => ({
     value: user.id,
-    label: `${user.first_name} (${user.last_name})`,
+    label: `${user.full_name}`,
     data: user
   }));
 
   // Find the currently selected option
   const selectedOption = selectedPreviewUser 
     ? {
-        value: selectedPreviewUser.role_id,
-        label: `${selectedPreviewUser.first_name} ${selectedPreviewUser.last_name}`,
+        value: selectedPreviewUser.id,
+        label: `${selectedPreviewUser.full_name}`,
         data: selectedPreviewUser
       } 
     : null;
@@ -63,6 +65,7 @@ export function Header({ onMenuToggle, isMenuVisible }: HeaderProps) {
         setSelectedPreviewUser(null);
         userService.savePreviewUserRoleId('');
       }
+      window.location.reload();
     };
 
 
@@ -70,47 +73,8 @@ export function Header({ onMenuToggle, isMenuVisible }: HeaderProps) {
   const fetchUsers = useCallback(async () => {
     setIsLoading(true);
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 800));
-      // const response = await userService.getUserList();
-      
-      // Mock user data
-      const mockUsers: User[] =[
-        {
-            "id": 45,
-            "email": "torenstein@hurricanecap.com",
-            "first_name": "Ted",
-            "last_name": "Orenstein",
-            "is_active": true,
-            "is_external": true,
-            "role_id": 2,
-            "is_superadmin": false
-        },
-        {
-            "id": 46,
-            "email": "tsandoz@hurricanecap.com",
-            "first_name": "Todd",
-            "last_name": "Sandoz",
-            "is_active": true,
-            "is_external": true,
-            "role_id": 2,
-            "is_superadmin": false
-        },
-        {
-            "id": 47,
-            "email": "tsoliman@hurricanecap.com",
-            "first_name": "Tim",
-            "last_name": "Soliman (Inactive)",
-            "is_active": true,
-            "is_external": true,
-            "role_id": 2,
-            "is_superadmin": false
-        }]
-      
-      setPreviewUserList(mockUsers);
-      
-      // Optionally set default selection
-      // setSelectedUser(mockUsers[0]);
+      const response = await userService.getUserList();
+      setPreviewUserList(response || []);
     } catch (error) {
       console.error('Error loading users:', error);
     } finally {
@@ -119,10 +83,19 @@ export function Header({ onMenuToggle, isMenuVisible }: HeaderProps) {
   }, []);
 
   useEffect(() => {
-    if (userContext.userInfo.superadmin) {
+    if (userContext?.userInfo?.superadmin) {
       fetchUsers();
     }
-  }, [fetchUsers, userContext.userInfo.superadmin]);
+  }, [fetchUsers, userContext?.userInfo?.superadmin]);
+
+  useEffect(()=>{
+    const previewId = userService.getPreviewUserRoleId();
+    if(previewId){
+      const previewUser = previewUserList.find(user => user.id === parseInt(previewId));
+     setSelectedPreviewUser(previewUser || null);
+     webApihandler.setPreviewId(previewId);
+    }
+  },[previewUserList])
 
   return (
     <header>
@@ -180,7 +153,7 @@ export function Header({ onMenuToggle, isMenuVisible }: HeaderProps) {
           Hi {userContext?.userName}
         </div> */}
         {
-          userContext.userInfo.superadmin && <SharedDropdown
+         userContext?.userInfo?.superadmin && <SharedDropdown
             options={userOptions}
             value={selectedOption}
             onChange={handleSelectChange}

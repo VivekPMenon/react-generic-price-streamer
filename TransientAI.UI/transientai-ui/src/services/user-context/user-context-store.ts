@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { UserContext, RoleType, UserInfo } from "./model";
+import { UserContext, UserInfo } from "./model";
 import msalInstance from "@/app/msal-config";
 import { endpointFinder } from "../web-api-handler/endpoint-finder-service";
 import { AccountInfo } from "@azure/msal-browser";

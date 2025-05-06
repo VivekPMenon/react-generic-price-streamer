@@ -5,15 +5,14 @@ export interface UserContext {
   token?: string;
   accessibleResources?: Resource[];
   userInitials?: string;
-  userInfo: UserInfo;
+  userInfo?: UserInfo;
 }
 
 export enum RoleType {
   Trader ='Trader',
   PM ='Portfolio Manager',
   Operations = 'Operations',
-  Admin = 'admin',
-  SuperAdmin = 'Super Admin'
+  Admin = 'admin'
 }
 
 export interface Resource {
