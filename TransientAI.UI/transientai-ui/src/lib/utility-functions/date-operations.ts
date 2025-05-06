@@ -116,25 +116,26 @@ export function formatDateToHHMM(date: Date | string): string {
 // }
 
 
-export function formatDateString(dateString: string|undefined|null) {
-  // Return empty string for null, undefined, or empty string
-  if (!dateString || dateString.length === 0) {
-    return '';
-  }
-
-  // Parse the date string
-  const date = new Date(dateString);
-  if (Number.isNaN(date.valueOf())) {
-    return '';
-  }
-
-  const year = date.getUTCFullYear();
-  const month = date.getUTCMonth();
-  const day = date.getUTCDate();
+export function formatDateString(isoDateString: string) {
+  // Extract just the date part if the input includes time
+  const datePart = isoDateString.split('T')[0];
   
-  const localDate = new Date(year, month, day);
-  return localDate.toDateString();
+  // Create a Date object from the date part
+  const date = new Date(datePart);
   
+  // Array of short month names
+  const months = [
+    'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+    'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+  ];
+  
+  // Get the month name, day, and year
+  const monthName = months[date.getMonth()];
+  const day = date.getDate();
+  const year = date.getFullYear();
+  
+  // Return the formatted date string
+  return `${monthName} ${day} ${year}`;
 }
 
 
