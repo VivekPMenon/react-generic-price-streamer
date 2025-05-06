@@ -3,7 +3,7 @@ import { InquiryRequest, InquiryStatus, IREmailMessage } from './model';
 import { investorRelationsService } from '@/services/investor-relations-data/investor-relations-service';
 import { useUserContextStore } from '@/services/user-context';
 import { unseenItemsStore } from '../unseen-items-store/unseen-items-store';
-import {createSelectors} from "@/lib/utility-functions/store-operations";
+import { createSelectors } from "@/lib/utility-functions/store-operations";
 
 export const resourceNameInvestorRelations = 'investor-relations';
 
@@ -51,8 +51,8 @@ export const useInvestorRelationsStore = create<InvestorRelationsStore>()((set, 
       set({ isLoading: true });
       const inquiries = await investorRelationsService.getSubmittedTasks(userContext.userName!);
       inquiries.sort((a, b) => {
-        const aDate = a?.due_date ? new Date(a.due_date).getTime() : -1;
-        const bDate = b?.due_date ? new Date(b.due_date).getTime() : -1;
+        const aDate = a?.date ? new Date(a.date).getTime() : -1;
+        const bDate = b?.date ? new Date(b.date).getTime() : -1;
         return bDate - aDate;
       });
 
@@ -68,7 +68,7 @@ export const useInvestorRelationsStore = create<InvestorRelationsStore>()((set, 
     const userContext = useUserContextStore.getState().userContext;
     try {
       set({ isLoading: true });
-      const irEmails = await investorRelationsService.getIREmails('awolfberg@hurricanecap.com');
+      const irEmails = await investorRelationsService.getIREmails(userContext.userId!);
       set({ irEmails });
     } catch (e: any) {
       set({ inquiries: [], error: 'Failed to load IR Emails' });
@@ -139,17 +139,17 @@ export const useInvestorRelationsStore = create<InvestorRelationsStore>()((set, 
   // does the IR emails need to be in Notifications too?
   startPolling: () => {
     setInterval(async () => {
-          const {inquiries, loadInquiries} = get();
+      const { inquiries, loadInquiries } = get();
 
-          const prevCount = inquiries.length;
-          await loadInquiries();
+      const prevCount = inquiries.length;
+      await loadInquiries();
 
-          // Ensure we fetch the latest count after the state is updated
-          const newCount = get().inquiries.length;
-          const unseenDiff = newCount - prevCount;
+      // Ensure we fetch the latest count after the state is updated
+      const newCount = get().inquiries.length;
+      const unseenDiff = newCount - prevCount;
 
-          unseenItemsStore.getState().addUnseenItems(resourceNameInvestorRelations, unseenDiff);
-        }, 120000
+      unseenItemsStore.getState().addUnseenItems(resourceNameInvestorRelations, unseenDiff);
+    }, 120000
     );
   }
 }));

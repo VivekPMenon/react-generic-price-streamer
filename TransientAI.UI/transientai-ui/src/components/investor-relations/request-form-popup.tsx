@@ -242,7 +242,6 @@ export function RequestFormPopup(props: RequestPopupProps) {
 
                         <div className="flex justify-center space-x-2 mt-4">
                             {
-                                !props.isReadOnly &&
                                 <Form.Submit
                                     disabled={isSaving || props?.isReadOnly}
                                     className='button px-4 py-2 rounded-md'

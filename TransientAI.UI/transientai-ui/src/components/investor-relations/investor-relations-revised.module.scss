@@ -27,7 +27,7 @@
     }
 
     .messages {
-      max-height: calc(100vh - 520px);
+      max-height: calc(100vh - 420px);
     }
   }
 
@@ -100,5 +100,23 @@
 
   .summary-viewer {
     max-height: calc(100vh - 300px);
+  }
+
+  .inquiry-summary {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    font-size: 16px;
+    margin-left: 10px;
+
+    .inquiry-field {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+
+      .label {
+        color: $font-color-200;
+      }
+    }
   }
 }
