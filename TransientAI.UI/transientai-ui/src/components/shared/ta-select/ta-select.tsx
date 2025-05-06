@@ -38,6 +38,7 @@ const SharedDropdown = <T,>({
   const darkStyles = {
     control: (provided: any) => ({
       ...provided,
+      fontSize: '14px',
       backgroundColor: '#1f2937', // bg-gray-800
       width: '200px',
       borderColor: '#374151', // border-gray-700
@@ -53,6 +54,7 @@ const SharedDropdown = <T,>({
     }),
     option: (provided: any, state: any) => ({
       ...provided,
+      fontSize: '14px',
       backgroundColor: state.isSelected 
         ? '#4B5563' // bg-gray-600 for selected
         : state.isFocused 

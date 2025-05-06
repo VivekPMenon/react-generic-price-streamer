@@ -43,11 +43,13 @@ export function Header({ onMenuToggle, isMenuVisible }: HeaderProps) {
 
   // Convert users to dropdown options format
   const userOptions = useCallback(() => {
-    return previewUserList?.map(user => ({
-      value: user.id,
-      label: user.full_name,
-      data: user
-    }));
+    return Array.isArray(previewUserList)
+      ? previewUserList.map(user => ({
+          value: user.id,
+          label: user.full_name,
+          data: user
+        }))
+      : [];
   }, [previewUserList]);
 
   // Find the currently selected option
