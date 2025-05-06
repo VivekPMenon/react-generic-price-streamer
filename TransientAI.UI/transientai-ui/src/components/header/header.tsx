@@ -42,60 +42,85 @@ export function Header({ onMenuToggle, isMenuVisible }: HeaderProps) {
   const [isLoading, setIsLoading] = useState(false);
 
   // Convert users to dropdown options format
-  const userOptions: DropdownOption<User>[] = previewUserList.map(user => ({
-    value: user.id,
-    label: `${user.full_name}`,
-    data: user
-  }));
+  const userOptions = useCallback(() => {
+    return previewUserList?.map(user => ({
+      value: user.id,
+      label: user.full_name,
+      data: user
+    }));
+  }, [previewUserList]);
 
   // Find the currently selected option
-  const selectedOption = selectedPreviewUser 
-    ? {
-        value: selectedPreviewUser.id,
-        label: `${selectedPreviewUser.full_name}`,
-        data: selectedPreviewUser
-      } 
-    : null;
+  const selectedOption = useCallback(() => {
+    if (!selectedPreviewUser) return null;
 
-    const handleSelectChange = (selected: DropdownOption<User> | null) => {
+    return {
+      value: selectedPreviewUser.id,
+      label: selectedPreviewUser.full_name,
+      data: selectedPreviewUser
+    };
+  }, [selectedPreviewUser]);
+
+  const handleSelectChange = useCallback((selected: DropdownOption<User> | null) => {
+    try {
       if (selected) {
         setSelectedPreviewUser(selected.data);
         userService.savePreviewUserRoleId(selected.value.toString());
+        webApihandler.setPreviewId(selected.value.toString());
       } else {
         setSelectedPreviewUser(null);
         userService.savePreviewUserRoleId('');
+        webApihandler.setPreviewId('');
       }
       window.location.reload();
-    };
-
-
-    // Mock fetch users (replace with your actual API call)
-  const fetchUsers = useCallback(async () => {
-    setIsLoading(true);
-    try {
-      const response = await userService.getUserList();
-      setPreviewUserList(response || []);
-    } catch (error) {
-      console.error('Error loading users:', error);
-    } finally {
-      setIsLoading(false);
+    } catch (err) {
+      console.error('Error changing preview user:', err);
     }
   }, []);
 
+  // Fetch users with proper error handling
+  const fetchUsers = useCallback(async () => {
+    if (!userContext?.userInfo?.superadmin) return;
+
+    setIsLoading(true);
+    try {
+      const response = await userService.getUserList();
+
+      if (!response) {
+        throw new Error('No users returned from API');
+      }
+
+      setPreviewUserList(response);
+
+      // Initialize selected preview user from stored ID
+      const previewId = userService.getPreviewUserRoleId();
+      if (previewId) {
+        const previewUser = response.find(user => user.id === parseInt(previewId));
+        if (previewUser) {
+          setSelectedPreviewUser(previewUser);
+          webApihandler.setPreviewId(previewId);
+        } else {
+          // Handle case where stored ID doesn't match any user
+          console.warn(`Stored preview user ID ${previewId} not found in user list`);
+          userService.savePreviewUserRoleId('');
+          webApihandler.setPreviewId('');
+        }
+      }
+    } catch (err) {
+      console.error('Error loading users:', err);
+      setPreviewUserList([]);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [userContext?.userInfo?.superadmin]);
+
+  // Load users on component mount if user is superadmin
   useEffect(() => {
     if (userContext?.userInfo?.superadmin) {
       fetchUsers();
     }
   }, [fetchUsers, userContext?.userInfo?.superadmin]);
 
-  useEffect(()=>{
-    const previewId = userService.getPreviewUserRoleId();
-    if(previewId){
-      const previewUser = previewUserList.find(user => user.id === parseInt(previewId));
-     setSelectedPreviewUser(previewUser || null);
-     webApihandler.setPreviewId(previewId);
-    }
-  },[previewUserList])
 
   return (
     <header>
@@ -154,8 +179,8 @@ export function Header({ onMenuToggle, isMenuVisible }: HeaderProps) {
         </div> */}
         {
          userContext?.userInfo?.superadmin && <SharedDropdown
-            options={userOptions}
-            value={selectedOption}
+            options={userOptions()}
+            value={selectedOption()}
             onChange={handleSelectChange}
             isLoading={isLoading}
             placeholder="Select a user"

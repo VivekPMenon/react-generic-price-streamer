@@ -18,6 +18,7 @@ interface SharedDropdownProps<T> {
   className?: string;
   noOptionsMessage?: () => string;
   darkMode?: boolean;
+  isClearable?: boolean;
 }
 
 const SharedDropdown = <T,>({
@@ -30,6 +31,7 @@ const SharedDropdown = <T,>({
   className = "text-base",
   noOptionsMessage = () => "No options found",
   darkMode = true,
+  isClearable = true // Defaulting to true so users can clear their selection
 }: SharedDropdownProps<T>) => {
   
   // Custom styles for react-select to match your theme
@@ -124,6 +126,7 @@ const SharedDropdown = <T,>({
         onChange={handleChange}
         className={className}
         classNamePrefix="select"
+        isClearable={isClearable}
         isSearchable={isSearchable}
         noOptionsMessage={() => noOptionsMessage()}
       />
