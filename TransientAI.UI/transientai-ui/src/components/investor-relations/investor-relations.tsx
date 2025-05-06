@@ -10,6 +10,7 @@ import {ColDef, FirstDataRenderedEvent, GetRowIdParams, GridSizeChangedEvent} fr
 import {executeAsync} from "@/lib/utility-functions/async";
 import { toast } from 'react-toastify';
 import i18n from '../../i18n';
+
 function getFlagStyle(flag: string|undefined|null) {
     const style: any = { display: "flex" };
     switch(flag) {

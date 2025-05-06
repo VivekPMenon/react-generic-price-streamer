@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { InquiryRequest, InquiryStatus } from './model';
+import { InquiryRequest, InquiryStatus, IREmailMessage } from './model';
 import { investorRelationsService } from '@/services/investor-relations-data/investor-relations-service';
 import { useUserContextStore } from '@/services/user-context';
 import { unseenItemsStore } from '../unseen-items-store/unseen-items-store';
@@ -9,12 +9,18 @@ export const resourceNameInvestorRelations = 'investor-relations';
 
 export interface InvestorRelationsStore {
   inquiries: InquiryRequest[];
+  selectedInquiry: InquiryRequest | null;
+  irEmails: IREmailMessage[];
+  selectedIrEmail: IREmailMessage | null;
   assignees: string[];
   isLoading: boolean;
   isSaving: boolean;
   error: string;
   setInquiries: (inquiries: InquiryRequest[]) => void;
+  setSelectedInquiry: (inquiry: InquiryRequest | null) => void;
+  setSelectedIrEmail: (email: IREmailMessage | null) => void;
   loadInquiries: () => Promise<void>;
+  loadEmails: () => Promise<void>;
   save: (inquiry: InquiryRequest) => Promise<void>;
   changeStatus: (id: string, status: InquiryStatus) => Promise<void>;
   deleteInquiry: (id: string) => Promise<boolean>;
@@ -25,12 +31,19 @@ export interface InvestorRelationsStore {
 
 const useInvestorRelationsStore = create<InvestorRelationsStore>()((set, get) => ({
   inquiries: [],
+  irEmails: [],
+  selectedInquiry: null,
   assignees: [],
+  selectedIrEmail: null,
   isLoading: false,
   isSaving: false,
   error: '',
 
   setInquiries: (inquiries: InquiryRequest[]) => set({ inquiries }),
+
+  setSelectedInquiry: (inquiry: InquiryRequest | null) => set({ selectedInquiry: inquiry }),
+
+  setSelectedIrEmail: (email: IREmailMessage | null) => set({ selectedIrEmail: email }),
 
   loadInquiries: async () => {
     const userContext = useUserContextStore.getState().userContext;
@@ -46,6 +59,19 @@ const useInvestorRelationsStore = create<InvestorRelationsStore>()((set, get) =>
       set({ inquiries });
     } catch (e: any) {
       set({ inquiries: [], error: 'Failed to load inquiries' });
+    } finally {
+      set({ isLoading: false });
+    }
+  },
+
+  loadEmails: async () => {
+    const userContext = useUserContextStore.getState().userContext;
+    try {
+      set({ isLoading: true });
+      const irEmails = await investorRelationsService.getIREmails('awolfberg@hurricanecap.com');
+      set({ irEmails });
+    } catch (e: any) {
+      set({ inquiries: [], error: 'Failed to load IR Emails' });
     } finally {
       set({ isLoading: false });
     }
@@ -110,6 +136,7 @@ const useInvestorRelationsStore = create<InvestorRelationsStore>()((set, get) =>
     inquiry.status = inquiry.completed ? InquiryStatus.Completed : InquiryStatus.Open;
   },
 
+  // does the IR emails need to be in Notifications too?
   startPolling: () => {
     setInterval(async () => {
           const {inquiries, loadInquiries} = get();

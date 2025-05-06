@@ -1,4 +1,4 @@
-import React, {ReactNode, useEffect, useState} from "react";
+import React, { ReactNode, useEffect, useState } from "react";
 import * as Dialog from '@radix-ui/react-dialog';
 import * as Form from '@radix-ui/react-form';
 import { TextArea } from "@radix-ui/themes";
@@ -8,25 +8,32 @@ import {InquiryFlag, InquiryStatus} from "@/services/investor-relations-data/mod
 import {enumToKeyValuePair} from "@/lib/utility-functions/enum-operations";
 
 export interface RequestPopupProps {
-    children: ReactNode;
+    open?: boolean;
+    children?: ReactNode;
     onSubmitted?: (message: string) => void;
+    onClose?: () => void;
+    isReadOnly?: boolean;
+    subject?: string;
+    inquiry?: string;
+    dueDate?: string;
+    flag?: InquiryFlag;
+    assignee?: string;
 }
 
 const Flags = enumToKeyValuePair(InquiryFlag);
 
 const AssignTo: string = 'Assign to';
 
-export function RequestFormPopup({children, onSubmitted}: RequestPopupProps) {
-    const [open, setOpen] = useState(false);
-    const [subject, setSubject] = useState('');
+export function RequestFormPopup(props: RequestPopupProps) {
+    const [subject, setSubject] = useState(props.subject || '');
     const [subjectError, setSubjectError] = useState('');
-    const [inquiry, setInquiry] = useState('');
+    const [inquiry, setInquiry] = useState(props.inquiry || '');
     const [inquiryError, setInquiryError] = useState('');
-    const [dueDate, setDueDate] = useState('');
+    const [dueDate, setDueDate] = useState(props.dueDate || '');
     const [dueDateError, setDueDateError] = useState('');
-    const [flag, setFlag] = useState<InquiryFlag>(InquiryFlag.Regular);
+    const [flag, setFlag] = useState<InquiryFlag>(props.flag || InquiryFlag.Regular);
     const [flagError, setFlagError] = useState('');
-    const [assignee, setAssignee] = useState<string>('');
+    const [assignee, setAssignee] = useState<string>(props.assignee || '');
     const [assigneeError, setAssigneeError] = useState('');
 
     const isSaving = investorRelationsStore.use.isSaving();
@@ -35,17 +42,17 @@ export function RequestFormPopup({children, onSubmitted}: RequestPopupProps) {
 
     const [selectableAssignees, setSelectableAssignees] = useState<string[]>([]);
 
-    const handleSubjectChange = (event:any) => {
+    const handleSubjectChange = (event: any) => {
         setSubject(event.target.value);
         setSubjectError('');
     }
 
-    const handleInquiryChange = (event:any) => {
+    const handleInquiryChange = (event: any) => {
         setInquiry(event.target.value);
         setInquiryError('');
     }
 
-    const handleDueDateChange = (event:any) => {
+    const handleDueDateChange = (event: any) => {
         setDueDate(event.target.value);
         setDueDateError('');
     }
@@ -85,7 +92,7 @@ export function RequestFormPopup({children, onSubmitted}: RequestPopupProps) {
         return true;
     };
 
-    const handleSubmit = (event:any) => {
+    const handleSubmit = (event: any) => {
         event.preventDefault();
         if (validate()) {
             save({
@@ -100,8 +107,8 @@ export function RequestFormPopup({children, onSubmitted}: RequestPopupProps) {
             })
                 .then(() => {
                     resetAndClose();
-                    if (onSubmitted) {
-                        onSubmitted('Saved successfully');
+                    if (props.onSubmitted) {
+                        props.onSubmitted('Saved successfully');
                     }
                 });
         }
@@ -112,6 +119,7 @@ export function RequestFormPopup({children, onSubmitted}: RequestPopupProps) {
     }
 
     const resetAndClose = () => {
+        props.onClose!();
         setSubject('');
         setSubjectError('');
         setInquiry('');
@@ -122,7 +130,6 @@ export function RequestFormPopup({children, onSubmitted}: RequestPopupProps) {
         setFlagError('');
         setAssignee('');
         setAssigneeError('')
-        setOpen(false);
     }
 
     useEffect(() => {
@@ -130,10 +137,10 @@ export function RequestFormPopup({children, onSubmitted}: RequestPopupProps) {
     }, [assignees]);
 
     return (
-        <Dialog.Root open={open} onOpenChange={setOpen}>
-            <Dialog.Trigger asChild>
-                {children}
-            </Dialog.Trigger>
+        <Dialog.Root open={true}>
+            {/* <Dialog.Trigger >
+                {props.children}
+            </Dialog.Trigger> */}
             <Dialog.Portal>
                 <Dialog.Title />
                 <Dialog.Description />
@@ -148,7 +155,7 @@ export function RequestFormPopup({children, onSubmitted}: RequestPopupProps) {
                                 <div className="flex space-x-2 mt-4">
                                     <Form.Control asChild>
                                         <input
-                                            disabled={isSaving}
+                                            disabled={isSaving || props?.isReadOnly}
                                             type="text"
                                             placeholder='Subject'
                                             required={true}
@@ -164,7 +171,7 @@ export function RequestFormPopup({children, onSubmitted}: RequestPopupProps) {
                                 <div className="flex space-x-2 mt-4">
                                     <Form.Control asChild>
                                         <TextArea
-                                            disabled={isSaving}
+                                            disabled={isSaving || props?.isReadOnly}
                                             placeholder='Inquiry'
                                             required={true}
                                             value={inquiry}
@@ -177,31 +184,32 @@ export function RequestFormPopup({children, onSubmitted}: RequestPopupProps) {
                                 {inquiryError && <Form.Message className={styles['error']}>{inquiryError}</Form.Message>}
                             </Form.Field>
                             <Form.Field name="assignee">
-                                <div className="flex mt-4" style={{flexDirection: 'column'}}>
+                                <div className="flex mt-4" style={{ flexDirection: 'column' }}>
                                     <Form.Label>Assign To</Form.Label>
-                                    <Form.Control asChild>
-                                        <select
-                                            disabled={isSaving}
-                                            onChange={handleAssigneeChange}
-                                            required={true}
-                                            className={`${styles['assignees']} rounded-md `}
-                                            style={{ display: 'flex', flex: '1 1 50%' }}>
-                                            {
-                                                selectableAssignees.map(assignee => (
-                                                    <option key={assignee} value={assignee}>{assignee}</option>
-                                                ))
-                                            }
-                                        </select>
-                                    </Form.Control>
+
+                                    <select
+                                        name="assignee-ddl"
+                                        value={assignee}
+                                        disabled={isSaving || props?.isReadOnly}
+                                        onChange={(event) => handleAssigneeChange(event)}
+                                        required={true}
+                                        className={`${styles['assignees']} rounded-md `}
+                                        style={{ display: 'flex', flex: '1 1 50%' }}>
+                                        {
+                                            selectableAssignees.map(assignee => (
+                                                <option key={assignee} value={assignee}>{assignee}</option>
+                                            ))
+                                        }
+                                    </select>
                                 </div>
                                 {assigneeError && <Form.Message className={styles['error']}>{assigneeError}</Form.Message>}
                             </Form.Field>
                             <Form.Field name="dueDate">
-                                <div className="flex mt-4" style={{flexDirection: 'column'}}>
+                                <div className="flex mt-4" style={{ flexDirection: 'column' }}>
                                     <Form.Label>Due</Form.Label>
                                     <Form.Control asChild>
                                         <input
-                                            disabled={isSaving}
+                                            disabled={isSaving || props?.isReadOnly}
                                             type="date"
                                             required={true}
                                             value={dueDate}
@@ -213,32 +221,41 @@ export function RequestFormPopup({children, onSubmitted}: RequestPopupProps) {
                                 {dueDateError && <Form.Message className={styles['error']}>{dueDateError}</Form.Message>}
                             </Form.Field>
                             <Form.Field name="flag">
-                                <div className="flex mt-4" style={{flexDirection: 'column'}}>
+                                <div className="flex mt-4" style={{ flexDirection: 'column' }}>
                                     <Form.Label>Flag</Form.Label>
-                                    <Form.Control asChild>
-                                        <select
-                                            disabled={isSaving}
-                                            required={true}
-                                            onChange={handleFlagChange}
-                                            style={{ display: 'flex', flex: '1 1 50%', maxHeight: '150px', overflowY: 'auto' }}>
-                                            {
-                                                Flags.map(flag => (
-                                                    <option key={flag.value} value={flag.value}>{flag.key}</option>)
-                                                )
-                                            }
-                                        </select>
-                                    </Form.Control>
+
+                                    <select
+                                        name="flag-ddl"
+                                        value={flag}
+                                        disabled={isSaving || props?.isReadOnly}
+                                        required={true}
+                                        onChange={handleFlagChange}
+                                        style={{ display: 'flex', flex: '1 1 50%', maxHeight: '150px', overflowY: 'auto' }}>
+                                        {
+                                            Flags.map(flag => (
+                                                <option key={flag.value} value={flag.value}>{flag.key}</option>)
+                                            )
+                                        }
+                                    </select>
                                 </div>
                                 {flagError && <Form.Message className={styles['error']}>{flagError}</Form.Message>}
                             </Form.Field>
                         </div>
+
                         <div className="flex justify-center space-x-2 mt-4">
-                            <Form.Submit
-                                disabled={isSaving}
-                                className='button px-4 py-2 rounded-md'
-                                onClick={handleSubmit}
-                            >Add Task</Form.Submit>
-                            <Dialog.Close asChild disabled={isSaving}><button className="secondary-button px-4 py-2 rounded-md" onClick={handleCancel}>Cancel</button></Dialog.Close>
+                            {
+                                !props.isReadOnly &&
+                                <Form.Submit
+                                    disabled={isSaving || props?.isReadOnly}
+                                    className='button px-4 py-2 rounded-md'
+                                    onClick={handleSubmit}
+                                >Add Task</Form.Submit>
+                            }
+
+                            <button disabled={isSaving}
+                                className="secondary-button px-4 py-2 rounded-md" onClick={() => {
+                                    handleCancel();
+                                }}>Cancel</button>
                         </div>
                     </Form.Root>
                 </Dialog.Content>

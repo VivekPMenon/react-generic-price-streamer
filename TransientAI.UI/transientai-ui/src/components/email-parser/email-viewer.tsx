@@ -9,6 +9,7 @@ export interface EmailViewerProps {
   //todo: remove this and its usage. its a hack
   scrollToSearchTerm?: string;
   hideSearch?: boolean;
+  children?: any;
 }
 
 // Debounce Hook for better performance
@@ -122,7 +123,7 @@ const cleanSearchTermEntry = (entry: string): string => {
   return entry ? entry.replace(/[^a-zA-Z0-9\-\/\s:]/g, '') : entry;
 };
 
-const EmailViewer = ({ emailHtml, htmlSource, className, scrollToSearchTerm, hideSearch }: EmailViewerProps) => {
+const EmailViewer = ({ emailHtml, htmlSource, className, scrollToSearchTerm, hideSearch, children }: EmailViewerProps) => {
 
   const [sanitizedHtml, setSanitizedHtml] = useState("");
   const [originalHtml, setOriginalHtml] = useState("");
@@ -199,7 +200,7 @@ const EmailViewer = ({ emailHtml, htmlSource, className, scrollToSearchTerm, hid
         !hideSearch &&
         <div className='search-bar'>
           <div className='title'>
-            {/* {title} */}
+            {children}
           </div>
 
           <div className='search-toolbar'>

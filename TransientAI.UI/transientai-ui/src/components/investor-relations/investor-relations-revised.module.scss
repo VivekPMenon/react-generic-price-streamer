@@ -1,0 +1,104 @@
+@import '../../assets/variables.scss';
+
+.investor-relations {
+  display: flex;
+  height: 100%;
+  gap: 20px;
+  // padding: 10px;
+
+  .ir-requests {
+    flex: 0 0 25%;
+    flex-direction: column;
+    
+    display: flex;
+
+    .title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 30px;
+
+      i {
+        font-size: 18px;
+        cursor: pointer;
+        color: $font-color-200;
+        
+      }
+    }
+
+    .messages {
+      max-height: calc(100vh - 520px);
+    }
+  }
+
+  .ir-responses {
+    flex: 1 1 80%;
+  }
+
+  // high time to move these in to common cas files
+  .search-box {
+    padding: 10px 0;
+    display: flex;
+    align-items: center;
+
+    input {
+      padding: 10px;
+    }
+
+    i {
+      padding: 0 10px;
+      cursor: pointer;
+    }
+  }
+
+  .prompt-results {
+    display: flex;
+    padding: 10px;
+    background-color: $gray-1000;
+    border-radius: 5px;
+    min-height: 100px;
+  }
+
+  .toggler {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-left: auto;
+    font-size: 14px;
+  }
+
+  .mail-inbox {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    border-top: 1px solid $border-color;
+    margin-top: 20px;
+    padding: 10px 0px;
+
+    .title {
+      padding: 10px;
+      display: flex;
+      gap: 10px;
+      justify-content: flex-start;
+      font-size: 16px;
+
+      i {
+        color: $font-color-100;
+        font-size: 16px;
+      }
+    }
+
+  }
+
+  .ir-response-toggler {
+    
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 10px;
+  }
+
+  .summary-viewer {
+    max-height: calc(100vh - 300px);
+  }
+}

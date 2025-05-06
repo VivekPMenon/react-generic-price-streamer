@@ -48,6 +48,7 @@ export class ServiceInitializer {
         const investorRelations = investorRelationsStore.getState();
         investorRelations.loadInquiries().catch((err) => console.error(err));
         investorRelations.loadAssignees().catch((err) => console.error(err));
+        investorRelations.loadEmails().catch((err) => console.error(err));
         investorRelations.startPolling();
 
         const macroPanel = macroPanelDataStore.getState();
