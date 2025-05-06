@@ -101,18 +101,41 @@ export function formatDateToHHMM(date: Date | string): string {
   return (hrs < 10 ? "0" + hrs : hrs) + ":" + (mins < 10 ? "0" + mins : mins) + " " + clockType;
 }
 
-export function formatDateString(dateString: string|undefined|null) {
-  // Should push out to common method - dup code
-  if (!dateString || dateString.length === 0) {
-    return '';
-  }
+// export function formatDateString(dateString: string|undefined|null) {
+//   // Should push out to common method - dup code
+//   if (!dateString || dateString.length === 0) {
+//     return '';
+//   }
 
-  const date = new Date(dateString);
-  if (Number.isNaN(date.valueOf())) {
-    return '';
-  }
+//   const date = new Date(dateString);
+//   if (Number.isNaN(date.valueOf())) {
+//     return '';
+//   }
 
-  return date.toDateString();
+//   return date.toDateString();
+// }
+
+
+export function formatDateString(isoDateString: string) {
+  // Extract just the date part if the input includes time
+  const datePart = isoDateString.split('T')[0];
+  
+  // Create a Date object from the date part
+  const date = new Date(datePart);
+  
+  // Array of short month names
+  const months = [
+    'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+    'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+  ];
+  
+  // Get the month name, day, and year
+  const monthName = months[date.getMonth()];
+  const day = date.getDate();
+  const year = date.getFullYear();
+  
+  // Return the formatted date string
+  return `${monthName} ${day} ${year}`;
 }
 
 
