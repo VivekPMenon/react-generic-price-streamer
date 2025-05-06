@@ -2,6 +2,8 @@
 import { MenuInfo } from "./model";
 import i18n from '../../i18n';
 import { webApihandler } from "../web-api-handler";
+import { useUserContextStore } from "../user-context/user-context-store";
+
 export enum Mode {
   SELL = 'sell',
   BUY = 'buy',
@@ -164,6 +166,8 @@ export async function getMenuItems(mode: Mode) {
   const query = `
   {
     getScreensForRole {
+      role
+      screens {
       id
       key
       icon
@@ -171,7 +175,8 @@ export async function getMenuItems(mode: Mode) {
       priorityId
       description 
       badgeCount
-    },
+      }
+    }
   }
 `;
   const serviceName = 'hurricane-api-2-0';
@@ -183,7 +188,11 @@ export async function getMenuItems(mode: Mode) {
       { serviceName } 
     );
     
-    const menuList = response.data.getScreensForRole || [];
+    const menuList = response.data.getScreensForRole.screens || [];
+    // const role = response.data.getScreensForRole.role || 'Operations';
+    // const setUserContext = useUserContextStore.getState().setUserContext;
+    // const currentUserContext = useUserContextStore.getState().userContext;
+    // setUserContext({ ...currentUserContext, role });
     const translatedMenuList: MenuInfo[] = menuList.map((menuItem: MenuInfo) => ({
       ...menuItem,
       description: i18n.t(menuItem.description || ''),

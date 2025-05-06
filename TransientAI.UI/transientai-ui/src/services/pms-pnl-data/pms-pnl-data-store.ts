@@ -11,6 +11,7 @@ interface PmsPnlDataState {
   filteredReport: ReportItem[] | null;
 
   getReport: () => void;
+  getColumnDefs: () => void;
 }
 
 const usePmsPnlDataStore = create<PmsPnlDataState>((set, get) => ({
@@ -39,6 +40,15 @@ const usePmsPnlDataStore = create<PmsPnlDataState>((set, get) => ({
         setInterval(() => {
             get().getReport();
         }, 3600000); // Polls every hour
+    },
+
+    getColumnDefs: async () => {
+        try {
+            const result = pmsPnlPanelDataService.getColumnDefs();
+            return result;
+        } catch (error: any) {
+            console.error(error);
+        }  
     }
 }));
 

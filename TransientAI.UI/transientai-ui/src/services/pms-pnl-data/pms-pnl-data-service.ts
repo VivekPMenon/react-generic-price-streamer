@@ -3,6 +3,7 @@ import {Report, ReportItem} from "@/services/pms-pnl-data/model";
 
 class PmsPnlDataService {
   private readonly serviceName = 'hurricane-api';
+  private readonly getColumnServiceName = 'hurricane-api-2-0';
 
   async getReport(): Promise<Report|null> {
     try {
@@ -17,6 +18,15 @@ class PmsPnlDataService {
       console.error(e);
       return null;
     }
+  }
+
+  async getColumnDefs(): Promise<any> {
+    const result = await webApihandler.get(
+      '',
+      {},
+      {serviceName: this.getColumnServiceName},
+    )
+    return result;
   }
 }
 
