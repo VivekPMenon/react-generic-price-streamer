@@ -4,7 +4,7 @@ import { Spinner } from '@radix-ui/themes';
 import { InquiryFlag, InquiryRequest, InquiryStatus, investorRelationsService, IREmailMessage } from '@/services/investor-relations-data';
 import EmailHeader from '../email-header/email-header';
 import Toggle from 'react-toggle';
-import { investorRelationsStore } from '@/services/investor-relations-data/investor-relations-store';
+import { useInvestorRelationsStore } from '@/services/investor-relations-data/investor-relations-store';
 import { formatDate } from '@/lib/utility-functions/date-operations';
 import { researchReportsDataService } from '@/services/reports-data';
 import EmailViewer from '../email-parser/email-viewer';
@@ -24,16 +24,7 @@ export function InvestorRelationsRevised() {
 
   const createTaskRef = useRef<HTMLInputElement>(null);
 
-  const irEmails = investorRelationsStore.use.irEmails();
-  const inquiries = investorRelationsStore.use.inquiries();
-  const selectedIrEmail = investorRelationsStore.use.selectedIrEmail();
-  const selectedInquiry = investorRelationsStore.use.selectedInquiry();
-  const setSelectedIrEmail = investorRelationsStore.use.setSelectedIrEmail();
-  const setSelectedInquiry = investorRelationsStore.use.setSelectedInquiry();
-  const loadInquiries = investorRelationsStore.use.loadInquiries();
-  const loadEmails = investorRelationsStore.use.loadEmails;
-  const changeStatus = investorRelationsStore.use.changeStatus();
-  const updateStatusFromCompleted = investorRelationsStore.use.updateStatusFromCompleted();
+  const { irEmails, inquiries, selectedIrEmail, selectedInquiry, setSelectedIrEmail, setSelectedInquiry, loadInquiries, loadEmails, changeStatus, updateStatusFromCompleted } = useInvestorRelationsStore();
 
   useEffect(() => {
     if (selectedIrEmail)
@@ -55,7 +46,7 @@ export function InvestorRelationsRevised() {
     try {
       setIsSaving(true);
       await investorRelationsService.markIrEmailAsComplete(irEmail.id!, 'awolfberg@hurricanecap.com');
-      loadEmails();
+      await loadEmails();
       toast.success('Email marked as complete');
     } catch (error) {
       toast.error('Error while trying to mark the email as complete');
@@ -70,8 +61,8 @@ export function InvestorRelationsRevised() {
 
       inquiry.completed = true;
       updateStatusFromCompleted(inquiry);
-      await changeStatus(inquiry.id!,inquiry.status!);
-      
+      await changeStatus(inquiry.id!, inquiry.status!);
+
       toast.success('Task marked as complete');
     } catch (error) {
       toast.error('Error while trying to mark the email as complete');
