@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import styles from './investor-relations-revised.module.scss';
 import { Spinner } from '@radix-ui/themes';
-import { InquiryFlag, InquiryRequest, investorRelationsService, IREmailMessage } from '@/services/investor-relations-data';
+import { InquiryFlag, InquiryRequest, InquiryStatus, investorRelationsService, IREmailMessage } from '@/services/investor-relations-data';
 import EmailHeader from '../email-header/email-header';
 import Toggle from 'react-toggle';
 import { investorRelationsStore } from '@/services/investor-relations-data/investor-relations-store';
@@ -18,6 +18,7 @@ export function InvestorRelationsRevised() {
   const [emailHtml, setEmailHtml] = useState<string>('');
   const [aiSummary, setAiSummary] = useState<string>('');
   const [isAiSummaryShown, setIsAiSummaryShown] = useState<boolean>(false);
+  const [isSaving, setIsSaving] = useState<boolean>(false);
   const [isTaskOpen, setIsTaskOpen] = useState<boolean>(false);
   const [isCompletedItemsShown, setIsCompletedItemsShown] = useState<boolean>(false);
 
@@ -30,6 +31,9 @@ export function InvestorRelationsRevised() {
   const setSelectedIrEmail = investorRelationsStore.use.setSelectedIrEmail();
   const setSelectedInquiry = investorRelationsStore.use.setSelectedInquiry();
   const loadInquiries = investorRelationsStore.use.loadInquiries();
+  const loadEmails = investorRelationsStore.use.loadEmails;
+  const changeStatus = investorRelationsStore.use.changeStatus();
+  const updateStatusFromCompleted = investorRelationsStore.use.updateStatusFromCompleted();
 
   useEffect(() => {
     if (selectedIrEmail)
@@ -46,12 +50,33 @@ export function InvestorRelationsRevised() {
     setEmailHtml(emailContent);
   }
 
-  async function markEmailComplete(event: any) {
+  async function markEmailComplete(event: any, irEmail: IREmailMessage) {
     event.stopPropagation();
+    try {
+      setIsSaving(true);
+      await investorRelationsService.markIrEmailAsComplete(irEmail.id!, 'awolfberg@hurricanecap.com');
+      loadEmails();
+      toast.success('Email marked as complete');
+    } catch (error) {
+      toast.error('Error while trying to mark the email as complete');
+    }
+    setIsSaving(false);
   }
 
-  async function markTaskComplete(event: any) {
+  async function markTaskComplete(event: any, inquiry: InquiryRequest) {
     event.stopPropagation();
+    try {
+      setIsSaving(true);
+
+      inquiry.completed = true;
+      updateStatusFromCompleted(inquiry);
+      await changeStatus(inquiry.id!,inquiry.status!);
+      
+      toast.success('Task marked as complete');
+    } catch (error) {
+      toast.error('Error while trying to mark the email as complete');
+    }
+    setIsSaving(false);
   }
 
   const toggleElement =
@@ -110,6 +135,9 @@ export function InvestorRelationsRevised() {
           <div className={styles['title']}>
             <i className='fa-regular fa-envelope'></i>
             Inbox
+            {
+              isSaving && <Spinner size={"2"} />
+            }
 
             <div className={styles['toggler']}>
               Show Completed Items
@@ -125,7 +153,7 @@ export function InvestorRelationsRevised() {
 
           <div className={`${styles['messages']} message-list scrollable-div`}>
             {irEmails
-              .filter(msg => isCompletedItemsShown ? msg.complete : true)
+              .filter(msg => isCompletedItemsShown ? msg.complete : !msg.complete)
               .map((msg, idx) => (
                 <div
                   key={idx}
@@ -133,7 +161,9 @@ export function InvestorRelationsRevised() {
                   onClick={() => { setSelectedIrEmail(msg); setSelectedInquiry(null) }}
                 >
                   {/* move this to a common comp */}
-                  <div className={`radio-button-container ${msg.complete ? 'checked' : ''}`} title='Mark as Completed' onClick={(event) => markEmailComplete(event)}>
+                  <div className={`radio-button-container ${msg.complete ? 'checked' : ''}`}
+                    title='Mark as Completed'
+                    onClick={(event) => markEmailComplete(event, msg)}>
                     <i className="fa-solid fa-check"></i>
                   </div>
 
@@ -152,7 +182,7 @@ export function InvestorRelationsRevised() {
               ))}
 
             {inquiries
-              .filter(msg => isCompletedItemsShown ? msg.completed : true)
+              .filter(msg => isCompletedItemsShown ? msg.status === InquiryStatus.Completed : msg.status !== InquiryStatus.Completed)
               .map((msg, idx) => (
                 <div
                   key={idx}
@@ -163,14 +193,14 @@ export function InvestorRelationsRevised() {
                     setIsTaskOpen(true);
                   }}
                 >
-                  <div className={`radio-button-container ${msg.completed ? 'checked' : ''}`} title='Mark as Completed' onClick={(event) => markTaskComplete(event)}>
+                  <div className={`radio-button-container ${msg.status === InquiryStatus.Completed ? 'checked' : ''}`} title='Mark as Completed' onClick={(event) => markTaskComplete(event, msg)}>
                     <i className="fa-solid fa-check"></i>
                   </div>
 
                   <div className='content'>
                     <div className='header'>
                       <span className='sender'>
-                        {msg.flag === InquiryFlag.Important && <span className='priority'>❗</span>}
+                        {msg.flag === InquiryFlag.Urgent && <span className='priority'>❗</span>}
                         {msg.owner_name}
                       </span>
                       <span className='time'>{formatDate(msg.date)}</span>

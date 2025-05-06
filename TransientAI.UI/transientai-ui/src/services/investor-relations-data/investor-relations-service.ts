@@ -44,6 +44,12 @@ class InvestorRelationsService {
         }
     }
 
+    async markIrEmailAsComplete(emailGuid: string, emailId: string): Promise<any> {
+        return await webApihandler.post(`update-ir-status?email_address=${emailId}`, [emailGuid], {}, {
+            serviceName: this.serviceName
+        });
+    }
+
     async submit(inquiry: InquiryRequest): Promise<boolean> {
         try {
             const newForm = await this.getTaskForm();
@@ -78,7 +84,7 @@ class InvestorRelationsService {
             'change_status', {
             update_task_id: id,
             new_status: status
-        }, {
+        }, {}, {
             serviceName: this.serviceName
         });
         return true;
