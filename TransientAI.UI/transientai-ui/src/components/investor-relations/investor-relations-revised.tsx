@@ -1,4 +1,3 @@
-
 import { useEffect, useRef, useState } from 'react';
 import styles from './investor-relations-revised.module.scss';
 import { Spinner } from '@radix-ui/themes';
@@ -20,6 +19,7 @@ export function InvestorRelationsRevised() {
   const [aiSummary, setAiSummary] = useState<string>('');
   const [isAiSummaryShown, setIsAiSummaryShown] = useState<boolean>(false);
   const [isTaskOpen, setIsTaskOpen] = useState<boolean>(false);
+  const [isCompletedItemsShown, setIsCompletedItemsShown] = useState<boolean>(false);
 
   const createTaskRef = useRef<HTMLInputElement>(null);
 
@@ -38,6 +38,14 @@ export function InvestorRelationsRevised() {
 
     setAiSummary(aiContent.ir_summary);
     setEmailHtml(emailContent);
+  }
+
+  async function markEmailComplete(event: any) {
+    event.stopPropagation();
+  }
+
+  async function markTaskComplete(event: any) {
+    event.stopPropagation();
   }
 
   const toggleElement =
@@ -96,36 +104,50 @@ export function InvestorRelationsRevised() {
           <div className={styles['title']}>
             <i className='fa-regular fa-envelope'></i>
             Inbox
+
+            <div className={styles['toggler']}>
+              Show Completed Items
+              <Toggle
+                className='toggle-small'
+                id='sort-action'
+                defaultChecked={isCompletedItemsShown}
+                checked={isCompletedItemsShown}
+                onChange={() => setIsCompletedItemsShown(!isCompletedItemsShown)}
+              />
+            </div>
           </div>
 
           <div className={`${styles['messages']} message-list scrollable-div`}>
-            {irEmails.map((msg, idx) => (
-              <div
-                key={idx}
-                className={`message ${selectedIrEmail?.id === msg.id ? 'selected' : ''}`}
-                onClick={() => { setSelectedIrEmail(msg); setSelectedInquiry(null) }}
-              >
-                <input
-                  className=''
-                  type='checkbox'
-                  checked={true}
-                />
-
-                <div className='content'>
-                  <div className='header'>
-                    <span className='sender'>
-                      {msg.important && <span className='priority'>❗</span>}
-                      {msg.sender}
-                    </span>
-                    <span className='time'>{formatDate(msg.received)}</span>
+            {irEmails
+              .filter(msg => isCompletedItemsShown ? msg.complete : true)
+              .map((msg, idx) => (
+                <div
+                  key={idx}
+                  className={`message ${selectedIrEmail?.id === msg.id ? 'selected' : ''}`}
+                  onClick={() => { setSelectedIrEmail(msg); setSelectedInquiry(null) }}
+                >
+                  {/* move this to a common comp */}
+                  <div className={`radio-button-container ${msg.complete ? 'checked' : ''}`} title='Mark as Completed' onClick={(event) => markEmailComplete(event)}>
+                    <i className="fa-solid fa-check"></i>
                   </div>
-                  <div className='subject'>{msg.subject}</div>
-                  {/* <div className='body'>{msg.concise_summary}</div> */}
-                </div>
-              </div>
-            ))}
 
-            {inquiries.map((msg, idx) => (
+                  <div className='content'>
+                    <div className='header'>
+                      <span className='sender'>
+                        {msg.important && <span className='priority'>❗</span>}
+                        {msg.sender}
+                      </span>
+                      <span className='time'>{formatDate(msg.received)}</span>
+                    </div>
+                    <div className='subject'>{msg.subject}</div>
+                    {/* <div className='body'>{msg.concise_summary}</div> */}
+                  </div>
+                </div>
+              ))}
+
+            {inquiries
+              .filter(msg => isCompletedItemsShown ? msg.completed : true)
+              .map((msg, idx) => (
               <div
                 key={idx}
                 className={`message ${selectedInquiry?.id === msg.id ? 'selected' : ''}`}
@@ -135,11 +157,9 @@ export function InvestorRelationsRevised() {
                   setIsTaskOpen(true);
                 }}
               >
-                <input
-                  className=''
-                  type='checkbox'
-                  checked={true}
-                />
+                <div className={`radio-button-container ${msg.completed ? 'checked' : ''}`} title='Mark as Completed' onClick={(event) => markTaskComplete(event)}>
+                  <i className="fa-solid fa-check"></i>
+                </div>
 
                 <div className='content'>
                   <div className='header'>
