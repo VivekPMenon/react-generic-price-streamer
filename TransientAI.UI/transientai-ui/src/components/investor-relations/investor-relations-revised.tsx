@@ -11,8 +11,11 @@ import EmailViewer from '../email-parser/email-viewer';
 import { SearchableMarkdown } from '../markdown';
 import { RequestFormPopup } from './request-form-popup';
 import { toast } from 'react-toastify';
+import { useUserContextStore } from '@/services/user-context';
 
 export function InvestorRelationsRevised() {
+
+  const testEmailId = 'awolfberg@hurricanecap.com';
 
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [emailHtml, setEmailHtml] = useState<string>('');
@@ -32,9 +35,11 @@ export function InvestorRelationsRevised() {
   }, [selectedIrEmail]);
 
   async function onEmailSelection(email: IREmailMessage) {
+    const userContext = useUserContextStore.getState().userContext;
+
     const [emailContent, aiContent] = await Promise.all([
-      researchReportsDataService.getEmailContentAsHtml(email.id!, 'awolfberg@hurricanecap.com'),
-      investorRelationsService.getIRSummary(email.id!, 'awolfberg@hurricanecap.com')
+      researchReportsDataService.getEmailContentAsHtml(email.id!, userContext.userId!),
+      investorRelationsService.getIRSummary(email.id!, userContext.userId!)
     ]);
 
     setAiSummary(aiContent.ir_summary);
@@ -45,8 +50,11 @@ export function InvestorRelationsRevised() {
     event.stopPropagation();
     try {
       setIsSaving(true);
-      await investorRelationsService.markIrEmailAsComplete(irEmail.id!, 'awolfberg@hurricanecap.com');
+      const userContext = useUserContextStore.getState().userContext;
+
+      await investorRelationsService.markIrEmailAsComplete(irEmail.id!, userContext.userId!);
       await loadEmails();
+
       toast.success('Email marked as complete');
     } catch (error) {
       toast.error('Error while trying to mark the email as complete');
@@ -111,16 +119,18 @@ export function InvestorRelationsRevised() {
             className='mb-2'
             autoFocus={true}
             autoComplete='on'
-            placeholder='Ask IR Portal'
+            placeholder='Filter IR Requests By Subject'
+            onChange={event => setSearchQuery(event.target.value)}
+            value={searchQuery}
           />
           {searchQuery ?
             <i className='fa-solid fa-remove' onClick={() => { setSearchQuery(''); }}></i> :
             <i className='fa-solid fa-magnifying-glass'></i>}
         </div>
-
+        {/* 
         <div className={styles['prompt-results']}>
           Prompt Results - TODO -- What does it go here? Is it plain text?
-        </div>
+        </div> */}
 
         <div className={styles['mail-inbox']}>
           <div className={styles['title']}>
@@ -144,7 +154,8 @@ export function InvestorRelationsRevised() {
 
           <div className={`${styles['messages']} message-list scrollable-div`}>
             {irEmails
-              .filter(msg => isCompletedItemsShown ? msg.complete : !msg.complete)
+              .filter(msg => (isCompletedItemsShown ? msg.complete : !msg.complete)
+                && (!searchQuery || msg.subject.toLowerCase().includes(searchQuery.toLowerCase())))
               .map((msg, idx) => (
                 <div
                   key={idx}
@@ -173,7 +184,9 @@ export function InvestorRelationsRevised() {
               ))}
 
             {inquiries
-              .filter(msg => isCompletedItemsShown ? msg.status === InquiryStatus.Completed : msg.status !== InquiryStatus.Completed)
+              .filter(msg => (isCompletedItemsShown ? msg.status === InquiryStatus.Completed : msg.status !== InquiryStatus.Completed)
+                && (!searchQuery || msg.subject?.toLowerCase().includes(searchQuery.toLowerCase()))
+              )
               .map((msg, idx) => (
                 <div
                   key={idx}
@@ -181,7 +194,6 @@ export function InvestorRelationsRevised() {
                   onClick={() => {
                     setSelectedIrEmail(null);
                     setSelectedInquiry(msg);
-                    setIsTaskOpen(true);
                   }}
                 >
                   <div className={`radio-button-container ${msg.status === InquiryStatus.Completed ? 'checked' : ''}`} title='Mark as Completed' onClick={(event) => markTaskComplete(event, msg)}>
@@ -230,6 +242,40 @@ export function InvestorRelationsRevised() {
               </EmailViewer>
           }
 
+        </div>
+      }
+
+      {
+        selectedInquiry &&
+        <div className={styles['inquiry-summary']}>
+          <div className='fs-16'>Task Summary</div>
+          <div className={styles['inquiry-field']}>
+            <span className={styles['label']}>Subject:</span> {selectedInquiry?.subject}
+          </div>
+
+          <div className={styles['inquiry-field']}>
+            <span className={styles['label']}>Assigned By:</span> {selectedInquiry?.owner_name}
+          </div>
+
+          <div className={styles['inquiry-field']}>
+            <span className={styles['label']}>Assignee:</span> {selectedInquiry?.assignee_name}
+          </div>
+
+          <div className={styles['inquiry-field']}>
+            <span className={styles['label']}>Inquiry:</span> {selectedInquiry?.inquiry}
+          </div>
+
+          <div className={styles['inquiry-field']}>
+            <span className={styles['label']}>Status:</span> {selectedInquiry?.status}
+          </div>
+
+          <div className={styles['inquiry-field']}>
+            <span className={styles['label']}>Due Date:</span> {formatDate(selectedInquiry?.due_date)}
+          </div>
+
+          <div className={styles['inquiry-field']}>
+            <span className={styles['label']}>Flag:</span> {selectedInquiry?.flag}
+          </div>
         </div>
       }
 
