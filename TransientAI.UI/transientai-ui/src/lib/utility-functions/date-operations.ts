@@ -101,18 +101,40 @@ export function formatDateToHHMM(date: Date | string): string {
   return (hrs < 10 ? "0" + hrs : hrs) + ":" + (mins < 10 ? "0" + mins : mins) + " " + clockType;
 }
 
+// export function formatDateString(dateString: string|undefined|null) {
+//   // Should push out to common method - dup code
+//   if (!dateString || dateString.length === 0) {
+//     return '';
+//   }
+
+//   const date = new Date(dateString);
+//   if (Number.isNaN(date.valueOf())) {
+//     return '';
+//   }
+
+//   return date.toDateString();
+// }
+
+
 export function formatDateString(dateString: string|undefined|null) {
-  // Should push out to common method - dup code
+  // Return empty string for null, undefined, or empty string
   if (!dateString || dateString.length === 0) {
     return '';
   }
 
+  // Parse the date string
   const date = new Date(dateString);
   if (Number.isNaN(date.valueOf())) {
     return '';
   }
 
-  return date.toDateString();
+  const year = date.getUTCFullYear();
+  const month = date.getUTCMonth();
+  const day = date.getUTCDate();
+  
+  const localDate = new Date(year, month, day);
+  return localDate.toDateString();
+  
 }
 
 
