@@ -14,6 +14,7 @@ import { Spinner } from "@radix-ui/themes";
 import { formatDateString, tryParseAndFormat } from '@/lib/utility-functions/date-operations';
 import Toggle from 'react-toggle';
 import { CorporateActionHeader } from './corporate-actions-header';
+import { userService } from '@/services/user-context/user-service';
 
 export function CorporateActions() {
 
@@ -27,6 +28,7 @@ export function CorporateActions() {
   const [selectedEmailContent, setSelectedEmailContent] = useState<string>('');
   const [isLoadingEmail, setIsLoadingEmail] = useState<boolean>(false);
   const [isCompactViewEnabled, setIsCompactViewEnabled] = useState(false);
+  const previewRole = userService.getPreviewUserRole();
 
   // const [emailContents, setEmailContents] = useState<any>({});
   const virtualizer = useVirtualizer({
@@ -312,7 +314,7 @@ export function CorporateActions() {
               onKeyDown={onKeyDown}
               placeholder="Ask TransientAI anything about recent Corporate Actions. Include securities if you are looking for specific information" />
             {
-              userContext.role == RoleType.Operations && <>
+               (!previewRole ? userContext.role : previewRole) == RoleType.Operations && <>
                 <Toggle
                   checked={isCompactViewEnabled}
                   onChange={(e) => setIsCompactViewEnabled(e.target.checked)}

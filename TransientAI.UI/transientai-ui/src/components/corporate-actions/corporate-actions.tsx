@@ -40,7 +40,7 @@ export const CorporateActions = () => {
   
     }, [selectedCorpAction]);
 
-    const searchValue = (userContext.role == RoleType.PM)
+    const searchValue = ((!previewRole ? userContext.role : previewRole) == RoleType.PM)
       ? selectedCorpAction?.accounts && selectedCorpAction?.accounts[0].accountNumber
       : selectedCorpAction?.eventId;
 

@@ -4,6 +4,7 @@ import { corpActionsDataService } from './corporate-actions-data';
 import { unseenItemsStore } from '../unseen-items-store/unseen-items-store';
 import { areObjectsEqual } from '@/lib/utility-functions';
 import { RoleType, useUserContextStore } from '../user-context';
+import { userService } from '../user-context/user-service';
 
 
 export const resourceName = 'corporate-actions';
@@ -177,8 +178,10 @@ export const useCorpActionsStore = create<CorpActionsDataState>((set, get) => ({
 
       const eventIds = new Set(await corpActionsDataService.searchCorpAction(query));
       const role = useUserContextStore.getState().userContext.role
+      const previewRole = userService.getPreviewUserRole();
+      const currentRole = !previewRole ? role : previewRole
       const loadedPmCorpActions = get().loadedPmCorpActions;
-      if(role === RoleType.PM){
+      if(currentRole === RoleType.PM){
         const filteredCorpActions = {
           'Action Required': (loadedPmCorpActions['Action Required'] || []).filter(ca => eventIds.has(ca.eventId)),
           'No Action Required': (loadedPmCorpActions['No Action Required'] || []).filter(ca => eventIds.has(ca.eventId)),
@@ -206,8 +209,9 @@ export const useCorpActionsStore = create<CorpActionsDataState>((set, get) => ({
       const prevCount = loadedCorpActions.length;
       let  newCorpActions: CorporateAction[] = [];
       const { userContext } = useUserContextStore.getState();
-
-      if(userContext.role == RoleType.PM){
+      const previewRole = userService.getPreviewUserRole();
+      const currentRole = !previewRole ? userContext.role : previewRole
+      if(currentRole == RoleType.PM){
         const pmResponse = await corpActionsDataService.getPmCorpActions();
         newCorpActions = [
           ...(pmResponse['Action Required'] || []),

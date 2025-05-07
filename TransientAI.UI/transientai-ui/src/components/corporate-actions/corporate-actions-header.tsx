@@ -7,6 +7,7 @@ import { RoleType, useUserContextStore } from '@/services/user-context';
 import { FilterDropDown } from './filter-dropdown';
 import { useCorpActionsStore, CorporateAction } from '@/services/corporate-actions';
 import { useTranslation } from 'react-i18next';  // Import the useTranslation hook
+import { userService } from '@/services/user-context/user-service';
  // Import the useTranslation hook
 
 interface FilterActions {
@@ -51,7 +52,7 @@ export const CorporateActionHeader = () => {
     setFilterActions,
     setSortByAction,
   } = useCorpActionsStore();
-        
+  const previewRole = userService.getPreviewUserRole();   
     useEffect(() => {
       const handler = setTimeout(() => {
         searchCorpActions(searchQuery);
@@ -71,7 +72,7 @@ export const CorporateActionHeader = () => {
     const corpActionId = new Set<string>();
     const isinSet = new Set<string>();
 
-    const actionsToFilter: CorporateAction[] = userContext.role == RoleType.PM ? loadedCorpActions : corpActions;
+    const actionsToFilter: CorporateAction[] =  (!previewRole ? userContext.role : previewRole) == RoleType.PM ? loadedCorpActions : corpActions;
 
         actionsToFilter.forEach((item) => {
       if (item.eventType) eventTypeSet.add(item.eventType);
