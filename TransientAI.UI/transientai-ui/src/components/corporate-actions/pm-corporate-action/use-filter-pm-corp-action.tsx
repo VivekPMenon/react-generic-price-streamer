@@ -1,6 +1,7 @@
 import {
   CorporateAction,
   IFilterActions,
+  ViewType,
 } from "@/services/corporate-actions/model";
 import { useMemo } from "react";
 
@@ -19,10 +20,10 @@ export const useFilterPmCorporateActions = (
   filterActions: IFilterActions,
   sortByAction: boolean
 ): SortedData => {
-  const applyFilters = (items: CorporateAction[] = []): CorporateAction[] => {
+  const applyFilters = (items: CorporateAction[] = [],viewType:ViewType): CorporateAction[] => {
     return items.filter((item) => {
       const payDate = item.dates?.pay_date?.split("T")[0] || "";
-
+      item['viewType'] = viewType;
       const meetsActionTypeFilter =
         !filterActions.actionType ||
         (filterActions.actionType === "Action Required" &&
@@ -85,9 +86,9 @@ export const useFilterPmCorporateActions = (
     }
 
     return {
-      "Action Required": applyFilters(pmData["Action Required"]),
-      "No Action Required": applyFilters(pmData["No Action Required"]),
-      Expired: applyFilters(pmData["Expired"]),
+      "Action Required": applyFilters(pmData["Action Required"],ViewType.AC_REQUIRED),
+      "No Action Required": applyFilters(pmData["No Action Required"],ViewType.NO_AC_REQUIRED),
+      Expired: applyFilters(pmData["Expired"],ViewType.EXPIRED),
     };
   }, [pmData, filterActions]);
 
