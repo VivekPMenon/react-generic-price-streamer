@@ -1,3 +1,4 @@
+import { ViewType } from "@/services/corporate-actions";
 import { useMemo } from "react";
 
 export interface SortedData {
@@ -72,11 +73,14 @@ export const useFilteredCorporateActions = (opsData: any, filterActions: any, so
             const isActive = (validPayDate && payDate >= today) || (validDeadline && deadline >= today);
             
             if (isExpired) {
+              item['viewType'] = ViewType.EXPIRED;
               acc.expired.push(item);
             } else if (isActive) {
               if (item.actionRequired) {
+                item['viewType'] = ViewType.AC_REQUIRED;
                 acc.acquired.push(item);
               } else {
+                item['viewType'] = ViewType.NO_AC_REQUIRED;
                 acc.no_action_acquired.push(item);
               }
             }

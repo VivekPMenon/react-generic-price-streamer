@@ -2,10 +2,10 @@
 
 import { useEffect, useState } from 'react'
 import styles from './content-carousel.module.scss'
-import { useMenuStore } from '@/services/menu-data'
+import { menuStore } from '@/services/menu-data'
 import { useRouter } from 'next/navigation'
-import { formatDate, formatTime } from '@/lib/utility-functions/date-operations'
-import { useBreakNewsDataStore } from '@/services/break-news/break-news-data-store'
+import { formatTime } from '@/lib/utility-functions/date-operations'
+import { breakNewsStore } from '@/services/break-news/break-news-data-store'
 import { CarouselNotification, CarouselNotificationType } from './model'
 
 function getIconClass (type: CarouselNotificationType) {
@@ -66,9 +66,12 @@ function getPillClass (type: CarouselNotificationType) {
 
 export function CarouselNotifications () {
   const router = useRouter()
-  const { breakNewsItems, setSelectedBreakNewsItem, setGroupId } =
-    useBreakNewsDataStore()
-  const { fullMenuList, setActiveMenu } = useMenuStore()
+  const fullMenuList = menuStore.use.fullMenuList();
+  const setActiveMenu = menuStore.use.setActiveMenu();
+
+  const breakNewsItems = breakNewsStore.use.breakNewsItems();
+  const setSelectedBreakNewsItem = breakNewsStore.use.setSelectedBreakNewsItem();
+  const setGroupId = breakNewsStore.use.setGroupId();
 
   const [notifications, setNotifications] = useState<CarouselNotification[]>([]);
   const [selectedNotification, setSelectedNotification] =

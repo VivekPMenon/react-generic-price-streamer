@@ -121,3 +121,9 @@
 .status-message {
   border: 1px solid $border-color;
 }
+
+.pending-display {
+  display: flex;
+  flex-direction: row;
+  gap: 3px;
+}

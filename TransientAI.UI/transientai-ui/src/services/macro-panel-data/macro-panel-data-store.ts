@@ -1,7 +1,8 @@
 import { create } from 'zustand';
 import {BloombergEmailReport, CryptoCurrency, EquityFuture, FxRate, TreasuryYield} from './model';
 import { macroPanelDataService } from './macro-panel-data-service';
-import {useUnseenItemsStore} from "@/services/unseen-items-store/unseen-items-store";
+import {unseenItemsStore} from "@/services/unseen-items-store/unseen-items-store";
+import {createSelectors} from "@/lib/utility-functions/store-operations";
 
 export const resourceName = 'bloomberg-email-reports';
 
@@ -29,7 +30,7 @@ interface MacroPanelDataState {
   startPolling: () => void;
 }
 
-export const useMacroPanelDataStore = create<MacroPanelDataState>((set, get) => ({
+const useMacroPanelDataStore = create<MacroPanelDataState>()((set, get) => ({
   bloombergEmailReports: [],
   treasuryYields: [],
   fxRates: [],
@@ -113,7 +114,7 @@ export const useMacroPanelDataStore = create<MacroPanelDataState>((set, get) => 
               const unseenDiff = Math.abs(newCount - prevCount);
 
               if (unseenDiff > 0) {
-                useUnseenItemsStore.getState().addUnseenItems(resourceName, unseenDiff);
+                unseenItemsStore.getState().addUnseenItems(resourceName, unseenDiff);
               }
 
               return { bloombergEmailReports: values }; // No need to modify state here, just ensuring correctness
@@ -140,3 +141,4 @@ export const useMacroPanelDataStore = create<MacroPanelDataState>((set, get) => 
 
 }));
 
+export const macroPanelDataStore = createSelectors(useMacroPanelDataStore);

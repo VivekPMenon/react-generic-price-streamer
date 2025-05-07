@@ -2,7 +2,7 @@
 
 import { DataGrid, getNumberColDefTemplate } from "../data-grid";
 import { ColDef } from "ag-grid-community";
-import {useProductBrowserStore} from "@/services/product-browser-data/product-browser-store";
+import {productBrowserStore} from "@/services/product-browser-data/product-browser-store";
 
 const columnDef: ColDef[] = [
     { field: 'security', headerName: 'Bond', cellClass: 'orange-color' },
@@ -26,7 +26,8 @@ const columnDef: ColDef[] = [
 ];
 
 export function Traces() {
-  const { isTraceLoading, traces } = useProductBrowserStore();
+  const isTraceLoading = productBrowserStore.use.isTraceLoading();
+  const traces = productBrowserStore.use.traces();
 
   return (
     <div className="height-100p">

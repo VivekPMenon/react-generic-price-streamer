@@ -1,8 +1,9 @@
-import axios, { AxiosRequestConfig } from "axios";
+import axios, {AxiosError, AxiosRequestConfig, Method} from "axios";
 import { WebApihandlerOptions} from "./model";
 import { endpointFinder } from "./endpoint-finder-service";
 import { useUserContextStore } from '@/services/user-context'
 import msalInstance from "@/app/msal-config";
+import { userService } from "../user-context/user-service";
 
 class WebApihandler {
   private readonly bankId = 123;
@@ -11,17 +12,21 @@ class WebApihandler {
   private bearerToken = '';
   private isRefreshing = false;
   private refreshPromise: Promise<string> | null = null;
-
   constructor() {}
 
   setBearerToken(token: string) {
     this.bearerToken = token;
   }
 
+
   private async ensureToken(): Promise<void> {
     while (!this.bearerToken) {
       await new Promise(resolve => setTimeout(resolve, 100));
     }
+  }
+
+  private isAxiosError(error: unknown): error is AxiosError {
+    return axios.isAxiosError(error);
   }
 
   private async refreshToken(): Promise<string> {
@@ -95,16 +100,20 @@ class WebApihandler {
     try {
       const response = await axios(config);
       return response.data;
-    } catch (error) {
+    } catch (error:unknown) {
       if (axios.isCancel(error)) {
         return;
       }
-      if (axios.isAxiosError(error) && error.response?.status === 401) {
+      if (this.isAxiosError(error) && 
+      (error.response?.status === 401 || 
+       // Check if there's a network error with requests that have an authorization header
+       (!error.response && config.headers?.Authorization))){
         try {
           await this.refreshToken();
           config.headers = {
             ...config.headers,
             Authorization: `Bearer ${this.bearerToken}`,
+            preview_id: userService.getPreviewUserRoleId() || null,
           };
           const retryResponse = await axios(config);
           return retryResponse.data;
@@ -131,10 +140,42 @@ class WebApihandler {
       method: 'GET',
       headers: {
         Authorization: `Bearer ${this.bearerToken}`,
+        preview_id: userService.getPreviewUserRoleId() || null ,
         ...options?.headers
       }
     };
     return this.executeRequest(config);
+  }
+
+  async execute(
+      url: string,
+      method: Method | string,
+      data?: any,
+      params?: { [key: string]: any },
+      headers?: { [key: string]: string },
+      serviceName?: string) {
+    await this.ensureToken();
+
+    if (!params) {
+      params = {};
+    }
+
+    params = {
+      bank_id: this.bankId,
+      view_id: this.viewId,
+      user_id: this.userId,
+      ...params
+    };
+
+    const finalUrl = this.getUrl(url, {serviceName}, params);
+    const headers_ = new Headers(headers);
+    headers_.append('Authorization', `Bearer ${this.bearerToken}`);
+
+    return fetch(finalUrl, {
+      method,
+      headers: headers_,
+      body: data ? JSON.stringify(data) : undefined,
+    });
   }
 
   async post(url: string, data: any, params?: { [key: string]: any }, options?: WebApihandlerOptions) {
@@ -150,6 +191,7 @@ class WebApihandler {
       },
       headers: {
         Authorization: `Bearer ${this.bearerToken}`,
+        preview_id: userService.getPreviewUserRoleId() || null ,
         ...options?.headers
       },
       data,
@@ -180,11 +222,11 @@ class WebApihandler {
     return result.translated_text;
   }
 
-  getUrl(url: string, options?: WebApihandlerOptions, params?: { [key: string]: any }): string {
+  getUrl(url: string, options?: {serviceName?: string}, params?: { [key: string]: any }): string {
     const currentEnv = endpointFinder.getCurrentEnvInfo();
     const httpsEndpoint = options?.serviceName ? currentEnv.httpsServices![options.serviceName] : currentEnv.httpsEndpoint;
     let finalUrl = `${httpsEndpoint}/${url}`;
-    if (params && params.length) {
+    if (params && Object.keys(params).length) {
       finalUrl += `?${new URLSearchParams(params).toString()}`
     }
     return finalUrl;
@@ -217,6 +259,7 @@ class WebApihandler {
       },
       headers: {
         Authorization: `Bearer ${this.bearerToken}`,
+        preview_id: userService.getPreviewUserRoleId() || null,
       },
       data,
       ...webApiOptions
@@ -224,15 +267,17 @@ class WebApihandler {
     return this.executeRequest(config);
   }
 
-  async delete(url: string, webApiOptions?: WebApihandlerOptions) {
+  async delete(url: string, webApiOptions?: WebApihandlerOptions, params?: { [key: string]: any }) {
     const finalUrl = this.getUrl(url, webApiOptions);
     const config: AxiosRequestConfig = {
       url: finalUrl,
       method: 'DELETE',
       headers: {
         Authorization: `Bearer ${this.bearerToken}`,
+        preview_id: userService.getPreviewUserRoleId() || null,
         ...webApiOptions?.headers
-      }
+      },
+      params
     };
     return this.executeRequest(config);
   }

@@ -1,5 +1,3 @@
-import { UserRole } from "./user-role-data";
-
 export interface UserContext {
   userName?: string;
   userId?: string;
@@ -7,7 +5,7 @@ export interface UserContext {
   token?: string;
   accessibleResources?: Resource[];
   userInitials?: string;
-  userRole?: UserRole;
+  userInfo?: UserInfo;
 }
 
 export enum RoleType {
@@ -21,4 +19,15 @@ export interface Resource {
   resourceName?: string;
   hasReadAccess?: boolean;
   hasWriteAccess?: boolean;
+}
+
+
+export interface UserInfo {
+  email: string;
+  lastname: string;
+  role: RoleType;
+  superadmin: boolean;
+  timezone: string;
+  user_id: number;
+  username: string;
 }

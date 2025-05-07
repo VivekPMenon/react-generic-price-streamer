@@ -6,8 +6,8 @@ import { RiskReport } from '@/services/reports-data';
 import { themePlugin } from '@react-pdf-viewer/theme';
 import { DataGrid } from '../data-grid';
 import styles from './risk-reports.module.scss';
-import { ColDef, RowDoubleClickedEvent } from 'ag-grid-community';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { ColDef } from 'ag-grid-community';
+import { useEffect, useMemo, useState } from 'react';
 import { getRiskReports } from '@/services/reports-data/risk-reports-data';
 import { useScrollTo } from '@/lib/hooks';
 

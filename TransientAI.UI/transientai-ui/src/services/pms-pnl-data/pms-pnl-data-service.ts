@@ -3,25 +3,38 @@ import {Report, ReportItem} from "@/services/pms-pnl-data/model";
 
 class PmsPnlDataService {
   private readonly serviceName = 'hurricane-api';
+  private readonly getColumnServiceName = 'hurricane-api-2-0';
 
-  async getReport(): Promise<[Report, ReportItem|null]|null> {
+  async getReport(): Promise<Report|null> {
     try {
-      const result = await webApihandler.get('performance-dashboard', {}, {
-        serviceName: this.serviceName
+      const result = await webApihandler.get('pms/performance-dashboard', {}, {
+        serviceName: this.getColumnServiceName
       });
 
-      const data = result.data;
-      const index = data.findIndex((item: ReportItem) => item.manager === 'Total');
-      let total: ReportItem|null = null;
-      if (index > -1) {
-          total = data[index];
-          data.splice(index, 1);
-      }
-      return [result, total];
+      result.data = result.data.filter((item: ReportItem) => item.manager !== 'Total');
+
+      return result;
     } catch(e: any) {
       console.error(e);
       return null;
     }
+  }
+
+  async getColumnDefs(): Promise<any> {
+    const query = `
+    {
+      getAllowedColumns {
+        allowedColumns
+      }
+    }
+    `
+    const result = await webApihandler.post(
+      'graphql',
+      {query},
+      {},
+      {serviceName: this.getColumnServiceName},
+    )
+    return result;
   }
 }
 

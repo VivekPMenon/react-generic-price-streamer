@@ -2,28 +2,34 @@
 
 import React, {memo, useEffect, useState} from 'react';
 import {useDeviceType} from "@/lib/hooks";
-import {usePmsPnlDataStore} from "@/services/pms-pnl-data/pms-pnl-data-store";
+import {pmsPnlDataStore} from "@/services/pms-pnl-data/pms-pnl-data-store";
 import {DataGrid} from "@/components/data-grid";
 import {
     columnDefs, handleGridSizeChanged, handleFirstDataRendered, defaultGridOptions
 } from './pms-pnl-config';
 import styles from './pms-pnl.module.scss';
 import i18n from '../../i18n'; 
-import { UserRole, useUserContextStore } from '@/services/user-context';
+import { ColDef } from 'ag-grid-community';
+// import { UserRole, useUserContextStore } from '@/services/user-context';
 
 function PmsPnl() {
-    const { reportDate, isLoading, report, filteredReport } = usePmsPnlDataStore();
+    const reportDate = pmsPnlDataStore.use.reportDate();
+    const isLoading = pmsPnlDataStore.use.isLoading();
+    const report = pmsPnlDataStore.use.report();
+    const { columnsList,  } = pmsPnlDataStore();
     const deviceType = useDeviceType();
+    const [filteredColumnDefs, setFilteredColumnDefs] = useState<any[]>([]);
     const isMobile = deviceType !== 'desktop';
-    const [filtercolumnDefs, setFilterColumnDefs] = useState(columnDefs);
-    const {userContext} = useUserContextStore();
+    const { getColumnDefs} = pmsPnlDataStore();
 
-    useEffect(()=>{
-        if(columnDefs.length > 0){
-            const set = userContext.userRole === UserRole.CENTER_IBIS ? columnDefs.filter((item)=> !item.field?.includes('NoFees')) : columnDefs;
-            setFilterColumnDefs(set || []);
-        }
-    },[columnDefs]);
+    useEffect(() => {
+        const columns = columnDefs.filter((column:ColDef) =>  column?.field && columnsList.includes(column?.field));
+        setFilteredColumnDefs(columns);
+    }, [columnsList]);
+
+    useEffect(() => {
+        getColumnDefs();
+    }, [])
 
     return (
     <div>
@@ -35,14 +41,14 @@ function PmsPnl() {
                 isSummaryGrid={false}
                 suppressStatusBar={true}
                 suppressFloatingFilter={false}
-                rowData={userContext.userRole === UserRole.CENTER_IBIS ? filteredReport : report?.length && report[0]}
-                columnDefs={filtercolumnDefs}
+                rowData={report?.data}
+                columnDefs={filteredColumnDefs}
                 loading={isLoading}
                 gridOptions={defaultGridOptions}
                 onGridSizeChanged={handleGridSizeChanged}
                 onFirstDataRendered={handleFirstDataRendered}
                 suppressStickyTotalRow={false}
-                pinnedTopRowData={userContext.userRole !== UserRole.CENTER_IBIS && report?.length ? [report[1]] : undefined}
+                grandTotalRow='top'
             />
         </div>
     </div>);

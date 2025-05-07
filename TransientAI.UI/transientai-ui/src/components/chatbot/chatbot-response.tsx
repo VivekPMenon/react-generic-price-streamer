@@ -1,74 +1,38 @@
-import {useContext, useEffect, useState} from 'react';
+import {ChangeEvent, useLayoutEffect, useRef, useState} from 'react';
 import styles from './chatbot-response.module.scss';
-import {chatbotDataService} from '@/services/chatbot-data/chatbot-data-service';
-import {ChatbotConversation, ChatHistory, ChatResponseType} from '@/services/chatbot-data/model';
-import {Spinner} from '@radix-ui/themes';
-import ReactMarkdown from 'react-markdown';
-import {getCurrentTimestamp} from '@/lib/utility-functions/date-operations';
-import {MenuInfo} from '@/services/menu-data';
-import {ChatbotDataContext} from '@/services/chatbot-data';
-import {useMenuStore} from '@/services/menu-data/menu-data-store';
-import remarkGfm from 'remark-gfm';
-import {ChevronDownIcon} from "@radix-ui/react-icons";
-import {formatDecimal} from "@/lib/utility-functions";
+import {ChatRole, ChatThread} from '@/services/chatbot-data/model';
+import {chatbotStore} from "@/services/chatbot-data/chatbot-data-store";
+import {ChatRequestComponent} from "@/components/chatbot/chat-request-component";
+import {ChatResponseComponent} from "@/components/chatbot/chat-response-component";
 
-interface ChatResponseProps {
-  chatHistory: ChatbotConversation;
-}
-
-function ChatResponseComponent({chatHistory}: ChatResponseProps) {
-  const [open, setOpen] = useState(chatHistory.status!.showLogs);
-
-  function handleClick() {
-    setOpen(!open);
-    chatHistory.status!.showLogs = !open;
-  }
-
-  return (
-      <div className={`${styles['chat-message']}}`}>
-        <div className={styles['assistant']}>
-          <div className={`${styles['status']} prevent-text-selection`}
-               onClick={handleClick}
-          >
-            {chatHistory.status!.status}
-            <ChevronDownIcon
-                className={`${styles['expander-button' + (open  ? '-open' : '')]}`}
-            />
-          </div>
-          <div>
-            {chatHistory.status!.showLogs &&
-              (
-                  <div className={styles['status-message']}>
-                    <ReactMarkdown
-                      className='markdown'
-                      remarkPlugins={[remarkGfm]}
-                      >{chatHistory.status!.message}
-                    </ReactMarkdown>
-                  </div>
-              )
-            }
-            <ReactMarkdown
-                className='markdown'
-                remarkPlugins={[remarkGfm]}
-            >{chatHistory.response!.responseText}</ReactMarkdown>
-          </div>
-        </div>
-        <div className={`${styles['assistant-message-time']}`}>{chatHistory.response?.timestamp}</div>
-      </div>
-  );
-}
-
-
-export interface ChatbotResponseProps {
-  query: string;
-  onNewQueryExecuted: () => void;
-}
-
-export function ChatbotResponse(props: ChatbotResponseProps) {
-  const { setActiveMenu } = useMenuStore();
-  const { chatbotData, setChatbotData } = useContext(ChatbotDataContext);
-
+export function ChatbotResponse() {
   const [query, setQuery] = useState<string>('');
+  const scrollDiv = useRef<HTMLDivElement>(null);
+  const [scrollHeight, setScrollHeight] = useState(0);
+  const [, setScrollHeightChanged] = useState(false);
+  const setIsChatbotResponseActive =  chatbotStore.use.setIsChatbotResponseActive();
+  const selectedThread = chatbotStore.use.selectedThread();
+  const isLoading = chatbotStore.use.isLoading();
+  const addToThread = chatbotStore.use.addToThread();
+
+  const [thread, setThread] = useState<ChatThread | null>(selectedThread);
+
+  useLayoutEffect(() => {
+      if (thread !== selectedThread || isLoading) {
+          setThread(selectedThread);
+          const currentScrollHeight = scrollDiv.current?.scrollHeight;
+          if (currentScrollHeight) {
+              setScrollHeightChanged(true);
+              setScrollHeight(currentScrollHeight);
+              scrollDiv.current?.scrollTo({
+                  top: scrollDiv.current.scrollHeight,
+                  behavior: 'smooth'
+              });
+          } else {
+              setScrollHeightChanged(false);
+          }
+      }
+    }, [scrollDiv, scrollHeight, isLoading, thread, selectedThread]);
 
   function onKeyDown(event: any) {
     if (event.key !== "Enter") {
@@ -76,172 +40,50 @@ export function ChatbotResponse(props: ChatbotResponseProps) {
     }
 
     const inputValue = event.target.value;
-    executeChatbotRequest(inputValue);
-
+    if (selectedThread) {
+      addToThread(inputValue, selectedThread);
+    }
     setQuery('');
   }
 
-  function onQueryChange(event: any) {
+  function onQueryChange(event: ChangeEvent<HTMLInputElement>) {
     setQuery(event.target.value);
   }
 
-  function loadChatbotResponse() {
-    if (!props.query) {
-      return;
-    }
-
-    executeChatbotRequest(props.query!);
-  }
-
-  function executeChatbotRequest(query: string) {
-    const executeChatbotRequestAsync = async () => {
-      const existingConversations = chatbotData.conversations || [];
-      const lastChatHistory: ChatbotConversation =  {
-        request: {
-          query,
-          isLoading: true,
-          timestamp: getCurrentTimestamp()
-        },
-        response: {
-          responseText: ''
-        },
-        status: {
-          status: 'Thinking...',
-          message: '',
-          showLogs: true
-        }
-      };
-
-      const newChatConversations: ChatbotConversation[] = [
-        ...existingConversations,
-        lastChatHistory
-      ];
-
-      setChatbotData({
-        ...chatbotData,
-        conversations: newChatConversations
-      });
-
-      const startTime = Date.now();
-      let endTime: null|number = null;
-      chatbotDataService.getChatbotResponseStream(query)
-          .subscribe({
-            next: (response) => {
-              switch (response.type) {
-                case ChatResponseType.Log:
-                  lastChatHistory.status!.message += response.text;
-                  break;
-                case ChatResponseType.Final:
-                  if (endTime === null) {
-                    endTime = Date.now();
-                    lastChatHistory.status!.status = `Thought for ${formatDecimal((endTime - startTime) / 1000)} seconds`;
-                    lastChatHistory.status!.showLogs = false;
-                  }
-                  lastChatHistory.response!.responseText += response.text;
-                  break;
-              }
-              setChatbotData({
-                ...chatbotData,
-                conversations: newChatConversations
-              });
-            },
-            error: () => {
-              if (endTime === null) {
-                endTime = Date.now();
-                lastChatHistory.status!.status = `Thought for ${(endTime - startTime) / 1000} seconds`;
-                lastChatHistory.status!.showLogs = false;
-              }
-              lastChatHistory.response!.responseText = 'There was an error processing your request';
-              lastChatHistory.request!.isLoading = false;
-              lastChatHistory.response!.timestamp = getCurrentTimestamp();
-              setChatbotData({
-                ...chatbotData,
-                conversations: newChatConversations
-              });
-            },
-            complete: () => {
-              lastChatHistory.request!.isLoading = false;
-              lastChatHistory.response!.timestamp = getCurrentTimestamp();
-              setChatbotData({
-                ...chatbotData,
-                conversations: newChatConversations
-              });
-              props.onNewQueryExecuted();
-            }
-          });
-    };
-
-    executeChatbotRequestAsync();
-  }
-
-  function clipChatHistory(chatHistory: ChatHistory) {
-    const newMenuItem: MenuInfo = {
-      description: chatHistory.title,
-      icon: 'fa-solid fa-thumbtack',
-      id: chatHistory.conversation_id
-    };
-    
-    setActiveMenu(newMenuItem);
-  }
-
   function navigateBack() {
-    setChatbotData({
-      isChatbotResponseActive: false,
-      conversations: []
-    });
+    setIsChatbotResponseActive(false);
   }
 
-  useEffect(() => loadChatbotResponse(), [props.query]);
-
-  const chatHistoryElement = chatbotData.conversations?.length ?
-    chatbotData.conversations.map((chatHistory, index) => (
-      <div key={index}>
-        <div className={styles['chat-message']}>
-          <div className={styles['message-content']}>
-            <div className={styles['message-header'] + ' profile-pic'}>
-              <img src="/images/ProfilePicAI.png"></img>
-            </div>
-            <p>
-              {chatHistory.request?.query}
-              {chatHistory.request?.isLoading ? <Spinner size='3' className='ml-2'></Spinner> : <></>}
-              {
-                index === 0 && !chatHistory.request?.isLoading ?
-                  <i onClick={() => clipChatHistory(chatHistory)}
-                    className={styles['clip-conversation'] + ' fa-solid fa-thumbtack'}>
-                  </i> : <></>
-              }
-            </p>
-          </div>
-
-          <div className={styles['message-time']}>{chatHistory.request?.timestamp}</div>
-        </div>
-
-        {
-          chatHistory.response?.responseText
-              ? <ChatResponseComponent
-                  chatHistory={chatHistory}
-              />
-              : <></>
-        }
-      </div>
-    ))
-    : <></>;
+  const chatHistoryElement = thread?.messages?.length ?
+      thread.messages.map((chatHistory, index) =>
+          chatHistory.role === ChatRole.USER
+          ? (<ChatRequestComponent
+                  key={index}
+                  message={chatHistory}
+                  isLoading={index === thread.messages.length - 1 && isLoading}
+              />)
+          : (<ChatResponseComponent
+                  key={index}
+                  message={chatHistory}
+              />)
+      )
+      : <></>;
 
   return (
-    <div className={styles['chatbot-response']}>
-      <button className='hyperlink' onClick={navigateBack}>Back to List</button>
+      <div className={styles['chatbot-response']}>
+        <button className='hyperlink' onClick={navigateBack}>Back to List</button>
 
-      <div className={`${styles['chat-history']} scrollable-div`}>
-        {chatHistoryElement}
-      </div>
+        <div className={`${styles['chat-history']} scrollable-div`} ref={scrollDiv}>
+          {chatHistoryElement}
+        </div>
 
-      <div className={styles['search-bar']} >
-        <input type="text"
-          placeholder="Ask TransientAI anything - use '@' to find files, folders and other trading data"
-          onKeyDown={onKeyDown}
-          onChange={onQueryChange}
-          value={query} />
+        <div className={styles['search-bar']}>
+          <input type="text"
+                 placeholder="Ask TransientAI anything - use '@' to find files, folders and other trading data"
+                 onKeyDown={onKeyDown}
+                 onChange={onQueryChange}
+                 value={query}/>
+        </div>
       </div>
-    </div>
   );
 }

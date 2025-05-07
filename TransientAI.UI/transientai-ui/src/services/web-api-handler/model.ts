@@ -11,10 +11,11 @@ export interface EndpointConfig {
   newsApiKey?: string;
   corpActionApiHeaders: {[key: string]: string};
   randomStr?: string;
-  httpsServices?: { [name: string]: string };
+  httpsServices: { [key: string]: string };
   headers?: { [name: string]: string };
   authInfo?: AuthenticationInfo;
   isAuthDisabled?: boolean;  
+  testEmailId?: string;
 }
 
 export interface AuthenticationInfo {

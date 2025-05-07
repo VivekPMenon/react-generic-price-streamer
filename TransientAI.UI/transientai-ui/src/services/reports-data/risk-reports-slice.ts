@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { File, fileManagerService } from '@/services/file-manager';
 import { saveAs } from 'file-saver';
-import { useUnseenItemsStore } from '../unseen-items-store/unseen-items-store';
+import { unseenItemsStore } from '../unseen-items-store/unseen-items-store';
 
 export const resourceNameRiskReports = 'risk-reports';
 
@@ -80,7 +80,7 @@ export const useRiskReportsSlice = create<RiskReportsState>((set, get) => ({
         const unseenDiff = Math.abs(newCount - prevCount);
 
         if (unseenDiff > 0) {
-          useUnseenItemsStore.getState().addUnseenItems(resourceNameRiskReports, unseenDiff);
+          unseenItemsStore.getState().addUnseenItems(resourceNameRiskReports, unseenDiff);
         }
 
         return {}; // No need to modify state here, just ensuring correctness
@@ -88,8 +88,3 @@ export const useRiskReportsSlice = create<RiskReportsState>((set, get) => ({
     }, 120000); // Polls every 2 minutes
   }
 }));
-
-// Initial Load and Start Polling
-const { loadRiskReports, startPolling } = useRiskReportsSlice.getState();
-loadRiskReports();
-startPolling();

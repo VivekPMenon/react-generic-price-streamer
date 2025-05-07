@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import { useMacroPanelDataStore } from "@/services/macro-panel-data/macro-panel-data-store";
+import {macroPanelDataStore} from "@/services/macro-panel-data/macro-panel-data-store";
 import {DataGrid} from "@/components/data-grid";
 import { CellDoubleClickedEvent } from 'ag-grid-community';
 import {CustomGroupCellRenderer} from "@/components/macro-panel/customGroupCellRenderer";
@@ -16,10 +16,20 @@ import styles from './macro-panel.module.scss';
 import {useDeviceType} from "@/lib/hooks";
 
 export function MacroPanel() {
-    const { reportGenerationDate, treasuryYields, fxRates, cryptos, equityFutures, isTreasuryLoading, isFxLoading, isCryptoLoading, isEquityFuturesLoading } = useMacroPanelDataStore();
     const [open, setOpen] = useState(false);
     const [instrument, setInstrument] = useState<Instrument|null>(null);
     const deviceType = useDeviceType();
+
+    const reportGenerationDate = macroPanelDataStore.use.reportGenerationDate();
+    const treasuryYields = macroPanelDataStore.use.treasuryYields();
+    const fxRates = macroPanelDataStore.use.fxRates();
+    const cryptos = macroPanelDataStore.use.cryptos();
+    const equityFutures = macroPanelDataStore.use.equityFutures();
+    const isTreasuryLoading = macroPanelDataStore.use.isTreasuryLoading();
+    const isFxLoading = macroPanelDataStore.use.isFxLoading();
+    const isCryptoLoading = macroPanelDataStore.use.isCryptoLoading();
+    const isEquityFuturesLoading = macroPanelDataStore.use.isEquityFuturesLoading();
+
     function handleCellDoubleClicked(params: CellDoubleClickedEvent) {
         if (params.colDef.field === 'name') {
             setOpen(true);

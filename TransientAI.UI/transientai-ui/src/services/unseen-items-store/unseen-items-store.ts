@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import {createSelectors} from "@/lib/utility-functions/store-operations";
 
 interface UnseenItemsState {
   unseenItems: Record<string, number>;
@@ -6,7 +7,7 @@ interface UnseenItemsState {
   resetUnseenItems: (storeId: string) => void;
 }
 
-export const useUnseenItemsStore = create<UnseenItemsState>((set) => ({
+const useUnseenItemsStore = create<UnseenItemsState>((set) => ({
   unseenItems: {},
 
   addUnseenItems: (storeId, count) => {
@@ -30,3 +31,5 @@ export const useUnseenItemsStore = create<UnseenItemsState>((set) => ({
       }))
   }
 }));
+
+export const unseenItemsStore = createSelectors(useUnseenItemsStore);

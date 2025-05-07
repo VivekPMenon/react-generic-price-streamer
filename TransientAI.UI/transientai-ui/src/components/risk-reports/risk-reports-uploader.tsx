@@ -102,9 +102,9 @@ function RiskReportsUploader() {
   return (
     <div className={styles['risk-reports-container']}>
       <div className={styles['risk-reports-documents']}>
-        <div className={styles['risk-reports-uploader']}>
-          <FileUploadWizard onUploadSuccess={() => loadRiskReports()} />
-        </div>
+        {/*<div className={styles['risk-reports-uploader']}>*/}
+        {/*  <FileUploadWizard onUploadSuccess={() => loadRiskReports()} />*/}
+        {/*</div>*/}
 
         <div className={styles['reports-grid']}>
           <div>My Documents</div>

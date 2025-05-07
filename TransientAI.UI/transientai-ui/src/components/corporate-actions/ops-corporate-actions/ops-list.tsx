@@ -5,6 +5,7 @@ import { useVirtualizer, VirtualItem } from '@tanstack/react-virtual'
 import { formatDateString } from '@/lib/utility-functions/date-operations'
 import styles from './ops.module.scss'
 import { CorporateAction, useCorpActionsStore } from '@/services/corporate-actions'
+import { getDateElement } from '../corporate-actions'
 
 interface OpsListProps {
   data: CorporateAction[]
@@ -33,6 +34,7 @@ export function OpsList ({ data }: OpsListProps) {
   
     }, [data, selectedCorpAction, virtualizer]);
 
+    
   const corpActionsListElement = (
     <div
       className={`${styles['corporate-actions-response']} scrollable-div`}
@@ -84,8 +86,18 @@ export function OpsList ({ data }: OpsListProps) {
                       </span>
                     </div>
                     <div className='text-gray-400'>
-                      Holding: {corpAction.holdingQuantity} | Version:
-                      {corpAction.version} | {corpAction.deadlineDate && new Date(corpAction.deadlineDate).getFullYear() >= 2000 ? formatDateString(corpAction.deadlineDate) : 'NA'} 
+                      Holding: {corpAction.holdingQuantity} | {
+                        corpAction.versionHistory && (() => {
+                          const matchedVersion = corpAction.versionHistory.find(
+                            (vers) => vers.version === corpAction.version
+                          );
+                          return matchedVersion ? (
+                            <span key={matchedVersion.changedDate} className=''>
+                              Version: {matchedVersion.version} &nbsp;|&nbsp; {formatDateString(matchedVersion.changedDate)}
+                            </span>
+                          ) : null;
+                        })()
+                      }
                     </div>
                   </div>
                   <div className='flex justify-between mt-1'>
@@ -101,9 +113,10 @@ export function OpsList ({ data }: OpsListProps) {
                           ? corpAction.accounts.length
                           : ''}
                       </span>
-                      <span className='ml-4'>
+                      {getDateElement(corpAction.viewType,corpAction)}
+                      {/* <span className='ml-4'>
                           Pay Date: {corpAction.dates?.pay_date && new Date(corpAction.dates.pay_date).getFullYear() >= 2000 ? formatDateString(corpAction.dates.pay_date) : 'NA'}
-                      </span>
+                      </span> */}
                     </div>
                   </div>
                 </div>

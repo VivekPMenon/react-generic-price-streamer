@@ -84,6 +84,7 @@ export interface ClientTrade {
   spread: number;
   price: number;
   product_description: string;
+  inventory_product_id: string;
 }
 
 export interface NewsArticle {

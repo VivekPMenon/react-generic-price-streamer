@@ -3,6 +3,7 @@ import { persist, createJSONStorage } from 'zustand/middleware';
 import {FinancialData, ImageType, Instrument, PeriodType} from "@/services/market-data/model";
 import {marketDataService} from "@/services/market-data/market-data-service";
 import {MarketDataType} from "@/services/macro-panel-data/model";
+import {createSelectors} from "@/lib/utility-functions/store-operations";
 
 export interface MarketDataStore {
     tickers: string[];
@@ -22,7 +23,7 @@ const MAX_INSTRUMENTS = 5;
 const REFRESH_INTERVAL = 300000;
 const MAX_INSTRUMENTS_REACHED = `Limit of ${MAX_INSTRUMENTS} charts, please delete some to proceed`;
 
-export const useMarketDataStore = create<MarketDataStore>()(
+const useMarketDataStore = create<MarketDataStore>()(
     persist((set, get) => ({
         tickers: [],
         instruments: [],
@@ -160,3 +161,5 @@ export const useMarketDataStore = create<MarketDataStore>()(
       },
     })
 );
+
+export const marketDataStore = createSelectors(useMarketDataStore);

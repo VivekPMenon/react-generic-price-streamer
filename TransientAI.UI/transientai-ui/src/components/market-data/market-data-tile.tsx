@@ -1,20 +1,15 @@
 'use client';
 import {useEffect, useRef, useMemo} from 'react';
-import dynamic from 'next/dynamic';
 import {useTranslation} from 'react-i18next'; // Import translation hook
 import {Instrument, marketDataService, PeriodType} from "@/services/market-data";
 import {formatDecimal, formatShortened} from "@/lib/utility-functions";
-import Highcharts, {RangeSelectorButtonsOptions} from 'highcharts';
+import Highcharts from 'highcharts';
 import Highstock from 'highcharts/highstock';
 import "highcharts/modules/exporting";
 import styles from './market-data-tile.module.scss';
 import {formatDateTime} from "@/lib/utility-functions/date-operations";
-import {enumToKeyValuePair, KeyValuePair} from "@/lib/utility-functions/enum-operations";
 import {MarketDataType} from "@/services/macro-panel-data/model";
-
-const HighchartsReact = dynamic(() => import('highcharts-react-official'), { ssr: false });
-
-type OLHCData = [number, number|undefined, number|undefined, number|undefined, number|undefined];
+import {HighchartsReact, OLHCData, getFilterButtons} from "@/lib/utility-functions/highcharts-operations";
 
 export interface MarketDataTileProps {
     instrument: Instrument,
@@ -25,50 +20,6 @@ export interface MarketDataTileProps {
     className?: string;
     isNegative?: boolean;
     ignoreNegative?: boolean;
-}
-
-function getFilterButtons(): RangeSelectorButtonsOptions[] {
-    const keyValuePairs = enumToKeyValuePair(PeriodType);
-    return keyValuePairs.map((value: KeyValuePair): RangeSelectorButtonsOptions | null => {
-        const key = (value.value as string).toUpperCase();
-        switch (key) {
-            case 'YTD':
-                return {
-                    type: 'ytd',
-                    text: key,
-                };
-            case 'MAX':
-                return {
-                    type: 'all',
-                    text: 'All',
-                };
-            default:
-                if (key.endsWith('D')) {
-                    return {
-                        type: 'day',
-                        count: parseInt(key),
-                        text: key,
-                    }
-                }
-                if (key.endsWith('MO')) {
-                    const count = parseInt(key);
-                    return {
-                        type: 'month',
-                        count: count,
-                        text: count + 'M',
-                    }
-                }
-                if (key.endsWith('Y')) {
-                    const count = parseInt(key);
-                    return {
-                        type: 'year',
-                        count: count,
-                        text: count + 'Y',
-                    }
-                }
-                return null;
-        }
-    }).filter(button => button !== null);
 }
 
 function getChartOptions(instrument: Instrument,

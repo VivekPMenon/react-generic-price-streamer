@@ -2,13 +2,13 @@
 //src/components/notifications/notifications.tsx
 'use client'
 
-import {useEffect, useMemo, useRef, useState} from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import styles from './notifications.module.scss';
-import {Notification, NotificationType} from '@/services/notifications';
-import {resourceName as corpActionResourceName, useCorpActionsStore} from "@/services/corporate-actions";
-import {Mode, useMenuStore} from "@/services/menu-data";
-import {NotificationPopup} from './notification-popup';
-import {useRouter} from 'next/navigation';
+import { Notification, NotificationType } from '@/services/notifications';
+import { resourceName as corpActionResourceName, useCorpActionsStore } from "@/services/corporate-actions";
+import { Mode, menuStore } from "@/services/menu-data";
+import { NotificationPopup } from './notification-popup';
+import { useRouter } from 'next/navigation';
 import {
   ResearchReport,
   resourceName as researchReportResourceName,
@@ -16,25 +16,26 @@ import {
   useResearchReportsStore,
   useRiskReportsSlice
 } from '@/services/reports-data';
-import {Spinner} from '@radix-ui/themes';
+import { Spinner } from '@radix-ui/themes';
 import {
   resourceNameInvestorRelations,
   useInvestorRelationsStore
 } from "@/services/investor-relations-data/investor-relations-store";
-import {InquiryFlag} from "@/services/investor-relations-data";
-import {useVirtualizer, VirtualItem} from "@tanstack/react-virtual";
-import {resourceNameRiskMetrics, useRiskDataStore} from '@/services/risk-data/risk-data-store';
-import {formatDate} from '@/lib/utility-functions/date-operations';
-import {useUnseenItemsStore} from '@/services/unseen-items-store/unseen-items-store';
-import {resourceName as BreakNewsresourceName} from '@/services/break-news/break-news-data-store';
+import { InquiryFlag } from "@/services/investor-relations-data";
+import { useVirtualizer, VirtualItem } from "@tanstack/react-virtual";
+import { resourceNameRiskMetrics, useRiskDataStore } from '@/services/risk-data/risk-data-store';
+import { formatDate } from '@/lib/utility-functions/date-operations';
+import { unseenItemsStore } from '@/services/unseen-items-store/unseen-items-store';
+import { resourceName as BreakNewsresourceName } from '@/services/break-news/break-news-data-store';
 import {
   resourceName as bloombergReportResourceName,
-  useMacroPanelDataStore
+  macroPanelDataStore
 } from '@/services/macro-panel-data/macro-panel-data-store';
-import {RoleType, useUserContextStore} from '@/services/user-context';
-import {usePmsPnlDataStore} from "@/services/pms-pnl-data/pms-pnl-data-store";
-import {useTranslation} from 'react-i18next'; // Import the translation hook
-import {translateText} from '@/i18n';
+import { RoleType, useUserContextStore } from '@/services/user-context';
+import { pmsPnlDataStore } from "@/services/pms-pnl-data/pms-pnl-data-store";
+import { useTranslation } from 'react-i18next'; // Import the translation hook
+import { translateText } from '@/i18n';
+import { userService } from '@/services/user-context/user-service';
 
 // Helper function to translate text fields within a notification
 const translateNotificationText = async (notification: Notification) => {
@@ -162,20 +163,31 @@ export function Notifications(props: NotificationsProps) {
   const { isLoading, reports: researchReports, setSelectedReport: setSelectedResearchReport } = useResearchReportsStore();
   const { isLoading: isRiskReportLoading, riskReports, setSelectedReport: setSelectedRiskReport } = useRiskReportsSlice();
   const { isLoading: isCorpActionsLoading, loadedCorpActions, selectedCorpAction, setSelectedCorpAction, loadCorpActions, loadPmCorpActions } = useCorpActionsStore();
+
   const { isLoading: isInquiriesLoading, inquiries } = useInvestorRelationsStore();
+
   const { isLoading: isRiskDataLoading, lastUpdatedTimestamp } = useRiskDataStore();
-  const { isLoading: isPmsPnlReportLoading, reportDate } = usePmsPnlDataStore();
+  const isPmsPnlReportLoading = pmsPnlDataStore.use.isLoading();
+  const reportDate = pmsPnlDataStore.use.reportDate();
   // const { isLoading: isBreakingNewsLoading, breakNewsItems, setSelectedBreakNewsItem, setGroupId } = useBreakNewsDataStore();
-  const { isLoading: isBloombergEmailReportsLoading, bloombergEmailReports, setSelectedReport } = useMacroPanelDataStore();
-  const { resetUnseenItems, unseenItems } = useUnseenItemsStore();
-  const { fullMenuList, activeMenuList, setActiveMenu } = useMenuStore();
+  // const isBloombergEmailReportsLoading = macroPanelDataStore.use.isLoading();
+  const bloombergEmailReports = macroPanelDataStore.use.bloombergEmailReports();
+  const setSelectedReport = macroPanelDataStore.use.setSelectedReport();
+  const unseenItems = unseenItemsStore.use.unseenItems();
+  const resetUnseenItems = unseenItemsStore.use.resetUnseenItems();
+
+  const fullMenuList = menuStore.use.fullMenuList();
+  const activeMenuList = menuStore.use.activeMenuList();
+  const setActiveMenu = menuStore.use.setActiveMenu();
+
   const { userContext } = useUserContextStore();
 
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
   const [selectedNotification, setSelectedNotification] = useState<Notification>({}); // todo..
   const [selectedType, setSelectedType] = useState<string>(props.mode === Mode.BUY ? NotificationType.Research : NotificationType.Axes);
-  const previousSelectedType = useRef<string|null>(null);
+  const previousSelectedType = useRef<string | null>(null);
+  const previewRole = userService.getPreviewUserRole();
 
   const showSpinner = isLoading || isRiskReportLoading || isCorpActionsLoading || isInquiriesLoading || isRiskDataLoading || isPmsPnlReportLoading;
 
@@ -205,12 +217,12 @@ export function Notifications(props: NotificationsProps) {
   ]);
 
   useEffect(() => {
-    if(userContext.role == RoleType.PM) {
+    if ((!previewRole ? userContext.role : previewRole) == RoleType.PM) {
       loadPmCorpActions();
     } else {
       loadCorpActions();
     }
-  }, [userContext.role]);
+  }, [userContext.role, previewRole]);
 
   useEffect(() => {
     const previousValue = previousSelectedType.current;
@@ -251,7 +263,7 @@ export function Notifications(props: NotificationsProps) {
             : new Date().getTime(),
           highlights: [`${t('notification.date')}: ${formatDate(bloombergEmailReport.received_date)}`]
         })),
-  
+
         ...researchReports.map(async (researchReport) => ({
           id: researchReport.id,
           resourceName: researchReportResourceName,
@@ -262,7 +274,7 @@ export function Notifications(props: NotificationsProps) {
             : new Date().getTime(),
           highlights: getResearchReportHighlights(researchReport)
         })),
-  
+
         ...riskReports.map(async (riskReport) => ({
           id: riskReport.id,
           resourceName: resourceNameRiskReports,
@@ -271,7 +283,7 @@ export function Notifications(props: NotificationsProps) {
           timestamp: riskReport.uploaded ? riskReport.uploaded.getTime() : new Date().getTime(),
           highlights: [`Date: ${riskReport.uploaded!}`]
         })),
-  
+
         ...loadedCorpActions.map(async (corpAction) => ({
           id: corpAction.eventId,
           resourceName: corpActionResourceName,
@@ -287,7 +299,7 @@ export function Notifications(props: NotificationsProps) {
             `Version: ${corpAction.version}`
           ]
         })),
-  
+
         ...inquiries.map(async (inquiry) => ({
           id: inquiry.id,
           title: `${inquiry.subject}`,
@@ -301,12 +313,12 @@ export function Notifications(props: NotificationsProps) {
           ]
         })),
       ];
-  
+
       Promise.all(notificationPromises).then(async (resolvedNotifications) => {
         const translatedNotifications = await Promise.all(
           resolvedNotifications.map(translateNotificationText)
         );
-  
+
         translatedNotifications.sort((a, b) => (b.timestamp ?? 0) - (a.timestamp ?? 0));
         setNotifications(translatedNotifications);
       });
@@ -397,7 +409,7 @@ export function Notifications(props: NotificationsProps) {
 
     Promise.all(notificationPromises).then(async (resolvedNotifications) => {
       const translatedNotifications = await Promise.all(
-          resolvedNotifications.map(translateNotificationText)
+        resolvedNotifications.map(translateNotificationText)
       );
 
       translatedNotifications.sort((a, b) => (b.timestamp ?? 0) - (a.timestamp ?? 0));
@@ -513,21 +525,21 @@ export function Notifications(props: NotificationsProps) {
   return (
     //TODO .. create a common component for Widget with transclusion so that widget tiel etc. can be reused
     <div className={`${styles.notifications} widget`}>
-          <div className='widget-title'>
-      {t('notification.title')}  {/* Translates the title */}
-      <i className='fa-solid fa-expand toggler' onClick={() => expandOrCollapsePanel()} title={t('notification.expand')}></i>
-    </div>
+      <div className='widget-title'>
+        {t('notification.title')}  {/* Translates the title */}
+        <i className='fa-solid fa-expand toggler' onClick={() => expandOrCollapsePanel()} title={t('notification.expand')}></i>
+      </div>
       <div className='horizontal-scrollable-div filters'>
-      {getFilterTypes(props.mode).map(filterType => {
-  const unseenItemsCount = getUnseenItemsCount(filterType);
-  return <button
-    key={filterType}
-    className={`${filterType === selectedType ? 'filter active' : 'filter'} ${unseenItemsCount > 0 ? 'flash' : ''}`}
-    onClick={() => changeNotificationType(filterType)}>
-    {t(`notification.${filterType.toLowerCase()}`)} {/* Translate the filter type */}
-    {unseenItemsCount > 0 && <div className='bubble off-white-color'>{unseenItemsCount}</div>}
-  </button>
-})}
+        {getFilterTypes(props.mode).map(filterType => {
+          const unseenItemsCount = getUnseenItemsCount(filterType);
+          return <button
+            key={filterType}
+            className={`${filterType === selectedType ? 'filter active' : 'filter'} ${unseenItemsCount > 0 ? 'flash' : ''}`}
+            onClick={() => changeNotificationType(filterType)}>
+            {t(`notification.${filterType.toLowerCase()}`)} {/* Translate the filter type */}
+            {unseenItemsCount > 0 && <div className='bubble off-white-color'>{unseenItemsCount}</div>}
+          </button>
+        })}
       </div>
 
       <div ref={divRef} className={`${styles['notification-items']} scrollable-div ${isExpanded ? styles['expanded'] : ''}`}>
@@ -590,10 +602,10 @@ export function Notifications(props: NotificationsProps) {
 
                       <div className={styles['notification-content']}>
                         {
-                          visibleNotifications[item.index].type == NotificationType.CorpAct ? 
-                          <div className='pl-5' dangerouslySetInnerHTML={{ __html: visibleNotifications[item.index].subTitle || '' }}></div> : <div className='blue-color'>{visibleNotifications[item.index].subTitle}</div>
+                          visibleNotifications[item.index].type == NotificationType.CorpAct ?
+                            <div className='pl-5' dangerouslySetInnerHTML={{ __html: visibleNotifications[item.index].subTitle || '' }}></div> : <div className='blue-color'>{visibleNotifications[item.index].subTitle}</div>
                         }
-                        
+
                         <div className={styles['messages']}>
                           <ul className="list-disc pl-8 off-white-color-alt">
                             {

@@ -17,6 +17,7 @@ import ImageContainer from "@/components/image-container/image-container";
 import { useScrollTo, useScrollToElementId } from '@/lib/hooks';
 import { Spinner } from '@radix-ui/themes';
 import { translateText } from '@/i18n'; // Import your translate function
+import { useUserContextStore } from '@/services/user-context';
 
 export interface ResearchReportsProps {
   isExpanded?: boolean;
@@ -61,34 +62,34 @@ export function ResearchReports({ isExpanded }: ResearchReportsProps) {
   useEffect(() => {
     if (selectedReport) onReportSelection(selectedReport);
   }, [selectedReport]);
-  
- // Translate the titles of the reports dynamically
-//  const translateReportTitles = async (reports: ResearchReport[]) => {
+
+  // Translate the titles of the reports dynamically
+  //  const translateReportTitles = async (reports: ResearchReport[]) => {
   const translateReportTitles = async (reports: ResearchReport[]): Promise<TranslatedResearchReport[]> => {
     if (!reports.length) return [];
-  const translatedReports = await Promise.all(
-    reports
-      .filter((report) => report.name) // filter out undefined names
-      .map(async (report) => {
-        const translatedTitle = await translateText(report.name!);
-        // return { ...report, translatedName: translatedTitle };
-        return { ...report, translatedName: translatedTitle } as ResearchReport & { translatedName: string };
+    const translatedReports = await Promise.all(
+      reports
+        .filter((report) => report.name) // filter out undefined names
+        .map(async (report) => {
+          const translatedTitle = await translateText(report.name!);
+          // return { ...report, translatedName: translatedTitle };
+          return { ...report, translatedName: translatedTitle } as ResearchReport & { translatedName: string };
 
-      })
-  );
-  
-  return translatedReports;
-};
-// const [translatedReports, setTranslatedReports] = useState<ResearchReport[]>([]);
-const [translatedReports, setTranslatedReports] = useState<TranslatedResearchReport[]>([]);
+        })
+    );
 
-useEffect(() => {
-  const updateTranslatedReports = async () => {
-    const translated = await translateReportTitles(visibleReports);
-    setTranslatedReports(translated);
+    return translatedReports;
   };
-  updateTranslatedReports();
-}, [visibleReports]);
+  // const [translatedReports, setTranslatedReports] = useState<ResearchReport[]>([]);
+  const [translatedReports, setTranslatedReports] = useState<TranslatedResearchReport[]>([]);
+
+  useEffect(() => {
+    const updateTranslatedReports = async () => {
+      const translated = await translateReportTitles(visibleReports);
+      setTranslatedReports(translated);
+    };
+    updateTranslatedReports();
+  }, [visibleReports]);
 
   async function onReportSelection(report: ResearchReport) {
     if (!report?.id) return;
@@ -100,16 +101,24 @@ useEffect(() => {
     scrollToElementId(report.id!);
 
     try {
-      const emailContent = await researchReportsDataService.getEmailContentAsHtml(report.id!);
+      const userContext = useUserContextStore.getState().userContext;
+      const emailContent = await researchReportsDataService.getEmailContentAsHtml(report.id!, userContext.userId!);
       setEmailContent(emailContent);
 
-      const [aiSummary1, aiSummary2] = await Promise.all([
-        researchReportsDataService.getAiSummary(report.id!, ReportType.ExecutiveSummary),
-        researchReportsDataService.getAiSummary(report.id!, ReportType.Detailed)
-      ]);
+      // it has to be done sequentially due to the AI engine limitation 
+      if (summaryType === ReportType.ExecutiveSummary) {
+        let aiSummary = await researchReportsDataService.getAiSummary(report.id!, ReportType.ExecutiveSummary, userContext.userId!);
+        setExecutiveSummary(aiSummary);
 
-      setExecutiveSummary(aiSummary1);
-      setDetailedSummary(aiSummary2);
+        aiSummary = await researchReportsDataService.getAiSummary(report.id!, ReportType.Detailed, userContext.userId!);
+        setDetailedSummary(aiSummary);
+      } else {
+        let aiSummary = await researchReportsDataService.getAiSummary(report.id!, ReportType.Detailed, userContext.userId!);
+        setDetailedSummary(aiSummary);
+
+        aiSummary = await researchReportsDataService.getAiSummary(report.id!, ReportType.ExecutiveSummary, userContext.userId!);
+        setExecutiveSummary(aiSummary);
+      }
     } catch (error) {
       console.error("Error fetching report data:", error);
     }
@@ -142,8 +151,8 @@ useEffect(() => {
           {t('search')}:
 
           <div className={styles['search-box']}>
-            <input 
-              type='text' 
+            <input
+              type='text'
               className='mb-2'
               autoFocus={true}
               autoComplete='on'
@@ -151,8 +160,8 @@ useEffect(() => {
               onChange={event => setSearchQuery(event.target.value)}
               onKeyDown={searchReports}
             />
-            {searchQuery ? 
-              <i className='fa-solid fa-remove' onClick={() => { setSearchQuery(''); setSearchedReports([]); }}></i> : 
+            {searchQuery ?
+              <i className='fa-solid fa-remove' onClick={() => { setSearchQuery(''); setSearchedReports([]); }}></i> :
               <i className='fa-solid fa-magnifying-glass'></i>}
           </div>
 
@@ -169,7 +178,7 @@ useEffect(() => {
         </div>
 
         <div className={`${styles['reports']} news scrollable-div`}>
-          {isLoading || isSearchResultsLoading ? 
+          {isLoading || isSearchResultsLoading ?
             <Spinner size="3" className='self-center' /> :
             <>
               {translatedReports.map(report => (
@@ -182,7 +191,7 @@ useEffect(() => {
                   <div className='news-content'>
                     <div className='news-title'>
                       <i className='fa-regular fa-file-lines'></i>
-                      {report.translatedName || report.name} 
+                      {report.translatedName || report.name}
                     </div>
                     {report.concise_summary &&
                       <div className='news-description'>

@@ -1,8 +1,9 @@
 import { create } from 'zustand';
 import { ResearchReport } from './model';
 import { researchReportsDataService } from './research-reports-data';
-import { useUnseenItemsStore } from '../unseen-items-store/unseen-items-store';
+import { unseenItemsStore } from '../unseen-items-store/unseen-items-store';
 import { areObjectsEqual } from '@/lib/utility-functions';
+import { useUserContextStore } from '../user-context';
 
 export const resourceName = 'research-reports';
 
@@ -30,7 +31,8 @@ export const useResearchReportsStore = create<ResearchReportsState>((set, get) =
     set({ isLoading: true, error: null });
 
     try {
-      const newReports = await researchReportsDataService.getReports();
+      const userContext = useUserContextStore.getState().userContext;
+      const newReports = await researchReportsDataService.getReports(userContext.userId!);
 
       set({ reports: newReports, isLoading: false });
     } catch (error) {
@@ -44,7 +46,8 @@ export const useResearchReportsStore = create<ResearchReportsState>((set, get) =
       const prevCount = get().reports.length;
 
       const { reports } = get();
-      const newReports = await researchReportsDataService.getReports();
+      const userContext = useUserContextStore.getState().userContext;
+      const newReports = await researchReportsDataService.getReports(userContext.userId!);
       if (areObjectsEqual(reports, newReports)) {
         return;
       }
@@ -57,7 +60,7 @@ export const useResearchReportsStore = create<ResearchReportsState>((set, get) =
         const unseenDiff = Math.abs(newCount - prevCount);
 
         if (unseenDiff > 0) {
-          useUnseenItemsStore.getState().addUnseenItems(resourceName, unseenDiff);
+          unseenItemsStore.getState().addUnseenItems(resourceName, unseenDiff);
         }
 
         return {}; // No need to modify state here, just ensuring correctness

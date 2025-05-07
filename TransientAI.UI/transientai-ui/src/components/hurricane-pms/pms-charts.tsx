@@ -1,10 +1,6 @@
-
-import dynamic from 'next/dynamic';
 import React from 'react';
 import Highcharts from 'highcharts';
-
-// Use dynamic import for client-side rendering
-const HighchartsReact = dynamic(() => import('highcharts-react-official'), { ssr: false });
+import {HighchartsReact} from "@/lib/utility-functions/highcharts-operations";
 
 export const AssetAllocationChart = ({ data }: any) => {
   // Default data matching the image (21% Equity, 76% Cash, 3% Equity Option)
