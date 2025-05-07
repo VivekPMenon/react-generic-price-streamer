@@ -8,14 +8,15 @@ interface MenuState {
   fullMenuList: MenuInfo[];
   selectedMenu: MenuInfo | null;
   defaultMenu: MenuInfo;
+  isLoading: boolean;
   setActiveMenu: (menu: MenuInfo) => void;
   closeTab: (menuId: string) => void;
-  initializeMenus: (mode: Mode, userRole: string) => void;
+  initializeMenus: (mode: Mode) => void;
 }
 
 function calculateDefaultMenu(menuInfoList: MenuInfo[], defaultMenuId: string) {
   return menuInfoList
-    .find(menuInfo => menuInfo.id === defaultMenuId)!;
+    .find(menuInfo => menuInfo.key === defaultMenuId) || menuInfoList[0];
 }
 
 function calculateCurrentMenu(menuInfoList: MenuInfo[]) {
@@ -38,25 +39,31 @@ const useMenuStore = create<MenuState>((set) => ({
   fullMenuList: [],
   selectedMenu: [],
   defaultMenu: [],
+  isLoading: false,
 
-  initializeMenus: (mode: Mode, userRole: string) => {
-    const menuInfoList = getMenuItems(mode, userRole);
+  initializeMenus: async (mode: Mode) => {
+    set({ isLoading: true });
+    const menuInfoList = await getMenuItems(mode);
+    try { 
+      const defaultMenuId = mode === Mode.BUY 
+      ? (menuInfoList.some((menu) => menu.key === 'hurricane-pms') ? 'hurricane-pms' : 'macro-panel') 
+      : 'todays-axes';
 
-    const defaultMenuId = mode === Mode.BUY 
-    ? (menuInfoList.some(menu => menu.id === 'hurricane-pms') ? 'hurricane-pms' : 'macro-panel') 
-    : 'todays-axes';
-
-    set({
-        activeMenuList: calculateActiveMenuList(menuInfoList, defaultMenuId),
-        fullMenuList: menuInfoList,
-        selectedMenu: calculateCurrentMenu(menuInfoList)!,
-        defaultMenu: calculateDefaultMenu(menuInfoList, defaultMenuId)
-    })
+      set({
+          activeMenuList: calculateActiveMenuList(menuInfoList, defaultMenuId),
+          fullMenuList: menuInfoList,
+          selectedMenu: calculateCurrentMenu(menuInfoList)!,
+          defaultMenu: calculateDefaultMenu(menuInfoList, defaultMenuId),
+          isLoading: false,
+      })
+    } catch (error) { 
+      set({ isLoading: false });
+    }
   },
 
   setActiveMenu: (menu) =>
     set((state) => {
-      const isExisting = state.activeMenuList.some((m) => m.id === menu.id);
+      const isExisting = state.activeMenuList.some((m) => m.key === menu.key);
       const updatedMenuList = isExisting
         ? state.activeMenuList
         : [...state.activeMenuList, menu];

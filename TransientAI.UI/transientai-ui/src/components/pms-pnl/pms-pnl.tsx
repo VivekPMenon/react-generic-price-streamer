@@ -9,25 +9,27 @@ import {
 } from './pms-pnl-config';
 import styles from './pms-pnl.module.scss';
 import i18n from '../../i18n'; 
-import { UserRole, useUserContextStore } from '@/services/user-context';
+import { ColDef } from 'ag-grid-community';
+// import { UserRole, useUserContextStore } from '@/services/user-context';
 
 function PmsPnl() {
     const reportDate = pmsPnlDataStore.use.reportDate();
     const isLoading = pmsPnlDataStore.use.isLoading();
     const report = pmsPnlDataStore.use.report();
-    const filteredReport = pmsPnlDataStore.use.filteredReport();
-
+    const { columnsList,  } = pmsPnlDataStore();
     const deviceType = useDeviceType();
+    const [filteredColumnDefs, setFilteredColumnDefs] = useState<any[]>([]);
     const isMobile = deviceType !== 'desktop';
-    const [filtercolumnDefs, setFilterColumnDefs] = useState(columnDefs);
-    const {userContext} = useUserContextStore();
+    const { getColumnDefs} = pmsPnlDataStore();
 
-    useEffect(()=>{
-        if(columnDefs.length > 0){
-            const set = userContext.userRole === UserRole.CENTER_IBIS ? columnDefs.filter((item)=> !item.field?.includes('NoFees')) : columnDefs;
-            setFilterColumnDefs(set || []);
-        }
-    },[userContext.userRole]);
+    useEffect(() => {
+        const columns = columnDefs.filter((column:ColDef) =>  column?.field && columnsList.includes(column?.field));
+        setFilteredColumnDefs(columns);
+    }, [columnsList]);
+
+    useEffect(() => {
+        getColumnDefs();
+    }, [])
 
     return (
     <div>
@@ -39,8 +41,8 @@ function PmsPnl() {
                 isSummaryGrid={false}
                 suppressStatusBar={true}
                 suppressFloatingFilter={false}
-                rowData={userContext.userRole === UserRole.CENTER_IBIS ? filteredReport : report?.data}
-                columnDefs={filtercolumnDefs}
+                rowData={report?.data}
+                columnDefs={filteredColumnDefs}
                 loading={isLoading}
                 gridOptions={defaultGridOptions}
                 onGridSizeChanged={handleGridSizeChanged}

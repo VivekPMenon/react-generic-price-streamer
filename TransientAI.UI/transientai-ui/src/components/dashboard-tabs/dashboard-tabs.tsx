@@ -78,7 +78,7 @@ export function DashboardTabs({ children }: DashboardTabsProps) {
 
   return (
     <div className={`widget height-100p ${isExpanded ? 'expanded' : ''}`}>
-      <Tabs.Root defaultValue={defaultMenu.description} value={selectedMenu?.description || defaultMenu.description} className="height-100p">
+      <Tabs.Root defaultValue={defaultMenu?.description} value={selectedMenu?.description || defaultMenu?.description} className="height-100p">
         <Tabs.List>
           {tabs.map(tab => {
             const unseenCount = unseen[tab.id || 0];

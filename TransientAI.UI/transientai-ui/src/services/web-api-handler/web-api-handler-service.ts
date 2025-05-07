@@ -1,8 +1,9 @@
-import axios, {AxiosRequestConfig, Method} from "axios";
+import axios, {AxiosError, AxiosRequestConfig, Method} from "axios";
 import { WebApihandlerOptions} from "./model";
 import { endpointFinder } from "./endpoint-finder-service";
 import { useUserContextStore } from '@/services/user-context'
 import msalInstance from "@/app/msal-config";
+import { userService } from "../user-context/user-service";
 
 class WebApihandler {
   private readonly bankId = 123;
@@ -11,17 +12,21 @@ class WebApihandler {
   private bearerToken = '';
   private isRefreshing = false;
   private refreshPromise: Promise<string> | null = null;
-
   constructor() {}
 
   setBearerToken(token: string) {
     this.bearerToken = token;
   }
 
+
   private async ensureToken(): Promise<void> {
     while (!this.bearerToken) {
       await new Promise(resolve => setTimeout(resolve, 100));
     }
+  }
+
+  private isAxiosError(error: unknown): error is AxiosError {
+    return axios.isAxiosError(error);
   }
 
   private async refreshToken(): Promise<string> {
@@ -95,16 +100,20 @@ class WebApihandler {
     try {
       const response = await axios(config);
       return response.data;
-    } catch (error) {
+    } catch (error:unknown) {
       if (axios.isCancel(error)) {
         return;
       }
-      if (axios.isAxiosError(error) && error.response?.status === 401) {
+      if (this.isAxiosError(error) && 
+      (error.response?.status === 401 || 
+       // Check if there's a network error with requests that have an authorization header
+       (!error.response && config.headers?.Authorization))){
         try {
           await this.refreshToken();
           config.headers = {
             ...config.headers,
             Authorization: `Bearer ${this.bearerToken}`,
+            preview_id: userService.getPreviewUserRoleId() || null,
           };
           const retryResponse = await axios(config);
           return retryResponse.data;
@@ -131,6 +140,7 @@ class WebApihandler {
       method: 'GET',
       headers: {
         Authorization: `Bearer ${this.bearerToken}`,
+        preview_id: userService.getPreviewUserRoleId() || null ,
         ...options?.headers
       }
     };
@@ -181,6 +191,7 @@ class WebApihandler {
       },
       headers: {
         Authorization: `Bearer ${this.bearerToken}`,
+        preview_id: userService.getPreviewUserRoleId() || null ,
         ...options?.headers
       },
       data,
@@ -248,6 +259,7 @@ class WebApihandler {
       },
       headers: {
         Authorization: `Bearer ${this.bearerToken}`,
+        preview_id: userService.getPreviewUserRoleId() || null,
       },
       data,
       ...webApiOptions
@@ -262,6 +274,7 @@ class WebApihandler {
       method: 'DELETE',
       headers: {
         Authorization: `Bearer ${this.bearerToken}`,
+        preview_id: userService.getPreviewUserRoleId() || null,
         ...webApiOptions?.headers
       },
       params

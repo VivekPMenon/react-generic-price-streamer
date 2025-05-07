@@ -149,6 +149,7 @@ export interface CorporateAction {
   default_action?: string;
   versionHistory?: VersionDetails[];
   latest_update?: VersionDetails;
+  viewType: ViewType
 }
 
 export interface CorporateActionFilterOptions {
@@ -178,3 +179,11 @@ export interface IFilterActions {
   account?: string | null;
   eventType?: string | null;
 };
+
+
+export enum ViewType{
+  AC_REQUIRED = "AC_REQUIRED",
+  NO_AC_REQUIRED = "NO_AC_REQUIRED",
+  EXPIRED = "EXPIRED",
+  ALL = "ALL"
+}

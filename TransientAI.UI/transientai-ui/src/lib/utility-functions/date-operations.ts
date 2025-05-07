@@ -101,18 +101,62 @@ export function formatDateToHHMM(date: Date | string): string {
   return (hrs < 10 ? "0" + hrs : hrs) + ":" + (mins < 10 ? "0" + mins : mins) + " " + clockType;
 }
 
-export function formatDateString(dateString: string|undefined|null) {
-  // Should push out to common method - dup code
+// export function formatDateString(dateString: string|undefined|null) {
+//   // Should push out to common method - dup code
+//   if (!dateString || dateString.length === 0) {
+//     return '';
+//   }
+
+//   const date = new Date(dateString);
+//   if (Number.isNaN(date.valueOf())) {
+//     return '';
+//   }
+
+//   return date.toDateString();
+// }
+
+export function formatDateString(dateString: string | undefined | null): string {
+  // Return empty string for null, undefined, or empty string
   if (!dateString || dateString.length === 0) {
     return '';
   }
-
-  const date = new Date(dateString);
-  if (Number.isNaN(date.valueOf())) {
+  
+  // Check if the string contains "Unknown" and return empty string
+  if (dateString.includes('Unknown')) {
     return '';
   }
+  
+  try {
+    
+    //const parts = dateString.split('T');
+    //const datePart = parts[0];
 
-  return date.toDateString();
+    // Create a Date object from the full string (including time)
+    // This will properly handle the timezone conversion from UTC
+    const date = new Date(dateString);
+    
+    // Check if the date is valid
+    if (isNaN(date.getTime())) {
+      return '';
+    }
+    
+    // Array of short month names
+    const months = [
+      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+    ];
+    
+    // Get the month name, day, and year in the LOCAL timezone
+    const monthName = months[date.getMonth()];
+    const day = date.getDate();
+    const year = date.getFullYear();
+    
+    // Format the date string with only month, day, and year
+    return `${monthName} ${day} ${year}`;
+  } catch (error:any) {
+    // Return empty string if any error occurs during processing
+    return '';
+  }
 }
 
 

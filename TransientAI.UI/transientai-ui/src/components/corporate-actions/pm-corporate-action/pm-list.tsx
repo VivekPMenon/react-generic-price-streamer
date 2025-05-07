@@ -7,6 +7,7 @@ import { useVirtualizer, VirtualItem } from '@tanstack/react-virtual'
 import { formatDateString } from '@/lib/utility-functions/date-operations'
 import { useCorpActionsStore } from '@/services/corporate-actions/corp-actions-store'
 import { CorporateAction } from '@/services/corporate-actions/model'
+import { getDateElement } from '../corporate-actions'
 
 interface PmListProps {
   data: CorporateAction[] | [];
@@ -86,7 +87,8 @@ export function PmList ({ data }: PmListProps) {
                       {corpAction.eventType}
                     </span>
                     <span className='flex items-center gap-2'>
-                      Deadline: {corpAction?.dates && corpAction?.dates.deadline && new Date(corpAction?.dates.deadline).getFullYear() >= 2000 ? formatDateString(corpAction?.dates.deadline) : 'NA'}
+                      {getDateElement(corpAction.viewType,corpAction)}
+                      {/* Deadline: {corpAction?.dates && corpAction?.dates.deadline && new Date(corpAction?.dates.deadline).getFullYear() >= 2000 ? formatDateString(corpAction?.dates.deadline) : 'NA'} */}
                       <div className={styles['action-buttons']}>
                         <div className={styles['button-container']}>
                           <i className='fa-regular fa-envelope'></i>

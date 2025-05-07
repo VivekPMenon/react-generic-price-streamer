@@ -1,12 +1,10 @@
 import { create } from "zustand";
-import { UserContext, RoleType } from "./model";
+import { UserContext, UserInfo } from "./model";
 import msalInstance from "@/app/msal-config";
 import { endpointFinder } from "../web-api-handler/endpoint-finder-service";
 import { AccountInfo } from "@azure/msal-browser";
 import axios from "axios";
 import { webApihandler } from "../web-api-handler";
-import { getRoleByEmail, UserRole } from "./user-role-data";
-
 interface UserContextState {
   userContext: UserContext;
   authenticationError: string;
@@ -43,13 +41,14 @@ export const useUserContextStore = create<UserContextState>((set) => ({
 
       // Skip login API call if a token is already stored in sessionStorage 
       const existingToken = sessionStorage.getItem("bearerToken");
-      const existingRole = sessionStorage.getItem("role") as RoleType;
-      if (existingToken && existingRole) {
+      const getUserInfo = sessionStorage.getItem("userInfo");
+      const existingUserInfo = getUserInfo && JSON.parse(getUserInfo) as UserInfo;
+      if (existingToken && existingUserInfo) {
         webApihandler.setBearerToken(existingToken);
         const accounts = msalInstance.getAllAccounts();
         if (accounts.length > 0) {
           const account = accounts[0];
-          const userContext = mapAccountToUser(account, existingRole);
+          const userContext = mapAccountToUser(account, existingUserInfo);
           set({ userContext, isAuthenticated: true, isLoading: false });
           return;
         }
@@ -92,15 +91,15 @@ export const useUserContextStore = create<UserContextState>((set) => ({
       }
 
       const bearerTokenRes = await loginAndSetToken(idToken);
+      const userInfo:UserInfo = bearerTokenRes.loginResponse.user_info;
 
-      const role = bearerTokenRes.loginResponse.user_info.role
       if (bearerTokenRes) {
         sessionStorage.setItem("bearerToken", bearerTokenRes.bearerToken);
-        sessionStorage.setItem("role", role)
+        sessionStorage.setItem("userInfo", JSON.stringify(userInfo));
         webApihandler.setBearerToken(bearerTokenRes.bearerToken);
       }
 
-      const userContext = mapAccountToUser(account!, role);
+      const userContext = mapAccountToUser(account!, userInfo);
       set({ userContext, isAuthenticated: true, isLoading: false });
     } catch (error) {
       console.error("Authentication error:", error);
@@ -146,18 +145,16 @@ async function loginAndSetToken(idToken: string) {
   }
 }
 
-function mapAccountToUser(account: AccountInfo, role: RoleType): UserContext {
+function mapAccountToUser(account: AccountInfo,userInfo: UserInfo): UserContext {
   const parts = account.name?.split(' ') || [];
   const initials = parts[0]?.[0]?.toUpperCase() + (parts.at(-1)?.[0]?.toUpperCase() || '');
-  const email = account.username;
-  const userRole = getRoleByEmail(email);
-
+  
   return {
     userName: account.name,
     token: account.idToken,
     userId: account.username,
     userInitials: initials,
-    role: userRole === UserRole.OPERATIONS ? RoleType.Operations : role,
-    userRole: userRole
+    role: userInfo.role,
+    userInfo: userInfo
   };
 }
