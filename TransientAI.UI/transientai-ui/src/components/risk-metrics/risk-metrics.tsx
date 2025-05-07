@@ -40,11 +40,15 @@ function RiskMetrics() {
 
   return (
     <div className="height-100p">
-      <DataGrid
-        isSummaryGrid={true}
-        rowData={riskMetricsItems}
-        columnDefs={columnDefs}
-      ></DataGrid>
+      {riskMetricsItems && riskMetricsItems?.length > 0 ? (
+        <DataGrid
+          isSummaryGrid={true}
+          rowData={riskMetricsItems}
+          columnDefs={columnDefs}
+        ></DataGrid>
+      ) : (
+        <div className="flex items-center justify-center h-full">No Row To Show</div>
+      )}
     </div>
   );
 }
