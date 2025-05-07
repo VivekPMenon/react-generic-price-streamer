@@ -17,8 +17,14 @@ class UserService {
     getPreviewUserRoleId() {
         return sessionStorage.getItem('previewId');
     }
-  
-  
+
+    getPreviewUserRole() {
+        return sessionStorage.getItem('previewUserRole');
+    }
+
+    savePreviewUserRole(role: string) {
+        sessionStorage.setItem('previewUserRole', role);
+    }
 }
 
 export const userService = new UserService();

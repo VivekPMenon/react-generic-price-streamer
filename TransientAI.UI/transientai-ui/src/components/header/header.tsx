@@ -21,7 +21,8 @@ interface User {
   is_external: boolean;
   role_id: number;
   is_superadmin: boolean;
-  full_name: string
+  full_name: string;
+  role: string;
 }
 
 export interface HeaderProps {
@@ -67,9 +68,11 @@ export function Header({ onMenuToggle, isMenuVisible }: HeaderProps) {
       if (selected) {
         setSelectedPreviewUser(selected.data);
         userService.savePreviewUserRoleId(selected.value.toString());
+        userService.savePreviewUserRole(selected.data.role);
       } else {
         setSelectedPreviewUser(null);
         userService.savePreviewUserRoleId('');
+        userService.savePreviewUserRole('');
       }
       window.location.reload();
     } catch (err) {
