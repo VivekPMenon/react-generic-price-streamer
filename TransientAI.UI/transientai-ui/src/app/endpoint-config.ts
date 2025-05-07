@@ -8,6 +8,7 @@ export const getConfig = (): EndpointConfig => {
   return {
     env,
     httpsEndpoint: process.env.NEXT_PUBLIC_API_ENDPOINT || '',
+    // testEmailId: 'awolfberg@hurricanecap.com',
     corpActionApiHeaders: {
       'Ocp-Apim-Subscription-Key': process.env.NEXT_PUBLIC_CORP_API_SUBSCRIPTION_KEY || ''
     },

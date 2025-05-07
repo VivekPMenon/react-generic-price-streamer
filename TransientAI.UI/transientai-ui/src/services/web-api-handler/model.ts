@@ -15,6 +15,7 @@ export interface EndpointConfig {
   headers?: { [name: string]: string };
   authInfo?: AuthenticationInfo;
   isAuthDisabled?: boolean;  
+  testEmailId?: string;
 }
 
 export interface AuthenticationInfo {

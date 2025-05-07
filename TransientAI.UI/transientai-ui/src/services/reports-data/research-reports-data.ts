@@ -1,11 +1,17 @@
 import { webApihandler } from '../web-api-handler';
+import { endpointFinder } from '../web-api-handler/endpoint-finder-service';
 import { ReportSummary, ReportType, ResearchReport } from './model';
 
 class ResearchReportsDataService {
   private serviceName = 'hurricane-api';
 
-  async getReports(): Promise<ResearchReport[]> {
-    const results = await webApihandler.get('latest-emails', {}, { serviceName: this.serviceName });
+  async getReports(emailId: string): Promise<ResearchReport[]> {
+    const currentEnv = endpointFinder.getCurrentEnvInfo();
+    if (currentEnv.testEmailId) {
+      emailId = currentEnv.testEmailId!;
+    }
+
+    const results = await webApihandler.get('latest-emails/' + emailId, {}, { serviceName: this.serviceName });
 
     return results?.map((result: any) => ({
       id: result.id,
@@ -28,15 +34,24 @@ class ResearchReportsDataService {
     })) as ResearchReport[];
   }
 
-  async getEmailContentAsHtml(emailGuid: string, emailId?: string): Promise<string> {
+  async getEmailContentAsHtml(emailGuid: string, emailId: string): Promise<string> {
+    const currentEnv = endpointFinder.getCurrentEnvInfo();
+    if (currentEnv.testEmailId) {
+      emailId = currentEnv.testEmailId!;
+    }
+
     const url = emailId ? `email-html/${emailGuid}?research_email=${emailId}` : `email-html/${emailGuid}`;
     const result = await webApihandler.get(url, {}, { serviceName: this.serviceName });
     return result.html_content;
   }
 
-  async getAiSummary(emailGuid: string, type: ReportType): Promise<ReportSummary> {
+  async getAiSummary(emailGuid: string, type: ReportType, emailId: string): Promise<ReportSummary> {
     let summaryService = '';
     let extractor: (result: any) => string;
+    const currentEnv = endpointFinder.getCurrentEnvInfo();
+    if (currentEnv.testEmailId) {
+      emailId = currentEnv.testEmailId!;
+    }
 
     switch (type) {
       case ReportType.Abstract:
@@ -47,7 +62,7 @@ class ResearchReportsDataService {
         summaryService = 'summarize-email-structured';
         extractor = (result: any) => result.structured_summary;
         break;
-      case ReportType.ExecutiveSummary:
+      case ReportType.ExecutiveSummary: 
         summaryService = 'summarize-email-executive';
         extractor = (result: any) => result.executive_summary;
         break;
@@ -58,7 +73,7 @@ class ResearchReportsDataService {
     const result = await webApihandler.post(
       `${summaryService}/${emailGuid}`,
       null,
-      {},
+      { user_email: emailId },
       { serviceName: this.serviceName }
     );
 
