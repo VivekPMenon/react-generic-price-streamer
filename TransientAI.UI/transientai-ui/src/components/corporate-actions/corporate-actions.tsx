@@ -9,6 +9,7 @@ import { PmCorporateActions } from './pm-corporate-action/pm-corporate-action'
 import { RoleType, useUserContextStore } from '@/services/user-context'
 import { useEffect, useState } from 'react'
 import { Spinner } from "@radix-ui/themes";
+import { userService } from '@/services/user-context/user-service'
 import { formatDateString } from '@/lib/utility-functions/date-operations'
 
 export const CorporateActions = () => {
@@ -20,6 +21,7 @@ export const CorporateActions = () => {
   } = useCorpActionsStore();
   const [selectedEmailContent, setSelectedEmailContent] = useState<string>('');
   const [isLoadingEmail, setIsLoadingEmail] = useState<boolean>(false);
+  const previewRole = userService.getPreviewUserRole();
 
   useEffect(() => {
       async function calculateSelectedEmailContent() {
@@ -38,7 +40,7 @@ export const CorporateActions = () => {
   
     }, [selectedCorpAction]);
 
-    const searchValue = (userContext.role == RoleType.PM)
+    const searchValue = ((!previewRole ? userContext.role : previewRole) == RoleType.PM)
       ? selectedCorpAction?.accounts && selectedCorpAction?.accounts[0].accountNumber
       : selectedCorpAction?.eventId;
 
@@ -53,7 +55,7 @@ export const CorporateActions = () => {
         ) : (
         <div className={styles['chatbot'] + ' scrollable-div'}>
           {(() => {
-            switch (userContext.role) {
+            switch (!previewRole ? userContext.role : previewRole) {
               case RoleType.PM: {
                 return <PmCorporateActions />;
               }
@@ -61,7 +63,7 @@ export const CorporateActions = () => {
                 return <OpsCorporateActions />;
               }
               default: {
-                return <OpsCorporateActions />;
+                return <PmCorporateActions />;
               }
             }
           })()}

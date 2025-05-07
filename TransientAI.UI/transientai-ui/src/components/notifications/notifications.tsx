@@ -35,6 +35,7 @@ import { RoleType, useUserContextStore } from '@/services/user-context';
 import { pmsPnlDataStore } from "@/services/pms-pnl-data/pms-pnl-data-store";
 import { useTranslation } from 'react-i18next'; // Import the translation hook
 import { translateText } from '@/i18n';
+import { userService } from '@/services/user-context/user-service';
 
 // Helper function to translate text fields within a notification
 const translateNotificationText = async (notification: Notification) => {
@@ -186,6 +187,7 @@ export function Notifications(props: NotificationsProps) {
   const [selectedNotification, setSelectedNotification] = useState<Notification>({}); // todo..
   const [selectedType, setSelectedType] = useState<string>(props.mode === Mode.BUY ? NotificationType.Research : NotificationType.Axes);
   const previousSelectedType = useRef<string | null>(null);
+  const previewRole = userService.getPreviewUserRole();
 
   const showSpinner = isLoading || isRiskReportLoading || isCorpActionsLoading || isInquiriesLoading || isRiskDataLoading || isPmsPnlReportLoading;
 
@@ -215,12 +217,12 @@ export function Notifications(props: NotificationsProps) {
   ]);
 
   useEffect(() => {
-    if (userContext.role == RoleType.PM) {
+    if ((!previewRole ? userContext.role : previewRole) == RoleType.PM) {
       loadPmCorpActions();
     } else {
       loadCorpActions();
     }
-  }, [userContext.role]);
+  }, [userContext.role, previewRole]);
 
   useEffect(() => {
     const previousValue = previousSelectedType.current;
