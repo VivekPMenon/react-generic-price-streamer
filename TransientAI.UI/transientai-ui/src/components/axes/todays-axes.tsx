@@ -1,6 +1,6 @@
 'use client';
 
-import {RowClassParams, ColDef, RowClassRules, RowDoubleClickedEvent} from 'ag-grid-community';
+import {RowClassParams, ColDef, RowClassRules, RowDoubleClickedEvent, RowClickedEvent} from 'ag-grid-community';
 import {DataGrid, getNumberColDefTemplate} from '../data-grid';
 import { BondInfo } from '@/services/product-browser-data';
 import styles from './todays-axes.module.scss';

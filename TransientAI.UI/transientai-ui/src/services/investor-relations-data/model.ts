@@ -22,3 +22,15 @@ export interface InquiryRequest {
     due_date?: string;
     date_edited?: string;
 }
+
+export interface IREmailMessage {
+    id: string;
+    subject: string;
+    sender: string;
+    received: string; // ISO timestamp
+    has_attachments: boolean;
+    concise_summary: string;
+    complete: boolean;
+    important: boolean;
+}
+

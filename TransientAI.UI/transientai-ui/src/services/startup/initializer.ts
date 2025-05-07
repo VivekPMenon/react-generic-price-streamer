@@ -2,7 +2,7 @@ import {Mode} from "@/services/menu-data";
 import {breakNewsStore} from "@/services/break-news/break-news-data-store";
 import {clientHoldingsStore} from "@/services/client-holding-data/client-holding-store";
 import {useCorpActionsStore} from "@/services/corporate-actions";
-import {investorRelationsStore} from "@/services/investor-relations-data/investor-relations-store";
+import {useInvestorRelationsStore} from "@/services/investor-relations-data/investor-relations-store";
 import {macroPanelDataStore} from "@/services/macro-panel-data/macro-panel-data-store";
 import {pmsPnlDataStore} from "@/services/pms-pnl-data/pms-pnl-data-store";
 import {productBrowserStore} from "@/services/product-browser-data/product-browser-store";
@@ -45,9 +45,10 @@ export class ServiceInitializer {
         const corpActions = useCorpActionsStore.getState();
         corpActions.startPolling();
 
-        const investorRelations = investorRelationsStore.getState();
+        const investorRelations = useInvestorRelationsStore.getState();
         investorRelations.loadInquiries().catch((err) => console.error(err));
         investorRelations.loadAssignees().catch((err) => console.error(err));
+        investorRelations.loadEmails().catch((err) => console.error(err));
         investorRelations.startPolling();
 
         const macroPanel = macroPanelDataStore.getState();

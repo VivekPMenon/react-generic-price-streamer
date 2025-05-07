@@ -6,9 +6,10 @@ export interface SearchableMarkdownProps {
   title?: string;
   className?: string;
   markdownContent?: any;
+  children?: any;
 }
 
-export const SearchableMarkdown = ({ markdownContent, className, title }: SearchableMarkdownProps) => {
+export const SearchableMarkdown = ({ markdownContent, className, title, children }: SearchableMarkdownProps) => {
 
   const [searchTerm, setSearchTerm] = useState("");
   const [matches, setMatches] = useState([]);
@@ -58,10 +59,10 @@ export const SearchableMarkdown = ({ markdownContent, className, title }: Search
     );
   };
 
-  const fixMarkdownFormatting = (str:any) => {
+  const fixMarkdownFormatting = (str: any) => {
     return str
       .split('\n') // Split into lines
-      .map((line:any) => line.replace(/^\s{4,}/, '')) // Remove indentation of 4+ spaces (Markdown code block trigger)
+      .map((line: any) => line.replace(/^\s{4,}/, '')) // Remove indentation of 4+ spaces (Markdown code block trigger)
       .join('\n') // Rejoin into a string with preserved line breaks
       .trim(); // Remove extra spaces at the start/end
   };
@@ -91,7 +92,7 @@ export const SearchableMarkdown = ({ markdownContent, className, title }: Search
     <div className='markdown '>
       <div className='search-bar'>
         <div className='title'>
-          {title}
+          {children ? children : title}
         </div>
 
         <div className='search-toolbar'>
@@ -116,7 +117,7 @@ export const SearchableMarkdown = ({ markdownContent, className, title }: Search
 
       <div ref={contentRef} className={`react-markdown ${className ? className : ''}`}>
         <ReactMarkdown
-            rehypePlugins={[rehypeRaw]}
+          rehypePlugins={[rehypeRaw]}
         >{getMarkdownText()}</ReactMarkdown>
       </div>
 

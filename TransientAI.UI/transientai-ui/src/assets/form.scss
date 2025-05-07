@@ -115,7 +115,60 @@ input[type="text"] {
   }
 }
 
-.rc-segmented-item-selected  {
+.rc-segmented-item-selected {
   background-color: $teal-100 !important;
-  
+
+}
+
+input[type='checkbox'] {
+  background-color: white;
+}
+
+.toggle-small {
+  .react-toggle-track {
+    width: 40px !important;
+    height: 20px !important;
+  }
+
+  .react-toggle-track-check {
+    width: 14px !important;
+    height: 10px !important;
+  }
+
+  .react-toggle-thumb {
+    width: 18px !important;
+    height: 18px !important;
+  }
+
+  .react-toggle-track-x {
+    height: 8px;
+    width: 8px;
+    right: 6px !important;
+    top: -3px;
+  }
+}
+
+.radio-button-container {
+  background-color: $gray-800;
+  height: 22px;
+  width: 22px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  i {
+    opacity: 0;
+    font-size: 12px;
+  }
+
+  &:hover, &.checked {
+    background-color: $teal-100;
+    
+    i {
+      opacity: 1;
+    }
+  }
 }

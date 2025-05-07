@@ -77,7 +77,7 @@ export function DashboardTabs({ children }: DashboardTabsProps) {
   }
 
   return (
-    <div className={`${styles['main-content']} widget ${isExpanded ? 'expanded' : ''}`}>
+    <div className={`widget height-100p ${isExpanded ? 'expanded' : ''}`}>
       <Tabs.Root defaultValue={defaultMenu?.description} value={selectedMenu?.description || defaultMenu?.description} className="height-100p">
         <Tabs.List>
           {tabs.map(tab => {

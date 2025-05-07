@@ -147,7 +147,7 @@ export function TopClients() {
                                 ))
                         }
                     </div>
-                    <div className={`news scrollable-div ${styles['recommended-clients']}`}>
+                    <div className={`news scrollable-div max-h-[75%] ${styles['recommended-clients']}`}>
                         {
                             recommendedClients?.map(client =>
                                 <ClientComponent
@@ -163,7 +163,7 @@ export function TopClients() {
     }
 
     return (
-        <div className={`${styles['recommendation-container']}`}>
+        <div className={`${styles['recommendation-container']} scrollable-div`}>
             <div className='sub-header'>Top Recommendations</div>
             <div className={`${styles['recommendation-header']}`}>
                 <span className={`${styles['issuer']}`}>{selectedBond?.bond_issuer}</span>

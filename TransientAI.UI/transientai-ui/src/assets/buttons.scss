@@ -69,3 +69,14 @@
   //  
 }
 
+.action-button {
+  background-color: $teal-100;
+  padding: 10px;
+  border-radius: 50%;
+  color: white;
+  height: 40px;
+  width: 40px;
+  align-items: center;
+  justify-content: center;
+  display: flex;
+}

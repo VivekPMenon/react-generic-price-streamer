@@ -1,7 +1,6 @@
 @import '../../assets/variables.scss';
 
 .todays-axes {
-  display: flex;
   height: 100%;
   gap: 5px;
 
@@ -86,6 +85,7 @@
   max-height: 375px;
   display: grid;
   gap: 10px;
+  overflow-y: auto;
   grid-auto-rows: auto auto minmax(75px, 200px);
 }
 

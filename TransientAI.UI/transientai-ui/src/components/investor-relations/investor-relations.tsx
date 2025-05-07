@@ -4,12 +4,13 @@ import styles from './investor-relations.module.scss';
 import React, {useCallback, memo} from 'react';
 import {DataGrid} from "@/components/data-grid";
 import {RequestFormPopup} from "@/components/investor-relations/request-form-popup";
-import {investorRelationsStore} from "@/services/investor-relations-data/investor-relations-store";
+import {useInvestorRelationsStore} from "@/services/investor-relations-data/investor-relations-store";
 import {tryParseAndFormatDateOnly} from "@/lib/utility-functions/date-operations";
 import {ColDef, FirstDataRenderedEvent, GetRowIdParams, GridSizeChangedEvent} from "ag-grid-community";
 import {executeAsync} from "@/lib/utility-functions/async";
 import { toast } from 'react-toastify';
 import i18n from '../../i18n';
+
 function getFlagStyle(flag: string|undefined|null) {
     const style: any = { display: "flex" };
     switch(flag) {
@@ -70,12 +71,8 @@ function DeleteButton(props: any) {
 }
 
 function InvestorRelations() {
-    const inquiries = investorRelationsStore.use.inquiries();
-    const isLoading = investorRelationsStore.use.isLoading();
-    const changeStatus = investorRelationsStore.use.changeStatus();
-    const deleteInquiry = investorRelationsStore.use.deleteInquiry();
-    const updateStatusFromCompleted = investorRelationsStore.use.updateStatusFromCompleted();
-
+    const {inquiries, isLoading, changeStatus, deleteInquiry, updateStatusFromCompleted} = useInvestorRelationsStore();
+    
     const getColumnDefs= useCallback((): ColDef[] => {
         return [
             {

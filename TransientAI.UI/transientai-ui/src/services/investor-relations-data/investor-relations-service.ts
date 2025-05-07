@@ -1,5 +1,5 @@
 import { webApihandler } from "@/services/web-api-handler";
-import {InquiryRequest, InquiryStatus} from "@/services/investor-relations-data/model";
+import { InquiryRequest, InquiryStatus, IREmailMessage } from "@/services/investor-relations-data/model";
 
 class InvestorRelationsService {
     readonly serviceName = 'hurricane-api';
@@ -24,6 +24,32 @@ class InvestorRelationsService {
         }
     }
 
+    async getIREmails(emailId: string): Promise<IREmailMessage[]> {
+        try {
+            return await webApihandler.get(`ir-emails?email_address=${emailId}`, {}, {
+                serviceName: this.serviceName
+            });
+        } catch (e: any) {
+            return [];
+        }
+    }
+
+    async getIRSummary(emailGuid: string, emailId: string): Promise<any> {
+        try {
+            return await webApihandler.post(`ir-summary/${emailGuid}?email_address=${emailId}`, {}, {}, {
+                serviceName: this.serviceName
+            });
+        } catch (e: any) {
+            return '';
+        }
+    }
+
+    async markIrEmailAsComplete(emailGuid: string, emailId: string): Promise<any> {
+        return await webApihandler.post(`update-ir-status?email_address=${emailId}`, [emailGuid], {}, {
+            serviceName: this.serviceName
+        });
+    }
+
     async submit(inquiry: InquiryRequest): Promise<boolean> {
         try {
             const newForm = await this.getTaskForm();
@@ -35,8 +61,8 @@ class InvestorRelationsService {
                 'submit_form',
                 newInquiry,
                 {}, {
-                    serviceName: this.serviceName
-                });
+                serviceName: this.serviceName
+            });
             return true;
         } catch (e: any) {
             return false;
@@ -47,20 +73,20 @@ class InvestorRelationsService {
         return await webApihandler
             .get(
                 'submitted_tasks', {
-                    assignee_name: assignee
-                }, {
-                    serviceName: this.serviceName
-                });
+                assignee_name: assignee
+            }, {
+                serviceName: this.serviceName
+            });
     }
 
     async changeStatus(id: string, status: InquiryStatus): Promise<boolean> {
         await webApihandler.post(
             'change_status', {
-                update_task_id: id,
-                new_status: status
-            }, {
-                serviceName: this.serviceName
-            });
+            update_task_id: id,
+            new_status: status
+        }, {}, {
+            serviceName: this.serviceName
+        });
         return true;
     }
 
