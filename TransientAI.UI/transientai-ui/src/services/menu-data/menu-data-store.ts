@@ -8,6 +8,7 @@ interface MenuState {
   fullMenuList: MenuInfo[];
   selectedMenu: MenuInfo | null;
   defaultMenu: MenuInfo;
+  isLoading: boolean;
   setActiveMenu: (menu: MenuInfo) => void;
   closeTab: (menuId: string) => void;
   initializeMenus: (mode: Mode) => void;
@@ -38,20 +39,26 @@ const useMenuStore = create<MenuState>((set) => ({
   fullMenuList: [],
   selectedMenu: [],
   defaultMenu: [],
+  isLoading: false,
 
   initializeMenus: async (mode: Mode) => {
+    set({ isLoading: true });
     const menuInfoList = await getMenuItems(mode);
+    try { 
+      const defaultMenuId = mode === Mode.BUY 
+      ? (menuInfoList.some((menu) => menu.key === 'hurricane-pms') ? 'hurricane-pms' : 'macro-panel') 
+      : 'todays-axes';
 
-    const defaultMenuId = mode === Mode.BUY 
-    ? (menuInfoList.some((menu) => menu.key === 'hurricane-pms') ? 'hurricane-pms' : 'macro-panel') 
-    : 'todays-axes';
-
-    set({
-        activeMenuList: calculateActiveMenuList(menuInfoList, defaultMenuId),
-        fullMenuList: menuInfoList,
-        selectedMenu: calculateCurrentMenu(menuInfoList)!,
-        defaultMenu: calculateDefaultMenu(menuInfoList, defaultMenuId)
-    })
+      set({
+          activeMenuList: calculateActiveMenuList(menuInfoList, defaultMenuId),
+          fullMenuList: menuInfoList,
+          selectedMenu: calculateCurrentMenu(menuInfoList)!,
+          defaultMenu: calculateDefaultMenu(menuInfoList, defaultMenuId),
+          isLoading: false,
+      })
+    } catch (error) { 
+      set({ isLoading: false });
+    }
   },
 
   setActiveMenu: (menu) =>
