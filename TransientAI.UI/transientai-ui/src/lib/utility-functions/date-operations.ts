@@ -115,28 +115,48 @@ export function formatDateToHHMM(date: Date | string): string {
 //   return date.toDateString();
 // }
 
+export function formatDateString(dateString: string | undefined | null): string {
+  // Return empty string for null, undefined, or empty string
+  if (!dateString || dateString.length === 0) {
+    return '';
+  }
+  
+  // Check if the string contains "Unknown" and return empty string
+  if (dateString.includes('Unknown')) {
+    return '';
+  }
+  
+  try {
+    
+    //const parts = dateString.split('T');
+    //const datePart = parts[0];
 
-export function formatDateString(isoDateString: string | undefined | null) {
-  // Extract just the date part if the input includes time
-  if(!isoDateString) return '';
-  const datePart = isoDateString.split('T')[0];
-  
-  // Create a Date object from the date part
-  const date = new Date(datePart);
-  
-  // Array of short month names
-  const months = [
-    'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-    'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
-  ];
-  
-  // Get the month name, day, and year
-  const monthName = months[date.getMonth()];
-  const day = date.getDate();
-  const year = date.getFullYear();
-  
-  // Return the formatted date string
-  return `${monthName} ${day} ${year}`;
+    // Create a Date object from the full string (including time)
+    // This will properly handle the timezone conversion from UTC
+    const date = new Date(dateString);
+    
+    // Check if the date is valid
+    if (isNaN(date.getTime())) {
+      return '';
+    }
+    
+    // Array of short month names
+    const months = [
+      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+    ];
+    
+    // Get the month name, day, and year in the LOCAL timezone
+    const monthName = months[date.getMonth()];
+    const day = date.getDate();
+    const year = date.getFullYear();
+    
+    // Format the date string with only month, day, and year
+    return `${monthName} ${day} ${year}`;
+  } catch (error:any) {
+    // Return empty string if any error occurs during processing
+    return '';
+  }
 }
 
 
