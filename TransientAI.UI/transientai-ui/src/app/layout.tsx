@@ -38,7 +38,7 @@ export default function RootLayout({
         wm-editor-extension-available="true"
     >
     <head>
-        <script src="https://kit.fontawesome.com/f60360a779.js" crossOrigin="anonymous" async></script>
+        <script src="https://kit.fontawesome.com/3ded5032cf.js" crossOrigin="anonymous" async></script>
     </head>
 
     <body className={`${geistSans.variable} ${geistMono.variable} antialiased font-sans dark`}>
