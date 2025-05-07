@@ -116,8 +116,9 @@ export function formatDateToHHMM(date: Date | string): string {
 // }
 
 
-export function formatDateString(isoDateString: string) {
+export function formatDateString(isoDateString: string | undefined | null) {
   // Extract just the date part if the input includes time
+  if(!isoDateString) return '';
   const datePart = isoDateString.split('T')[0];
   
   // Create a Date object from the date part
