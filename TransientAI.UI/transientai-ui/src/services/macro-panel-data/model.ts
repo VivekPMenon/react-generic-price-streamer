@@ -59,6 +59,7 @@ export interface EquityFuture extends IInstrument {
   value: number;
   net_change: number;
   percent_change: number;
+  data?: MarketData[];
 }
 
 export interface IInstrument {

@@ -4,7 +4,7 @@ import {
   BondData,
   CryptoCurrency,
   EquityFuture,
-  FxRate, MarketDataInterval,
+  FxRate,
   MarketDataType,
   TreasuryYield
 } from './model';
@@ -138,11 +138,20 @@ class MacroPanelDataService {
       return Object.entries(result)
           .flatMap(([key, item]) => (item as object[]).map((i: object) => {
             const t = i as EquityFuture;
+            if (t.data?.length) {
+              t.data.forEach(value => {
+                value.date = new Date(value.date!);
+                if (!value.timestamp) {
+                  value.timestamp = value.date;
+                }
+              });
+            }
             return {
               ...t,
               group_name: key,
               change: t.net_change,
               percent: t.percent_change,
+              marketData: t.data,
               type: MarketDataType.FUTURES
             }
           }));
