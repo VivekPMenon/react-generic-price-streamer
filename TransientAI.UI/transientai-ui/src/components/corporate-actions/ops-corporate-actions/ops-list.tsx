@@ -13,7 +13,7 @@ interface OpsListProps {
 
 export function OpsList ({ data }: OpsListProps) {
  const divRef = useRef<HTMLDivElement>(null)
- const { selectedCorpAction, setSelectedCorpAction} = useCorpActionsStore();
+ const { selectedCorpAction, isLoading, setSelectedCorpAction} = useCorpActionsStore();
 
   // const [emailContents, setEmailContents] = useState<any>({});
   const virtualizer = useVirtualizer({
@@ -129,7 +129,15 @@ export function OpsList ({ data }: OpsListProps) {
   return (
     <>
       <div className={styles['chatbot']}>
-        {data?.length > 0 ? corpActionsListElement : <p className='text-center my-auto'>No data Found</p>}
+        {isLoading ? (
+          <p className="text-center my-auto">Loading...</p>
+        ) : (
+          data?.length > 0 ? (
+            corpActionsListElement
+          ) : (
+            <p className="text-center my-auto">No data Found</p>
+          )
+        )}
       </div>
     </>
   )

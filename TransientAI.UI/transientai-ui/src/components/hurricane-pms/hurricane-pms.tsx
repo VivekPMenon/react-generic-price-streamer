@@ -58,7 +58,7 @@ const tabsConfig = [
   }
 ];
 
-export const HurricanePms = () => {
+export const PmsLive = () => {
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [managerId, setManagerId] = useState<string>('all');
     const [managerDetails, setManagerDetails] = useState<any[]>([]);
