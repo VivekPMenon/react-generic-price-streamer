@@ -30,12 +30,21 @@ class MacroPanelDataService {
           .filter(([key]) => key !== 'as_of_date')
           .map(([, item]) => {
             const t = item as TreasuryYield;
+            if (t.intraday_data?.length) {
+              t.intraday_data.forEach(value => {
+                value.date = new Date(value.date!);
+                if (!value.timestamp) {
+                  value.timestamp = value.date;
+                }
+              });
+            }
             return {
               ...t,
               value: t.rate,
               change: t.one_day_change_bps,
               percent: t.ytd_change_bps,
               symbol: t.ticker ?? '',
+              marketData: t.intraday_data,
               type: t.type ?? MarketDataType.UNKNOWN
             };
           })];

@@ -35,12 +35,14 @@ export const useRiskDataStore = create<RiskDataState>((set, get) => ({
     try {
       const result = await riskDataService.getRiskMetrics();
 
-      const ibisAllIndex = result.margin_data.findIndex((item: RiskMetricsItem) => item.name === 'IBIS_ALL*');
-      const [ibisAllItem] = result.margin_data.splice(ibisAllIndex, 1);
-      result.margin_data.unshift(ibisAllItem);
+      if (result.margin_data) {
+        const ibisAllIndex = result.margin_data.findIndex((item: RiskMetricsItem) => item.name === 'IBIS_ALL*');
+        const [ibisAllItem] = result.margin_data.splice(ibisAllIndex, 1);
+        result.margin_data.unshift(ibisAllItem);
+      }
 
       set({
-        riskMetricsItems: result.margin_data,
+        riskMetricsItems: result.margin_data ?? [],
         lastUpdatedTimestamp: result?.timestamp,
         isLoading: false,
         riskMetricsItemsFiltered: result?.margin_data?.filter((data: RiskMetricsItem) => {
