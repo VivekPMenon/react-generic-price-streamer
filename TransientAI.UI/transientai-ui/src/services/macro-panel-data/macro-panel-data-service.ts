@@ -149,7 +149,8 @@ class MacroPanelDataService {
             return {
               ...t,
               group_name: key,
-              change: t.net_change,
+              value: t.current_price,
+              change: t.change,
               percent: t.percent_change,
               marketData: t.data,
               type: MarketDataType.FUTURES

@@ -56,8 +56,8 @@ export interface EquityFuture extends IInstrument {
   name: string;
   group_name: string;
   symbol: string;
-  value: number;
-  net_change: number;
+  current_price: number;
+  change: number;
   percent_change: number;
   data?: MarketData[];
 }
