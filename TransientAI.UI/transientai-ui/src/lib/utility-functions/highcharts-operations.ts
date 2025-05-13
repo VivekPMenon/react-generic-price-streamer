@@ -76,7 +76,7 @@ export function getChartOptions(
     let areaStart: string;
     let areaEnd: string;
     let line: string;
-    if (ignoreNegative && !isNegative) {
+    if (ignoreNegative || !isNegative) {
         gradientStart = 'rgba(25, 135, 84, 0.4)';
         gradientEnd = 'rgba(25, 135, 84, 0)';
         areaStart = 'rgba(0, 255, 0, 0.4)';
