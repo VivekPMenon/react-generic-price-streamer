@@ -285,6 +285,20 @@ class WebApihandler {
   getBearerTokenToSession(){
     return sessionStorage.getItem('bearerToken');
   }
+
+  signOut() {
+    sessionStorage.clear();
+    localStorage.clear();
+    const accounts = msalInstance.getAllAccounts();
+    const logoutRequest = {
+      account: accounts.length > 0 ? accounts[0] : undefined,
+      postLogoutRedirectUri: window.location.origin,
+    };
+    msalInstance.logoutRedirect(logoutRequest)
+      .catch(error => {
+        console.error("Logout failed:", error);
+      });
+  }
 }
 
 export const webApihandler = new WebApihandler();
