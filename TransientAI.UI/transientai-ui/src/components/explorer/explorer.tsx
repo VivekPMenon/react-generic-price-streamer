@@ -38,7 +38,8 @@ export function Explorer(props: NotificationsProps) {
 
   useEffect(() => {
     initializeMenus(props.mode);
-  }, [props.mode])
+  }, [props.mode,initializeMenus])
+  
   return (
     <div className={`${styles.explorer} widget`}>
       <div className="widget-title">

@@ -51,6 +51,10 @@ const SharedDropdown = <T,>({
     menu: (provided: any) => ({
       ...provided,
       backgroundColor: '#1f2937', // bg-gray-800
+      zIndex: 9999,
+      position: 'absolute',
+      width: '100%', 
+      border: '1px solid #374151',
     }),
     option: (provided: any, state: any) => ({
       ...provided,
@@ -117,8 +121,13 @@ const SharedDropdown = <T,>({
     onChange(selectedOption || null);
   };
 
+  const containerStyle = {
+    position: "relative" as const,
+    zIndex: 50,
+  };
+
   return (
-    <div className="flex-grow">
+    <div className="flex-grow" style={containerStyle}>
       <Select
         isLoading={isLoading}
         options={options}
@@ -131,6 +140,8 @@ const SharedDropdown = <T,>({
         isClearable={isClearable}
         isSearchable={isSearchable}
         noOptionsMessage={() => noOptionsMessage()}
+        menuPortalTarget={document.body} 
+        menuPosition="fixed" 
       />
     </div>
   );
