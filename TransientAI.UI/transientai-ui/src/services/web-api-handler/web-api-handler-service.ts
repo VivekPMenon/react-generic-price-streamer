@@ -14,11 +14,6 @@ class WebApihandler {
   private refreshPromise: Promise<string> | null = null;
   constructor() {}
 
-  setBearerToken(token: string) {
-    this.bearerToken = token;
-  }
-
-
   private async ensureToken(): Promise<void> {
     while (!this.bearerToken) {
       await new Promise(resolve => setTimeout(resolve, 100));
@@ -50,7 +45,7 @@ class WebApihandler {
           });
 
           const newToken = response.headers["authorization"].split(" ")[1];
-          this.setBearerToken(newToken);
+          this.setBearerTokenToSession(newToken);
           resolve(newToken);
         } catch (error) {
           if (axios.isAxiosError(error) && error.response?.status === 401) {
@@ -72,7 +67,7 @@ class WebApihandler {
               });
 
               const newToken = loginResponse.headers["authorization"].split(" ")[1];
-              this.setBearerToken(newToken);
+              this.setBearerTokenToSession(newToken);
               setUserContext({ ...userContext, token: newToken });
               resolve(newToken);
             } catch (msError) {
@@ -280,6 +275,15 @@ class WebApihandler {
       params
     };
     return this.executeRequest(config);
+  }
+
+  setBearerTokenToSession(token: string){
+    this.bearerToken = token;
+    return sessionStorage.setItem('bearerToken',token);
+  }
+
+  getBearerTokenToSession(){
+    return sessionStorage.getItem('bearerToken');
   }
 }
 
