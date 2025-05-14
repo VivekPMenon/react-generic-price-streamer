@@ -62,9 +62,11 @@ export function getChartOptions(
     const marketData = marketDataProvider();
     let seriesData: [number, number|undefined, number|undefined, number|undefined, number|undefined][] = [];
     if (marketData?.length) {
-        const today = new Date().setHours(0, 0, 0, 0);
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const limit = new Date(today).setDate(today.getDate() - 4);
         seriesData = marketData
-            .filter(data => data.timestamp && data.timestamp.getTime() >= today)
+            .filter(data => data.timestamp && data.timestamp.getTime() >= limit)
             .sort((a, b) => a.timestamp!.getTime() - b.timestamp!.getTime())
             .map(data => {
                 return [data.timestamp!.getTime(), data.open, data.high, data.low, data.close];
