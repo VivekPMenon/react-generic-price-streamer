@@ -16,9 +16,9 @@ export function Explorer (props: ExplorerProps) {
   const isLoading = menuStore.use.isLoading();
 
   useEffect(() => {
-    initializeMenus(props.mode)
-  }, [initializeMenus, props.mode])
-
+    initializeMenus(props.mode);
+  }, [props.mode,initializeMenus])
+  
   return (
     <div className={`${styles.explorer} widget`}>
       <div className='widget-title'>Explorer</div>

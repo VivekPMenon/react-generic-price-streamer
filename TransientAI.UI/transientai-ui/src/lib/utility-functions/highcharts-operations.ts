@@ -2,8 +2,11 @@ import {MarketData, PeriodType} from "@/services/market-data";
 import Highcharts, {RangeSelectorButtonsOptions} from "highcharts";
 import dynamic from "next/dynamic";
 import {enumToKeyValuePair, KeyValuePair} from "@/lib/utility-functions/enum-operations";
-import "highcharts/modules/accessibility";
-export const HighchartsReact = dynamic(() => import('highcharts-react-official'), { ssr: false });
+
+export const HighchartsReact = dynamic(
+    () => import('highcharts-react-official'), {
+        ssr: false
+    });
 
 export type OLHCData = [number, number|undefined, number|undefined, number|undefined, number|undefined];
 
@@ -62,9 +65,11 @@ export function getChartOptions(
     const marketData = marketDataProvider();
     let seriesData: [number, number|undefined, number|undefined, number|undefined, number|undefined][] = [];
     if (marketData?.length) {
-        const today = new Date().setHours(0, 0, 0, 0);
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const limit = new Date(today).setDate(today.getDate() - 4);
         seriesData = marketData
-            .filter(data => data.timestamp && data.timestamp.getTime() >= today)
+            .filter(data => data.timestamp && data.timestamp.getTime() >= limit)
             .sort((a, b) => a.timestamp!.getTime() - b.timestamp!.getTime())
             .map(data => {
                 return [data.timestamp!.getTime(), data.open, data.high, data.low, data.close];
@@ -76,7 +81,7 @@ export function getChartOptions(
     let areaStart: string;
     let areaEnd: string;
     let line: string;
-    if (ignoreNegative && !isNegative) {
+    if (ignoreNegative || !isNegative) {
         gradientStart = 'rgba(25, 135, 84, 0.4)';
         gradientEnd = 'rgba(25, 135, 84, 0)';
         areaStart = 'rgba(0, 255, 0, 0.4)';

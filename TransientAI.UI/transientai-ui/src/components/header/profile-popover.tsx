@@ -1,11 +1,12 @@
 import { UserContext } from '@/services/user-context';
+import { webApihandler } from '@/services/web-api-handler';
 import * as Popover from '@radix-ui/react-popover';
-
 export interface ProfilePopoverProps {
   userContext: UserContext;
 }
 
 export default function ProfilePopover({ userContext }: ProfilePopoverProps) {
+
   return (
     <Popover.Root>
       <Popover.Trigger asChild>
@@ -16,7 +17,12 @@ export default function ProfilePopover({ userContext }: ProfilePopoverProps) {
           <div className='profile-info'>
             <div className='top-row'>
               <span>HURRICANE CAPITAL</span>
-              <span className='hyperlink primary'>Sign Out</span>
+              <span
+                className='hyperlink primary'
+                onClick={() => webApihandler.signOut()}
+              >
+                Sign Out
+              </span>
             </div>
 
             <div className='main-content'>
