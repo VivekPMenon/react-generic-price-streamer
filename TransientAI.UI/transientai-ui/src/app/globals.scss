@@ -131,3 +131,7 @@ font {
   -ms-user-select: none;
   user-select: none;
 }
+
+.switch-user-status.react-toggle--checked .react-toggle-track {
+  background-color: $green !important;
+}

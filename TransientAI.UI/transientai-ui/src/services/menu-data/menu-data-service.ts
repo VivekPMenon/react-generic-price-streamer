@@ -159,6 +159,30 @@ const sellMenuInfoList: MenuInfo[] = [
   },
 ];
 
+export const AdminMenuList: MenuInfo[] = [
+  {
+    id: 'user-management',
+    route: '/admin-dashboard/user-management',
+    description: i18n.t('Users'),
+    badgeCount: 1,
+    icon: 'fa-solid fa-users'
+  },
+  {
+    id: 'role-management',
+    route: '/admin-dashboard/role-management',
+    description: i18n.t('Roles'),
+    badgeCount: 1,
+    icon: 'fa-solid fa-gears'
+  },
+  {
+    id: 'projects',
+    route: '/admin-dashboard/user-management',
+    description: i18n.t('Projects'),
+    badgeCount: 1,
+    icon: 'fa-solid fa-list-check'
+  }
+
+]
 export async function getMenuItems(mode: Mode) {
   if (mode === Mode.SELL) {
     return sellMenuInfoList;
