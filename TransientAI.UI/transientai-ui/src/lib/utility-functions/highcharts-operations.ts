@@ -2,8 +2,11 @@ import {MarketData, PeriodType} from "@/services/market-data";
 import Highcharts, {RangeSelectorButtonsOptions} from "highcharts";
 import dynamic from "next/dynamic";
 import {enumToKeyValuePair, KeyValuePair} from "@/lib/utility-functions/enum-operations";
-import "highcharts/modules/accessibility";
-export const HighchartsReact = dynamic(() => import('highcharts-react-official'), { ssr: false });
+
+export const HighchartsReact = dynamic(
+    () => import('highcharts-react-official'), {
+        ssr: false
+    });
 
 export type OLHCData = [number, number|undefined, number|undefined, number|undefined, number|undefined];
 
