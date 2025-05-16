@@ -115,8 +115,8 @@ const SupportWidget = () => {
                  <i className="fa-regular fa-message  text-2xl"></i>
                 </div>
               </a>
-              <span className='text-gray-400 text-xs mt-1'>
-                Clicking starts a WhatsApp Chat.
+              <span className='text-gray-400 text-xs mt-1 text-center'>
+                Click to start WhatsApp chat
               </span>
             </div>
 
@@ -143,8 +143,9 @@ const SupportWidget = () => {
 
             {/* Email support */}
             <div className='bg-gray-800 rounded-lg p-3 flex flex-col items-center'>
-              <div className='text-white mb-1'>
-                <span className='text-xs'>Email</span>
+              <div className='text-green-500 mb-1 text-xl flex gap-1 items-center'>
+                <i className="fa-light fa-envelope"></i>
+                <span className='text-white text-xs'>Email</span>
               </div>
               <a
                 href={`mailto:${emailAddress}`}
