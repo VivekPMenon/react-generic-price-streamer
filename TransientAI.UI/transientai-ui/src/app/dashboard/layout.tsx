@@ -17,6 +17,7 @@ import {ServiceInitializer} from "@/services/startup/initializer";
 import msalInstance from '../msal-config';
 import styles from './layout.module.scss';
 import 'react-tooltip/dist/react-tooltip.css'
+import SupportWidget from '@/components/support/support';
 
 const MODE: Mode = Mode.BUY;
 
@@ -113,6 +114,7 @@ export default function DashboardLayout({
                   {children}
                 </DashboardTabs>
               </div>
+              <SupportWidget/>
             </main>
           </div>
       }
