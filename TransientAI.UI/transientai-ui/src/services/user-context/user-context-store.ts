@@ -40,11 +40,11 @@ export const useUserContextStore = create<UserContextState>((set) => ({
       set({ isLoading: true });
 
       // Skip login API call if a token is already stored in sessionStorage 
-      const existingToken = sessionStorage.getItem("bearerToken");
+      const existingToken = webApihandler.getBearerTokenToSession();
       const getUserInfo = sessionStorage.getItem("userInfo");
       const existingUserInfo = getUserInfo && JSON.parse(getUserInfo) as UserInfo;
       if (existingToken && existingUserInfo) {
-        webApihandler.setBearerToken(existingToken);
+        webApihandler.setBearerTokenToSession(existingToken);
         const accounts = msalInstance.getAllAccounts();
         if (accounts.length > 0) {
           const account = accounts[0];
@@ -94,9 +94,8 @@ export const useUserContextStore = create<UserContextState>((set) => ({
       const userInfo:UserInfo = bearerTokenRes.loginResponse.user_info;
 
       if (bearerTokenRes) {
-        sessionStorage.setItem("bearerToken", bearerTokenRes.bearerToken);
+        webApihandler.setBearerTokenToSession(bearerTokenRes.bearerToken)
         sessionStorage.setItem("userInfo", JSON.stringify(userInfo));
-        webApihandler.setBearerToken(bearerTokenRes.bearerToken);
       }
 
       const userContext = mapAccountToUser(account!, userInfo);

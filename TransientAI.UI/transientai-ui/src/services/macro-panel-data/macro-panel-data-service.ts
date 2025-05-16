@@ -4,7 +4,7 @@ import {
   BondData,
   CryptoCurrency,
   EquityFuture,
-  FxRate, MarketDataInterval,
+  FxRate,
   MarketDataType,
   TreasuryYield
 } from './model';
@@ -30,12 +30,21 @@ class MacroPanelDataService {
           .filter(([key]) => key !== 'as_of_date')
           .map(([, item]) => {
             const t = item as TreasuryYield;
+            if (t.intraday_data?.length) {
+              t.intraday_data.forEach(value => {
+                value.date = new Date(value.date!);
+                if (!value.timestamp) {
+                  value.timestamp = value.date;
+                }
+              });
+            }
             return {
               ...t,
               value: t.rate,
               change: t.one_day_change_bps,
               percent: t.ytd_change_bps,
               symbol: t.ticker ?? '',
+              marketData: t.intraday_data,
               type: t.type ?? MarketDataType.UNKNOWN
             };
           })];
@@ -138,11 +147,21 @@ class MacroPanelDataService {
       return Object.entries(result)
           .flatMap(([key, item]) => (item as object[]).map((i: object) => {
             const t = i as EquityFuture;
+            if (t.data?.length) {
+              t.data.forEach(value => {
+                value.date = new Date(value.date!);
+                if (!value.timestamp) {
+                  value.timestamp = value.date;
+                }
+              });
+            }
             return {
               ...t,
               group_name: key,
-              change: t.net_change,
+              value: t.current_price,
+              change: t.change,
               percent: t.percent_change,
+              marketData: t.data,
               type: MarketDataType.FUTURES
             }
           }));

@@ -1,5 +1,6 @@
 import { webApihandler } from "@/services/web-api-handler";
 import { InquiryRequest, InquiryStatus, IREmailMessage } from "@/services/investor-relations-data/model";
+import {endpointFinder} from "@/services/web-api-handler/endpoint-finder-service";
 
 class InvestorRelationsService {
     readonly serviceName = 'hurricane-api';
@@ -32,6 +33,12 @@ class InvestorRelationsService {
         } catch (e: any) {
             return [];
         }
+    }
+
+    async getEmailContentAsHtml(emailGuid: string, emailId: string): Promise<string> {
+        const url = emailId ? `ir-email-html/${emailGuid}?research_email=${emailId}` : `ir-email-html/${emailGuid}`;
+        const result = await webApihandler.get(url, {}, { serviceName: this.serviceName });
+        return result.html_content;
     }
 
     async getIRSummary(emailGuid: string, emailId: string): Promise<any> {

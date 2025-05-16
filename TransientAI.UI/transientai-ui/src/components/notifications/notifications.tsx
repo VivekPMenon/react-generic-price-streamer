@@ -90,7 +90,7 @@ function getIconClass(type: NotificationType) {
       return 'fa-solid fa-handshake';
 
     case NotificationType.BreakNews:
-      return 'fa fa-whatsapp text-green-600';
+      return 'fa-brands fa-whatsapp text-green-600';
 
     case NotificationType.Macro:
       return 'fa fa-list-check';

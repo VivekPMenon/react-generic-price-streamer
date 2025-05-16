@@ -2,11 +2,9 @@ import { useEffect, useRef, useState } from 'react';
 import styles from './investor-relations-revised.module.scss';
 import { Spinner } from '@radix-ui/themes';
 import { InquiryFlag, InquiryRequest, InquiryStatus, investorRelationsService, IREmailMessage } from '@/services/investor-relations-data';
-import EmailHeader from '../email-header/email-header';
 import Toggle from 'react-toggle';
 import { useInvestorRelationsStore } from '@/services/investor-relations-data/investor-relations-store';
 import { formatDate } from '@/lib/utility-functions/date-operations';
-import { researchReportsDataService } from '@/services/reports-data';
 import EmailViewer from '../email-parser/email-viewer';
 import { SearchableMarkdown } from '../markdown';
 import { RequestFormPopup } from './request-form-popup';
@@ -38,7 +36,7 @@ export function InvestorRelationsRevised() {
     const userContext = useUserContextStore.getState().userContext;
 
     const [emailContent, aiContent] = await Promise.all([
-      researchReportsDataService.getEmailContentAsHtml(email.id!, userContext.userId!),
+      investorRelationsService.getEmailContentAsHtml(email.id!, userContext.userId!),
       investorRelationsService.getIRSummary(email.id!, userContext.userId!)
     ]);
 

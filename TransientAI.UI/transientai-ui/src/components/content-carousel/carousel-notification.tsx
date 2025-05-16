@@ -32,7 +32,7 @@ function getIconClass (type: CarouselNotificationType) {
       return 'fa-solid fa-handshake'
 
     case CarouselNotificationType.BreakNews:
-      return 'fa fa-whatsapp !text-green-600'
+      return 'fa-brands fa-whatsapp !text-green-600'
 
     case CarouselNotificationType.Macro:
       return 'fa fa-list-check'

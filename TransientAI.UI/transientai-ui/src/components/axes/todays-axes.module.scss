@@ -3,6 +3,7 @@
 .todays-axes {
   height: 100%;
   gap: 5px;
+  display: flex;
 
   & > div {
     display: flex;
@@ -82,11 +83,11 @@
 }
 
 .recommendation-container {
-  max-height: 375px;
+  max-height: calc(100vh - 470px);
   display: grid;
   gap: 10px;
   overflow-y: auto;
-  grid-auto-rows: auto auto minmax(75px, 200px);
+  // grid-auto-rows: auto auto minmax(75px, 200px);
 }
 
 .recommendation-header {

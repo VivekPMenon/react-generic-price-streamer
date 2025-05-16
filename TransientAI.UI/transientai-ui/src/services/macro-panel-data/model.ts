@@ -11,8 +11,9 @@ export interface TreasuryYield extends IInstrument {
   name: string;
   group_name: string;
   ticker?: string;
-  rate: number
-  one_day_change_bps?: number
+  rate: number;
+  intraday_data?: MarketData[];
+  one_day_change_bps?: number;
   ytd_change_bps?: number;
   type?: MarketDataType;
 }
@@ -56,9 +57,10 @@ export interface EquityFuture extends IInstrument {
   name: string;
   group_name: string;
   symbol: string;
-  value: number;
-  net_change: number;
+  current_price: number;
+  change: number;
   percent_change: number;
+  data?: MarketData[];
 }
 
 export interface IInstrument {

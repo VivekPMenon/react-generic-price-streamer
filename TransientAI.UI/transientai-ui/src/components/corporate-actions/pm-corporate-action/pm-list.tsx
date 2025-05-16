@@ -16,7 +16,7 @@ interface PmListProps {
 
 export function PmList ({ data }: PmListProps) {
   const divRef = useRef<HTMLDivElement>(null)
-    const { selectedCorpAction, setSelectedCorpAction } = useCorpActionsStore();
+    const { selectedCorpAction, isLoading ,setSelectedCorpAction } = useCorpActionsStore();
 
 
   // const [emailContents, setEmailContents] = useState<any>({});
@@ -139,7 +139,15 @@ export function PmList ({ data }: PmListProps) {
   return (
     <>
       <div className={styles['chatbot']}>
-        {data?.length > 0 ? corpActionsListElement : <p className='text-center my-auto'>No data Found</p>}
+        {isLoading ? (
+          <p className="text-center my-auto">Loading...</p> 
+        ) : (
+          data?.length > 0 ? (
+            corpActionsListElement
+          ) : (
+            <p className="text-center my-auto">No data Found</p>
+          )
+        )}
       </div>
     </>
   )
