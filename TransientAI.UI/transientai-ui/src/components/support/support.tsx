@@ -14,9 +14,9 @@ const SupportWidget = () => {
 
   const phoneNumber = '+1 (786) 893-8777';
   const emailAddress = 'support@hurricanecap.com';
-  const whatsAppLink = 'https://wa.me/message/TC637VJOUXSHB1';
+  const whatsAppLink = 'https://wa.me/message/TC637V3OUXSHB1';
   const whatsAppQRImg = '/images/whats_app_qr.png';
-  const whatsappCallLink = `https://wa.me/+1(786)893-8777?call=true`;
+  const whatsappCallLink = `https://wa.me/17868938777?call=true`;
 
 
   // Modal Component for displaying the image in full size
@@ -99,26 +99,30 @@ const SupportWidget = () => {
               </span>
             </div>
 
-            {/* WhatsApp Link */}
-            <div className='bg-gray-800 rounded-lg p-3 flex flex-col items-center'>
-              <div className='text-green-500 text-xl mb-1 flex gap-1 items-center'>
-                <i className='fa-brands fa-whatsapp'></i>
-                <span className='text-white text-xs'>WhatsApp</span>
-              </div>
-              <a
-                href={whatsAppLink}
-                target='_blank'
-                rel='noopener noreferrer'
-                className='bg-gray-700 p-2 rounded-md'
-              >
-                <div className='w-16 h-16 flex items-center justify-center'>
-                 <i className="fa-regular fa-message  text-2xl"></i>
+           {/* WhatsApp Link */}
+              <div className='bg-gray-800 rounded-lg p-3 flex flex-col items-center'>
+                <div className='text-green-500 text-xl mb-1 flex gap-1 items-center'>
+                  <i className='fa-brands fa-whatsapp'></i>
+                  <span className='text-white text-xs'>WhatsApp</span>
                 </div>
-              </a>
-              <span className='text-gray-400 text-xs mt-1 text-center'>
-                Click to start WhatsApp chat
-              </span>
-            </div>
+                <a
+                  href={whatsAppLink}
+                  target='_blank'
+                  rel='noopener noreferrer'
+                  className='bg-gray-700 p-2 rounded-md'
+                  onClick={(e) => {
+                    e.preventDefault();
+                    window.open(whatsAppLink, "_blank");
+                  }}
+                >
+                  <div className='w-16 h-16 flex items-center justify-center'>
+                 <i className="fa-regular fa-message  text-2xl"></i>
+                  </div>
+                </a>
+                <span className='text-gray-400 text-xs mt-1 text-center'>
+                  Click to start WhatsApp chat
+                </span>
+              </div>
 
             {/* WhatsApp Text */}
             <div className='bg-gray-800 rounded-lg p-3 flex flex-col items-center'>
@@ -131,6 +135,10 @@ const SupportWidget = () => {
                 target='_blank'
                 rel='noopener noreferrer'
                 className='bg-gray-700 p-2 rounded-md'
+                onClick={(e) => {
+                  e.preventDefault();
+                  window.open(whatsappCallLink, "_blank");
+                }}
               >
                 <div className='w-16 h-16 flex items-center justify-center'>
                   <i className='fa-regular fa-phone text-2xl'></i>
