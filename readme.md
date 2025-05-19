@@ -91,6 +91,7 @@ Need help while contributing? Tag any of the maintainers when creating the issue
     <td align="center" width="200"><pre><a href="https://github.com/dmaciag"><img src="https://github.com/dmaciag.png" width="200" alt="GitHub Profile picture of Daniel Maciag" /><br><sub>Daniel Maciag</sub></a></pre></td>
     <td align="center" width="200"><pre><a href="https://github.com/pramodsankarl"><img src="https://github.com/pramodsankarl.png" width="200" alt="GitHub Profile Picture of Pramod Sankar"/><br><sub>Pramod Sankar</sub></a></pre></td>
   </tr>
+  
 </table>
 
 <a name="our-contributors"></a>
