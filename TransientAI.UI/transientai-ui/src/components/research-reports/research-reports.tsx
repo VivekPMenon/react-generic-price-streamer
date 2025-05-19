@@ -18,6 +18,7 @@ import { useScrollTo, useScrollToElementId } from '@/lib/hooks';
 import { Spinner } from '@radix-ui/themes';
 import { translateText } from '@/i18n'; // Import your translate function
 import { useUserContextStore } from '@/services/user-context';
+import { userService } from '@/services/user-context/user-service';
 
 export interface ResearchReportsProps {
   isExpanded?: boolean;
@@ -102,7 +103,9 @@ export function ResearchReports({ isExpanded }: ResearchReportsProps) {
 
     try {
       const userContext = useUserContextStore.getState().userContext;
-      const emailContent = await researchReportsDataService.getEmailContentAsHtml(report.id!, userContext.userId!);
+      const userEmail = userService.getPreviewUserEmail();
+      const currentEmail =  userEmail ? userEmail : userContext.userId;
+      const emailContent = await researchReportsDataService.getEmailContentAsHtml(report.id!, currentEmail!);
       setEmailContent(emailContent);
 
       // it has to be done sequentially due to the AI engine limitation 
