@@ -45,36 +45,47 @@ export function DashboardTabs({ children }: DashboardTabsProps) {
 
     if (deviceType === 'mobile') {
       return selectedMenu
-        ? [{ id: selectedMenu.id, description: selectedMenu.description, route: selectedMenu.route }]
+        ? [{ id: selectedMenu.id, description: selectedMenu.description, route: selectedMenu.route, key: selectedMenu.key }]
         : [];
     }
 
     return activeMenuList.map(menu => ({
       id: menu.id,
       description: menu.description,
-      route: menu.route
+      route: menu.route,
+      key: menu.key,
     }));
   }
 
   function selectTab(tab: TabInfo) {
     if (!tab.route) return;
     previousSelectedMenu.current = selectedMenu?.id;
-    setActiveMenu({ id: tab.id, description: tab.description, route: tab.route });
+    setActiveMenu({ id: tab.id, description: tab.description, route: tab.route,key: tab.key });
     router.push(tab.route);
   }
 
-  function handleCloseTab(event: React.MouseEvent, tab: TabInfo) {
-    event.stopPropagation();
-    if (!tab.id) return;
+ function handleCloseTab(event: React.MouseEvent, tab: TabInfo) {
+  event.stopPropagation();
+  if (!tab.id) return;
 
-    closeTab(tab.id);
-
-    if (selectedMenu?.id === tab.id) {
-      previousSelectedMenu.current = selectedMenu?.id;
-      setActiveMenu(defaultMenu);
-      router.push(defaultMenu.route!);
+  // Store the current tab index before closing
+  const currentIndex = tabs.findIndex(t => t.id === tab.id);
+  closeTab(tab.id);
+ 
+  if (selectedMenu?.id === tab.id) {
+    previousSelectedMenu.current = tab.id;
+    const tabsAfterClose = calculateTabs().filter(t => t.id !== tab.id);
+    let nextTab = defaultMenu;
+    if (tabsAfterClose.length > 0) {
+      const nextIndex = Math.min(currentIndex, tabsAfterClose.length - 1);
+      nextTab = tabsAfterClose[nextIndex];
     }
+    
+    setActiveMenu(nextTab);
+    router.push(nextTab.route!);
   }
+}
+  
 
   return (
     <div className={`widget height-100p ${isExpanded ? 'expanded' : ''}`}>
@@ -85,7 +96,7 @@ export function DashboardTabs({ children }: DashboardTabsProps) {
 
             return (
               <Tabs.Trigger
-                key={tab.id}
+                key={tab.key}
                 value={tab.description || 'Untitled'}
                 onClick={() => selectTab(tab)}
                 className={unseenCount > 0 ? 'flash' : ''}
