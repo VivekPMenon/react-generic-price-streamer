@@ -1,21 +1,42 @@
+import { adminDashboardDataService } from '@/services/admin-dashboard/admin-dashboard-data-service'
+import { UserFormData } from '@/services/admin-dashboard/model'
 import { Button } from '@radix-ui/themes'
 import React, { useEffect } from 'react'
 import { Controller, useForm } from 'react-hook-form'
+import { toast } from 'react-toastify'
 import Toggle from 'react-toggle'
 
-/**
- * Type for form data structure
- */
-export interface UserFormData {
-  user_id?: number
-  first_name: string
-  last_name: string
-  role_id: string
-  is_super_admin: boolean
-  user_type: string
-  email: string
-  is_status: boolean
-}
+// In feature need to get the list from API
+const UserRoleList = [
+  {
+    value: 1,
+    label: 'Admin'
+  },
+  {
+    value: 2,
+    label: 'Portfolio Manager'
+  },
+  {
+    value: 3,
+    label: 'Operations'
+  },
+  {
+    value: 4,
+    label: 'Trader'
+  }
+]
+
+// In feature need to get the list from API
+const UserTypeList = [
+  {
+    value: 'AD',
+    label: 'AD'
+  },
+  {
+    value: 'Non AD',
+    label: 'Non AD'
+  }
+]
 
 /**
  * Interface for UserForm props
@@ -23,7 +44,7 @@ export interface UserFormData {
 interface UserFormProps {
   setIsOpen: (isOpen: boolean) => void
   isEditMode: boolean
-  user?: UserFormData | null
+  user_id?: number | null
 }
 
 /**
@@ -32,35 +53,64 @@ interface UserFormProps {
 export const UserForm: React.FC<UserFormProps> = ({
   setIsOpen,
   isEditMode = false,
-  user
+  user_id
 }) => {
-  const defaultValues = {
+  const defaultValues: UserFormData = {
+    user_id: null,
     first_name: '',
     last_name: '',
-    role_id: '',
+    role_name: '',
     user_type: '',
     email: '',
     is_status: false,
     is_super_admin: false
   }
 
-  const onSubmit = (data: UserFormData) => {
-    console.log('Form submitted:', data)
-    setIsOpen(false)
+  const onSubmit = async (data: UserFormData) => {
+    isEditMode ? await handleEditUser(data) : await handleCreateUser(data)
+  }
+
+  const handleEditUser = async (data: UserFormData) => {
+    try {
+      const response = await adminDashboardDataService.updateUser(data)
+      toast.success(response.message)
+    } catch {
+      toast.error('Error updating user')
+    } finally {
+      setIsOpen(false)
+    }
+  }
+
+  const handleCreateUser = async (data: UserFormData) => {
+    try {
+      const response = await adminDashboardDataService.createUser(data)
+      toast.success(response.message)
+    } catch {
+      toast.error('Error Add user')
+    } finally {
+    }
   }
 
   const { register, handleSubmit, control, reset, setValue, watch } =
     useForm<UserFormData>({ defaultValues })
 
   useEffect(() => {
-    if (isEditMode && user) {
-      // Populate form with user data when in edit mode
-      reset(user)
+    if (isEditMode && user_id) {
+      const fetchUser = async () => {
+        try {
+          const response = await adminDashboardDataService.getUser(user_id)
+          console.log(response)
+          reset(response.response_data)
+        } catch {
+          console.error('Error fetching user data')
+        }
+      }
+      fetchUser()
     } else {
       // Reset form to default values when in create mode
       reset(defaultValues)
     }
-  }, [isEditMode, user, reset])
+  }, [isEditMode, user_id, reset])
 
   return (
     <form
@@ -122,6 +172,7 @@ export const UserForm: React.FC<UserFormProps> = ({
         <input
           {...register('email', {
             required: 'Email is required',
+            disabled: isEditMode,
             pattern: {
               value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
               message: 'Invalid email address'
@@ -129,21 +180,25 @@ export const UserForm: React.FC<UserFormProps> = ({
           })}
           type='email'
           placeholder='Admin@hurricanecap.com'
-          className='w-full py-3 pl-10 pr-4 bg-gray-800 border border-gray-700 rounded-md text-white placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-teal-500 focus:border-teal-500 overflow-hidden text-ellipsis'
+          className={`w-full py-3 pl-10 pr-4 bg-gray-800 border border-gray-700 rounded-md text-white placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-teal-500 focus:border-teal-500 overflow-hidden text-ellipsis ${
+            isEditMode && 'opacity-60'
+          }`}
         />
       </div>
 
       <div className='relative'>
         <select
-          {...register('role_id', { required: 'Role is required' })}
+          {...register('role_name', { required: 'Role is required' })}
           className='w-full py-3 px-4 bg-gray-800 border border-gray-700 rounded-md text-white appearance-none focus:outline-none focus:ring-1 focus:ring-teal-500 focus:border-teal-500'
         >
           <option value='' disabled>
             Select Role
           </option>
-          <option value='admin'>Admin</option>
-          <option value='user'>User</option>
-          <option value='manager'>Manager</option>
+          {UserRoleList.map(role => (
+            <option value={role.value}>
+              {role.label}
+            </option>
+          ))}
         </select>
         <div className='absolute inset-y-0 right-3 flex items-center pointer-events-none'>
           <svg
@@ -165,15 +220,20 @@ export const UserForm: React.FC<UserFormProps> = ({
 
       <div className='relative'>
         <select
-          {...register('user_type', { required: 'User type is required' })}
+          {...register('user_type', {
+            required: 'User type is required',
+            disabled: isEditMode
+          })}
           className='w-full py-3 px-4 bg-gray-800 border border-gray-700 rounded-md text-white appearance-none focus:outline-none focus:ring-1 focus:ring-teal-500 focus:border-teal-500'
         >
           <option value='' disabled>
             User Type
           </option>
-          <option value='internal'>Internal</option>
-          <option value='external'>External</option>
-          <option value='contractor'>Contractor</option>
+          {UserTypeList.map(role => (
+            <option value={role.value}>
+              {role.label}
+            </option>
+          ))}
         </select>
         <div className='absolute inset-y-0 right-3 flex items-center pointer-events-none'>
           <svg

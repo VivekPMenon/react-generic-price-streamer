@@ -8,7 +8,10 @@ import Toggle from 'react-toggle'
 import SearchComponent from '../../shared/ta-search/ta-search'
 import ActionCell from '../action-cell'
 import { TaDialog } from '../../shared/ta-dialog/ta-dialog'
-import { UserForm, UserFormData } from './user-form'
+import { UserForm } from './user-form'
+import { adminDashboardDataService } from '@/services/admin-dashboard/admin-dashboard-data-service'
+import CustomPagination from '@/components/shared/ta-pagination/ta-pagination'
+import { toast } from 'react-toastify'
 
 // Updated User interface to match UserFormData
 interface User {
@@ -23,71 +26,83 @@ interface User {
   is_status: boolean
 }
 
+interface PaginationData {
+  currentPage: number
+  totalPages: number
+  totalItems: number
+  pageSize: number
+}
+
 const UserList = () => {
+  const [pageSize, setPageSize] = useState<number>(10)
+  const [currentPage, setCurrentPage] = useState<number>(1)
+  const [totalPages, setTotalPages] = useState<number>(1)
+  const [totalItems, setTotalItems] = useState<number>(0)
   const [users, setUsers] = useState<User[]>([])
-  const [pageSize, setPageSize] = useState<number>(25)
   const gridRef = useRef<GridApi | null>(null)
   const [loading, setLoading] = useState<boolean>(true)
   const [isEditMode, setIsEditMode] = useState(false)
-  const [isOpen, setIsOpen] = useState(false)
-  const [selectedUser, setSelectedUser] = useState<UserFormData | null>(null)
+  const [isOpenForm, setIsOpenForm] = useState(false)
+  const [isOpenConfirmation, setIsOpenConfirmation] = useState(false)
+  const [selectedUser, setSelectedUser] = useState<User | null>(null)
+  const pageSizeOptions = [10, 25, 50, 100]
+  const [searchQuery, setSearchQuery] = useState<string>('')
 
-  // Mock data updated to match UserFormData structure
   useEffect(() => {
-    setLoading(true)
-    // Simulating API fetch with data matching UserFormData
-    const mockUsers = [
-      {
-        user_id: 512,
-        first_name: 'John',
-        last_name: 'Doe',
-        role_id: '1',
-        role_name: 'Admin',
-        is_super_admin: true,
-        user_type: 'internal',
-        email: 'john.doe@example.com',
-        is_status: true
-      },
-      {
-        user_id: 515,
-        first_name: 'Jane',
-        last_name: 'Smith',
-        role_id: '2',
-        role_name: 'Admin',
-        is_super_admin: false,
-        user_type: 'external',
-        email: 'jane.smith@example.com',
-        is_status: true
-      },
-      {
-        user_id: 445,
-        first_name: 'Michael',
-        last_name: 'Johnson',
-        role_id: '3',
-        role_name: 'Admin',
-        is_super_admin: false,
-        user_type: 'internal',
-        email: 'michael.johnson@example.com',
-        is_status: true
-      },
-      {
-        user_id: 557,
-        first_name: 'Emily',
-        last_name: 'Williams',
-        role_id: '4',
-        role_name: 'Admin',
-        is_super_admin: false,
-        user_type: 'contractor',
-        email: 'emily.williams@example.com',
-        is_status: false
-      }
-    ]
-    setUsers(mockUsers)
-    setLoading(false)
+    fetchUsers(currentPage, pageSize)
   }, [])
+
+  const fetchUsers = async (page: number, size: number, query = '') => {
+    setLoading(true)
+    try {
+      // Call your API service with pagination parameters
+      const response = await adminDashboardDataService.getUserList(page, size)
+
+      // Update users and pagination data from the response
+      setUsers(response.data || [])
+
+      // Update pagination state from API response
+      const pagination = response.pagination || {
+        currentPage: 1,
+        totalPages: 1,
+        totalItems: response.data?.length || 0,
+        pageSize: size
+      }
+
+      setCurrentPage(pagination.page)
+      setTotalPages(pagination.total_pages)
+      setTotalItems(pagination.total_users)
+      setPageSize(pagination.page_size)
+    } catch (error) {
+      console.error('Error fetching users:', error)
+      // Handle error state
+    } finally {
+      setLoading(false)
+    }
+  }
 
   const onGridReady = (params: GridReadyEvent) => {
     gridRef.current = params.api
+  }
+
+  // Handle page change from custom pagination
+  const handlePageChange = (page: number) => {
+    if (page !== currentPage) {
+      fetchUsers(page, pageSize)
+    }
+  }
+
+  // Handle page size change from custom pagination
+  const handlePageSizeChange = (size: number) => {
+    if (size !== pageSize) {
+      fetchUsers(1, size) // Reset to first page when changing page size
+    }
+  }
+
+  // Handle search
+  const handleSearch = (query: string) => {
+    // setSearchQuery(query)
+    fetchUsers(1, pageSize, query) // Reset to first page when searching
   }
 
   // Status cell renderer
@@ -109,21 +124,36 @@ const UserList = () => {
   const handleEditUser = (params: any) => {
     setSelectedUser(params.data)
     setIsEditMode(true)
-    setIsOpen(true)
+    setIsOpenForm(true)
     console.log('Edit user:', params.data)
   }
 
   // Handle add user
   const handleAddUser = () => {
-    setSelectedUser(null);
-    setIsEditMode(false);
-    setIsOpen(true);
+    setSelectedUser(null)
+    setIsEditMode(false)
+    setIsOpenForm(true)
+  }
+
+  const handleDeleteUserConfirmation = (params: any) => {
+    setIsOpenConfirmation(true)
+    setSelectedUser(params.data)
   }
 
   // Handle delete user
-  const handleDeleteUser = (params: any) => {
-    console.log('Delete user:', params.data)
-    // Implement your delete logic here
+  const handleDeleteUser = async (params: any) => {
+    if (!selectedUser?.user_id) {
+      return
+    }
+    try {
+      console.log('')
+      toast.success('Deleted Successfully')
+      // const response = await adminDashboardDataService.DeletUser(selectedUser.user_id);
+      // console.log(response);
+    } catch {
+    } finally {
+      setIsOpenConfirmation(false)
+    }
   }
 
   // Action cell renderer wrapper that uses the shared component
@@ -132,14 +162,9 @@ const UserList = () => {
       <ActionCell
         data={params.data}
         onEdit={() => handleEditUser(params)}
-        onDelete={() => handleDeleteUser(params)}
+        onDelete={() => handleDeleteUserConfirmation(params)}
       />
     )
-  }
-
-  // Full name getter for the grid
-  const getFullName = (params: any) => {
-    return `${params.data.first_name} ${params.data.last_name}`
   }
 
   const columnDefs: ColDef[] = [
@@ -152,7 +177,7 @@ const UserList = () => {
     },
     {
       headerName: 'Full Name',
-      valueGetter: getFullName,
+      field: 'full_name',
       sortable: true,
       filter: 'agTextColumnFilter'
     },
@@ -163,7 +188,7 @@ const UserList = () => {
       filter: 'agTextColumnFilter'
     },
     {
-      field: 'role_name',
+      field: 'role',
       headerName: 'Role',
       sortable: true
     },
@@ -213,10 +238,9 @@ const UserList = () => {
 
       <div style={{ height: 'calc(100vh - 220px)', width: '100%' }}>
         <DataGrid
+          loading={loading}
           columnDefs={columnDefs}
           rowData={users}
-          pagination={true}
-          paginationPageSize={pageSize}
           rowSelection='multiple'
           onGridReady={onGridReady}
           suppressMenuHide={false}
@@ -235,18 +259,57 @@ const UserList = () => {
             filter: true
           }}
         />
+        <CustomPagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          pageSize={pageSize}
+          pageSizeOptions={pageSizeOptions}
+          totalItems={totalItems}
+          onPageChange={handlePageChange}
+          onPageSizeChange={handlePageSizeChange}
+        />
       </div>
 
       <TaDialog
         title={isEditMode ? 'Edit User' : 'Add User'}
-        isOpen={isOpen}
-        onClose={() => setIsOpen(false)}
+        isOpen={isOpenForm}
+        onClose={() => setIsOpenForm(false)}
       >
         <UserForm
-          setIsOpen={setIsOpen}
+          setIsOpen={setIsOpenForm}
           isEditMode={isEditMode}
-          user={selectedUser}
+          user_id={selectedUser?.user_id}
         />
+      </TaDialog>
+
+      <TaDialog
+        title={'Delete Confirmation'}
+        isOpen={isOpenConfirmation}
+        onClose={() => setIsOpenConfirmation(false)}
+      >
+        <div className='w-full'>
+          <label htmlFor='Delete confirmation'>Do you want to delete?</label>
+          <div className='mt-6 grid grid-cols-2 gap-4'>
+            <Button
+              onClick={() => setIsOpenConfirmation(false)}
+              size={'3'}
+              color='gray'
+              variant='solid'
+            >
+              Cancel
+            </Button>
+
+            <Button
+              onClick={handleDeleteUser}
+              type='submit'
+              size={'3'}
+              color='teal'
+              variant='solid'
+            >
+              Yes
+            </Button>
+          </div>
+        </div>
       </TaDialog>
     </div>
   )

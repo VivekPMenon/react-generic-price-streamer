@@ -23,10 +23,10 @@ const RoleList = () => {
   const [isEditMode, setIsEditMode] = useState(false)
   const [isOpen, setIsOpen] = useState(false)
 
-  // Mock data updated to match UserFormData structure
+ 
   useEffect(() => {
     setLoading(true)
-    // Simulating API fetch with data matching UserFormData
+
     const mockRoles = [
       {
         role_id: 1,
@@ -69,8 +69,8 @@ const RoleList = () => {
   }
 
   // Handle delete user
-  const handleDeleteUser = (params: any) => {
-    console.log('Delete user:', params.data)
+  const handleDeleteRole = (params: any) => {
+    console.log('Delete Role:', params.data)
     // Implement your delete logic here
   }
 
@@ -80,7 +80,7 @@ const RoleList = () => {
       <ActionCell
         data={params.data}
         showEdit={false}
-        onDelete={() => handleDeleteUser(params)}
+        onDelete={() => handleDeleteRole(params)}
       />
     )
   }

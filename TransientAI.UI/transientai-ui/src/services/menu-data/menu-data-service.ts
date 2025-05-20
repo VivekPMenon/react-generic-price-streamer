@@ -176,7 +176,7 @@ export const AdminMenuList: MenuInfo[] = [
   },
   {
     id: 'projects',
-    route: '/admin-dashboard/user-management',
+    route: '/admin-dashboard/project-management',
     description: i18n.t('Projects'),
     badgeCount: 1,
     icon: 'fa-solid fa-list-check'
