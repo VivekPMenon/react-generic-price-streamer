@@ -9,6 +9,7 @@ import {
   TreasuryYield
 } from './model';
 import {PeriodType} from "@/services/market-data";
+import {parseIsoDate} from "@/lib/utility-functions/date-operations";
 
 class MacroPanelDataService {
   private readonly serviceName = 'hurricane-api';
@@ -145,7 +146,7 @@ class MacroPanelDataService {
         serviceName: this.serviceName
       });
       return Object.entries(result)
-          .flatMap(([key, item]) => (item as object[]).map((i: object) => {
+          .flatMap(([key, item]) => (item as object[]).map((i: {[key: string]: any}) => {
             const t = i as EquityFuture;
             if (t.data?.length) {
               t.data.forEach(value => {
@@ -155,6 +156,7 @@ class MacroPanelDataService {
                 }
               });
             }
+
             return {
               ...t,
               group_name: key,
@@ -162,7 +164,8 @@ class MacroPanelDataService {
               change: t.change,
               percent: t.percent_change,
               marketData: t.data,
-              type: MarketDataType.FUTURES
+              type: MarketDataType.FUTURES,
+              timestamp: parseIsoDate(i['timestamp'] as string) ?? new Date()
             }
           }));
     } catch (e: any) {

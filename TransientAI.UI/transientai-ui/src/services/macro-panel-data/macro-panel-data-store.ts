@@ -100,7 +100,14 @@ const useMacroPanelDataStore = create<MacroPanelDataState>()((set, get) => ({
         .catch(() => console.error('Error loading cryptos'))
         .finally(() => set({isCryptoLoading: false}));
     macroPanelDataService.getGlobalEquityFutures()
-        .then(values => set({equityFutures: values as EquityFuture[]}))
+        .then(values => {
+          const equityFutures = values as EquityFuture[];
+          const found = equityFutures?.find(future => future.symbol === 'YMUSD');
+          if (found) {
+            set({reportGenerationDate: found.timestamp});
+          }
+          set({equityFutures: equityFutures});
+        })
         .catch(() => console.error('Error loading equity futures'))
         .finally(() => set({isEquityFuturesLoading: false}));
 
