@@ -26,7 +26,7 @@ export function MenuList ({
   }
 
   return (
-    <div>
+    <div className='widget h-full'>
       <div className='menu'>
         {isLoading ? (
           <div className='w-full gap-4 grid grid-cols-1 justify-center p-4'>

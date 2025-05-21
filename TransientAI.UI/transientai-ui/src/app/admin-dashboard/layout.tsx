@@ -103,7 +103,7 @@ export default function AdminDashboardLayout ({
             </div>
 
             <div
-              className={`${styles['middle-panel']} ${
+              className={`widget ${styles['middle-panel']} ${
                 isMenuVisible && deviceType === 'mobile'
                   ? styles['collapsed']
                   : ''

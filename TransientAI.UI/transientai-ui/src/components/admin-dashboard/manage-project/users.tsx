@@ -1,6 +1,8 @@
 import { CollapseContainer } from '@/components/shared/ta-collapse/ta-collapse'
 import { Checkbox, TextArea } from '@radix-ui/themes'
 import React, { useState, useRef } from 'react'
+import { SharedDropdown } from '@/components/shared'
+import { DropdownOption } from '@/components/shared/ta-select/ta-select'
 
 enum ScreenDataType {
   AC_Number = 'AC Number',
@@ -80,8 +82,26 @@ const Users = () => {
     }
   }
 
+    //handle select user
+  const handleSelectChange = (selectedUser: DropdownOption<any>) => {
+    console.log(selectedUser)
+  };
+
   return (
     <>
+      <div>
+        <SharedDropdown
+          options={[]}
+          value={null}
+          onChange={() => null}
+          isLoading={false}
+          placeholder="Select a user"
+          noOptionsMessage={() => "No users available"}
+          className="text-base"
+          isSearchable={true}
+          darkMode={true}
+        />
+      </div>
       <CollapseContainer title={<span>Corporate Action</span>}>
         <div className='flex gap-8 mt-3 lg:flex-row flex-col'>
           <section className='lg:w-1/2 rounded-md'>
@@ -145,7 +165,7 @@ const Users = () => {
               <button
                 type='button'
                 onClick={() => handleAddButtonClick(ScreenDataType.AC_Number)}
-                className='absolute w-7 h-7 flex top-2 right-2 justify-center items-center text-md rounded-full hover:bg-gray-700 text-blue-400'
+                className='absolute w-7 h-7 flex top-2 right-2 justify-center items-center text-md rounded-full hover:bg-gray-700 text-teal-400'
                 title='Add tags'
               >
                 <i className='fa-light fa-plus'></i>
@@ -238,7 +258,7 @@ const Users = () => {
               <button
                 type='button'
                 onClick={() => handleAddButtonClick(ScreenDataType.Margin_Cols)}
-                className='absolute w-7 h-7 flex top-2 right-2 justify-center items-center text-md rounded-full hover:bg-gray-700 text-blue-400'
+                className='absolute w-7 h-7 flex top-2 right-2 justify-center items-center text-md rounded-full hover:bg-gray-700 text-teal-400'
                 title='Add tags'
               >
                 <i className='fa-light fa-plus'></i>

@@ -1,6 +1,5 @@
 
 import { create } from 'zustand';
-import { BreakNewsItem } from './model'
 import { adminDashboardDataService } from './admin-dashboard-data-service';
 import { unseenItemsStore } from '../unseen-items-store/unseen-items-store';
 import {createSelectors} from "@/lib/utility-functions/store-operations";

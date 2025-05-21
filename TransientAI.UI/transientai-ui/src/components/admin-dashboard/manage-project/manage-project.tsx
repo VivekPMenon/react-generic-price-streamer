@@ -31,7 +31,7 @@ const TabList: TabItem[] = [
 const ManageProject = () => {
   return (
     <Tabs.Root
-      className='flex w-full h-full flex-col bg-gray-900 rounded-md overflow-hidden'
+      className='flex w-full h-full flex-col rounded-md overflow-hidden'
       defaultValue={TabValues.USERS}
     >
       <Tabs.List className='flex max-w-min' aria-label='Manage your project'>
@@ -45,9 +45,7 @@ const ManageProject = () => {
           </Tabs.Trigger>
         ))}
       </Tabs.List>
-
-      <div className='border-b border-gray-800'></div>
-
+      <div className='w-full h-px bg-[#202020]' />
       {TabList.map(tab => (
         <Tabs.Content
           className='grow p-5 outline-none max-h-[calc(100vh-120px)] scrollable-div'
