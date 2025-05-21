@@ -16,6 +16,7 @@ import { toast } from 'react-toastify'
 // Updated User interface to match UserFormData
 interface User {
   user_id: number
+  full_name: string
   first_name: string
   last_name: string
   role_id: string
@@ -23,7 +24,7 @@ interface User {
   is_super_admin: boolean
   user_type: string
   email: string
-  is_status: boolean
+  is_active: boolean
 }
 
 interface PaginationData {
@@ -105,15 +106,37 @@ const UserList = () => {
     fetchUsers(1, pageSize, query) // Reset to first page when searching
   }
 
-  // Status cell renderer
   const statusCellRenderer = (params: any) => {
+    const [isActive, setIsActive] = useState(params.value)
+
+    const handleToggleChange = async (checked: boolean) => {
+      // Optimistically update UI first
+      setIsActive(checked)
+
+      try {
+        // Call the API to update status
+        await adminDashboardDataService.UpdateActive(
+          params.data.user_id,
+          checked
+        )
+        toast.success('Active updated successfully')
+
+        // No need to call fetchUsers - we already updated local state
+      } catch (error) {
+        // Revert UI state if API call fails
+        setIsActive(!checked)
+        toast.error('Failed to update status')
+      }
+    }
+
     return (
       <div className='flex items-center justify-center'>
         <Toggle
-          onChange={e =>
-            handleUpdateActive(params.data.user_id, e.target.checked)
-          }
-          checked={params.value}
+          onChange={e => {
+            e.preventDefault()
+            handleToggleChange(e.target.checked)
+          }}
+          checked={isActive} // Use controlled component pattern
           className={'switch-user-status'}
           icons={false}
           id={`status-${params.data.user_id}`}
@@ -150,7 +173,7 @@ const UserList = () => {
       setLoading(true)
       const response = await adminDashboardDataService.DeletUser(
         selectedUser.user_id,
-        selectedUser.is_status
+        selectedUser.is_active
       )
       toast.success('Deleted Successfully')
       fetchUsers(currentPage, pageSize)
@@ -162,26 +185,6 @@ const UserList = () => {
     }
   }
 
-  // Handle delete user
-  const handleUpdateActive = async (user_id: number, is_active: boolean) => {
-    if (!user_id) {
-      return
-    }
-    try {
-      setLoading(true)
-      const response = await adminDashboardDataService.UpdateActive(
-        user_id,
-        is_active
-      )
-      toast.success('Update Active Successfully')
-      fetchUsers(currentPage, pageSize)
-    } catch {
-      toast.error('Update Active failed')
-    } finally {
-      setIsOpenConfirmation(false)
-      setLoading(false)
-    }
-  }
 
   // Action cell renderer wrapper that uses the shared component
   const actionCellRenderer = (params: any) => {
@@ -234,7 +237,7 @@ const UserList = () => {
       sortable: true
     },
     {
-      field: 'is_status',
+      field: 'is_active',
       headerName: 'Active',
       sortable: true,
       cellRenderer: statusCellRenderer,
@@ -317,7 +320,9 @@ const UserList = () => {
         onClose={() => setIsOpenConfirmation(false)}
       >
         <div className='w-full'>
-          <label htmlFor='Delete confirmation'>Are you sure you want to delete?</label>
+          <label htmlFor='Delete confirmation'>
+            Are you sure you want to delete?
+          </label>
           <div className='mt-6 grid grid-cols-2 gap-4'>
             <Button
               onClick={() => setIsOpenConfirmation(false)}

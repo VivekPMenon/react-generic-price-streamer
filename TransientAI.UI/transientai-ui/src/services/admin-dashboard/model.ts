@@ -6,7 +6,7 @@ export interface UserFormData {
   first_name: string
   last_name: string
   email: string
-  is_status: boolean
+  is_active: boolean
   is_super_admin: boolean
   role_name?: string
   role_id?: number | null

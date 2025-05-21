@@ -65,7 +65,7 @@ export const UserForm: React.FC<UserFormProps> = ({
     role_id: null,
     user_type: '',
     email: '',
-    is_status: false,
+    is_active: false,
     is_super_admin: false
   }
 
@@ -262,7 +262,7 @@ export const UserForm: React.FC<UserFormProps> = ({
           <span className='flex align-middle gap-2'>
             Inactive
             <Controller
-              name='is_status'
+              name='is_active'
               control={control}
               render={({ field: { onChange, value } }) => (
                 <Toggle

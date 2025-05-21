@@ -3,10 +3,20 @@
 import { useState, useRef, useEffect } from 'react'
 import { ColDef, GridApi, GridReadyEvent } from 'ag-grid-community'
 import { DataGrid } from '../../data-grid'
-import { Button } from '@radix-ui/themes/components/button'
 import Toggle from 'react-toggle'
 import SearchComponent from '../../shared/ta-search/ta-search'
 import ActionCell from '../action-cell'
+import { adminDashboardDataService } from '@/services/admin-dashboard/admin-dashboard-data-service'
+import CustomPagination from '@/components/shared/ta-pagination/ta-pagination'
+import { useRouter } from 'next/navigation'
+
+const mockProjects = [
+  {
+    project_id: 1,
+    project_name: 'By Side',
+    created_on: '14 May 2025'
+  }
+]
 
 interface Project {
   project_id: number
@@ -15,34 +25,71 @@ interface Project {
 }
 
 const ProjectList = () => {
-  const [projects, setPrjects] = useState<Project[]>([])
-  const [pageSize, setPageSize] = useState<number>(25)
+  const pageSizeOptions = [10, 25, 50, 100]
+  const [pageSize, setPageSize] = useState<number>(10)
+  const [currentPage, setCurrentPage] = useState<number>(1)
+  const [totalPages, setTotalPages] = useState<number>(1)
+  const [totalItems, setTotalItems] = useState<number>(1)
+  const [projects, setPrjects] = useState<Project[]>(mockProjects)
   const gridRef = useRef<GridApi | null>(null)
   const [loading, setLoading] = useState<boolean>(true)
   const [isEditMode, setIsEditMode] = useState(false)
-  const [isOpen, setIsOpen] = useState(false)
+  const [isOpen, setIsOpen] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
-    setLoading(true)
-    const mockProjects = [
-      {
-        project_id: 1,
-        project_name: "By Side",
-        created_on: '14 May 2025'
-      },
-      {
-        project_id: 2,
-        project_name: "Sell Side",
-        created_on: '14 May 2025'
-      }
-    ]
-
-    setPrjects(mockProjects)
-    setLoading(false)
+    // fetchProjects(currentPage, pageSize);
   }, [])
+
+  const fetchProjects = async (page: number, size: number, query = '') => {
+    setLoading(true)
+    try {
+      // Call your API service with pagination parameters
+      const response = await adminDashboardDataService.getProjectsList(
+        page,
+        size
+      )
+
+      // Update users and pagination data from the response
+      setPrjects(response.data || [])
+
+      // Update pagination state from API response
+      const pagination = response.pagination || {
+        page: 1,
+        total_pages: 1,
+        total_projects: response.data?.length || 0,
+        page_size: size
+      }
+
+      setCurrentPage(pagination.page)
+      setTotalPages(pagination.total_pages)
+      setTotalItems(pagination.total_projects)
+      setPageSize(pagination.page_size)
+    } catch (error) {
+      console.error('Error fetching Roles:', error)
+      // Handle error state
+    } finally {
+      setLoading(false)
+    }
+  }
+
 
   const onGridReady = (params: GridReadyEvent) => {
     gridRef.current = params.api
+  }
+
+  // Handle page change from custom pagination
+  const handlePageChange = (page: number) => {
+    if (page !== currentPage) {
+      fetchProjects(page, pageSize)
+    }
+  }
+
+  // Handle page size change from custom pagination
+  const handlePageSizeChange = (size: number) => {
+    if (size !== pageSize) {
+      fetchProjects(1, size) // Reset to first page when changing page size
+    }
   }
 
   // Status cell renderer
@@ -60,14 +107,14 @@ const ProjectList = () => {
     )
   }
 
-  const handleAddRole = () => {
+  const handleAddProject = () => {
     setIsEditMode(false)
     setIsOpen(true)
   }
 
   // Handle delete user
   const handleEditProject = (params: any) => {
-    console.log('Delete user:', params.data)
+    router.push('/admin-dashboard/project-management/edit')
     // Implement your delete logic here
   }
 
@@ -82,11 +129,6 @@ const ProjectList = () => {
     )
   }
 
-  // Full name getter for the grid
-  const getFullName = (params: any) => {
-    return `${params.data.first_name} ${params.data.last_name}`
-  }
-
   const columnDefs: ColDef[] = [
     {
       field: 'project_id',
@@ -97,12 +139,12 @@ const ProjectList = () => {
     },
     {
       field: 'project_name',
-      headerName: 'Project name',
+      headerName: 'Project Name',
       sortable: true
     },
     {
       field: 'created_on',
-      headerName: 'Created on',
+      headerName: 'Created On',
       sortable: true,
       width: 120,
       cellClass: 'text-center'
@@ -124,7 +166,7 @@ const ProjectList = () => {
           <label className='text-2xl font-semibold'>Projects </label>
           <SearchComponent />
         </div>
-        {/* <Button className='flex items-center space-x-2' onClick={handleAddRole}>
+        {/* <Button className='flex items-center space-x-2' onClick={handleAddProject}>
           <i className='fa-solid fa-plus'></i>
           <span>Add</span>
         </Button> */}
@@ -134,8 +176,6 @@ const ProjectList = () => {
         <DataGrid
           columnDefs={columnDefs}
           rowData={projects}
-          pagination={true}
-          paginationPageSize={pageSize}
           rowSelection='multiple'
           onGridReady={onGridReady}
           suppressMenuHide={false}
@@ -154,9 +194,16 @@ const ProjectList = () => {
             filter: true
           }}
         />
+        <CustomPagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          pageSize={pageSize}
+          pageSizeOptions={pageSizeOptions}
+          totalItems={totalItems}
+          onPageChange={handlePageChange}
+          onPageSizeChange={handlePageSizeChange}
+        />
       </div>
-
-
     </div>
   )
 }

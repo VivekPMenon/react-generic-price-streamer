@@ -40,7 +40,8 @@ const SharedDropdown = <T,>({
       ...provided,
       fontSize: '14px',
       backgroundColor: '#1f2937', // bg-gray-800
-      width: '200px',
+      minWidth: '200px',
+      // width: '250px',
       borderColor: '#374151', // border-gray-700
       color: 'white',
       boxShadow: 'none',

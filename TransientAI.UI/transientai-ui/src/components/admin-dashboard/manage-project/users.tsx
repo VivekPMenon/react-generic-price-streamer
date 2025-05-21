@@ -1,45 +1,172 @@
 import { CollapseContainer } from '@/components/shared/ta-collapse/ta-collapse'
-import { Checkbox, TextArea } from '@radix-ui/themes'
-import React, { useState, useRef } from 'react'
+import { Button, Checkbox, TextArea } from '@radix-ui/themes'
+import React, { useState, useRef, useEffect, useCallback } from 'react'
 import { SharedDropdown } from '@/components/shared'
 import { DropdownOption } from '@/components/shared/ta-select/ta-select'
+import { adminDashboardDataService } from '@/services/admin-dashboard/admin-dashboard-data-service'
 
+interface User {
+  user_id: number
+  full_name: string
+  first_name: string
+  last_name: string
+  role_id: string
+  role_name: string
+  is_super_admin: boolean
+  user_type: string
+  email: string
+  is_active: boolean
+}
+interface ICorporateAction {
+  id: number
+  corp_label: string
+  is_selected?: boolean
+}
+
+interface IMargin {
+  id: number
+  margin_label: string
+  is_selected?: boolean
+}
+
+interface IUserConfigData {
+  corporate_actions: ICorporateAction[]
+  margin: IMargin[]
+}
 enum ScreenDataType {
   AC_Number = 'AC Number',
   Margin_Cols = 'Margin Cols'
 }
 
 const Users = () => {
-  const [accountNumbers, setAccountNumbers] = useState([
-    { id: 1, number: '5166', selected: true },
-    { id: 2, number: '561516', selected: true },
-    { id: 3, number: '4854', selected: true },
-    { id: 4, number: '595656', selected: true }
-  ])
-
-  const [marginCols, setMarginCols] = useState([
-    { id: 1, number: 'IBIS_ALL*', selected: true },
-    { id: 2, number: 'Andy Goldman', selected: true }
-  ])
-
-  const [accountTags, setAccountTags] = useState([
-    '3746453',
-    '3553344',
-    '45454'
-  ])
-  const [marginTags, setMarginTags] = useState(['col1', 'col2', 'col3'])
+  const [loading, setLoading] = useState<boolean>(true)
+  const [isUserLoading, setIsUserLoading] = useState<boolean>(true)
+  const [users, setUsers] = useState<User[]>([])
+  const [selectedUser, setSelectedUser] = useState<User | null>(null)
+  const [accountNumbers, setAccountNumbers] = useState<ICorporateAction[]>([])
+  const [marginCols, setMarginCols] = useState<IMargin[]>([])
+  const [accountTags, setAccountTags] = useState<string[]>([])
+  const [marginTags, setMarginTags] = useState<string[]>([])
 
   // Refs for text areas
   const accountTextAreaRef = useRef<HTMLTextAreaElement>(null)
   const marginTextAreaRef = useRef<HTMLTextAreaElement>(null)
 
-  const handleDelete = () => {
-    setAccountNumbers(accountNumbers.filter(a => !a.selected))
+  useEffect(() => {
+    fetchUserConfig()
+  }, [selectedUser])
+
+  const fetchUserConfig = async () => {
+    setLoading(true)
+    try {
+      if (!selectedUser?.user_id) {
+        return
+      }
+      // Call your API service with pagination parameters
+      const response = await adminDashboardDataService.getProjectsUsersConfig(
+        selectedUser?.user_id
+      )
+      const data = response.data as IUserConfigData
+      // Add is_selected property to corporate_actions
+      const corporateActionsWithSelection =
+        data?.corporate_actions?.map(action => ({
+          ...action,
+          is_selected: false // Default value is false
+        })) || []
+
+      // Add is_selected property to margin
+      const marginWithSelection =
+        data?.margin?.map(margin => ({
+          ...margin,
+          is_selected: false // Default value is false
+        })) || []
+
+      setAccountNumbers(corporateActionsWithSelection)
+      setMarginCols(marginWithSelection)
+    } catch (error) {
+      console.error('Error fetching users:', error)
+      // Handle error state
+    } finally {
+      setLoading(false)
+    }
   }
 
-  const handleDeleteMargin = () => {
-    setMarginCols(marginCols.filter(a => !a.selected))
+  useEffect(() => {
+    fetchUsers();
+  }, [])
+
+  const fetchUsers = async () => {
+    setIsUserLoading(true)
+    try {
+      // Call your API service with pagination parameters
+      const response = await adminDashboardDataService.getUserList(1, 10, true)
+
+      // Update users and pagination data from the response
+      setUsers(response.data || [])
+    } catch (error) {
+      console.error('Error fetching users:', error)
+      // Handle error state
+    } finally {
+      setIsUserLoading(false)
+    }
   }
+
+  // Convert users to dropdown options format
+  const userOptions = useCallback(() => {
+    return Array.isArray(users)
+      ? users.map(user => ({
+          value: user.user_id,
+          label: user.full_name,
+          data: user
+        }))
+      : []
+  }, [users])
+
+ const handleDelete = async () => {
+  // Check if a user is selected
+  if (!selectedUser?.user_id) {
+    return;
+  }
+
+  // Check if any items are selected for deletion
+  const itemsToDelete = accountNumbers.filter(a => a.is_selected);
+  if (itemsToDelete.length === 0) {
+    return;
+  }
+
+  // Optional: Show loading state
+  setLoading(true);
+
+  try {
+    // Extract IDs of items to be deleted
+    const deletedItemIds = itemsToDelete.map(item => item.id);
+    
+    // Call API to delete items
+    const response = await adminDashboardDataService.deleteCorpActions(
+      selectedUser.user_id,
+      deletedItemIds
+    );
+    
+    // Update local state with remaining items
+    const remainingItems = accountNumbers.filter(a => !a.is_selected);
+    setAccountNumbers(remainingItems);
+
+    console.log('Items deleted successfully:', response);
+  } catch (error) {
+    // More detailed error handlin
+    console.error('Error deleting corporate actions:', error);
+    await fetchUserConfig();
+  } finally {
+    // Reset loading state
+    setLoading(false);
+  }
+}
+
+  const handleDeleteMargin = () => {
+    setMarginCols(marginCols.filter(a => !a.is_selected))
+  }
+
+  const handleUpdate = async () => {}
 
   const processTagInput = (value: string, type: ScreenDataType) => {
     if (value.trim() !== '') {
@@ -82,22 +209,42 @@ const Users = () => {
     }
   }
 
-    //handle select user
-  const handleSelectChange = (selectedUser: DropdownOption<any>) => {
-    console.log(selectedUser)
-  };
+  const handleSelectChange = useCallback(
+    (selected: DropdownOption<User> | null) => {
+      try {
+        if (selected) {
+          setSelectedUser(selected.data)
+        } else {
+        }
+      } catch (err) {
+        console.error('Error changing preview user:', err)
+      }
+    },
+    []
+  )
+
+  // Find the currently selected option
+  const selectedOption = useCallback(() => {
+    if (!selectedUser) return null
+
+    return {
+      value: selectedUser.user_id,
+      label: selectedUser.full_name,
+      data: selectedUser
+    }
+  }, [selectedUser])
 
   return (
     <>
       <div>
         <SharedDropdown
-          options={[]}
-          value={null}
-          onChange={() => null}
-          isLoading={false}
-          placeholder="Select a user"
-          noOptionsMessage={() => "No users available"}
-          className="text-base"
+          options={userOptions()}
+          value={selectedOption()}
+          onChange={handleSelectChange}
+          isLoading={isUserLoading}
+          placeholder='Select a user'
+          noOptionsMessage={() => 'No users available'}
+          className='text-base max-md:w-2/4 md:w-1/3'
           isSearchable={true}
           darkMode={true}
         />
@@ -108,17 +255,20 @@ const Users = () => {
             <div className='flex items-center justify-between p-4 bg-gray-800'>
               <div className='flex items-center'>
                 <Checkbox
-                  checked={accountNumbers.every(a => a.selected)}
+                  checked={accountNumbers.every(a => a.is_selected)}
                   onCheckedChange={checked => {
                     setAccountNumbers(
-                      accountNumbers.map(a => ({ ...a, selected: !!checked }))
+                      accountNumbers.map(a => ({
+                        ...a,
+                        is_selected: !!checked
+                      }))
                     )
                   }}
                   className='mr-3'
                 />
                 <span className='font-medium text-sm'>Account Numbers</span>
               </div>
-              {accountNumbers.some(a => a.selected) && (
+              {accountNumbers.some(a => a.is_selected) && (
                 <button
                   type='button'
                   aria-label='Delete icon'
@@ -138,17 +288,17 @@ const Users = () => {
                   className='flex items-center p-4 border border-[#353b49]'
                 >
                   <Checkbox
-                    checked={account.selected}
+                    checked={account.is_selected}
                     onCheckedChange={checked => {
                       setAccountNumbers(
                         accountNumbers.map((a, i) =>
-                          i === ind ? { ...a, selected: !!checked } : a
+                          i === ind ? { ...a, is_selected: !!checked } : a
                         )
                       )
                     }}
                     className='mr-3'
                   />
-                  <span>{account.number}</span>
+                  <span>{account.corp_label}</span>
                 </div>
               ))}
             </div>
@@ -201,17 +351,17 @@ const Users = () => {
             <div className='flex items-center justify-between p-4 bg-gray-800'>
               <div className='flex items-center'>
                 <Checkbox
-                  checked={marginCols.every(a => a.selected)}
+                  checked={marginCols.every(a => a.is_selected)}
                   onCheckedChange={checked => {
                     setMarginCols(
-                      marginCols.map(a => ({ ...a, selected: !!checked }))
+                      marginCols.map(a => ({ ...a, is_selected: !!checked }))
                     )
                   }}
                   className='mr-3'
                 />
                 <span className='font-medium text-sm'>Values</span>
               </div>
-              {marginCols.some(a => a.selected) && (
+              {marginCols.some(a => a.is_selected) && (
                 <button
                   type='button'
                   aria-label='Delete icon'
@@ -231,17 +381,17 @@ const Users = () => {
                   className='flex items-center p-4 border border-[#353b49]'
                 >
                   <Checkbox
-                    checked={account.selected}
+                    checked={account.is_selected}
                     onCheckedChange={checked => {
                       setMarginCols(
                         marginCols.map((a, i) =>
-                          i === ind ? { ...a, selected: !!checked } : a
+                          i === ind ? { ...a, is_selected: !!checked } : a
                         )
                       )
                     }}
                     className='mr-3'
                   />
-                  <span>{account.number}</span>
+                  <span>{account.margin_label}</span>
                 </div>
               ))}
             </div>
@@ -287,6 +437,22 @@ const Users = () => {
           </section>
         </div>
       </CollapseContainer>
+      <div className='flex w-full justify-end items-center gap-2'>
+        <Button className='w-[150px]' size={'3'} color='gray' variant='solid'>
+          Cancel
+        </Button>
+
+        <Button
+          className='w-[150px]'
+          onClick={() => handleUpdate()}
+          type='submit'
+          size={'3'}
+          color='teal'
+          variant='solid'
+        >
+          Save
+        </Button>
+      </div>
     </>
   )
 }
