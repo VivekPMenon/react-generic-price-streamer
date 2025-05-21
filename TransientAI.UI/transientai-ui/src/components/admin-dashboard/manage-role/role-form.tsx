@@ -1,56 +1,61 @@
+import { adminDashboardDataService } from '@/services/admin-dashboard/admin-dashboard-data-service'
+import { RoleFormData } from '@/services/admin-dashboard/model'
 import { Button } from '@radix-ui/themes'
 import React, { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
-
-/**
- * Type for form data structure
- */
-export interface RoleData {
-  role_id: string
-  role_name: string
-  created_on: string
-}
+import { toast } from 'react-toastify'
 
 /**
  * Interface for UserForm props
  */
-interface UserFormProps {
+interface RoleFormProps {
   setIsOpen: (isOpen: boolean) => void
   isEditMode: boolean
-  role?: RoleData | null
+  onFormSuccess?: (isSuccess: boolean) => void
 }
 
 /**
  * User form component for creating and editing user profiles
  */
-export const RoleForm: React.FC<UserFormProps> = ({
+export const RoleForm: React.FC<RoleFormProps> = ({
   setIsOpen,
   isEditMode = false,
-  role
+  onFormSuccess = () => {}
 }) => {
-  const defaultValues = {
-    role_id: '',
-    role_name: '',
-    created_on: ''
+  const defaultValues: RoleFormData = {
+    role_name: ''
   }
 
-  const onSubmit = (data: RoleData) => {
-    console.log('Form submitted:', data)
-    setIsOpen(false)
+  const onSubmit = (data: RoleFormData) => {
+    handleCreateUser(data)
   }
 
-  const { register, handleSubmit, reset } =
-    useForm<RoleData>({ defaultValues })
+  const handleCreateUser = async (data: RoleFormData) => {
+    try {
+      const response = await adminDashboardDataService.createRole(data)
+      toast.success(response.message)
+      onFormSuccess(true)
+    } catch {
+      toast.error('Error Create Role')
+      onFormSuccess(false)
+    } finally {
+      setIsOpen(false)
+    }
+  }
+
+  const { register, handleSubmit, reset } = useForm<RoleFormData>({
+    defaultValues
+  })
 
   useEffect(() => {
-    if (isEditMode && role) {
+    if (isEditMode) {
       // Populate form with user data when in edit mode
-      reset(role)
+      reset(defaultValues) //currently not available edit mode
     } else {
       // Reset form to default values when in create mode
       reset(defaultValues)
     }
-  }, [isEditMode, role, reset])
+  }, [isEditMode, reset])
 
   return (
     <form
@@ -59,12 +64,11 @@ export const RoleForm: React.FC<UserFormProps> = ({
     >
       <div className='relative flex'>
         <input
-          {...register('role_name', { required: 'First name is required' })}
+          {...register('role_name', { required: 'Role Name is required' })}
           placeholder='Enter Role Name'
           className='w-full py-3 px-10 bg-gray-800 border border-gray-700 rounded-md text-white placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-teal-500 focus:border-teal-500'
         />
       </div>
-
 
       <div className='mt-6 grid grid-cols-2 gap-4'>
         <Button

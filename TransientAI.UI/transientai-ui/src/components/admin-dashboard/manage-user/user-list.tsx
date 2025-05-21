@@ -110,7 +110,9 @@ const UserList = () => {
     return (
       <div className='flex items-center justify-center'>
         <Toggle
-          disabled
+          onChange={e =>
+            handleUpdateActive(params.data.user_id, e.target.checked)
+          }
           checked={params.value}
           className={'switch-user-status'}
           icons={false}
@@ -125,7 +127,6 @@ const UserList = () => {
     setSelectedUser(params.data)
     setIsEditMode(true)
     setIsOpenForm(true)
-    console.log('Edit user:', params.data)
   }
 
   // Handle add user
@@ -146,13 +147,39 @@ const UserList = () => {
       return
     }
     try {
-      console.log('')
+      setLoading(true)
+      const response = await adminDashboardDataService.DeletUser(
+        selectedUser.user_id,
+        selectedUser.is_status
+      )
       toast.success('Deleted Successfully')
-      // const response = await adminDashboardDataService.DeletUser(selectedUser.user_id);
-      // console.log(response);
+      fetchUsers(currentPage, pageSize)
     } catch {
+      toast.error('Delete user failed')
     } finally {
       setIsOpenConfirmation(false)
+      setLoading(false)
+    }
+  }
+
+  // Handle delete user
+  const handleUpdateActive = async (user_id: number, is_active: boolean) => {
+    if (!user_id) {
+      return
+    }
+    try {
+      setLoading(true)
+      const response = await adminDashboardDataService.UpdateActive(
+        user_id,
+        is_active
+      )
+      toast.success('Update Active Successfully')
+      fetchUsers(currentPage, pageSize)
+    } catch {
+      toast.error('Update Active failed')
+    } finally {
+      setIsOpenConfirmation(false)
+      setLoading(false)
     }
   }
 
@@ -162,7 +189,8 @@ const UserList = () => {
       <ActionCell
         data={params.data}
         onEdit={() => handleEditUser(params)}
-        onDelete={() => handleDeleteUserConfirmation(params)}
+        showDelete={false}
+        // onDelete={() => handleDeleteUserConfirmation(params)}
       />
     )
   }
@@ -207,7 +235,7 @@ const UserList = () => {
     },
     {
       field: 'is_status',
-      headerName: 'Status',
+      headerName: 'Active',
       sortable: true,
       cellRenderer: statusCellRenderer,
       width: 120,
@@ -279,6 +307,7 @@ const UserList = () => {
           setIsOpen={setIsOpenForm}
           isEditMode={isEditMode}
           user_id={selectedUser?.user_id}
+          onFormSuccess={isSuccess => isSuccess && fetchUsers(1, pageSize)}
         />
       </TaDialog>
 
@@ -288,7 +317,7 @@ const UserList = () => {
         onClose={() => setIsOpenConfirmation(false)}
       >
         <div className='w-full'>
-          <label htmlFor='Delete confirmation'>Do you want to delete?</label>
+          <label htmlFor='Delete confirmation'>Are you sure you want to delete?</label>
           <div className='mt-6 grid grid-cols-2 gap-4'>
             <Button
               onClick={() => setIsOpenConfirmation(false)}

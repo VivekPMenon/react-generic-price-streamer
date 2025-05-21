@@ -9,6 +9,9 @@ import SearchComponent from '../../shared/ta-search/ta-search'
 import ActionCell from '../action-cell'
 import { TaDialog } from '../../shared/ta-dialog/ta-dialog'
 import { RoleForm } from './role-form'
+import { adminDashboardDataService } from '@/services/admin-dashboard/admin-dashboard-data-service'
+import CustomPagination from '@/components/shared/ta-pagination/ta-pagination'
+import { toast } from 'react-toastify'
 interface Role {
   role_id: number
   role_name: string
@@ -16,38 +19,69 @@ interface Role {
 }
 
 const RoleList = () => {
+  const pageSizeOptions = [10, 25, 50, 100]
+  const [pageSize, setPageSize] = useState<number>(10)
+  const [currentPage, setCurrentPage] = useState<number>(1)
+  const [totalPages, setTotalPages] = useState<number>(1)
+  const [totalItems, setTotalItems] = useState<number>(0)
   const [roles, setRoles] = useState<Role[]>([])
-  const [pageSize, setPageSize] = useState<number>(25)
   const gridRef = useRef<GridApi | null>(null)
   const [loading, setLoading] = useState<boolean>(true)
   const [isEditMode, setIsEditMode] = useState(false)
   const [isOpen, setIsOpen] = useState(false)
+  const [isOpenConfirmation, setIsOpenConfirmation] = useState(false)
+  const [selectedRole, setSelectedRole] = useState<Role>()
 
- 
   useEffect(() => {
-    setLoading(true)
-
-    const mockRoles = [
-      {
-        role_id: 1,
-        role_name: 'admin',
-        created_on: '14 May 2025'
-      },
-      {
-        role_id: 2,
-        role_name: 'PM',
-        created_on: '14 May 2025'
-      }
-    ]
-
-    setRoles(mockRoles)
-    setLoading(false)
+    fetchRoles(currentPage, pageSize)
   }, [])
+
+  const fetchRoles = async (page: number, size: number, query = '') => {
+    setLoading(true)
+    try {
+      // Call your API service with pagination parameters
+      const response = await adminDashboardDataService.getRolesList(page, size)
+
+      // Update users and pagination data from the response
+      setRoles(response.data || [])
+
+      // Update pagination state from API response
+      const pagination = response.pagination || {
+        page: 1,
+        total_pages: 1,
+        total_roles: response.data?.length || 0,
+        page_size: size
+      }
+
+      setCurrentPage(pagination.page)
+      setTotalPages(pagination.total_pages)
+      setTotalItems(pagination.total_roles)
+      setPageSize(pagination.page_size)
+    } catch (error) {
+      console.error('Error fetching Roles:', error)
+      // Handle error state
+    } finally {
+      setLoading(false)
+    }
+  }
 
   const onGridReady = (params: GridReadyEvent) => {
     gridRef.current = params.api
   }
 
+  // Handle page change from custom pagination
+  const handlePageChange = (page: number) => {
+    if (page !== currentPage) {
+      fetchRoles(page, pageSize)
+    }
+  }
+
+  // Handle page size change from custom pagination
+  const handlePageSizeChange = (size: number) => {
+    if (size !== pageSize) {
+      fetchRoles(1, size) // Reset to first page when changing page size
+    }
+  }
   // Status cell renderer
   const statusCellRenderer = (params: any) => {
     return (
@@ -68,10 +102,30 @@ const RoleList = () => {
     setIsOpen(true)
   }
 
+  const handleDeleteRoleConfirmation = (params: any) => {
+    setIsOpenConfirmation(true)
+    setSelectedRole(params.data)
+  }
+
   // Handle delete user
-  const handleDeleteRole = (params: any) => {
-    console.log('Delete Role:', params.data)
-    // Implement your delete logic here
+  const handleDeleteRole = async (params: any) => {
+    if (!selectedRole?.role_id) {
+      return
+    }
+    try {
+      setLoading(true)
+      const response = await adminDashboardDataService.DeletRole(
+        selectedRole.role_id,
+        false
+      )
+      toast.success('Deleted Successfully')
+      fetchRoles(currentPage, pageSize)
+    } catch {
+      toast.error('Delete Roles failed')
+    } finally {
+      setIsOpenConfirmation(false)
+      setLoading(false)
+    }
   }
 
   // Action cell renderer wrapper that uses the shared component
@@ -80,14 +134,9 @@ const RoleList = () => {
       <ActionCell
         data={params.data}
         showEdit={false}
-        onDelete={() => handleDeleteRole(params)}
+        onDelete={() => handleDeleteRoleConfirmation(params)}
       />
     )
-  }
-
-  // Full name getter for the grid
-  const getFullName = (params: any) => {
-    return `${params.data.first_name} ${params.data.last_name}`
   }
 
   const columnDefs: ColDef[] = [
@@ -109,15 +158,15 @@ const RoleList = () => {
       sortable: true,
       width: 120,
       cellClass: 'text-center'
-    },
-    {
-      field: 'action',
-      headerName: 'Action',
-      sortable: false,
-      filter: false,
-      cellRenderer: actionCellRenderer,
-      width: 100
     }
+    // {
+    //   field: 'action',
+    //   headerName: 'Action',
+    //   sortable: false,
+    //   filter: false,
+    //   cellRenderer: actionCellRenderer,
+    //   width: 100
+    // }
   ]
 
   return (
@@ -135,10 +184,9 @@ const RoleList = () => {
 
       <div style={{ height: 'calc(100vh - 220px)', width: '100%' }}>
         <DataGrid
+          loading={loading}
           columnDefs={columnDefs}
           rowData={roles}
-          pagination={true}
-          paginationPageSize={pageSize}
           rowSelection='multiple'
           onGridReady={onGridReady}
           suppressMenuHide={false}
@@ -146,16 +194,25 @@ const RoleList = () => {
           isSummaryGrid={true}
           height='100%'
           overlayLoadingTemplate={
-            '<span class="ag-overlay-loading-center">Loading users...</span>'
+            '<span class="ag-overlay-loading-center">Loading Roles...</span>'
           }
           overlayNoRowsTemplate={
-            '<span class="ag-overlay-no-rows-center">No users found</span>'
+            '<span class="ag-overlay-no-rows-center">No Roles found</span>'
           }
           defaultColDef={{
             flex: 1,
             minWidth: 100,
             filter: true
           }}
+        />
+        <CustomPagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          pageSize={pageSize}
+          pageSizeOptions={pageSizeOptions}
+          totalItems={totalItems}
+          onPageChange={handlePageChange}
+          onPageSizeChange={handlePageSizeChange}
         />
       </div>
 
@@ -167,7 +224,40 @@ const RoleList = () => {
         <RoleForm
           setIsOpen={setIsOpen}
           isEditMode={isEditMode}
+          onFormSuccess={isSuccess => isSuccess && fetchRoles(1, pageSize)}
         />
+      </TaDialog>
+
+      <TaDialog
+        title={'Delete Confirmation'}
+        isOpen={isOpenConfirmation}
+        onClose={() => setIsOpenConfirmation(false)}
+      >
+        <div className='w-full'>
+          <label htmlFor='Delete confirmation'>
+            Are you sure you want to delete?
+          </label>
+          <div className='mt-6 grid grid-cols-2 gap-4'>
+            <Button
+              onClick={() => setIsOpenConfirmation(false)}
+              size={'3'}
+              color='gray'
+              variant='solid'
+            >
+              Cancel
+            </Button>
+
+            <Button
+              onClick={handleDeleteRole}
+              type='submit'
+              size={'3'}
+              color='teal'
+              variant='solid'
+            >
+              Yes
+            </Button>
+          </div>
+        </div>
       </TaDialog>
     </div>
   )

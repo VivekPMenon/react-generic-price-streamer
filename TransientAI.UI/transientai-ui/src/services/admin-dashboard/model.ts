@@ -9,6 +9,10 @@ export interface UserFormData {
   is_status: boolean
   is_super_admin: boolean
   role_name?: string
-  role_id?: number
+  role_id?: number | null
   user_type: string
+}
+
+export interface RoleFormData{
+  role_name: string
 }

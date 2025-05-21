@@ -45,6 +45,7 @@ interface UserFormProps {
   setIsOpen: (isOpen: boolean) => void
   isEditMode: boolean
   user_id?: number | null
+  onFormSuccess?: (isSuccess: boolean) => void
 }
 
 /**
@@ -53,13 +54,15 @@ interface UserFormProps {
 export const UserForm: React.FC<UserFormProps> = ({
   setIsOpen,
   isEditMode = false,
-  user_id
+  user_id,
+  onFormSuccess = () => {}
 }) => {
   const defaultValues: UserFormData = {
     user_id: null,
     first_name: '',
     last_name: '',
     role_name: '',
+    role_id: null,
     user_type: '',
     email: '',
     is_status: false,
@@ -74,8 +77,10 @@ export const UserForm: React.FC<UserFormProps> = ({
     try {
       const response = await adminDashboardDataService.updateUser(data)
       toast.success(response.message)
+       onFormSuccess(true);
     } catch {
-      toast.error('Error updating user')
+      toast.error('Error updating user');
+       onFormSuccess(false);
     } finally {
       setIsOpen(false)
     }
@@ -84,10 +89,13 @@ export const UserForm: React.FC<UserFormProps> = ({
   const handleCreateUser = async (data: UserFormData) => {
     try {
       const response = await adminDashboardDataService.createUser(data)
-      toast.success(response.message)
+      toast.success(response.message);
+      onFormSuccess(true);
     } catch {
-      toast.error('Error Add user')
+      toast.error('Error Add user');
+      onFormSuccess(false)
     } finally {
+      setIsOpen(false)
     }
   }
 
@@ -98,8 +106,7 @@ export const UserForm: React.FC<UserFormProps> = ({
     if (isEditMode && user_id) {
       const fetchUser = async () => {
         try {
-          const response = await adminDashboardDataService.getUser(user_id)
-          console.log(response)
+          const response = await adminDashboardDataService.getUser(user_id);
           reset(response.response_data)
         } catch {
           console.error('Error fetching user data')
@@ -188,16 +195,14 @@ export const UserForm: React.FC<UserFormProps> = ({
 
       <div className='relative'>
         <select
-          {...register('role_name', { required: 'Role is required' })}
+          {...register('role_id', { required: 'Role is required' })}
           className='w-full py-3 px-4 bg-gray-800 border border-gray-700 rounded-md text-white appearance-none focus:outline-none focus:ring-1 focus:ring-teal-500 focus:border-teal-500'
         >
           <option value='' disabled>
             Select Role
           </option>
           {UserRoleList.map(role => (
-            <option value={role.value}>
-              {role.label}
-            </option>
+            <option value={role.value}>{role.label}</option>
           ))}
         </select>
         <div className='absolute inset-y-0 right-3 flex items-center pointer-events-none'>
@@ -230,9 +235,7 @@ export const UserForm: React.FC<UserFormProps> = ({
             User Type
           </option>
           {UserTypeList.map(role => (
-            <option value={role.value}>
-              {role.label}
-            </option>
+            <option value={role.value}>{role.label}</option>
           ))}
         </select>
         <div className='absolute inset-y-0 right-3 flex items-center pointer-events-none'>
