@@ -99,7 +99,7 @@ export const UserForm: React.FC<UserFormProps> = ({
     }
   }
 
-  const { register, handleSubmit, control, reset, setValue, watch } =
+  const { register, handleSubmit, control, reset, setValue, watch, formState: { errors } } =
     useForm<UserFormData>({ defaultValues })
 
   useEffect(() => {
@@ -126,20 +126,7 @@ export const UserForm: React.FC<UserFormProps> = ({
     >
       <div className='relative flex'>
         <div className='absolute inset-y-0 left-3 flex items-center pointer-events-none text-gray-400'>
-          <svg
-            className='w-5 h-5'
-            fill='none'
-            stroke='currentColor'
-            viewBox='0 0 24 24'
-            xmlns='http://www.w3.org/2000/svg'
-          >
-            <path
-              strokeLinecap='round'
-              strokeLinejoin='round'
-              strokeWidth='2'
-              d='M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z'
-            ></path>
-          </svg>
+          <i className="fa-regular fa-user"></i>
         </div>
         <input
           {...register('first_name', { required: 'First name is required' })}
@@ -147,23 +134,12 @@ export const UserForm: React.FC<UserFormProps> = ({
           className='w-full py-3 px-10 bg-gray-800 border border-gray-700 rounded-md text-white placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-teal-500 focus:border-teal-500'
         />
       </div>
+      {errors.first_name && (
+        <p className="text-red-400 text-sm">{errors.first_name.message}</p>)}
 
       <div className='relative flex'>
         <div className='absolute inset-y-0 left-3 flex items-center pointer-events-none text-gray-400'>
-          <svg
-            className='w-5 h-5'
-            fill='none'
-            stroke='currentColor'
-            viewBox='0 0 24 24'
-            xmlns='http://www.w3.org/2000/svg'
-          >
-            <path
-              strokeLinecap='round'
-              strokeLinejoin='round'
-              strokeWidth='2'
-              d='M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z'
-            ></path>
-          </svg>
+          <i className="fa-regular fa-user"></i>
         </div>
         <input
           {...register('last_name', { required: 'Last name is required' })}
@@ -171,6 +147,8 @@ export const UserForm: React.FC<UserFormProps> = ({
           className='w-full py-3 px-10 bg-gray-800 border border-gray-700 rounded-md text-white placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-teal-500 focus:border-teal-500'
         />
       </div>
+      {errors.last_name && (
+        <p className="text-red-400 text-sm">{errors.last_name.message}</p>)}
 
       <div className='relative flex'>
         <div className='absolute inset-y-0 left-3 flex items-center pointer-events-none text-gray-400'>
@@ -192,6 +170,9 @@ export const UserForm: React.FC<UserFormProps> = ({
           }`}
         />
       </div>
+      {errors.email && (
+        <p className="text-red-400 text-sm">{errors.email.message}</p>
+      )}
 
       <div className='relative'>
         <select
@@ -206,22 +187,12 @@ export const UserForm: React.FC<UserFormProps> = ({
           ))}
         </select>
         <div className='absolute inset-y-0 right-3 flex items-center pointer-events-none'>
-          <svg
-            className='w-5 h-5 text-gray-400'
-            fill='none'
-            stroke='currentColor'
-            viewBox='0 0 24 24'
-            xmlns='http://www.w3.org/2000/svg'
-          >
-            <path
-              strokeLinecap='round'
-              strokeLinejoin='round'
-              strokeWidth='2'
-              d='M19 9l-7 7-7-7'
-            ></path>
-          </svg>
+          <i className="fa-solid fa-chevron-down"></i>
         </div>
       </div>
+      {errors.role_id && (
+        <p className="text-red-400 text-sm">{errors.role_id.message}</p>
+      )}
 
       <div className='relative'>
         <select
@@ -239,22 +210,12 @@ export const UserForm: React.FC<UserFormProps> = ({
           ))}
         </select>
         <div className='absolute inset-y-0 right-3 flex items-center pointer-events-none'>
-          <svg
-            className='w-5 h-5 text-gray-400'
-            fill='none'
-            stroke='currentColor'
-            viewBox='0 0 24 24'
-            xmlns='http://www.w3.org/2000/svg'
-          >
-            <path
-              strokeLinecap='round'
-              strokeLinejoin='round'
-              strokeWidth='2'
-              d='M19 9l-7 7-7-7'
-            ></path>
-          </svg>
+          <i className="fa-solid fa-chevron-down"></i>
         </div>
       </div>
+      {errors.user_type && (
+        <p className="text-red-400 text-sm">{errors.user_type.message}</p>
+      )}
 
       <div className='grid grid-cols-2 gap-2'>
         <div className='mt-4'>

@@ -8,6 +8,7 @@ interface PaginationProps {
   pageSize: number
   pageSizeOptions: number[]
   totalItems: number
+  loading?: boolean
   onPageChange: (page: number) => void
   onPageSizeChange: (size: number) => void
 }
@@ -18,6 +19,7 @@ const CustomPagination: React.FC<PaginationProps> = ({
   pageSize,
   pageSizeOptions,
   totalItems,
+  loading,
   onPageChange,
   onPageSizeChange
 }) => {
@@ -46,13 +48,14 @@ const CustomPagination: React.FC<PaginationProps> = ({
   const endRecord = Math.min(currentPage * pageSize, totalItems)
 
   return (
-    <div className="flex flex-col md:flex-row justify-between items-center gap-4 w-full mt-4 text-sm">
+    <div className="flex flex-col md:flex-row justify-end items-center gap-6 w-full mt-4 text-sm">
       {/* Page size selector */}
       <div className="flex items-center">
-        <span className="mr-2">Show</span>
+        <span className="mr-2">Rows per page</span>
         <select
           value={pageSize}
           onChange={(e) => onPageSizeChange(Number(e.target.value))}
+          disabled={loading}
           className="bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded px-2 py-1"
         >
           {pageSizeOptions.map((size) => (
@@ -61,12 +64,11 @@ const CustomPagination: React.FC<PaginationProps> = ({
             </option>
           ))}
         </select>
-        <span className="ml-2">entries</span>
       </div>
 
       {/* Page information */}
       <div className="text-gray-600 dark:text-gray-300">
-        Showing {startRecord} to {endRecord} of {totalItems} entries
+        {startRecord} - {endRecord} of {totalItems}
       </div>
 
       {/* Pagination controls */}
@@ -74,9 +76,9 @@ const CustomPagination: React.FC<PaginationProps> = ({
         {/* First page button */}
         <button
           onClick={() => onPageChange(1)}
-          disabled={currentPage === 1}
+          disabled={currentPage === 1 || loading}
           className={`px-3 py-1 rounded-l border ${
-            currentPage === 1
+            currentPage === 1 || loading
               ? 'bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-500 cursor-not-allowed'
               : 'bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 border-gray-300 dark:border-gray-600'
           }`}
@@ -87,9 +89,9 @@ const CustomPagination: React.FC<PaginationProps> = ({
         {/* Previous page button */}
         <button
           onClick={() => onPageChange(currentPage - 1)}
-          disabled={currentPage === 1}
+          disabled={currentPage === 1 || loading}
           className={`px-3 py-1 border ${
-            currentPage === 1
+            currentPage === 1 || loading
               ? 'bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-500 cursor-not-allowed'
               : 'bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 border-gray-300 dark:border-gray-600'
           }`}
@@ -102,8 +104,11 @@ const CustomPagination: React.FC<PaginationProps> = ({
           <button
             key={page}
             onClick={() => onPageChange(page)}
+            disabled={loading}
             className={`px-3 py-1 border ${
-              currentPage === page
+              loading
+                ? 'bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-500 cursor-not-allowed border-gray-300 dark:border-gray-600'
+                : currentPage === page
                 ? 'bg-blue-600 text-white border-blue-600'
                 : 'bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 border-gray-300 dark:border-gray-600'
             }`}
@@ -115,9 +120,9 @@ const CustomPagination: React.FC<PaginationProps> = ({
         {/* Next page button */}
         <button
           onClick={() => onPageChange(currentPage + 1)}
-          disabled={currentPage === totalPages || totalPages === 0}
+          disabled={currentPage === totalPages || totalPages === 0 || loading}
           className={`px-3 py-1 border ${
-            currentPage === totalPages || totalPages === 0
+            currentPage === totalPages || totalPages === 0 || loading
               ? 'bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-500 cursor-not-allowed'
               : 'bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 border-gray-300 dark:border-gray-600'
           }`}
@@ -128,9 +133,9 @@ const CustomPagination: React.FC<PaginationProps> = ({
         {/* Last page button */}
         <button
           onClick={() => onPageChange(totalPages)}
-          disabled={currentPage === totalPages || totalPages === 0}
+          disabled={currentPage === totalPages || totalPages === 0 || loading}
           className={`px-3 py-1 rounded-r border ${
-            currentPage === totalPages || totalPages === 0
+            currentPage === totalPages || totalPages === 0 || loading
               ? 'bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-500 cursor-not-allowed'
               : 'bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 border-gray-300 dark:border-gray-600'
           }`}

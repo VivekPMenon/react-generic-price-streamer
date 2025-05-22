@@ -72,7 +72,7 @@ const UserList = () => {
 
       setCurrentPage(pagination.page)
       setTotalPages(pagination.total_pages)
-      setTotalItems(pagination.total_users)
+      setTotalItems(pagination.total_items)
       setPageSize(pagination.page_size)
     } catch (error) {
       console.error('Error fetching users:', error)
@@ -296,6 +296,7 @@ const UserList = () => {
           pageSize={pageSize}
           pageSizeOptions={pageSizeOptions}
           totalItems={totalItems}
+          loading={loading}
           onPageChange={handlePageChange}
           onPageSizeChange={handlePageSizeChange}
         />
