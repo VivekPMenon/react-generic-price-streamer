@@ -49,10 +49,12 @@ class WebApihandler {
           resolve(newToken);
         } catch (error) {
           if (axios.isAxiosError(error) && error.response?.status === 401) {
-            const account = msalInstance.getAllAccounts()[0];
             try {
+              const account = msalInstance.getAllAccounts()[0];
               if (!account) throw new Error("No account found in MSAL");
 
+              await msalInstance.clearCache();
+              
               const tokenResponse = await msalInstance.acquireTokenSilent({
                 scopes: [currentEnv.authInfo?.scope!],
                 account: account,
@@ -72,8 +74,7 @@ class WebApihandler {
               resolve(newToken);
             } catch (msError) {
               console.error("Failed to refresh token:", msError);
-              this.signOut();
-              return;
+              reject(msError);
             }
           } else {
             reject(error);
