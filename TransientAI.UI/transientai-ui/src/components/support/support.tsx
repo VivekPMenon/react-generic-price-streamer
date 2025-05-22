@@ -52,7 +52,7 @@ const SupportWidget = () => {
       <div className='flex mb-2'>
         <button
           onClick={toggleWidget}
-          className='ml-auto bg-gray-800 text-white p-2 w-8 h-8 justify-center text-lg rounded-full flex items-center gap-2'
+          className='ml-auto bg-gray-800 text-white h-12 w-12 p-2 justify-center text-2xl rounded-full flex items-center gap-2'
         >
           {isOpen ? (
             <i
@@ -62,7 +62,7 @@ const SupportWidget = () => {
             ></i>
           ) : (
             <i
-              className='fa-solid fa-headset'
+              className='fa-solid fa-headset text-3xl p-1'
               data-tooltip-id='my-tooltip'
               data-tooltip-content='Support'
             ></i>
