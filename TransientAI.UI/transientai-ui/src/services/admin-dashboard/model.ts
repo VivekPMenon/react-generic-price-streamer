@@ -16,3 +16,15 @@ export interface UserFormData {
 export interface RoleFormData{
   role_name: string
 }
+
+export interface IUpdateUserConfigReq {
+  user_id: number
+  corporate_actions_data: string[]
+  margin_data: string[]
+}
+
+export interface IUpdateRoleConfigReq {
+  role_id: number;
+  screens: number[];
+  pms_data: string[];
+}

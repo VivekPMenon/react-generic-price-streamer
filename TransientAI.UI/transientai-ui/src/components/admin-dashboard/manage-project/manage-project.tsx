@@ -51,7 +51,7 @@ const ManageProject = () => {
           className='grow p-5 outline-none max-h-[calc(100vh-120px)] scrollable-div'
           value={tab.value}
         >
-          <div className='space-y-4'>{tab.content}</div>
+          <div className='space-y-4 relative'>{tab.content}</div>
         </Tabs.Content>
       ))}
     </Tabs.Root>

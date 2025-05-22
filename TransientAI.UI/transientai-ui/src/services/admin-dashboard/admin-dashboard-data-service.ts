@@ -1,6 +1,6 @@
 //src/services/break-news/break-news-data-service.ts
 import { webApihandler } from '../web-api-handler'
-import { RoleFormData, UserFormData } from './model'
+import { IUpdateRoleConfigReq, IUpdateUserConfigReq, RoleFormData, UserFormData } from './model'
 // import { BreakNewsItem } from "./model";
 
 class AdminDashboardDataService {
@@ -16,10 +16,14 @@ class AdminDashboardDataService {
     return results
   }
 
-  async getUserList (page: number, page_size: number,skip_pagination?: boolean): Promise<any> {
+  async getUserList (
+    page: number,
+    page_size: number,
+    skip_pagination?: boolean
+  ): Promise<any> {
     const results = await webApihandler.get(
       'admin/users',
-      { page: page, page_size: page_size,skip_pagination: skip_pagination },
+      { page: page, page_size: page_size, skip_pagination: skip_pagination },
       { serviceName: this.serviceName }
     )
     return results
@@ -65,7 +69,7 @@ class AdminDashboardDataService {
   }
 
   //Roles API'S
-  async getRoles (role_id: number): Promise<any> {
+  async getRole (role_id: number): Promise<any> {
     const results = await webApihandler.get(
       'admin/roles',
       { role_id: role_id },
@@ -74,10 +78,14 @@ class AdminDashboardDataService {
     return results
   }
 
-  async getRolesList (page: number, page_size: number): Promise<any> {
+  async getRolesList (
+    page: number,
+    page_size: number,
+    skip_pagination?: boolean
+  ): Promise<any> {
     const results = await webApihandler.get(
       'admin/roles',
-      { page: page, page_size: page_size },
+      { page: page, page_size: page_size, skip_pagination: skip_pagination },
       { serviceName: this.serviceName }
     )
     return results
@@ -130,47 +138,45 @@ class AdminDashboardDataService {
     return results
   }
 
-   async updateProjectUserConfig (config: any): Promise<any> {
+  async updateProjectUserConfig (req: IUpdateUserConfigReq): Promise<any> {
     const results = await webApihandler.post(
       'admin/margin',
-      config,
+      req,
       {},
       { serviceName: this.serviceName }
     )
     return results
   }
 
-    async updateProjectRoleConfig (config: any): Promise<any> {
+  async updateProjectRoleConfig (req: IUpdateRoleConfigReq): Promise<any> {
     const results = await webApihandler.post(
       'admin/pms',
-      config,
+      req,
       {},
       { serviceName: this.serviceName }
     )
     return results
   }
 
-
-   async deleteCorpActions (user_id : number, corp_actions_id  : number[]): Promise<any> {
+  async deleteCorpActions (data: any): Promise<any> {
     const results = await webApihandler.delete(
       'admin/corporate_actions',
       { serviceName: this.serviceName },
-      { user_id: user_id, corp_actions_id : corp_actions_id }
+      {},
+      data
     )
     return results
   }
 
-   async deleteMarginData (user_id : number, margin_data : string[]): Promise<any> {
+  async deleteMarginData (data: any): Promise<any> {
     const results = await webApihandler.delete(
       'admin/margin_data',
       { serviceName: this.serviceName },
-      { user_id: user_id, margin_data: margin_data }
+      {},
+      data
     )
     return results
   }
-
-
-
 }
 
 export const adminDashboardDataService = new AdminDashboardDataService()

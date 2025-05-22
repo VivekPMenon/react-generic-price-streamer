@@ -77,10 +77,10 @@ export const UserForm: React.FC<UserFormProps> = ({
     try {
       const response = await adminDashboardDataService.updateUser(data)
       toast.success(response.message)
-       onFormSuccess(true);
+      onFormSuccess(true)
     } catch {
-      toast.error('Error updating user');
-       onFormSuccess(false);
+      toast.error('Error updating user')
+      onFormSuccess(false)
     } finally {
       setIsOpen(false)
     }
@@ -89,24 +89,31 @@ export const UserForm: React.FC<UserFormProps> = ({
   const handleCreateUser = async (data: UserFormData) => {
     try {
       const response = await adminDashboardDataService.createUser(data)
-      toast.success(response.message);
-      onFormSuccess(true);
+      toast.success(response.message)
+      onFormSuccess(true)
     } catch {
-      toast.error('Error Add user');
+      toast.error('Error Add user')
       onFormSuccess(false)
     } finally {
       setIsOpen(false)
     }
   }
 
-  const { register, handleSubmit, control, reset, setValue, watch, formState: { errors } } =
-    useForm<UserFormData>({ defaultValues })
+  const {
+    register,
+    handleSubmit,
+    control,
+    reset,
+    setValue,
+    watch,
+    formState: { errors }
+  } = useForm<UserFormData>({ defaultValues })
 
   useEffect(() => {
     if (isEditMode && user_id) {
       const fetchUser = async () => {
         try {
-          const response = await adminDashboardDataService.getUser(user_id);
+          const response = await adminDashboardDataService.getUser(user_id)
           reset(response.response_data)
         } catch {
           console.error('Error fetching user data')
@@ -126,7 +133,7 @@ export const UserForm: React.FC<UserFormProps> = ({
     >
       <div className='relative flex'>
         <div className='absolute inset-y-0 left-3 flex items-center pointer-events-none text-gray-400'>
-          <i className="fa-regular fa-user"></i>
+          <i className='fa-regular fa-user'></i>
         </div>
         <input
           {...register('first_name', { required: 'First name is required' })}
@@ -135,21 +142,21 @@ export const UserForm: React.FC<UserFormProps> = ({
         />
       </div>
       {errors.first_name && (
-        <p className="text-red-400 text-sm">{errors.first_name.message}</p>)}
+        <span className='text-red-400 text-sm'>
+          {errors.first_name.message}
+        </span>
+      )}
 
       <div className='relative flex'>
         <div className='absolute inset-y-0 left-3 flex items-center pointer-events-none text-gray-400'>
-          <i className="fa-regular fa-user"></i>
+          <i className='fa-regular fa-user'></i>
         </div>
         <input
-          {...register('last_name', { required: 'Last name is required' })}
+          {...register('last_name')}
           placeholder='Last Name'
           className='w-full py-3 px-10 bg-gray-800 border border-gray-700 rounded-md text-white placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-teal-500 focus:border-teal-500'
         />
       </div>
-      {errors.last_name && (
-        <p className="text-red-400 text-sm">{errors.last_name.message}</p>)}
-
       <div className='relative flex'>
         <div className='absolute inset-y-0 left-3 flex items-center pointer-events-none text-gray-400'>
           @
@@ -171,7 +178,9 @@ export const UserForm: React.FC<UserFormProps> = ({
         />
       </div>
       {errors.email && (
-        <p className="text-red-400 text-sm">{errors.email.message}</p>
+        <span className='text-red-400 text-sm pt-2 pl-1'>
+          {errors.email.message}
+        </span>
       )}
 
       <div className='relative'>
@@ -187,11 +196,11 @@ export const UserForm: React.FC<UserFormProps> = ({
           ))}
         </select>
         <div className='absolute inset-y-0 right-3 flex items-center pointer-events-none'>
-          <i className="fa-solid fa-chevron-down"></i>
+          <i className='fa-solid fa-chevron-down'></i>
         </div>
       </div>
       {errors.role_id && (
-        <p className="text-red-400 text-sm">{errors.role_id.message}</p>
+        <span className='text-red-400 text-sm'>{errors.role_id.message}</span>
       )}
 
       <div className='relative'>
@@ -210,11 +219,11 @@ export const UserForm: React.FC<UserFormProps> = ({
           ))}
         </select>
         <div className='absolute inset-y-0 right-3 flex items-center pointer-events-none'>
-          <i className="fa-solid fa-chevron-down"></i>
+          <i className='fa-solid fa-chevron-down'></i>
         </div>
       </div>
       {errors.user_type && (
-        <p className="text-red-400 text-sm">{errors.user_type.message}</p>
+        <span className='text-red-400 text-sm'>{errors.user_type.message}</span>
       )}
 
       <div className='grid grid-cols-2 gap-2'>
