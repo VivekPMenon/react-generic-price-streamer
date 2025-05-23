@@ -1,11 +1,13 @@
 import { CollapseContainer } from '@/components/shared/ta-collapse/ta-collapse'
-import { Button, Checkbox, TextArea } from '@radix-ui/themes'
+import { Button, Checkbox, Spinner, TextArea } from '@radix-ui/themes'
 import React, { useState, useRef, useEffect, useCallback } from 'react'
 import { SharedDropdown } from '@/components/shared'
 import { DropdownOption } from '@/components/shared/ta-select/ta-select'
 import { adminDashboardDataService } from '@/services/admin-dashboard/admin-dashboard-data-service'
+import { toast } from 'react-toastify'
+import { IUpdateUserConfigReq } from '@/services/admin-dashboard/model'
 
-interface User {
+export interface User {
   user_id: number
   full_name: string
   first_name: string
@@ -38,10 +40,13 @@ enum ScreenDataType {
   Margin_Cols = 'Margin Cols'
 }
 
-const Users = () => {
+interface UsersProps {
+  users: User[]
+  isUserLoading: boolean
+}
+
+const Users = ({ users, isUserLoading }: UsersProps) => {
   const [loading, setLoading] = useState<boolean>(true)
-  const [isUserLoading, setIsUserLoading] = useState<boolean>(true)
-  const [users, setUsers] = useState<User[]>([])
   const [selectedUser, setSelectedUser] = useState<User | null>(null)
   const [accountNumbers, setAccountNumbers] = useState<ICorporateAction[]>([])
   const [marginCols, setMarginCols] = useState<IMargin[]>([])
@@ -91,26 +96,6 @@ const Users = () => {
     }
   }
 
-  useEffect(() => {
-    fetchUsers();
-  }, [])
-
-  const fetchUsers = async () => {
-    setIsUserLoading(true)
-    try {
-      // Call your API service with pagination parameters
-      const response = await adminDashboardDataService.getUserList(1, 10, true)
-
-      // Update users and pagination data from the response
-      setUsers(response.data || [])
-    } catch (error) {
-      console.error('Error fetching users:', error)
-      // Handle error state
-    } finally {
-      setIsUserLoading(false)
-    }
-  }
-
   // Convert users to dropdown options format
   const userOptions = useCallback(() => {
     return Array.isArray(users)
@@ -122,51 +107,112 @@ const Users = () => {
       : []
   }, [users])
 
- const handleDelete = async () => {
-  // Check if a user is selected
-  if (!selectedUser?.user_id) {
-    return;
+  const handleDeleteCorpAction = async () => {
+    // Check if a user is selected
+    if (!selectedUser?.user_id) {
+      return
+    }
+
+    // Check if any items are selected for deletion
+    const itemsToDelete = accountNumbers.filter(a => a.is_selected)
+    if (itemsToDelete.length === 0) {
+      return
+    }
+
+    // Optional: Show loading state
+    setLoading(true)
+
+    try {
+      // Extract IDs of items to be deleted
+      const deletedItemIds = itemsToDelete.map(item => item.id)
+
+      // Call API to delete items
+      const req = {
+        corp_actions_id: deletedItemIds
+      }
+      const response = await adminDashboardDataService.deleteCorpActions(req)
+
+      // Update local state with remaining items
+      const remainingItems = accountNumbers.filter(a => !a.is_selected)
+      setAccountNumbers(remainingItems)
+      toast.success(response.message || 'Items deleted successfully')
+    } catch (error) {
+      // More detailed error handlin
+      console.error('Error deleting corporate actions:', error)
+      toast.error('Item deletion failed')
+      await fetchUserConfig()
+    } finally {
+      // Reset loading state
+      setLoading(false)
+    }
   }
 
-  // Check if any items are selected for deletion
-  const itemsToDelete = accountNumbers.filter(a => a.is_selected);
-  if (itemsToDelete.length === 0) {
-    return;
+  const handleDeleteMarginData = async () => {
+    // Check if a user is selected
+    if (!selectedUser?.user_id) {
+      return
+    }
+
+    // Check if any items are selected for deletion
+    const itemsToDelete = marginCols.filter(a => a.is_selected)
+    if (itemsToDelete.length === 0) {
+      return
+    }
+
+    // Optional: Show loading state
+    setLoading(true)
+
+    try {
+      // Extract IDs of items to be deleted
+      const deletedItemIds = itemsToDelete.map(item => item.margin_label)
+
+      // Call API to delete items
+      const req = {
+        user_id: selectedUser.user_id,
+        margin_data: deletedItemIds
+      }
+      const response = await adminDashboardDataService.deleteMarginData(req)
+
+      // Update local state with remaining items
+      const remainingItems = marginCols.filter(a => !a.is_selected)
+      setMarginCols(remainingItems)
+      toast.success(response.message || 'Items deleted successfully')
+    } catch (error) {
+      // More detailed error handlin
+      console.error('Error deleting Margins:', error)
+      toast.error('Item deletion failed')
+      await fetchUserConfig()
+    } finally {
+      // Reset loading state
+      setLoading(false)
+    }
   }
 
-  // Optional: Show loading state
-  setLoading(true);
-
-  try {
-    // Extract IDs of items to be deleted
-    const deletedItemIds = itemsToDelete.map(item => item.id);
-    
-    // Call API to delete items
-    const response = await adminDashboardDataService.deleteCorpActions(
-      selectedUser.user_id,
-      deletedItemIds
-    );
-    
-    // Update local state with remaining items
-    const remainingItems = accountNumbers.filter(a => !a.is_selected);
-    setAccountNumbers(remainingItems);
-
-    console.log('Items deleted successfully:', response);
-  } catch (error) {
-    // More detailed error handlin
-    console.error('Error deleting corporate actions:', error);
-    await fetchUserConfig();
-  } finally {
-    // Reset loading state
-    setLoading(false);
+  const handleUpdate = async () => {
+    setLoading(true)
+    try {
+      if (!selectedUser?.user_id) {
+        return
+      }
+      const req: IUpdateUserConfigReq = {
+        user_id: selectedUser?.user_id,
+        corporate_actions_data: accountTags,
+        margin_data: marginTags
+      }
+      const response = await adminDashboardDataService.updateProjectUserConfig(
+        req
+      )
+      toast.success(response.message || 'Update successful')
+      setAccountTags([])
+      setMarginTags([])
+      fetchUserConfig()
+    } catch (error) {
+      console.log('Update failed :', error)
+      toast.error('Update failed')
+    } finally {
+      setLoading(false)
+    }
   }
-}
-
-  const handleDeleteMargin = () => {
-    setMarginCols(marginCols.filter(a => !a.is_selected))
-  }
-
-  const handleUpdate = async () => {}
 
   const processTagInput = (value: string, type: ScreenDataType) => {
     if (value.trim() !== '') {
@@ -215,6 +261,9 @@ const Users = () => {
         if (selected) {
           setSelectedUser(selected.data)
         } else {
+          setSelectedUser(null)
+          setAccountNumbers([])
+          setMarginCols([])
         }
       } catch (err) {
         console.error('Error changing preview user:', err)
@@ -249,201 +298,220 @@ const Users = () => {
           darkMode={true}
         />
       </div>
-      <CollapseContainer title={<span>Corporate Action</span>}>
-        <div className='flex gap-8 mt-3 lg:flex-row flex-col'>
-          <section className='lg:w-1/2 rounded-md'>
-            <div className='flex items-center justify-between p-4 bg-gray-800'>
-              <div className='flex items-center'>
-                <Checkbox
-                  checked={accountNumbers.every(a => a.is_selected)}
-                  onCheckedChange={checked => {
-                    setAccountNumbers(
-                      accountNumbers.map(a => ({
-                        ...a,
-                        is_selected: !!checked
-                      }))
-                    )
-                  }}
-                  className='mr-3'
-                />
-                <span className='font-medium text-sm'>Account Numbers</span>
-              </div>
-              {accountNumbers.some(a => a.is_selected) && (
-                <button
-                  type='button'
-                  aria-label='Delete icon'
-                  className='text-red-500 cursor-pointer'
-                  onClick={handleDelete}
-                >
-                  <i className='fa-solid fa-trash'></i>
-                </button>
-              )}
-            </div>
-
-            {/* Account List */}
-            <div className='scrollable-div max-h-52'>
-              {accountNumbers.map((account, ind) => (
-                <div
-                  key={account.id}
-                  className='flex items-center p-4 border border-[#353b49]'
-                >
+      <div className='space-y-2 relative'>
+        <CollapseContainer title={<span>Corporate Action</span>}>
+          <div className='flex gap-8 mt-3 lg:flex-row flex-col'>
+            <section className='lg:w-1/2 rounded-md'>
+              <div className='flex items-center justify-between p-4 bg-gray-800'>
+                <div className='flex items-center'>
                   <Checkbox
-                    checked={account.is_selected}
+                    checked={accountNumbers.every(a => a.is_selected)}
                     onCheckedChange={checked => {
                       setAccountNumbers(
-                        accountNumbers.map((a, i) =>
-                          i === ind ? { ...a, is_selected: !!checked } : a
-                        )
+                        accountNumbers.map(a => ({
+                          ...a,
+                          is_selected: !!checked
+                        }))
                       )
                     }}
                     className='mr-3'
                   />
-                  <span>{account.corp_label}</span>
+                  <span className='font-medium text-sm'>Account Numbers</span>
                 </div>
-              ))}
-            </div>
-          </section>
-
-          <section className='border border-[#353b49] rounded-sm p-4 lg:w-1/2'>
-            <div className='mb-2 relative'>
-              <TextArea
-                ref={accountTextAreaRef}
-                className='bg-transparent w-full pr-10'
-                placeholder='Type and enter or give values in comma separated'
-                onKeyDown={e => handleTagChange(e, ScreenDataType.AC_Number)}
-              />
-              <button
-                type='button'
-                onClick={() => handleAddButtonClick(ScreenDataType.AC_Number)}
-                className='absolute w-7 h-7 flex top-2 right-2 justify-center items-center text-md rounded-full hover:bg-gray-700 text-teal-400'
-                title='Add tags'
-              >
-                <i className='fa-light fa-plus'></i>
-              </button>
-            </div>
-            <div className='flex flex-wrap gap-2 mt-2'>
-              {accountTags.map((tag, index) => (
-                <div
-                  key={index}
-                  className='py-1 px-2 text-sm rounded-md flex items-center bg-gray-800 border border-white/10 hover:bg-gray-700 transition-all'
-                >
-                  {tag}
+                {accountNumbers.some(a => a.is_selected) && (
                   <button
                     type='button'
-                    className='ml-2 cursor-pointer hover:text-gray-500'
-                    onClick={() =>
-                      setAccountTags(accountTags.filter(t => t !== tag))
-                    }
-                    aria-label='close'
+                    aria-label='Delete icon'
+                    className='text-red-500 cursor-pointer'
+                    onClick={handleDeleteCorpAction}
                   >
-                    <i className='fa-solid fa-xmark'></i>
+                    <i className='fa-solid fa-trash'></i>
                   </button>
-                </div>
-              ))}
-            </div>
-          </section>
-        </div>
-      </CollapseContainer>
-      <br></br>
-      <CollapseContainer title={<span>Margin</span>}>
-        <div className='flex gap-8 mt-3 lg:flex-row flex-col'>
-          <section className='lg:w-1/2 rounded-md'>
-            <div className='flex items-center justify-between p-4 bg-gray-800'>
-              <div className='flex items-center'>
-                <Checkbox
-                  checked={marginCols.every(a => a.is_selected)}
-                  onCheckedChange={checked => {
-                    setMarginCols(
-                      marginCols.map(a => ({ ...a, is_selected: !!checked }))
-                    )
-                  }}
-                  className='mr-3'
-                />
-                <span className='font-medium text-sm'>Values</span>
+                )}
               </div>
-              {marginCols.some(a => a.is_selected) && (
+
+              {/* Account List */}
+              <div className='scrollable-div max-h-52'>
+                {accountNumbers.map((account, ind) => (
+                  <div
+                    key={account.id}
+                    className='flex items-center p-4 border border-[#353b49]'
+                  >
+                    <Checkbox
+                      checked={account.is_selected}
+                      onCheckedChange={checked => {
+                        setAccountNumbers(
+                          accountNumbers.map((a, i) =>
+                            i === ind ? { ...a, is_selected: !!checked } : a
+                          )
+                        )
+                      }}
+                      className='mr-3'
+                    />
+                    <span>{account.corp_label}</span>
+                  </div>
+                ))}
+              </div>
+            </section>
+
+            <section className='border border-[#353b49] rounded-sm p-4 lg:w-1/2'>
+              <div className='mb-2 relative'>
+                <TextArea
+                  ref={accountTextAreaRef}
+                  className='bg-transparent w-full pr-10'
+                  placeholder='Type and enter or give values in comma separated'
+                  onKeyDown={e => handleTagChange(e, ScreenDataType.AC_Number)}
+                />
                 <button
                   type='button'
-                  aria-label='Delete icon'
-                  className='text-red-500 cursor-pointer'
-                  onClick={handleDeleteMargin}
+                  onClick={() => handleAddButtonClick(ScreenDataType.AC_Number)}
+                  className='absolute w-7 h-7 flex top-2 right-2 justify-center items-center text-md rounded-full hover:bg-gray-700 text-teal-400'
+                  title='Add tags'
                 >
-                  <i className='fa-solid fa-trash'></i>
+                  <i className='fa-light fa-plus'></i>
                 </button>
-              )}
-            </div>
-
-            {/* Account List */}
-            <div className='scrollable-div max-h-52'>
-              {marginCols.map((account, ind) => (
-                <div
-                  key={account.id}
-                  className='flex items-center p-4 border border-[#353b49]'
-                >
+              </div>
+              <div className='flex flex-wrap gap-2 mt-2'>
+                {accountTags.map((tag, index) => (
+                  <div
+                    key={index}
+                    className='py-1 px-2 text-sm rounded-md flex items-center bg-gray-800 border border-white/10 hover:bg-gray-700 transition-all'
+                  >
+                    {tag}
+                    <button
+                      type='button'
+                      className='ml-2 cursor-pointer hover:text-gray-500'
+                      onClick={() =>
+                        setAccountTags(accountTags.filter(t => t !== tag))
+                      }
+                      aria-label='close'
+                    >
+                      <i className='fa-solid fa-xmark'></i>
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </section>
+          </div>
+        </CollapseContainer>
+        <br></br>
+        <CollapseContainer title={<span>Margin</span>}>
+          <div className='flex gap-8 mt-3 lg:flex-row flex-col'>
+            <section className='lg:w-1/2 rounded-md'>
+              <div className='flex items-center justify-between p-4 bg-gray-800'>
+                <div className='flex items-center'>
                   <Checkbox
-                    checked={account.is_selected}
+                    checked={marginCols.every(a => a.is_selected)}
                     onCheckedChange={checked => {
                       setMarginCols(
-                        marginCols.map((a, i) =>
-                          i === ind ? { ...a, is_selected: !!checked } : a
-                        )
+                        marginCols.map(a => ({ ...a, is_selected: !!checked }))
                       )
                     }}
                     className='mr-3'
                   />
-                  <span>{account.margin_label}</span>
+                  <span className='font-medium text-sm'>Values</span>
                 </div>
-              ))}
-            </div>
-          </section>
-
-          <section className='border border-[#353b49] rounded-sm p-4 lg:w-1/2'>
-            <div className='mb-2 relative'>
-              <TextArea
-                ref={marginTextAreaRef}
-                className='bg-transparent w-full pr-10'
-                placeholder='Type and enter or give values in comma separated'
-                onKeyDown={e => handleTagChange(e, ScreenDataType.Margin_Cols)}
-              />
-              <button
-                type='button'
-                onClick={() => handleAddButtonClick(ScreenDataType.Margin_Cols)}
-                className='absolute w-7 h-7 flex top-2 right-2 justify-center items-center text-md rounded-full hover:bg-gray-700 text-teal-400'
-                title='Add tags'
-              >
-                <i className='fa-light fa-plus'></i>
-              </button>
-            </div>
-            <div className='flex flex-wrap gap-2 mt-2'>
-              {marginTags.map((tag, index) => (
-                <div
-                  key={index}
-                  className='py-1 px-2 text-sm rounded-md flex items-center bg-gray-800 border border-white/10 hover:bg-gray-700 transition-all'
-                >
-                  {tag}
+                {marginCols.some(a => a.is_selected) && (
                   <button
                     type='button'
-                    className='ml-2 cursor-pointer hover:text-gray-500'
-                    onClick={() =>
-                      setMarginTags(marginTags.filter(t => t !== tag))
-                    }
-                    aria-label='close'
+                    aria-label='Delete icon'
+                    className='text-red-500 cursor-pointer'
+                    onClick={handleDeleteMarginData}
                   >
-                    <i className='fa-solid fa-xmark'></i>
+                    <i className='fa-solid fa-trash'></i>
                   </button>
-                </div>
-              ))}
-            </div>
-          </section>
-        </div>
-      </CollapseContainer>
+                )}
+              </div>
+
+              {/* Account List */}
+              <div className='scrollable-div max-h-52'>
+                {marginCols.map((account, ind) => (
+                  <div
+                    key={account.id}
+                    className='flex items-center p-4 border border-[#353b49]'
+                  >
+                    <Checkbox
+                      checked={account.is_selected}
+                      onCheckedChange={checked => {
+                        setMarginCols(
+                          marginCols.map((a, i) =>
+                            i === ind ? { ...a, is_selected: !!checked } : a
+                          )
+                        )
+                      }}
+                      className='mr-3'
+                    />
+                    <span>{account.margin_label}</span>
+                  </div>
+                ))}
+              </div>
+            </section>
+
+            <section className='border border-[#353b49] rounded-sm p-4 lg:w-1/2'>
+              <div className='mb-2 relative'>
+                <TextArea
+                  ref={marginTextAreaRef}
+                  className='bg-transparent w-full pr-10'
+                  placeholder='Type and enter or give values in comma separated'
+                  onKeyDown={e =>
+                    handleTagChange(e, ScreenDataType.Margin_Cols)
+                  }
+                />
+                <button
+                  type='button'
+                  onClick={() =>
+                    handleAddButtonClick(ScreenDataType.Margin_Cols)
+                  }
+                  className='absolute w-7 h-7 flex top-2 right-2 justify-center items-center text-md rounded-full hover:bg-gray-700 text-teal-400'
+                  title='Add tags'
+                >
+                  <i className='fa-light fa-plus'></i>
+                </button>
+              </div>
+              <div className='flex flex-wrap gap-2 mt-2'>
+                {marginTags.map((tag, index) => (
+                  <div
+                    key={index}
+                    className='py-1 px-2 text-sm rounded-md flex items-center bg-gray-800 border border-white/10 hover:bg-gray-700 transition-all'
+                  >
+                    {tag}
+                    <button
+                      type='button'
+                      className='ml-2 cursor-pointer hover:text-gray-500'
+                      onClick={() =>
+                        setMarginTags(marginTags.filter(t => t !== tag))
+                      }
+                      aria-label='close'
+                    >
+                      <i className='fa-solid fa-xmark'></i>
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </section>
+          </div>
+        </CollapseContainer>
+        {loading && (
+          <div className='absolute top-0 w-full h-full flex items-center justify-center'>
+            <div className='relative bg-gray-500 opacity-50 rounded-lg w-full h-full'></div>
+            <span className='opacity-100 absolute'>
+              <Spinner />
+            </span>
+          </div>
+        )}
+      </div>
       <div className='flex w-full justify-end items-center gap-2'>
         <Button className='w-[150px]' size={'3'} color='gray' variant='solid'>
           Cancel
         </Button>
 
         <Button
+          disabled={
+            (accountTags.length == 0 && marginTags.length == 0) ||
+            !selectedUser?.user_id
+          }
           className='w-[150px]'
+          loading={loading}
           onClick={() => handleUpdate()}
           type='submit'
           size={'3'}

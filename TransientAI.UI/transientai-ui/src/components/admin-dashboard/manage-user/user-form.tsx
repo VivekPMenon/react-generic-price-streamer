@@ -1,7 +1,7 @@
 import { adminDashboardDataService } from '@/services/admin-dashboard/admin-dashboard-data-service'
 import { UserFormData } from '@/services/admin-dashboard/model'
 import { Button } from '@radix-ui/themes'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
 import Toggle from 'react-toggle'
@@ -57,6 +57,7 @@ export const UserForm: React.FC<UserFormProps> = ({
   user_id,
   onFormSuccess = () => {}
 }) => {
+  const [loading, setLoading] = useState(false);
   const defaultValues: UserFormData = {
     user_id: null,
     first_name: '',
@@ -77,10 +78,10 @@ export const UserForm: React.FC<UserFormProps> = ({
     try {
       const response = await adminDashboardDataService.updateUser(data)
       toast.success(response.message)
-       onFormSuccess(true);
+      onFormSuccess(true)
     } catch {
-      toast.error('Error updating user');
-       onFormSuccess(false);
+      toast.error('Error updating user')
+      onFormSuccess(false)
     } finally {
       setIsOpen(false)
     }
@@ -89,27 +90,37 @@ export const UserForm: React.FC<UserFormProps> = ({
   const handleCreateUser = async (data: UserFormData) => {
     try {
       const response = await adminDashboardDataService.createUser(data)
-      toast.success(response.message);
-      onFormSuccess(true);
+      toast.success(response.message)
+      onFormSuccess(true)
     } catch {
-      toast.error('Error Add user');
+      toast.error('Error Add user')
       onFormSuccess(false)
     } finally {
       setIsOpen(false)
     }
   }
 
-  const { register, handleSubmit, control, reset, setValue, watch } =
-    useForm<UserFormData>({ defaultValues })
+  const {
+    register,
+    handleSubmit,
+    control,
+    reset,
+    setValue,
+    watch,
+    formState: { errors }
+  } = useForm<UserFormData>({ defaultValues })
 
   useEffect(() => {
     if (isEditMode && user_id) {
+      setLoading(true);
       const fetchUser = async () => {
         try {
-          const response = await adminDashboardDataService.getUser(user_id);
+          const response = await adminDashboardDataService.getUser(user_id)
           reset(response.response_data)
         } catch {
           console.error('Error fetching user data')
+        }finally{
+          setLoading(false);
         }
       }
       fetchUser()
@@ -119,6 +130,15 @@ export const UserForm: React.FC<UserFormProps> = ({
     }
   }, [isEditMode, user_id, reset])
 
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-40">
+        <span className="text-white">Loading user details...</span>
+      </div>
+    )
+  }
+
+
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
@@ -126,20 +146,7 @@ export const UserForm: React.FC<UserFormProps> = ({
     >
       <div className='relative flex'>
         <div className='absolute inset-y-0 left-3 flex items-center pointer-events-none text-gray-400'>
-          <svg
-            className='w-5 h-5'
-            fill='none'
-            stroke='currentColor'
-            viewBox='0 0 24 24'
-            xmlns='http://www.w3.org/2000/svg'
-          >
-            <path
-              strokeLinecap='round'
-              strokeLinejoin='round'
-              strokeWidth='2'
-              d='M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z'
-            ></path>
-          </svg>
+          <i className='fa-regular fa-user'></i>
         </div>
         <input
           {...register('first_name', { required: 'First name is required' })}
@@ -147,31 +154,22 @@ export const UserForm: React.FC<UserFormProps> = ({
           className='w-full py-3 px-10 bg-gray-800 border border-gray-700 rounded-md text-white placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-teal-500 focus:border-teal-500'
         />
       </div>
+      {errors.first_name && (
+        <span className='text-red-400 text-sm'>
+          {errors.first_name.message}
+        </span>
+      )}
 
       <div className='relative flex'>
         <div className='absolute inset-y-0 left-3 flex items-center pointer-events-none text-gray-400'>
-          <svg
-            className='w-5 h-5'
-            fill='none'
-            stroke='currentColor'
-            viewBox='0 0 24 24'
-            xmlns='http://www.w3.org/2000/svg'
-          >
-            <path
-              strokeLinecap='round'
-              strokeLinejoin='round'
-              strokeWidth='2'
-              d='M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z'
-            ></path>
-          </svg>
+          <i className='fa-regular fa-user'></i>
         </div>
         <input
-          {...register('last_name', { required: 'Last name is required' })}
+          {...register('last_name')}
           placeholder='Last Name'
           className='w-full py-3 px-10 bg-gray-800 border border-gray-700 rounded-md text-white placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-teal-500 focus:border-teal-500'
         />
       </div>
-
       <div className='relative flex'>
         <div className='absolute inset-y-0 left-3 flex items-center pointer-events-none text-gray-400'>
           @
@@ -192,6 +190,11 @@ export const UserForm: React.FC<UserFormProps> = ({
           }`}
         />
       </div>
+      {errors.email && (
+        <span className='text-red-400 text-sm pt-2 pl-1'>
+          {errors.email.message}
+        </span>
+      )}
 
       <div className='relative'>
         <select
@@ -206,22 +209,12 @@ export const UserForm: React.FC<UserFormProps> = ({
           ))}
         </select>
         <div className='absolute inset-y-0 right-3 flex items-center pointer-events-none'>
-          <svg
-            className='w-5 h-5 text-gray-400'
-            fill='none'
-            stroke='currentColor'
-            viewBox='0 0 24 24'
-            xmlns='http://www.w3.org/2000/svg'
-          >
-            <path
-              strokeLinecap='round'
-              strokeLinejoin='round'
-              strokeWidth='2'
-              d='M19 9l-7 7-7-7'
-            ></path>
-          </svg>
+          <i className='fa-solid fa-chevron-down'></i>
         </div>
       </div>
+      {errors.role_id && (
+        <span className='text-red-400 text-sm'>{errors.role_id.message}</span>
+      )}
 
       <div className='relative'>
         <select
@@ -239,22 +232,12 @@ export const UserForm: React.FC<UserFormProps> = ({
           ))}
         </select>
         <div className='absolute inset-y-0 right-3 flex items-center pointer-events-none'>
-          <svg
-            className='w-5 h-5 text-gray-400'
-            fill='none'
-            stroke='currentColor'
-            viewBox='0 0 24 24'
-            xmlns='http://www.w3.org/2000/svg'
-          >
-            <path
-              strokeLinecap='round'
-              strokeLinejoin='round'
-              strokeWidth='2'
-              d='M19 9l-7 7-7-7'
-            ></path>
-          </svg>
+          <i className='fa-solid fa-chevron-down'></i>
         </div>
       </div>
+      {errors.user_type && (
+        <span className='text-red-400 text-sm'>{errors.user_type.message}</span>
+      )}
 
       <div className='grid grid-cols-2 gap-2'>
         <div className='mt-4'>

@@ -1,23 +1,18 @@
 'use client'
 
-import { Explorer } from '@/components/explorer/explorer'
 import { Header } from '@/components/header/header'
 import { useEffect, useState } from 'react'
 import { useDeviceType } from '@/lib/hooks'
 import { useUserContextStore } from '@/services/user-context'
 import { MsalProvider } from '@azure/msal-react'
 import { Spinner } from '@radix-ui/themes'
-import { AdminMenuList, Mode, menuStore } from '@/services/menu-data'
-import { ServiceInitializer } from '@/services/startup/initializer'
+import { AdminMenuList, menuStore } from '@/services/menu-data'
 
 import msalInstance from '../msal-config'
 import styles from './layout.module.scss'
 import 'react-tooltip/dist/react-tooltip.css'
 import { MenuList } from '@/components/menu/menu-list'
-
-const MODE: Mode = Mode.BUY
-
-const serviceInitializer = new ServiceInitializer(MODE)
+import { useRouter } from 'next/navigation'
 
 export default function AdminDashboardLayout ({
   children
@@ -25,20 +20,15 @@ export default function AdminDashboardLayout ({
   children: React.ReactNode
 }>) {
   // todo.. unable to add this to the root of the app, as it is server side rendered, create an intermediate layout that wil act as root for all client dashboards
-  const { loadUserContext, isLoading, isAuthenticated } = useUserContextStore()
+  const { loadUserContext, isLoading, isAuthenticated, userContext } =
+    useUserContextStore()
   const [hurricanePmsView, setHurricanePmsView] = useState<boolean | null>(null)
   const selectedMenu = menuStore.use.selectedMenu()
+  const router = useRouter()
 
   useEffect(() => {
     loadUserContext()
   }, [])
-
-  useEffect(() => {
-    if (isAuthenticated) {
-      window.history.replaceState({}, document.title, window.location.pathname)
-      serviceInitializer.initialize()
-    }
-  }, [isAuthenticated])
 
   useEffect(() => {
     setHurricanePmsView(selectedMenu?.key === 'hurricane-pms')
@@ -49,21 +39,16 @@ export default function AdminDashboardLayout ({
   const [expandedPanels, setExpandedPanels] = useState<string[]>([])
   const [isMenuVisible, setIsMenuVisible] = useState<boolean>(true)
 
-  function onExpandCollapse (panelName: string, isExpanded: boolean) {
-    const latestExpandedPanels = [...expandedPanels]
-
-    if (isExpanded) {
-      latestExpandedPanels.push(panelName)
-    } else {
-      const index = latestExpandedPanels.findIndex(panel => panel === panelName)
-      latestExpandedPanels.splice(index, 1)
-    }
-
-    setExpandedPanels(latestExpandedPanels)
-  }
-
   function onMenuToggle () {
     setIsMenuVisible(!isMenuVisible)
+  }
+
+  if (!userContext?.userInfo?.superadmin) {
+    return (
+      <div className='w-screen h-screen flex items-center justify-center'>
+        <span>404 Unauthorized</span>
+      </div>
+    )
   }
 
   return (
@@ -82,21 +67,17 @@ export default function AdminDashboardLayout ({
 
           <main>
             <div
-              className={`${styles['left-panel']} ${
+              className={`widget ${styles['left-panel']} ${
                 !isMenuVisible && deviceType === 'mobile'
                   ? styles['collapsed']
                   : ''
               } ${hurricanePmsView && '!max-w-32'} transition-all duration-300`}
             >
               {!expandedPanels.includes('notifications') ? (
-                    <MenuList menuList={AdminMenuList} onNavigate={()=> setIsMenuVisible(false)}/>
-                // <Explorer
-                //   mode={MODE}
-                //   onExpandCollapse={isExpanded =>
-                //     onExpandCollapse('explorer', isExpanded)
-                //   }
-                //   onNavigate={() => setIsMenuVisible(false)}
-                // ></Explorer>
+                <MenuList
+                  menuList={AdminMenuList}
+                  onNavigate={() => setIsMenuVisible(false)}
+                />
               ) : (
                 <></>
               )}
@@ -109,7 +90,7 @@ export default function AdminDashboardLayout ({
                   : ''
               }`}
             >
-             {children}
+              {children}
             </div>
           </main>
         </div>
@@ -117,4 +98,3 @@ export default function AdminDashboardLayout ({
     </MsalProvider>
   )
 }
-
