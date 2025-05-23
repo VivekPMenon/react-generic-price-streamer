@@ -164,7 +164,7 @@ const ProjectList = () => {
       <div className='flex justify-between items-center'>
         <div className='flex gap-2 items-center'>
           <label className='text-2xl font-semibold'>Projects </label>
-          <SearchComponent />
+          {/* <SearchComponent /> */}
         </div>
         {/* <Button className='flex items-center space-x-2' onClick={handleAddProject}>
           <i className='fa-solid fa-plus'></i>
