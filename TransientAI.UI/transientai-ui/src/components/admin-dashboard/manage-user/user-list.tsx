@@ -67,13 +67,13 @@ const UserList = () => {
       const pagination = response.pagination || {
         currentPage: 1,
         totalPages: 1,
-        total_users: response.data?.length || 0,
+        total_items: response.data?.length || 0,
         pageSize: size
       }
 
       setCurrentPage(pagination.page)
       setTotalPages(pagination.total_pages)
-      setTotalItems(pagination.total_users)
+      setTotalItems(pagination.total_items)
       setPageSize(pagination.page_size)
     } catch (error) {
       console.error('Error fetching users:', error)

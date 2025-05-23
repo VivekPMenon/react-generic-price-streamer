@@ -61,13 +61,13 @@ const RoleList = () => {
       const pagination = response.pagination || {
         page: 1,
         total_pages: 1,
-        total_roles: response.data?.length || 0,
+        total_items: response.data?.length || 0,
         page_size: size
       }
 
       setCurrentPage(pagination.page)
       setTotalPages(pagination.total_pages)
-      setTotalItems(pagination.total_roles)
+      setTotalItems(pagination.total_items)
       setPageSize(pagination.page_size)
     } catch (error) {
       console.error('Error fetching Roles:', error)
