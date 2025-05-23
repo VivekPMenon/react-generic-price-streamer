@@ -240,6 +240,7 @@ const RoleList = () => {
           suppressMenuHide={false}
           suppressFloatingFilter={false}
           isSummaryGrid={true}
+          isNewGrid={true}
           height='100%'
           overlayLoadingTemplate={
             '<span class="ag-overlay-loading-center">Loading Roles...</span>'
@@ -250,7 +251,8 @@ const RoleList = () => {
           defaultColDef={{
             flex: 1,
             minWidth: 100,
-            filter: true
+            filter: true,
+            suppressMenu: true
           }}
         />
         <CustomPagination
