@@ -1,10 +1,30 @@
 //src/services/break-news/break-news-data-service.ts
 import { webApihandler } from '../web-api-handler'
-import { IUpdateRoleConfigReq, IUpdateUserConfigReq, RoleFormData, UserFormData } from './model'
+import {
+  IUpdateRoleConfigReq,
+  IUpdateUserConfigReq,
+  RoleFormData,
+  SearchQueryType,
+  SearchTableName,
+  UserFormData
+} from './model'
 // import { BreakNewsItem } from "./model";
 
 class AdminDashboardDataService {
   private serviceName = 'hurricane-api-2-0'
+
+  async searchValues (
+    table_name: SearchTableName,
+    query_str: string,
+    query_type?: SearchQueryType | '',
+  ): Promise<any> {
+    const results = await webApihandler.get(
+      'admin/search',
+      { table_name: table_name, query_type: query_type, query_str: query_str },
+      { serviceName: this.serviceName }
+    )
+    return results
+  }
 
   //Users API'S
   async getUser (user_id: number): Promise<any> {
@@ -19,11 +39,12 @@ class AdminDashboardDataService {
   async getUserList (
     page: number,
     page_size: number,
-    skip_pagination?: boolean
+    skip_pagination?: boolean,
+    userid?: number
   ): Promise<any> {
     const results = await webApihandler.get(
       'admin/users',
-      { page: page, page_size: page_size, skip_pagination: skip_pagination },
+      { userid: userid, page: page, page_size: page_size, skip_pagination: skip_pagination },
       { serviceName: this.serviceName }
     )
     return results
@@ -81,11 +102,12 @@ class AdminDashboardDataService {
   async getRolesList (
     page: number,
     page_size: number,
-    skip_pagination?: boolean
+    skip_pagination?: boolean,
+    roleid?: number
   ): Promise<any> {
     const results = await webApihandler.get(
       'admin/roles',
-      { page: page, page_size: page_size, skip_pagination: skip_pagination },
+      { roleid: roleid, page: page, page_size: page_size, skip_pagination: skip_pagination },
       { serviceName: this.serviceName }
     )
     return results

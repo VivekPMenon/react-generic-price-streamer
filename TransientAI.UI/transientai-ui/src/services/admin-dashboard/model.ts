@@ -1,3 +1,13 @@
+export enum SearchTableName{
+  USER = "users",
+  ROLE = "roles"
+}
+
+export enum SearchQueryType{
+  EMAIL = 'email',
+  FULLNAME = 'fullname'
+}
+
 /**
  * Type for form data structure
  */

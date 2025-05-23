@@ -1,17 +1,20 @@
 'use client'
 
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, useCallback } from 'react'
 import { ColDef, GridApi, GridReadyEvent } from 'ag-grid-community'
 import { DataGrid } from '../../data-grid'
 import { Button } from '@radix-ui/themes/components/button'
 import Toggle from 'react-toggle'
-import SearchComponent from '../../shared/ta-search/ta-search'
+import SearchComponent, { SearchItem } from '../../shared/ta-search/ta-search'
 import ActionCell from '../action-cell'
 import { TaDialog } from '../../shared/ta-dialog/ta-dialog'
 import { RoleForm } from './role-form'
 import { adminDashboardDataService } from '@/services/admin-dashboard/admin-dashboard-data-service'
 import CustomPagination from '@/components/shared/ta-pagination/ta-pagination'
 import { toast } from 'react-toastify'
+import {
+  SearchTableName
+} from '@/services/admin-dashboard/model'
 interface Role {
   role_id: number
   role_name: string
@@ -36,11 +39,20 @@ const RoleList = () => {
     fetchRoles(currentPage, pageSize)
   }, [])
 
-  const fetchRoles = async (page: number, size: number, query = '') => {
+  const fetchRoles = async (
+    page: number,
+    size: number,
+    searchRoleId?: number
+  ) => {
     setLoading(true)
     try {
       // Call your API service with pagination parameters
-      const response = await adminDashboardDataService.getRolesList(page, size)
+      const response = await adminDashboardDataService.getRolesList(
+        page,
+        size,
+        false,
+        searchRoleId
+      )
 
       // Update users and pagination data from the response
       setRoles(response.data || [])
@@ -169,12 +181,46 @@ const RoleList = () => {
     // }
   ]
 
+  const fetchSuggestions = useCallback(
+    async (query: string): Promise<SearchItem[]> => {
+      if (!query.trim()) {
+        return []
+      }
+      try {
+        const response = await adminDashboardDataService.searchValues(
+          SearchTableName.ROLE,
+          query
+        )
+        // Check if response is an array
+        if (!Array.isArray(response)) {
+          console.error('Response is not an array:', response)
+          return []
+        }
+
+        const suggestions = response.map((item: any) => ({
+          id: item.id,
+          title: item.label
+        }))
+
+        return suggestions
+      } catch (error) {
+        console.error('Error fetching role suggestions:', error)
+        return []
+      }
+    },
+    []
+  )
+
   return (
     <div className='flex flex-col space-y-4 p-4'>
       <div className='flex justify-between items-center'>
         <div className='flex gap-2 items-center'>
           <label className='text-2xl font-semibold'>Roles </label>
-          <SearchComponent />
+          <SearchComponent
+            placeholder='Search Role'
+            fetchSuggestions={fetchSuggestions}
+            onSelect={item => fetchRoles(1, pageSize, item.id)}
+          />
         </div>
         <Button className='flex items-center space-x-2' onClick={handleAddRole}>
           <i className='fa-solid fa-plus'></i>

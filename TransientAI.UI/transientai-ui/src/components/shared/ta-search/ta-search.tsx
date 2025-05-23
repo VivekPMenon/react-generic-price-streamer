@@ -1,88 +1,148 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
+
+export interface SearchItem {
+  id: number
+  title: string
+}
 
 interface SearchComponentProps {
-  /** Placeholder text for the search input */
   placeholder?: string
-  /** Callback function that receives the search query */
   onSearch?: (query: string) => void
-  /** Initial search value */
+  onSelect?: (item: SearchItem) => void
   initialValue?: string
-  /** Debounce time in milliseconds */
   debounceTime?: number
-  /** Additional CSS classes for the container */
   className?: string
+  fetchSuggestions: (query: string) => Promise<SearchItem[]>
+  minCharsForSuggestions?: number
 }
 
 const SearchComponent = ({
   placeholder = 'Search',
   onSearch,
+  onSelect,
   initialValue = '',
   debounceTime = 300,
-  className = ''
+  className = '',
+  fetchSuggestions,
+  minCharsForSuggestions = 3
 }: SearchComponentProps) => {
-  const [searchQuery, setSearchQuery] = useState(initialValue)
-  const [isFocused, setIsFocused] = useState(false)
+  const [searchQuery, setSearchQuery] = useState(initialValue);
+  const [selectedValue, setSelectedValue] = useState('');
+  const [suggestions, setSuggestions] = useState<SearchItem[]>([])
+  const [isLoading, setIsLoading] = useState(false)
+  const [showDropdown, setShowDropdown] = useState(false)
+  const containerRef = useRef<HTMLDivElement>(null)
+  const timerRef = useRef<NodeJS.Timeout | null>( null)
 
-  // Debounce search input to prevent excessive callbacks
+  // Handle search with debounce
   useEffect(() => {
-    const timer = setTimeout(() => {
-      if (onSearch) {
-        onSearch(searchQuery)
-      }
-    }, debounceTime)
+    if (timerRef.current) {
+      clearTimeout(timerRef.current)
+    }
 
-    return () => clearTimeout(timer)
-  }, [searchQuery, onSearch, debounceTime])
+    if (searchQuery.length >= minCharsForSuggestions) {
+      timerRef.current = setTimeout(async () => {
+        setIsLoading(true)
+        try {
+          const results = await fetchSuggestions(searchQuery)
+          setSuggestions(results)
+          setShowDropdown(results.length > 0)
+          onSearch?.(searchQuery)
+        } catch (error) {
+          console.error('Search failed:', error)
+          setSuggestions([])
+          setShowDropdown(false)
+        } finally {
+          setIsLoading(false)
+        }
+      }, debounceTime)
+    } else {
+      setSuggestions([])
+      setShowDropdown(false)
+    }
+
+    return () => {
+      if (timerRef.current) {
+        clearTimeout(timerRef.current)
+      }
+    }
+  }, [searchQuery, debounceTime, fetchSuggestions, minCharsForSuggestions, onSearch])
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
+        setShowDropdown(false)
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [])
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value
-    setSearchQuery(value)
+    setSearchQuery(e.target.value)
+  }
 
-    if (value.length >= 3) {
-      //Fetch user search value
-    }
+  const handleSelectItem = (item: SearchItem) => {
+    setSearchQuery('');
+    setSelectedValue(item.title);
+    setShowDropdown(false)
+    onSelect?.(item)
   }
 
   const handleClear = () => {
     setSearchQuery('')
-    if (onSearch) {
-      onSearch('')
-    }
+    setSelectedValue('');
+    setShowDropdown(false)
+    onSelect?.({} as SearchItem);
+    onSearch?.('')
   }
 
   return (
-    <div className={`flex items-center gap-4 ${className}`}>
-      <div
-        className={`
-        relative flex items-center w-full rounded-xl border 
-        ${isFocused ? 'border-gray-500' : 'border-gray-700'}
-        bg-gray-900 overflow-hidden transition-all duration-200
-      `}
-      >
-        <div className='flex items-center justify-center px-3 text-gray-400'>
-          <i className='fa-light fa-magnifying-glass'></i>
+    <div className={`relative ${className}`} ref={containerRef}>
+      <div className="relative flex items-center w-full rounded-xl border border-gray-700 bg-gray-900 overflow-hidden">
+        <div className="px-3 text-gray-400">
+          {isLoading ? (
+            <div className="animate-spin w-4 h-4 border-2 border-gray-400 border-t-transparent rounded-full"></div>
+          ) : (
+            <i className="fa-light fa-magnifying-glass"></i>
+          )}
         </div>
         <input
-          type='text'
-          value={searchQuery}
+          type="text"
+          value={searchQuery || selectedValue}
           onChange={handleChange}
           placeholder={placeholder}
-          onFocus={() => setIsFocused(true)}
-          onBlur={() => setIsFocused(false)}
-          className='w-full py-2 px-2 text-white focus:!shadow-none !bg-transparent placeholder-gray-400'
+          className="w-full py-2 px-2 text-white !bg-transparent placeholder-gray-400 outline-none !shadow-none"
+          autoComplete="off"
         />
-        <button
-          onClick={handleClear}
-          className={`px-3 text-gray-400 hover:text-gray-200 focus:outline-none ${
-            !searchQuery && `invisible`
-          }`}
-          aria-label='Clear search'
-        >
-          ×
-        </button>
+        {(searchQuery || selectedValue) && (
+          <button
+            onClick={handleClear}
+            className="px-3 text-gray-400 hover:text-gray-200"
+            aria-label="Clear search"
+          >
+            ×
+          </button>
+        )}
       </div>
+
+      {showDropdown && suggestions.length > 0 && (
+        <div className="absolute top-full left-0 right-0 mt-1 bg-gray-900 border border-gray-700 rounded-b-xl shadow-lg z-50 max-h-80 overflow-y-auto">
+          {suggestions.map((item) => (
+            <div
+              key={item.id}
+              className="px-4 py-3 cursor-pointer hover:bg-gray-800 text-gray-300 border-b border-gray-800 last:border-b-0"
+              onClick={() => handleSelectItem(item)}
+            >
+              <div className="text-sm truncate">{item.title}</div>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   )
 }
