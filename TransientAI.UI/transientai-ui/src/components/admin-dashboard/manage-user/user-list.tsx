@@ -189,31 +189,33 @@ const UserList = () => {
     {
       field: 'user_id',
       headerName: 'U.ID',
-      sortable: true,
-      filter: 'agNumberColumnFilter',
+     sortable: false,
+      filter: false,
       width: 100
     },
     {
       headerName: 'Full Name',
       field: 'full_name',
-      sortable: true,
-      filter: 'agTextColumnFilter'
+      sortable: false,
+      filter: false,
     },
     {
       field: 'email',
       headerName: 'Email',
-      sortable: true,
-      filter: 'agTextColumnFilter'
+      sortable: false,
+      filter: false,
     },
     {
       field: 'role',
       headerName: 'Role',
-      sortable: true
+      sortable: false,
+      filter: false,
     },
     {
       field: 'is_super_admin',
       headerName: 'Super Admin',
-      sortable: true,
+      sortable: false,
+      filter: false,
       cellRenderer: (cell: any) => <>{cell.value ? 'Yes' : 'No'}</>,
       width: 150,
       cellClass: 'text-center'
@@ -221,12 +223,14 @@ const UserList = () => {
     {
       field: 'user_type',
       headerName: 'User Type',
-      sortable: true
+      sortable: false,
+      filter: false,
     },
     {
       field: 'is_active',
       headerName: 'Active',
-      sortable: true,
+      sortable: false,
+      filter: false,
       cellRenderer: statusCellRenderer,
       width: 120,
       cellClass: 'text-center'

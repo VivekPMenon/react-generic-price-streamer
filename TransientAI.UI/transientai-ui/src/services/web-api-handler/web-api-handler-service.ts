@@ -53,6 +53,8 @@ class WebApihandler {
               const account = msalInstance.getAllAccounts()[0];
               if (!account) throw new Error("No account found in MSAL");
 
+              await msalInstance.clearCache();
+              
               const tokenResponse = await msalInstance.acquireTokenSilent({
                 scopes: [currentEnv.authInfo?.scope!],
                 account: account,

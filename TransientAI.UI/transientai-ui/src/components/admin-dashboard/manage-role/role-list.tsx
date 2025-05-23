@@ -155,19 +155,21 @@ const RoleList = () => {
     {
       field: 'role_id',
       headerName: 'R.Id',
-      sortable: true,
-      filter: 'agNumberColumnFilter',
+      sortable: false,
+      filter: false,
       width: 100
     },
     {
       field: 'role_name',
       headerName: 'Role name',
-      sortable: true
+      sortable: false,
+      filter: false,
     },
     {
       field: 'created_on',
       headerName: 'Created on',
-      sortable: true,
+      sortable: false,
+      filter: false,
       width: 120,
       cellClass: 'text-center'
     }
