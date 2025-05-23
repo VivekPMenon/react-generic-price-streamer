@@ -74,10 +74,12 @@ export function Header({ onMenuToggle, isMenuVisible }: HeaderProps) {
         setSelectedPreviewUser(selected.data);
         userService.savePreviewUserRoleId(selected.value.toString());
         userService.savePreviewUserRole(selected.data.role);
+        userService.savePreviewUserEmail(selected.data.email);
       } else {
         setSelectedPreviewUser(null);
         userService.savePreviewUserRoleId('');
         userService.savePreviewUserRole('');
+        userService.savePreviewUserEmail('');
       }
       window.location.reload();
     } catch (err) {
@@ -108,6 +110,8 @@ export function Header({ onMenuToggle, isMenuVisible }: HeaderProps) {
         } else {
           // Handle case where stored ID doesn't match any user
           userService.savePreviewUserRoleId('');
+          userService.savePreviewUserRole('');
+          userService.savePreviewUserEmail('');
         }
       }
     } catch (err) {

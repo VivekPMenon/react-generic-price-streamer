@@ -4,6 +4,7 @@ import { investorRelationsService } from '@/services/investor-relations-data/inv
 import { useUserContextStore } from '@/services/user-context';
 import { unseenItemsStore } from '../unseen-items-store/unseen-items-store';
 import { createSelectors } from "@/lib/utility-functions/store-operations";
+import { userService } from '../user-context/user-service';
 
 export const resourceNameInvestorRelations = 'investor-relations';
 
@@ -66,9 +67,11 @@ export const useInvestorRelationsStore = create<InvestorRelationsStore>()((set, 
 
   loadEmails: async () => {
     const userContext = useUserContextStore.getState().userContext;
+    const userEmail = userService.getPreviewUserEmail();
+    const currentEmail =  userEmail ? userEmail : userContext.userId;
     try {
       set({ isLoading: true });
-      const irEmails = await investorRelationsService.getIREmails(userContext.userId!);
+      const irEmails = await investorRelationsService.getIREmails(currentEmail!);
       set({ irEmails });
     } catch (e: any) {
       set({ inquiries: [], error: 'Failed to load IR Emails' });

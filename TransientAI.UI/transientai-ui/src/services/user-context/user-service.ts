@@ -27,6 +27,14 @@ class UserService {
         sessionStorage.setItem('previewUserRole', role);
     }
 
+     getPreviewUserEmail() {
+        return sessionStorage.getItem('previewUserEmail');
+    }
+
+    savePreviewUserEmail(role: string) {
+        sessionStorage.setItem('previewUserEmail', role);
+    }
+
     // checkCurrentRole() {
     //     const previewRole = sessionStorage.getItem('previewUserRole');
     //     const getUserInfo = sessionStorage.getItem("userInfo");
