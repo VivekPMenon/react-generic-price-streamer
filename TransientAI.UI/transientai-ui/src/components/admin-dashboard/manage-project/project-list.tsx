@@ -34,8 +34,8 @@ const ProjectList = () => {
   const gridRef = useRef<GridApi | null>(null)
   const [loading, setLoading] = useState<boolean>(true)
   const [isEditMode, setIsEditMode] = useState(false)
-  const [isOpen, setIsOpen] = useState(false);
-  const router = useRouter();
+  const [isOpen, setIsOpen] = useState(false)
+  const router = useRouter()
 
   useEffect(() => {
     // fetchProjects(currentPage, pageSize);
@@ -72,7 +72,6 @@ const ProjectList = () => {
       setLoading(false)
     }
   }
-
 
   const onGridReady = (params: GridReadyEvent) => {
     gridRef.current = params.api
@@ -133,19 +132,21 @@ const ProjectList = () => {
     {
       field: 'project_id',
       headerName: 'P.Id',
-      sortable: true,
-      filter: 'agNumberColumnFilter',
+      sortable: false,
+      filter: false,
       width: 100
     },
     {
       field: 'project_name',
       headerName: 'Project Name',
-      sortable: true
+      sortable: false,
+      filter: false
     },
     {
       field: 'created_on',
       headerName: 'Created On',
-      sortable: true,
+      sortable: false,
+      filter: false,
       width: 120,
       cellClass: 'text-center'
     },
