@@ -10,6 +10,7 @@ import Image from 'next/image';
 import { menuStore } from '@/services/menu-data';
 import SharedDropdown, { DropdownOption } from '../shared/ta-select/ta-select';
 import { userService } from '@/services/user-context/user-service';
+import { usePathname } from 'next/navigation';
 
 // Example user interface
 interface User {
@@ -30,6 +31,7 @@ export interface HeaderProps {
   isMenuVisible?: boolean;
 }
 
+const NotAllowedUrl = ['admin-dashboard'];
  
 export function Header({ onMenuToggle, isMenuVisible }: HeaderProps) {
 
@@ -40,6 +42,9 @@ export function Header({ onMenuToggle, isMenuVisible }: HeaderProps) {
   const [previewUserList, setPreviewUserList] = useState<User[]>([]);
   const [selectedPreviewUser, setSelectedPreviewUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const pathname = usePathname()
+  const currentRoute = pathname.split('/')[1]; // Gets the first segment after '/'
+  const isNotAllowedUrl = NotAllowedUrl.includes(currentRoute);
 
   // Convert users to dropdown options format
   const userOptions = useCallback(() => {
@@ -181,7 +186,7 @@ export function Header({ onMenuToggle, isMenuVisible }: HeaderProps) {
           Hi {userContext?.userName}
         </div> */}
         {
-         userContext?.userInfo?.superadmin && <SharedDropdown
+         (userContext?.userInfo?.superadmin && !isNotAllowedUrl) && <SharedDropdown
             options={userOptions()}
             value={selectedOption()}
             onChange={handleSelectChange}
