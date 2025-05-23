@@ -5,7 +5,7 @@
 @import "@radix-ui/themes/styles.css";
 @import 'ag-grid-community/styles/ag-grid.css';
 @import 'ag-grid-community/styles/ag-theme-balham.css';
-@import 'rc-segmented/assets/index.css'; 
+@import 'rc-segmented/assets/index.css';
 @import '@react-pdf-viewer/core/lib/styles/index.css';
 @import '@react-pdf-viewer/default-layout/lib/styles/index.css';
 @import 'react-toggle/style.css';
@@ -33,6 +33,7 @@
 @import '../assets/wizard.scss';
 @import '../assets/animations.scss';
 @import '../assets/email-messages.scss';
+@import '../assets/ta-data-grid.scss';
 
 :root {
   --background: #{$body-bg};

@@ -10,7 +10,7 @@ import Image from 'next/image';
 import { menuStore } from '@/services/menu-data';
 import SharedDropdown, { DropdownOption } from '../shared/ta-select/ta-select';
 import { userService } from '@/services/user-context/user-service';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 
 // Example user interface
 interface User {
@@ -45,6 +45,7 @@ export function Header({ onMenuToggle, isMenuVisible }: HeaderProps) {
   const pathname = usePathname()
   const currentRoute = pathname.split('/')[1]; // Gets the first segment after '/'
   const isNotAllowedUrl = NotAllowedUrl.includes(currentRoute);
+   const router = useRouter()
 
   // Convert users to dropdown options format
   const userOptions = useCallback(() => {
@@ -86,6 +87,11 @@ export function Header({ onMenuToggle, isMenuVisible }: HeaderProps) {
       console.error('Error changing preview user:', err);
     }
   }, []);
+
+   const handleEditProject = () => {
+    router.push('/dashboard')
+    // Implement your delete logic here
+  }
 
   // Fetch users with proper error handling
   const fetchUsers = useCallback(async () => {
@@ -139,7 +145,7 @@ export function Header({ onMenuToggle, isMenuVisible }: HeaderProps) {
               <i className='fa-solid fa-bars'></i>
             </div>
             :
-            <img src="/images/TRANS_H_white-on-transparent.png" />
+            <img onClick={handleEditProject} src="/images/TRANS_H_white-on-transparent.png" />
         }
       </div>
 
@@ -200,7 +206,7 @@ export function Header({ onMenuToggle, isMenuVisible }: HeaderProps) {
           />
         }
 
-        <div className={styles['client-logo']}>
+        <div className={styles['client-logo']}  onClick={handleEditProject}>
           <img src="/images/HurricaneLogo_Brightened.png"  alt='logo'/>
           <span>HURRICANE CAPITAL</span>
           {/* {userContext?.userId} */}
