@@ -301,6 +301,7 @@ const UserList = () => {
           rowSelection='multiple'
           onGridReady={onGridReady}
           suppressMenuHide={false}
+          isNewGrid={true}
           suppressFloatingFilter={false}
           isSummaryGrid={true}
           height='100%'
@@ -313,7 +314,8 @@ const UserList = () => {
           defaultColDef={{
             flex: 1,
             minWidth: 100,
-            filter: true
+            filter: true,
+            suppressMenu: true
           }}
         />
         <CustomPagination

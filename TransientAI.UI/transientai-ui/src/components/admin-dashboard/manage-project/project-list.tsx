@@ -13,7 +13,7 @@ import { useRouter } from 'next/navigation'
 const mockProjects = [
   {
     project_id: 1,
-    project_name: 'By Side',
+    project_name: 'Buy Side',
     created_on: '14 May 2025'
   }
 ]
@@ -182,6 +182,7 @@ const ProjectList = () => {
           suppressMenuHide={false}
           suppressFloatingFilter={false}
           isSummaryGrid={true}
+           isNewGrid={true}
           height='100%'
           overlayLoadingTemplate={
             '<span class="ag-overlay-loading-center">Loading users...</span>'
@@ -192,7 +193,8 @@ const ProjectList = () => {
           defaultColDef={{
             flex: 1,
             minWidth: 100,
-            filter: true
+            filter: true,
+            suppressMenu: true
           }}
         />
         <CustomPagination

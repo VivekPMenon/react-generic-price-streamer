@@ -12,6 +12,7 @@ export interface IDataGridProps extends AgGridReactProps {
   suppressStatusBar?: boolean;
   suppressFloatingFilter?: boolean;
   width?: string | number;
+  isNewGrid?: boolean;
 }
 
 // Expose the Grid API via ref
@@ -60,15 +61,15 @@ export const DataGrid = forwardRef<GridApi | null, IDataGridProps>((props, ref) 
   }, []);
 
   return (
-    <div className={`ag-theme-balham-dark height-100p ${props.isSummaryGrid ? 'summary-grid' : ''}`} 
+    <div className={`${props.isNewGrid ? 'ta-data-grid' : 'ag-theme-balham-dark'} height-100p' ${props.isSummaryGrid ? 'summary-grid' : ''} `} 
       style={{ height: props.height }}>
       <AgGridReact
         key={JSON.stringify(props.rowData)}
         {...finalProps}
         statusBar={props.suppressStatusBar ? undefined : props.isSummaryGrid ? undefined : statusBar}
         onGridReady={onGridReady}
-        rowHeight={props.isSummaryGrid ? 60 : 35}
-        headerHeight={props.isSummaryGrid ? 60 : 35}
+        rowHeight={props.isSummaryGrid ? 50 : 35}
+        headerHeight={props.isSummaryGrid ? 50 : 35}
         floatingFiltersHeight={props.suppressFloatingFilter ? 0 : props.isSummaryGrid ? 25 : 20}
       />
     </div>
