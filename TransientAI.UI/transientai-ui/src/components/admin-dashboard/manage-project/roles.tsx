@@ -113,6 +113,9 @@ const Roles = () => {
         if (selected) {
           setSelectedRole(selected.data)
         } else {
+          setSelectedRole(null)
+          setPnLList([])
+          setScreens([])
         }
       } catch (err) {
         console.error('Error changing preview user:', err)

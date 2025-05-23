@@ -278,6 +278,9 @@ const Users = () => {
         if (selected) {
           setSelectedUser(selected.data)
         } else {
+          setSelectedUser(null);
+          setAccountNumbers([]);
+          setMarginCols([]);
         }
       } catch (err) {
         console.error('Error changing preview user:', err)
@@ -520,7 +523,7 @@ const Users = () => {
         </Button>
 
         <Button
-          disabled={accountTags.length == 0 && marginTags.length == 0}
+          disabled={(accountTags.length == 0 && marginTags.length == 0 ) || !selectedUser?.user_id}
           className='w-[150px]'
           loading={loading}
           onClick={() => handleUpdate()}
