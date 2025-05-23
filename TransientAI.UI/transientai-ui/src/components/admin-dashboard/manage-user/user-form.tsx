@@ -1,7 +1,7 @@
 import { adminDashboardDataService } from '@/services/admin-dashboard/admin-dashboard-data-service'
 import { UserFormData } from '@/services/admin-dashboard/model'
 import { Button } from '@radix-ui/themes'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
 import Toggle from 'react-toggle'
@@ -57,6 +57,7 @@ export const UserForm: React.FC<UserFormProps> = ({
   user_id,
   onFormSuccess = () => {}
 }) => {
+  const [loading, setLoading] = useState(false);
   const defaultValues: UserFormData = {
     user_id: null,
     first_name: '',
@@ -111,12 +112,15 @@ export const UserForm: React.FC<UserFormProps> = ({
 
   useEffect(() => {
     if (isEditMode && user_id) {
+      setLoading(true);
       const fetchUser = async () => {
         try {
           const response = await adminDashboardDataService.getUser(user_id)
           reset(response.response_data)
         } catch {
           console.error('Error fetching user data')
+        }finally{
+          setLoading(false);
         }
       }
       fetchUser()
@@ -125,6 +129,15 @@ export const UserForm: React.FC<UserFormProps> = ({
       reset(defaultValues)
     }
   }, [isEditMode, user_id, reset])
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-40">
+        <span className="text-white">Loading user details...</span>
+      </div>
+    )
+  }
+
 
   return (
     <form

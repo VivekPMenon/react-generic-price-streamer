@@ -28,13 +28,6 @@ interface User {
   is_active: boolean
 }
 
-interface PaginationData {
-  currentPage: number
-  totalPages: number
-  totalItems: number
-  pageSize: number
-}
-
 const UserList = () => {
   const [pageSize, setPageSize] = useState<number>(10)
   const [currentPage, setCurrentPage] = useState<number>(1)

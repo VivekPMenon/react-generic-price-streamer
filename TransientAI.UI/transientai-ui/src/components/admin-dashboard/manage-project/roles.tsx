@@ -8,7 +8,7 @@ import { SharedDropdown } from '@/components/shared'
 import { DropdownOption } from '@/components/shared/ta-select/ta-select'
 import { IUpdateRoleConfigReq } from '@/services/admin-dashboard/model'
 
-interface Role {
+export interface Role {
   role_id: number
   role_name: string
   created_on: string
@@ -32,12 +32,15 @@ interface IScreensAndPnLData {
   'P&L': IPnLList[]
 }
 
-const Roles = () => {
+interface RolesProps{
+  roles: Role[]
+  isRolesLoading: boolean
+}
+
+const Roles = ({roles,isRolesLoading}:RolesProps) => {
   const [loading, setLoading] = useState<boolean>(true)
   const [screens, setScreens] = useState<IScreenList[]>([])
   const [pnLList, setPnLList] = useState<IPnLList[]>([])
-  const [isRolesLoading, setIsRolesLoading] = useState<boolean>(true)
-  const [roles, setRoles] = useState<Role[]>([])
   const [selectedRole, setSelectedRole] = useState<Role | null>(null)
 
   useEffect(() => {
@@ -65,25 +68,6 @@ const Roles = () => {
     }
   }
 
-  useEffect(() => {
-    fetchRoles()
-  }, [])
-
-  const fetchRoles = async () => {
-    setIsRolesLoading(true)
-    try {
-      // Call your API service with pagination parameters
-      const response = await adminDashboardDataService.getRolesList(1, 10, true)
-
-      // Update users and pagination data from the response
-      setRoles(response.data || [])
-    } catch (error) {
-      console.error('Error fetching users:', error)
-      // Handle error state
-    } finally {
-      setIsRolesLoading(false)
-    }
-  }
 
   // Convert users to dropdown options format
   const rolesOptions = useCallback(() => {

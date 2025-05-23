@@ -7,7 +7,7 @@ import { adminDashboardDataService } from '@/services/admin-dashboard/admin-dash
 import { toast } from 'react-toastify'
 import { IUpdateUserConfigReq } from '@/services/admin-dashboard/model'
 
-interface User {
+export interface User {
   user_id: number
   full_name: string
   first_name: string
@@ -40,10 +40,13 @@ enum ScreenDataType {
   Margin_Cols = 'Margin Cols'
 }
 
-const Users = () => {
+interface UsersProps {
+  users: User[]
+  isUserLoading: boolean
+}
+
+const Users = ({ users, isUserLoading }: UsersProps) => {
   const [loading, setLoading] = useState<boolean>(true)
-  const [isUserLoading, setIsUserLoading] = useState<boolean>(true)
-  const [users, setUsers] = useState<User[]>([])
   const [selectedUser, setSelectedUser] = useState<User | null>(null)
   const [accountNumbers, setAccountNumbers] = useState<ICorporateAction[]>([])
   const [marginCols, setMarginCols] = useState<IMargin[]>([])
@@ -93,26 +96,6 @@ const Users = () => {
     }
   }
 
-  useEffect(() => {
-    fetchUsers()
-  }, [])
-
-  const fetchUsers = async () => {
-    setIsUserLoading(true)
-    try {
-      // Call your API service with pagination parameters
-      const response = await adminDashboardDataService.getUserList(1, 10, true)
-
-      // Update users and pagination data from the response
-      setUsers(response.data || [])
-    } catch (error) {
-      console.error('Error fetching users:', error)
-      // Handle error state
-    } finally {
-      setIsUserLoading(false)
-    }
-  }
-
   // Convert users to dropdown options format
   const userOptions = useCallback(() => {
     return Array.isArray(users)
@@ -152,7 +135,7 @@ const Users = () => {
       // Update local state with remaining items
       const remainingItems = accountNumbers.filter(a => !a.is_selected)
       setAccountNumbers(remainingItems)
-      toast.success(response.message || 'Items deleted successfully');
+      toast.success(response.message || 'Items deleted successfully')
     } catch (error) {
       // More detailed error handlin
       console.error('Error deleting corporate actions:', error)
@@ -278,9 +261,9 @@ const Users = () => {
         if (selected) {
           setSelectedUser(selected.data)
         } else {
-          setSelectedUser(null);
-          setAccountNumbers([]);
-          setMarginCols([]);
+          setSelectedUser(null)
+          setAccountNumbers([])
+          setMarginCols([])
         }
       } catch (err) {
         console.error('Error changing preview user:', err)
@@ -523,7 +506,10 @@ const Users = () => {
         </Button>
 
         <Button
-          disabled={(accountTags.length == 0 && marginTags.length == 0 ) || !selectedUser?.user_id}
+          disabled={
+            (accountTags.length == 0 && marginTags.length == 0) ||
+            !selectedUser?.user_id
+          }
           className='w-[150px]'
           loading={loading}
           onClick={() => handleUpdate()}
