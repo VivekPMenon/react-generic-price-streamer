@@ -61,7 +61,7 @@ export const DataGrid = forwardRef<GridApi | null, IDataGridProps>((props, ref) 
   }, []);
 
   return (
-    <div className={`${props.isNewGrid ? 'ta-data-grid' : 'ag-theme-balham-dark'} height-100p' ${props.isSummaryGrid ? 'summary-grid' : ''} `} 
+    <div className={`${props.isNewGrid ? 'ta-data-grid' : 'ag-theme-balham-dark'} height-100p ${props.isSummaryGrid ? 'summary-grid' : ''} `} 
       style={{ height: props.height }}>
       <AgGridReact
         key={JSON.stringify(props.rowData)}
