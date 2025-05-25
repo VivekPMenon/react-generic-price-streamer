@@ -30,14 +30,21 @@ interface IMargin {
   margin_label: string
   is_selected?: boolean
 }
+interface IPnL {
+  id: number
+  pms_label: string
+  is_selected?: boolean
+}
 
 interface IUserConfigData {
   corporate_actions: ICorporateAction[]
   margin: IMargin[]
+  pms: IPnL[]
 }
 enum ScreenDataType {
   AC_Number = 'AC Number',
-  Margin_Cols = 'Margin Cols'
+  Margin_Cols = 'Margin Cols',
+  PnL_Cols = 'PnL Cols'
 }
 
 interface UsersProps {
@@ -50,12 +57,15 @@ const Users = ({ users, isUserLoading }: UsersProps) => {
   const [selectedUser, setSelectedUser] = useState<User | null>(null)
   const [accountNumbers, setAccountNumbers] = useState<ICorporateAction[]>([])
   const [marginCols, setMarginCols] = useState<IMargin[]>([])
+  const [pnlCols, setPnlCols] = useState<IPnL[]>([])
   const [accountTags, setAccountTags] = useState<string[]>([])
   const [marginTags, setMarginTags] = useState<string[]>([])
+  const [pnlTags, setPnlTags] = useState<string[]>([])
 
   // Refs for text areas
   const accountTextAreaRef = useRef<HTMLTextAreaElement>(null)
   const marginTextAreaRef = useRef<HTMLTextAreaElement>(null)
+  const pnlTextAreaRef = useRef<HTMLTextAreaElement>(null)
 
   useEffect(() => {
     fetchUserConfig()
@@ -86,8 +96,15 @@ const Users = ({ users, isUserLoading }: UsersProps) => {
           is_selected: false // Default value is false
         })) || []
 
+      const pnlWithSelection =
+        data?.pms?.map(pnl => ({
+          ...pnl,
+          is_selected: false // Default value is false
+        })) || []
+
       setAccountNumbers(corporateActionsWithSelection)
       setMarginCols(marginWithSelection)
+      setPnlCols(pnlWithSelection)
     } catch (error) {
       console.error('Error fetching users:', error)
       // Handle error state
@@ -147,46 +164,43 @@ const Users = ({ users, isUserLoading }: UsersProps) => {
     }
   }
 
-  const handleDeleteMarginData = async () => {
-    // Check if a user is selected
-    if (!selectedUser?.user_id) {
-      return
-    }
+  const handleDeleteData = async (
+    type: ScreenDataType
+  ) => {
+    if (!selectedUser?.user_id) return
 
-    // Check if any items are selected for deletion
-    const itemsToDelete = marginCols.filter(a => a.is_selected)
-    if (itemsToDelete.length === 0) {
-      return
-    }
+    const isMargin = type === ScreenDataType.Margin_Cols
+    const items = isMargin ? marginCols : pnlCols
+    const itemsToDelete = items.filter(a => a.is_selected)
+    if (itemsToDelete.length === 0) return
 
-    // Optional: Show loading state
     setLoading(true)
-
     try {
-      // Extract IDs of items to be deleted
-      const deletedItemIds = itemsToDelete.map(item => item.margin_label)
+      const deletedItemIds = isMargin
+        ? (itemsToDelete as IMargin[]).map(item => item.margin_label)
+        : (itemsToDelete as IPnL[]).map(item => item.pms_label)
 
-      // Call API to delete items
       const req = {
         user_id: selectedUser.user_id,
-        margin_data: deletedItemIds
+        margin_data: isMargin ? deletedItemIds : [],
+        pms_data: isMargin ? [] : deletedItemIds,
       }
-      const response = await adminDashboardDataService.deleteMarginData(req)
+      const response = await adminDashboardDataService.deleteMarginPnLData(req)
 
-      // Update local state with remaining items
-      const remainingItems = marginCols.filter(a => !a.is_selected)
-      setMarginCols(remainingItems)
+      const remainingItems = items.filter(a => !a.is_selected)
+      isMargin ? setMarginCols(remainingItems as IMargin[]) : setPnlCols(remainingItems as IPnL[])
       toast.success(response.message || 'Items deleted successfully')
     } catch (error) {
-      // More detailed error handlin
-      console.error('Error deleting Margins:', error)
+      console.error(`Error deleting ${isMargin ? 'Margins' : 'PnL'}:`, error)
       toast.error('Item deletion failed')
       await fetchUserConfig()
     } finally {
-      // Reset loading state
       setLoading(false)
     }
   }
+
+  const handleDeleteMarginData = () => handleDeleteData(ScreenDataType.Margin_Cols)
+  const handleDeletePnLData = () => handleDeleteData(ScreenDataType.PnL_Cols)
 
   const handleUpdate = async () => {
     setLoading(true)
@@ -197,7 +211,8 @@ const Users = ({ users, isUserLoading }: UsersProps) => {
       const req: IUpdateUserConfigReq = {
         user_id: selectedUser?.user_id,
         corporate_actions_data: accountTags,
-        margin_data: marginTags
+        margin_data: marginTags,
+        pms_data: pnlTags
       }
       const response = await adminDashboardDataService.updateProjectUserConfig(
         req
@@ -205,6 +220,7 @@ const Users = ({ users, isUserLoading }: UsersProps) => {
       toast.success(response.message || 'Update successful')
       setAccountTags([])
       setMarginTags([])
+      setPnlTags([])
       fetchUserConfig()
     } catch (error) {
       console.log('Update failed :', error)
@@ -232,6 +248,11 @@ const Users = ({ users, isUserLoading }: UsersProps) => {
           if (marginTextAreaRef.current) {
             marginTextAreaRef.current.value = ''
           }
+        } else if (type === ScreenDataType.PnL_Cols) {
+          setPnlTags(prev => [...prev, ...newTags])
+          if (pnlTextAreaRef.current) {
+            pnlTextAreaRef.current.value = ''
+          }
         }
       }
     }
@@ -248,9 +269,15 @@ const Users = ({ users, isUserLoading }: UsersProps) => {
   }
 
   const handleAddButtonClick = (type: ScreenDataType) => {
-    const textAreaRef =
-      type === ScreenDataType.AC_Number ? accountTextAreaRef : marginTextAreaRef
-    if (textAreaRef.current) {
+    let textAreaRef
+    if (type === ScreenDataType.AC_Number) {
+      textAreaRef = accountTextAreaRef
+    } else if (type === ScreenDataType.Margin_Cols) {
+      textAreaRef = marginTextAreaRef
+    } else if (type === ScreenDataType.PnL_Cols) {
+      textAreaRef = pnlTextAreaRef
+    }
+    if (textAreaRef && textAreaRef.current) {
       processTagInput(textAreaRef.current.value, type)
     }
   }
@@ -264,6 +291,7 @@ const Users = ({ users, isUserLoading }: UsersProps) => {
           setSelectedUser(null)
           setAccountNumbers([])
           setMarginCols([])
+          setPnlCols([])
         }
       } catch (err) {
         console.error('Error changing preview user:', err)
@@ -491,6 +519,105 @@ const Users = ({ users, isUserLoading }: UsersProps) => {
             </section>
           </div>
         </CollapseContainer>
+
+        <br />
+        <CollapseContainer title={<span>P&L</span>}>
+          <div className='flex gap-8 mt-3 lg:flex-row flex-col'>
+            <section className='lg:w-1/2 rounded-md'>
+              <div className='flex items-center justify-between p-4 bg-gray-800'>
+                <div className='flex items-center'>
+                  <Checkbox
+                    checked={pnlCols.every(a => a.is_selected)}
+                    onCheckedChange={checked => {
+                      setPnlCols(
+                        pnlCols.map(a => ({ ...a, is_selected: !!checked }))
+                      )
+                    }}
+                    className='mr-3'
+                  />
+                  <span className='font-medium text-sm'>Values</span>
+                </div>
+                {pnlCols.some(a => a.is_selected) && (
+                  <button
+                    type='button'
+                    aria-label='Delete icon'
+                    className='text-red-500 cursor-pointer'
+                    onClick={handleDeletePnLData}
+                  >
+                    <i className='fa-solid fa-trash'></i>
+                  </button>
+                )}
+              </div>
+
+              {/* Account List */}
+              <div className='scrollable-div max-h-52'>
+                {pnlCols.map((account, ind) => (
+                  <div
+                    key={account.id}
+                    className='flex items-center p-4 border border-[#353b49]'
+                  >
+                    <Checkbox
+                      checked={account.is_selected}
+                      onCheckedChange={checked => {
+                        setPnlCols(
+                          pnlCols.map((a, i) =>
+                            i === ind ? { ...a, is_selected: !!checked } : a
+                          )
+                        )
+                      }}
+                      className='mr-3'
+                    />
+                    <span>{account.pms_label}</span>
+                  </div>
+                ))}
+              </div>
+            </section>
+
+            <section className='border border-[#353b49] rounded-sm p-4 lg:w-1/2'>
+              <div className='mb-2 relative'>
+                <TextArea
+                  ref={pnlTextAreaRef}
+                  className='bg-transparent w-full pr-10'
+                  placeholder='Type and enter or give values in comma separated'
+                  onKeyDown={e =>
+                    handleTagChange(e, ScreenDataType.PnL_Cols)
+                  }
+                />
+                <button
+                  type='button'
+                  onClick={() =>
+                    handleAddButtonClick(ScreenDataType.PnL_Cols)
+                  }
+                  className='absolute w-7 h-7 flex top-2 right-2 justify-center items-center text-md rounded-full hover:bg-gray-700 text-teal-400'
+                  title='Add tags'
+                >
+                  <i className='fa-light fa-plus'></i>
+                </button>
+              </div>
+              <div className='flex flex-wrap gap-2 mt-2'>
+                {pnlTags.map((tag, index) => (
+                  <div
+                    key={index}
+                    className='py-1 px-2 text-sm rounded-md flex items-center bg-gray-800 border border-white/10 hover:bg-gray-700 transition-all'
+                  >
+                    {tag}
+                    <button
+                      type='button'
+                      className='ml-2 cursor-pointer hover:text-gray-500'
+                      onClick={() =>
+                        setPnlTags(pnlTags.filter(t => t !== tag))
+                      }
+                      aria-label='close'
+                    >
+                      <i className='fa-solid fa-xmark'></i>
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </section>
+          </div>
+        </CollapseContainer>
+
         {loading && (
           <div className='absolute top-0 w-full h-full flex items-center justify-center'>
             <div className='relative bg-gray-500 opacity-50 rounded-lg w-full h-full'></div>
@@ -507,7 +634,7 @@ const Users = ({ users, isUserLoading }: UsersProps) => {
 
         <Button
           disabled={
-            (accountTags.length == 0 && marginTags.length == 0) ||
+            (accountTags.length == 0 && marginTags.length == 0 && pnlTags.length === 0) ||
             !selectedUser?.user_id
           }
           className='w-[150px]'

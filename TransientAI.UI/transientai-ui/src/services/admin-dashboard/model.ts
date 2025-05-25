@@ -31,6 +31,7 @@ export interface IUpdateUserConfigReq {
   user_id: number
   corporate_actions_data: string[]
   margin_data: string[]
+  pms_data: string[]
 }
 
 export interface IUpdateRoleConfigReq {

@@ -144,7 +144,7 @@ class AdminDashboardDataService {
 
   async getProjectsUsersConfig (user_id: number): Promise<any> {
     const results = await webApihandler.get(
-      'admin/margin',
+      'admin/ca_margin_p&l',
       { user_id: user_id },
       { serviceName: this.serviceName }
     )
@@ -162,7 +162,7 @@ class AdminDashboardDataService {
 
   async updateProjectUserConfig (req: IUpdateUserConfigReq): Promise<any> {
     const results = await webApihandler.post(
-      'admin/margin',
+      'admin/ca_margin_p&l',
       req,
       {},
       { serviceName: this.serviceName }
@@ -193,6 +193,16 @@ class AdminDashboardDataService {
   async deleteMarginData (data: any): Promise<any> {
     const results = await webApihandler.delete(
       'admin/margin_data',
+      { serviceName: this.serviceName },
+      {},
+      data
+    )
+    return results
+  }
+
+  async deleteMarginPnLData (data: any): Promise<any> {
+    const results = await webApihandler.delete(
+      'admin/margin_p&l',
       { serviceName: this.serviceName },
       {},
       data
