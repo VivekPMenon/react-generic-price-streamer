@@ -53,9 +53,9 @@ export function MenuList ({
                 {selectedMenu?.key !== hurricanePmsView && (
                   <span className='text'>{menuInfo.description}</span>
                 )}
-                {menuInfo.badgeCount && menuInfo.badgeCount > 0 && (
+                {/* {(menuInfo.badgeCount || 0 >= 1) && 
                   <span className='badge'>{menuInfo.badgeCount}</span>
-                )}
+                } */}
               </div>
 
               {menuInfo.children &&
