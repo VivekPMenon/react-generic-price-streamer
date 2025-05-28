@@ -125,21 +125,21 @@ class MarketDataService {
             : market.date;
       });
 
-      latest = marketData[marketData.length - 1];
-      if (isToday(latest?.date) && marketData[marketData.length - 2]) {
-        previousClose = marketData[marketData.length - 2]?.close;
-      } else {
-        previousClose = latest?.close;
-      }
+      latest = marketData?.length ? marketData[0] : undefined;
+      // if (isToday(latest?.date)) {
+      //   previousClose = marketData[marketData.length - 2]?.close;
+      // } else {
+      //   previousClose = latest?.close;
+      // }
     }
 
     return {
       ticker: result.ticker,
       company_name: result.company_name,
       marketData: marketData,
-      lastMarketData: latest,
+      lastMarketData: params.intraday ? undefined : latest,
       current_price: result.current_price,
-      previous_close: previousClose,
+      previous_close: latest?.close,
       change: result.change,
       percent_change: result.percent_change,
       timestamp: parseIsoDate(result.timestamp) || new Date(),
