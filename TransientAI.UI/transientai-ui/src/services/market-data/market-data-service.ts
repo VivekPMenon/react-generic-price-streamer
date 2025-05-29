@@ -115,7 +115,6 @@ class MarketDataService {
             });
 
     const marketData = result.data;
-    let previousClose: number|undefined = undefined;
     let latest: MarketData|undefined = undefined;
     if (marketData && marketData.length) {
       marketData.forEach((market: any) => {
@@ -124,20 +123,22 @@ class MarketDataService {
             ? new Date(market.timestamp)
             : market.date;
       });
+    }
 
-      latest = marketData?.length ? marketData[0] : undefined;
-      // if (isToday(latest?.date)) {
-      //   previousClose = marketData[marketData.length - 2]?.close;
-      // } else {
-      //   previousClose = latest?.close;
-      // }
+    if (result) {
+      latest = {
+        open: result.open,
+        close: result.close,
+        high: result.high,
+        low: result.low,
+      };
     }
 
     return {
       ticker: result.ticker,
       company_name: result.company_name,
       marketData: marketData,
-      lastMarketData: params.intraday ? undefined : latest,
+      lastMarketData: latest,
       current_price: result.current_price,
       previous_close: latest?.close,
       change: result.change,
