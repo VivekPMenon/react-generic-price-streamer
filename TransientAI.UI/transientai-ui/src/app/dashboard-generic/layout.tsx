@@ -75,7 +75,7 @@ export default function DashboardLayout ({
         </div>
       ) : (
         <div className={styles.home}>
-          <Header isMenuVisible={isMenuVisible} onMenuToggle={onMenuToggle} />
+          <Header mode={MODE} isMenuVisible={isMenuVisible} onMenuToggle={onMenuToggle} />
           <main>
             <div
               className={`${styles['left-panel']} ${

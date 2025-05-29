@@ -6,13 +6,15 @@ import { useDeviceType } from '@/lib/hooks'
 import { useUserContextStore } from '@/services/user-context'
 import { MsalProvider } from '@azure/msal-react'
 import { Spinner } from '@radix-ui/themes'
-import { AdminMenuList, menuStore } from '@/services/menu-data'
+import { AdminMenuList, menuStore, Mode } from '@/services/menu-data'
 
 import msalInstance from '../msal-config'
 import styles from './layout.module.scss'
 import 'react-tooltip/dist/react-tooltip.css'
 import { MenuList } from '@/components/menu/menu-list'
 import { useRouter } from 'next/navigation'
+
+const MODE = Mode.ADMIN
 
 export default function AdminDashboardLayout ({
   children
@@ -61,6 +63,7 @@ export default function AdminDashboardLayout ({
       ) : (
         <div className={styles.home}>
           <Header
+            mode={MODE}
             isMenuVisible={isMenuVisible}
             onMenuToggle={onMenuToggle}
           ></Header>

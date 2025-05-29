@@ -81,7 +81,7 @@ export default function DashboardLayout({
           </div>
           :
           <div className={styles.home}>
-            <Header isMenuVisible={isMenuVisible} onMenuToggle={onMenuToggle}></Header>
+            <Header mode={MODE} isMenuVisible={isMenuVisible} onMenuToggle={onMenuToggle}></Header>
 
             <main>
               <div className={`${styles['left-panel']} ${!isMenuVisible && deviceType === 'mobile' ? styles['collapsed'] : ''} ${hurricanePmsView && '!max-w-32'} transition-all duration-300`}>
