@@ -7,6 +7,7 @@ import { useUserContextStore } from "../user-context/user-context-store";
 export enum Mode {
   SELL = 'sell',
   BUY = 'buy',
+  ADMIN = 'admin'
 }
 
 const menuInfoList: MenuInfo[] = [
