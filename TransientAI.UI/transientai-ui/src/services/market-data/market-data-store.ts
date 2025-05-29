@@ -59,7 +59,7 @@ const useMarketDataStore = create<MarketDataStore>()(
 
             const intraday = results[1] as Instrument;
             if (intraday) {
-                // instrument.lastMarketData = intraday.lastMarketData;
+                instrument.lastMarketData = instrument.lastMarketData;
                 instrument.current_price = intraday.current_price;
                 instrument.change = intraday.change;
                 instrument.percent_change = intraday.percent_change;
