@@ -1,4 +1,5 @@
 //src/services/break-news/break-news-data-service.ts
+import { IColumnItem } from '@/components/pms-live-new'
 import { webApihandler } from '../web-api-handler'
 
 
@@ -10,7 +11,7 @@ class PmsDataService {
   //Users API'S
   async getColumList (): Promise<any> {
     const results = await webApihandler.get(
-      'pms_live/fields_list',
+      'pms_live/fields',
       {},
       { serviceName: this.serviceName }
     )
@@ -19,7 +20,7 @@ class PmsDataService {
 
   
 
-  async createUser (data: any): Promise<any> {
+  async createUser (data: IColumnItem[]): Promise<any> {
     const results = await webApihandler.post(
       'pms_live/preferences',
       data,
