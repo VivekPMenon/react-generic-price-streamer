@@ -5,19 +5,21 @@ interface DialogProps {
   isOpen: boolean
   onClose?: () => void
   children: React.ReactNode
+  className?: string
 }
 
 export const TaDialog = ({
   isOpen,
   children,
   title = 'Dialog',
-  onClose
+  onClose,
+  className = '',
 }: DialogProps) => {
   if (!isOpen) return null
 
   return (
     <div className='fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50'>
-      <div className='bg-gray-900 rounded-lg w-full max-w-md p-6 text-white'>
+      <div className={`${className} bg-gray-900 rounded-lg w-full max-w-md p-6 text-white`}>
         <div className='flex items-center justify-between mb-6'>
           <label htmlFor='header' className='text-xl font-semibold'>
             {title}
