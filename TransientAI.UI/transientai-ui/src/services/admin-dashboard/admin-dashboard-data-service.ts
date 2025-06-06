@@ -1,6 +1,7 @@
 //src/services/break-news/break-news-data-service.ts
 import { webApihandler } from '../web-api-handler'
 import {
+  IUpdateCorpActionsConfig,
   IUpdateRoleConfigReq,
   IUpdateUserConfigReq,
   RoleFormData,
@@ -209,6 +210,47 @@ class AdminDashboardDataService {
     )
     return results
   }
+
+//Corp actions API's
+  async getAccountList(): Promise<any> {
+    const results = await webApihandler.get(
+      'admin/accounts',
+      {},
+      { serviceName: this.serviceName }
+    )
+    return results
+  }
+
+  async getCorpActionAssignedUsers (account_number: string): Promise<any> {
+    const results = await webApihandler.get(
+      `admin/accounts/users`,
+      {account_number: account_number},
+      { serviceName: this.serviceName }
+    )
+    return results
+  }
+
+
+  async updateProjectCorpActionsConfig (req: IUpdateCorpActionsConfig): Promise<any> {
+    const results = await webApihandler.post(
+      `admin/accounts/users`,
+      req,
+      {},
+      { serviceName: this.serviceName }
+    )
+    return results
+  }
+
+  async deleteAssignedUsers (data: IUpdateCorpActionsConfig): Promise<any> {
+    const results = await webApihandler.delete(
+      `admin/accounts/users`,
+      { serviceName: this.serviceName },
+      {},
+      data
+    )
+    return results
+  }
+
 }
 
 export const adminDashboardDataService = new AdminDashboardDataService()
