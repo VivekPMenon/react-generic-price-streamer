@@ -9,10 +9,33 @@ class PmsDataService {
 
 
   //Users API'S
-  async getColumList (): Promise<any> {
+  async getDisplayColumList (): Promise<any> {
     const results = await webApihandler.get(
-      'pms_live/fields',
+      'pms_live/visible_fields',
       {},
+      { serviceName: this.serviceName }
+    )
+    return results
+  }
+
+   async getAllColumList (): Promise<any> {
+    const results = await webApihandler.get(
+      'pms_live/all_fields',
+      {},
+      { serviceName: this.serviceName }
+    )
+    return results
+  }
+
+    
+   async getPMSLiveData (
+    page: number,
+    page_size: number,
+    skip_pagination?: boolean
+  ): Promise<any> {
+    const results = await webApihandler.get(
+      'pms_live/get_data',
+      { page: page, page_size: page_size, skip_pagination: skip_pagination },
       { serviceName: this.serviceName }
     )
     return results
@@ -30,9 +53,9 @@ class PmsDataService {
     return results
   }
 
-  async updateColumnOrder (data: any): Promise<any> {
+  async updateColumns (data: any): Promise<any> {
     const results = await webApihandler.put(
-      'pms_live/preferences',
+      'pms_live/update_field',
       data,
       {},
       { serviceName: this.serviceName }

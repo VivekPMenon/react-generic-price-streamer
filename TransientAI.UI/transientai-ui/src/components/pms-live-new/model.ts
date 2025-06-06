@@ -1,6 +1,7 @@
 import { ColDef } from 'ag-grid-community'
 
 export interface IPmsGridColsList {
+  label: string
   column_name: string
   is_default: boolean
   is_frozen: boolean
@@ -16,6 +17,7 @@ export interface IPmsGridDataList {
 }
 
 export interface IColumnItem extends ColDef {
+  label?: string
   column_name?: string
   is_default?: boolean
   is_frozen?: boolean

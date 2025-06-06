@@ -1,216 +1,185 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react'
 import { Button, Checkbox } from '@radix-ui/themes'
-import {
-  DndContext,
-  closestCenter,
-  KeyboardSensor,
-  PointerSensor,
-  useSensor,
-  useSensors,
-  DragEndEvent,
-  DragOverlay,
-  DragStartEvent
-} from '@dnd-kit/core'
-import {
-  arrayMove,
-  SortableContext,
-  sortableKeyboardCoordinates,
-  verticalListSortingStrategy,
-  useSortable
-} from '@dnd-kit/sortable'
-import { CSS } from '@dnd-kit/utilities'
 import { IColumnItem } from './model'
 
 interface ColumnManagementProps {
   availableColumns: IColumnItem[]
   currentColumns: IColumnItem[]
-  onColumnsChange: (selectedColumns: IColumnItem[]) => void
   onClose?: () => void
-  onUpdateColumn?: (column: IColumnItem) => Promise<void> // API call for individual column updates
-  onBulkUpdateColumns?: (columns: IColumnItem[]) => Promise<void> // API call for bulk updates
+  onUpdateColumn?: (column: IColumnItem) => Promise<void>
+  onBulkUpdateColumns?: (columns: IColumnItem[]) => Promise<void>
 }
 
-// Sortable Item Component
-const SortableColumnItem: React.FC<{
+// Memoized Sortable Item Component with virtualization-friendly structure
+const SortableColumnItem = React.memo<{
   item: IColumnItem
   index: number
-  onToggle: (index: number, checked: boolean | string) => void
-}> = ({ item, index, onToggle }) => {
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging
-  } = useSortable({ 
-    id: item.id || item.field || item.column_name!, 
-    disabled: item.is_frozen 
-  })
+  onToggle: (index: number, checked: boolean) => void
+}>(({ item, index, onToggle }) => {
+  // Use refs to avoid creating new functions on each render
+  const onToggleRef = useRef(onToggle)
+  onToggleRef.current = onToggle
 
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-    opacity: isDragging ? 0.5 : 1
-  }
+  const handleToggle = useCallback(
+    (checked: boolean | string) => {
+      onToggleRef.current(index, !!checked)
+    },
+    [index]
+  )
 
   return (
     <div
-      ref={setNodeRef}
-      style={style}
-      className={`flex items-center bg-[#1F2937] p-4 rounded-sm hover:bg-[#374151] transition-colors cursor-move ${
-        isDragging ? 'z-50' : ''
-      }`}
-      {...attributes}
-      {...listeners}
+      className={`flex items-center bg-[#1F2937] p-2 rounded-sm hover:bg-[#374151] transition-colors cursor-move`}
     >
-      <div className='flex items-center flex-1'>
-        <div className='mr-2 text-gray-400 opacity-60'>
-         <i className="fa-solid fa-grip-vertical"></i>
-        </div>
+      <div className='flex items-center flex-1 min-w-0'>
         <Checkbox
           checked={item.is_selected}
-          onCheckedChange={checked => onToggle(index, checked)}
-          className='mr-3'
-          onClick={e => e.stopPropagation()} // Prevent drag when clicking checkbox
+          onCheckedChange={handleToggle}
+          className='mr-3 flex-shrink-0'
         />
-        <span className='truncate text-white flex-1' title={item.headerName || item.column_name}>
-          {item.headerName || item.column_name}
+        <span
+          className='truncate text-white text-sm leading-tight min-w-0 flex-1'
+          title={item.headerName || item.label}
+        >
+          {item.headerName || item.label}
         </span>
       </div>
     </div>
   )
-}
+}, (prevProps, nextProps) => {
+  // Custom comparison to prevent unnecessary re-renders
+  return (
+    prevProps.item.is_selected === nextProps.item.is_selected &&
+    prevProps.item.id === nextProps.item.id &&
+    prevProps.index === nextProps.index &&
+    (prevProps.item.headerName || prevProps.item.label) === 
+    (nextProps.item.headerName || nextProps.item.label)
+  )
+})
+
+SortableColumnItem.displayName = 'SortableColumnItem'
 
 const ColumnManagement: React.FC<ColumnManagementProps> = ({
   availableColumns,
-  currentColumns,
-  onColumnsChange,
+  currentColumns,  
   onClose,
   onUpdateColumn,
   onBulkUpdateColumns
 }) => {
   const [columnList, setColumnList] = useState<IColumnItem[]>([])
-  const [activeId, setActiveId] = useState<string | null>(null)
   const [isUpdating, setIsUpdating] = useState(false)
 
-  const sensors = useSensors(
-    useSensor(PointerSensor, {
-      activationConstraint: {
-        distance: 8
-      }
-    }),
-    useSensor(KeyboardSensor, {
-      coordinateGetter: sortableKeyboardCoordinates
-    })
-  )
+  // Cache field names for faster lookups
+  const currentColumnFieldsSet = useMemo(() => {
+    return new Set(
+      currentColumns
+        .map(col => col.field || col.label)
+        .filter(Boolean)
+    )
+  }, [currentColumns])
 
-  useEffect(() => {
-    // Initialize column list with current selection state and preserve order based on order_id
-    const initializeColumns = () => {
-      // Create a set of currently selected column names for quick lookup
-      const currentColumnFields = new Set(
-        currentColumns
-          .map(col => col.field || col.column_name)
-          .filter(Boolean)
-      )
-
-      // Transform available columns with selection state
-      const columnsWithSelection: IColumnItem[] = availableColumns
-        .filter(col => col.field || col.column_name) // Only include columns with field names
-        .map(col => {
-          const fieldName = col.field || col.column_name!
-          return {
-            ...col,
-            id: col.id || fieldName, // Use existing id or field name as fallback
-            is_selected: currentColumnFields.has(fieldName)
-          }
-        })
-
-      // Sort all columns by order_id only - both selected and unselected together
-      const sortedColumns = columnsWithSelection.sort((a, b) => {
-        const orderA = a.order_id ?? 0
-        const orderB = b.order_id ?? 0
-        return orderA - orderB
+  // Memoize the initialization logic with stable reference
+  const initializedColumns = useMemo(() => {
+    const columnsWithSelection: IColumnItem[] = availableColumns
+      .filter(col => col.id) // Only include items that have an id
+      .map(col => {
+        const fieldName = col.field || col.label!
+        return {
+          ...col,
+          is_selected: currentColumnFieldsSet.has(fieldName)
+        }
       })
 
-      setColumnList(sortedColumns)
+    return columnsWithSelection.sort((a, b) => {
+      const orderA = a.order_id ?? 0
+      const orderB = b.order_id ?? 0
+      return orderA - orderB
+    })
+  }, [availableColumns, currentColumnFieldsSet])
+
+  // Use ref to track if initial load is done to prevent unnecessary updates
+  const isInitializedRef = useRef(false)
+
+  useEffect(() => {
+    if (!isInitializedRef.current) {
+      setColumnList(initializedColumns)
+      isInitializedRef.current = true
     }
+  }, [initializedColumns])
 
-    initializeColumns()
-  }, [availableColumns, currentColumns])
+  // Optimized column change handler using functional update pattern
+  const handleColumnChange = useCallback(
+    (index: number, checked: boolean) => {
+      setColumnList(prev => {
+        // Only update if the value actually changed
+        if (prev[index]?.is_selected === checked) {
+          return prev
+        }
+        
+        const newList = [...prev]
+        newList[index] = { ...newList[index], is_selected: checked }
+        return newList
+      })
+    },
+    []
+  )
 
-  const handleColumnChange = (index: number, checked: boolean | string) => {
-    setColumnList(prev =>
-      prev.map((item, i) =>
-        i === index ? { ...item, is_selected: !!checked } : item
-      )
-    )
-  }
-
-  const handleDragStart = (event: DragStartEvent) => {
-    setActiveId(event.active.id as string)
-  }
-
-  const handleDragEnd = (event: DragEndEvent) => {
-    const { active, over } = event
-
-    if (over && active.id !== over.id) {
-      const oldIndex = columnList.findIndex(item => (item.id || item.field || item.column_name) === active.id)
-      const newIndex = columnList.findIndex(item => (item.id || item.field || item.column_name) === over.id)
-      
-      const newItems = arrayMove(columnList, oldIndex, newIndex)
-      
-      // Update order_id for ALL items based on their new positions
-      const updatedItems = newItems.map((item, index) => ({
-        ...item,
-        order_id: index + 1
-      }))
-
-      setColumnList(updatedItems)
-    }
-
-    setActiveId(null)
-  }
-
-  const handleApply = async () => {
+  // Stable callback references
+  const handleApply = useCallback(async () => {
     try {
       setIsUpdating(true)
-      
-      // Call API to update all columns with their current state
+
       if (onBulkUpdateColumns) {
         await onBulkUpdateColumns(columnList)
       }
-      
-      // Get selected columns for the parent component
-      const selectedColumns = columnList.filter(item => item.is_selected)
-      onColumnsChange(selectedColumns)
-      
-      if (onClose) onClose()
+
+
+      onClose?.()
     } catch (error) {
       console.error('Failed to apply column changes:', error)
     } finally {
       setIsUpdating(false)
     }
-  }
+  }, [columnList, onBulkUpdateColumns, onClose])
 
-  const handleSelectAll = () => {
-    setColumnList(prev => prev.map(item => ({ ...item, is_selected: true })))
-  }
+  const handleSelectAll = useCallback(() => {
+    setColumnList(prev => 
+      prev.some(item => !item.is_selected) 
+        ? prev.map(item => ({ ...item, is_selected: true }))
+        : prev // No change needed if all already selected
+    )
+  }, [])
 
-  const handleDeselectAll = () => {
-    setColumnList(prev => prev.map(item => ({ ...item, is_selected: false })))
-  }
+  const handleDeselectAll = useCallback(() => {
+    setColumnList(prev => 
+      prev.some(item => item.is_selected)
+        ? prev.map(item => ({ ...item, is_selected: false }))
+        : prev // No change needed if all already deselected
+    )
+  }, [])
 
-  const activeItem = activeId
-    ? columnList.find(item => (item.id || item.field || item.column_name) === activeId)
-    : null
+  // Memoize counts with more granular dependency
+  const { selectedCount, totalCount, allSelected } = useMemo(() => {
+    let selected = 0
+    const total = columnList.length
+    
+    for (const item of columnList) {
+      if (item.is_selected) selected++
+    }
+    
+    return {
+      selectedCount: selected,
+      totalCount: total,
+      allSelected: selected === total && total > 0
+    }
+  }, [columnList])
 
-  // Count selected columns
-  const selectedCount = columnList.filter(item => item.is_selected).length
-  const totalCount = columnList.length
+  // Batch DOM updates by using a stable key for the list
+  const listKey = useMemo(() => {
+    return columnList.map(item => `${item.id}-${item.is_selected}`).join('|')
+  }, [columnList])
 
   return (
     <div className='p-4 w-[75vw]'>
@@ -221,7 +190,7 @@ const ColumnManagement: React.FC<ColumnManagementProps> = ({
         <div className='flex gap-2 mb-4 items-center justify-between'>
           <div className='flex items-center gap-2'>
             <Checkbox
-              checked={selectedCount === totalCount}
+              checked={allSelected}
               onCheckedChange={value =>
                 value ? handleSelectAll() : handleDeselectAll()
               }
@@ -235,51 +204,28 @@ const ColumnManagement: React.FC<ColumnManagementProps> = ({
         </div>
       </div>
 
-      <DndContext
-        sensors={sensors}
-        collisionDetection={closestCenter}
-        onDragStart={handleDragStart}
-        onDragEnd={handleDragEnd}
+      <section 
+        key={listKey}
+        className='grid md:grid-cols-2 lg:grid-cols-4 gap-4 max-h-96 scrollable-div'
       >
-        <SortableContext
-          items={columnList.map(item => (item.id || item.field || item.column_name) as string)}
-          strategy={verticalListSortingStrategy}
-        >
-          <section className='grid md:grid-cols-2 lg:grid-cols-4 gap-4 max-h-96 overflow-y-auto'>
-            {columnList.map((item, index) => (
-              <SortableColumnItem
-                key={item.id || item.field || item.column_name}
-                item={item}
-                index={index}
-                onToggle={handleColumnChange}
-              />
-            ))}
-          </section>
-        </SortableContext>
-
-        <DragOverlay>
-          {activeItem ? (
-            <div className='flex items-center bg-[#1F2937] p-4 rounded-sm shadow-lg border-2 border-blue-400'>
-              <div className='flex items-center flex-1'>
-                <div className='mr-2 text-gray-400 opacity-60'>
-                  <i className="fa-solid fa-grip-vertical"></i>
-                </div>
-                <Checkbox
-                  checked={activeItem.is_selected}
-                  className='mr-3'
-                  disabled
-                />
-                <span className='truncate text-white flex-1'>
-                  {activeItem.headerName || activeItem.column_name}
-                </span>
-              </div>
-            </div>
-          ) : null}
-        </DragOverlay>
-      </DndContext>
+        {columnList.map((item, index) => (
+          <SortableColumnItem
+            key={item.id}
+            item={item}
+            index={index}
+            onToggle={handleColumnChange}
+          />
+        ))}
+      </section>
 
       <div className='flex justify-end gap-2 mt-6 pt-4'>
-        <Button onClick={onClose} size={'3'} color='gray' variant='solid' disabled={isUpdating}>
+        <Button
+          onClick={onClose}
+          size={'3'}
+          color='gray'
+          variant='solid'
+          disabled={isUpdating}
+        >
           Cancel
         </Button>
 
@@ -299,4 +245,4 @@ const ColumnManagement: React.FC<ColumnManagementProps> = ({
   )
 }
 
-export default ColumnManagement
+export default React.memo(ColumnManagement)
