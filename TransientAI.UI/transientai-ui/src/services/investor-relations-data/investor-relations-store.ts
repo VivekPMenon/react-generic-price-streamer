@@ -53,9 +53,10 @@ export const useInvestorRelationsStore = create<InvestorRelationsStore>()((set, 
 
   loadInquiries: async () => {
     const userContext = useUserContextStore.getState().userContext;
+    const userEmail = userService.getPreviewUserEmail() || userContext.userId;
     try {
       set({ isLoading: true });
-      const inquiries = await investorRelationsService.getSubmittedTasks(userContext.userName!);
+      const inquiries = await investorRelationsService.getSubmittedTasks(userEmail!);
       inquiries.sort((a, b) => {
         const aDate = a?.date ? new Date(a.date).getTime() : -1;
         const bDate = b?.date ? new Date(b.date).getTime() : -1;
