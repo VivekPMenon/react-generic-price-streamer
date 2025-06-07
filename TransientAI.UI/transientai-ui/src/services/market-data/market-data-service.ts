@@ -115,7 +115,6 @@ class MarketDataService {
             });
 
     const marketData = result.data;
-    let previousClose: number|undefined = undefined;
     let latest: MarketData|undefined = undefined;
     if (marketData && marketData.length) {
       marketData.forEach((market: any) => {
@@ -124,13 +123,15 @@ class MarketDataService {
             ? new Date(market.timestamp)
             : market.date;
       });
+    }
 
-      latest = marketData[marketData.length - 1];
-      if (isToday(latest?.date) && marketData[marketData.length - 2]) {
-        previousClose = marketData[marketData.length - 2]?.close;
-      } else {
-        previousClose = latest?.close;
-      }
+    if (result) {
+      latest = {
+        open: result.open,
+        close: result.close,
+        high: result.high,
+        low: result.low,
+      };
     }
 
     return {
@@ -139,7 +140,7 @@ class MarketDataService {
       marketData: marketData,
       lastMarketData: latest,
       current_price: result.current_price,
-      previous_close: previousClose,
+      previous_close: latest?.close,
       change: result.change,
       percent_change: result.percent_change,
       timestamp: parseIsoDate(result.timestamp) || new Date(),

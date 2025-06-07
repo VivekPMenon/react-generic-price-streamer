@@ -7,7 +7,7 @@ import { useDeviceType } from '@/lib/hooks';
 import { useUserContextStore } from '@/services/user-context';
 import ProfilePopover from './profile-popover';
 import Image from 'next/image';
-import { menuStore } from '@/services/menu-data';
+import { menuStore, Mode } from '@/services/menu-data';
 import SharedDropdown, { DropdownOption } from '../shared/ta-select/ta-select';
 import { userService } from '@/services/user-context/user-service';
 import { usePathname, useRouter } from 'next/navigation';
@@ -29,11 +29,12 @@ interface User {
 export interface HeaderProps {
   onMenuToggle?: () => void;
   isMenuVisible?: boolean;
+  mode: Mode
 }
 
 const NotAllowedUrl = ['admin-dashboard'];
  
-export function Header({ onMenuToggle, isMenuVisible }: HeaderProps) {
+export function Header({ onMenuToggle, isMenuVisible, mode }: HeaderProps) {
 
   const { searchData, setSearchData } = useContext(SearchDataContext);
   const { userContext } = useUserContextStore();
@@ -206,11 +207,13 @@ export function Header({ onMenuToggle, isMenuVisible }: HeaderProps) {
           />
         }
 
-        <div className={styles['client-logo']}  onClick={handleEditProject}>
-          <img src="/images/HurricaneLogo_Brightened.png"  alt='logo'/>
-          <span>HURRICANE CAPITAL</span>
-          {/* {userContext?.userId} */}
-        </div>
+        {
+           mode !== Mode.SELL && <div className={styles['client-logo']} onClick={handleEditProject}>
+            <img src="/images/HurricaneLogo_Brightened.png" alt='logo' />
+            <span>HURRICANE CAPITAL</span>
+            {/* {userContext?.userId} */}
+          </div>
+        }
 
         {
           !userContext.token ?
