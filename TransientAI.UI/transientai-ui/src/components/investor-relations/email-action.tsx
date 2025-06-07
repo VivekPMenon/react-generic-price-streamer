@@ -1,6 +1,4 @@
 import React, { useState } from 'react';
-import { Button } from '@radix-ui/themes';
-import { X, Send } from 'lucide-react';
 import { useUserContextStore } from '@/services/user-context';
 import { investorRelationsService, IREmailMessage } from '@/services/investor-relations-data';
 import { userService } from '@/services/user-context/user-service';
