@@ -23,6 +23,7 @@ import WorldMapChart from "./geographic-map";
 import BarChart from "./issue-explorer-chart";
 import { TaTabs, TaDropDown } from '../shared'
 import { Spinner } from "@radix-ui/themes";
+import { PmsLiveNew } from "../pms-live-new";
 
 const PortfolioSelectOptions = [
   { value: 'all', label: 'All' },
@@ -368,7 +369,7 @@ export const PmsLive = () => {
       </section>
 
       <section className="flex h-[600px] gap-4 mt-5">
-        <div className="w-[80%]" ref={managerDetailsRef}>
+        {/* <div className="w-[80%]" ref={managerDetailsRef}>
           <TaTabs
             tabs={tabsConfig}
             onTabChange={handleTabChange}
@@ -452,7 +453,9 @@ export const PmsLive = () => {
               loading={isLoading}
             />
           )}
-        </div>
+        </div> */}
+
+         <PmsLiveNew></PmsLiveNew>
 
         <div className="rounded-md p-2 h-[500px] w-[350px]">
           <h4 className="text-white text-center mb-2">Manager Exposure</h4>

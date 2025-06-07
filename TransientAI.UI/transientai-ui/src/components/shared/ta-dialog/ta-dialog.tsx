@@ -19,7 +19,7 @@ export const TaDialog = ({
 
   return (
     <div className='fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50'>
-      <div className={`${className} bg-gray-900 rounded-lg w-full max-w-md p-6 text-white`}>
+      <div className='bg-gray-900 rounded-lg max-w-[80vw] p-6 text-white'>
         <div className='flex items-center justify-between mb-6'>
           <label htmlFor='header' className='text-xl font-semibold'>
             {title}

@@ -39,3 +39,8 @@ export interface IUpdateRoleConfigReq {
   screens: number[];
   pms_data: string[];
 }
+
+export interface IUpdateCorpActionsConfig {
+  account_number: string
+  userid_list: number[]
+}
