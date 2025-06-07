@@ -5,13 +5,15 @@ interface DialogProps {
   isOpen: boolean
   onClose?: () => void
   children: React.ReactNode
+  className?: string
 }
 
 export const TaDialog = ({
   isOpen,
   children,
   title = 'Dialog',
-  onClose
+  onClose,
+  className = '',
 }: DialogProps) => {
   if (!isOpen) return null
 

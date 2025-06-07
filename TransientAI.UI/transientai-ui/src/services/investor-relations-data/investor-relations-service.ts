@@ -102,6 +102,60 @@ class InvestorRelationsService {
             serviceName: this.serviceName
         });
     }
+
+    async replyEmail(emailAddress: string, id: string, comment: string, pdfIds?: string[]): Promise<any> {
+        return await webApihandler.post('reply-email',
+            undefined,
+            {email_address: emailAddress,
+             id:id,
+             comment: comment,
+             pdf_ids: pdfIds
+            },
+            {
+                serviceName: this.serviceName
+            });
+    }
+
+    async replyAllEmail(emailAddress: string, id: string, comment: string, pdfIds?: string[]): Promise<any> {
+        return await webApihandler.post('reply-all-email',
+            undefined,
+            {email_address: emailAddress,
+             id:id,
+             comment: comment,
+             pdf_ids: pdfIds
+            },
+            {
+                serviceName: this.serviceName
+            });
+    }
+
+    async forwardEmail(emailAddress: string, id: string, toEmail: string): Promise<any> {
+        return await webApihandler.post('forward-email',
+            undefined,
+            {email_address: emailAddress,
+             id:id,
+             to_email: toEmail
+            },
+            {
+                serviceName: this.serviceName
+            });
+    }
+
+    async getIrRequestForm() {
+        const query = `
+    {
+      getAddIrTaskStatus {
+        add_ir_task
+        }
+    }`;
+        const serviceName = 'hurricane-api-2-0';
+        return await webApihandler.post(
+            'graphql',
+            { query },
+            undefined,
+            { serviceName }
+        );
+    }
 }
 
 export const investorRelationsService = new InvestorRelationsService();

@@ -15,8 +15,10 @@ export interface InvestorRelationsStore {
   selectedIrEmail: IREmailMessage | null;
   assignees: string[];
   isLoading: boolean;
+  isIREmailLoading: boolean;
   isSaving: boolean;
   error: string;
+  hasIRAccess: boolean;
   setInquiries: (inquiries: InquiryRequest[]) => void;
   setSelectedInquiry: (inquiry: InquiryRequest | null) => void;
   setSelectedIrEmail: (email: IREmailMessage | null) => void;
@@ -28,6 +30,7 @@ export interface InvestorRelationsStore {
   loadAssignees: () => Promise<void>;
   updateStatusFromCompleted: (inquiry: InquiryRequest) => void;
   startPolling: () => void;
+  checkIRAccess: () => Promise<void>;
 }
 
 export const useInvestorRelationsStore = create<InvestorRelationsStore>()((set, get) => ({
@@ -39,6 +42,8 @@ export const useInvestorRelationsStore = create<InvestorRelationsStore>()((set, 
   isLoading: false,
   isSaving: false,
   error: '',
+  isIREmailLoading: false,
+  hasIRAccess: false,
 
   setInquiries: (inquiries: InquiryRequest[]) => set({ inquiries }),
 
@@ -70,13 +75,13 @@ export const useInvestorRelationsStore = create<InvestorRelationsStore>()((set, 
     const userEmail = userService.getPreviewUserEmail();
     const currentEmail =  userEmail ? userEmail : userContext.userId;
     try {
-      set({ isLoading: true });
+      set({ isIREmailLoading: true });
       const irEmails = await investorRelationsService.getIREmails(currentEmail!);
       set({ irEmails });
     } catch (e: any) {
       set({ inquiries: [], error: 'Failed to load IR Emails' });
     } finally {
-      set({ isLoading: false });
+      set({ isIREmailLoading: false });
     }
   },
 
@@ -154,5 +159,20 @@ export const useInvestorRelationsStore = create<InvestorRelationsStore>()((set, 
       unseenItemsStore.getState().addUnseenItems(resourceNameInvestorRelations, unseenDiff);
     }, 120000
     );
-  }
+  },
+
+  checkIRAccess: async () => {
+    try {
+      set({ isLoading: true });
+      const response = await investorRelationsService.getIrRequestForm();
+      const access = response.data.getAddIrTaskStatus.add_ir_task
+      set({ hasIRAccess: access });
+    } catch (error) {
+      console.error('Failed to check IR access:', error);
+      set({ hasIRAccess: false });
+    } finally {
+      set({ isLoading: false });
+    }
+  },
+
 }));

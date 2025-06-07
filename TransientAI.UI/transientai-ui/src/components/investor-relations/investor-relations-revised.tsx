@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import styles from './investor-relations-revised.module.scss';
-import { Spinner } from '@radix-ui/themes';
+import { Spinner, Tabs } from '@radix-ui/themes';
 import { InquiryFlag, InquiryRequest, InquiryStatus, investorRelationsService, IREmailMessage } from '@/services/investor-relations-data';
 import Toggle from 'react-toggle';
 import { useInvestorRelationsStore } from '@/services/investor-relations-data/investor-relations-store';
@@ -10,6 +10,20 @@ import { SearchableMarkdown } from '../markdown';
 import { RequestFormPopup } from './request-form-popup';
 import { toast } from 'react-toastify';
 import { useUserContextStore } from '@/services/user-context';
+import EmailAction from './email-action';
+import { userService } from '@/services/user-context/user-service';
+
+enum TabValues {
+  ALL = 'all',
+  OPEN = 'open',
+  ARCHIVED = 'archived'
+}
+
+const tabItems = [
+  { value: TabValues.ALL, label: 'All' },
+  { value: TabValues.OPEN, label: 'Open' },
+  { value: TabValues.ARCHIVED, label: 'Archived' }
+];
 
 export function InvestorRelationsRevised() {
 
@@ -22,22 +36,28 @@ export function InvestorRelationsRevised() {
   const [isSaving, setIsSaving] = useState<boolean>(false);
   const [isTaskOpen, setIsTaskOpen] = useState<boolean>(false);
   const [isCompletedItemsShown, setIsCompletedItemsShown] = useState<boolean>(false);
+  const [activeTab, setActiveTab] = useState<TabValues>(TabValues.ALL);
 
   const createTaskRef = useRef<HTMLInputElement>(null);
 
-  const { irEmails, inquiries, selectedIrEmail, selectedInquiry, setSelectedIrEmail, setSelectedInquiry, loadInquiries, loadEmails, changeStatus, updateStatusFromCompleted } = useInvestorRelationsStore();
+  const { irEmails, inquiries, selectedIrEmail, selectedInquiry, isLoading, isIREmailLoading, hasIRAccess, setSelectedIrEmail, setSelectedInquiry, loadInquiries, loadEmails, changeStatus, updateStatusFromCompleted, checkIRAccess } = useInvestorRelationsStore();
 
   useEffect(() => {
     if (selectedIrEmail)
       onEmailSelection(selectedIrEmail);
   }, [selectedIrEmail]);
 
+  useEffect(() => {
+    checkIRAccess()
+  }, [])
+
   async function onEmailSelection(email: IREmailMessage) {
     const userContext = useUserContextStore.getState().userContext;
-
+    const previewUserEmail = userService.getPreviewUserEmail();
+    const userEmail = previewUserEmail ?? userContext?.userId;
     const [emailContent, aiContent] = await Promise.all([
-      investorRelationsService.getEmailContentAsHtml(email.id!, userContext.userId!),
-      investorRelationsService.getIRSummary(email.id!, userContext.userId!)
+      investorRelationsService.getEmailContentAsHtml(email.id!, userEmail!),
+      investorRelationsService.getIRSummary(email.id!, userEmail!)
     ]);
 
     setAiSummary(aiContent.ir_summary);
@@ -49,8 +69,9 @@ export function InvestorRelationsRevised() {
     try {
       setIsSaving(true);
       const userContext = useUserContextStore.getState().userContext;
-
-      await investorRelationsService.markIrEmailAsComplete(irEmail.id!, userContext.userId!);
+      const previewUserEmail = userService.getPreviewUserEmail();
+      const userEmail = previewUserEmail ?? userContext?.userId;
+      await investorRelationsService.markIrEmailAsComplete(irEmail.id!, userEmail!);
       await loadEmails();
 
       toast.success('Email marked as complete');
@@ -90,7 +111,7 @@ export function InvestorRelationsRevised() {
   return (
     <div className={styles['investor-relations']}>
       <div className={styles['ir-requests']}>
-        <div className={styles['title']}>
+        {hasIRAccess && <div className={styles['title']}>
           IR Requests
 
           <i className='fa-regular fa-pen-to-square' ref={createTaskRef} onClick={() => setIsTaskOpen(true)}></i>
@@ -109,7 +130,7 @@ export function InvestorRelationsRevised() {
             </RequestFormPopup>
           }
 
-        </div>
+        </div>}
 
         <div className={styles['search-box']}>
           <input
@@ -135,10 +156,10 @@ export function InvestorRelationsRevised() {
             <i className='fa-regular fa-envelope'></i>
             Inbox
             {
-              isSaving && <Spinner size={"2"} />
+              (isSaving || isLoading || isIREmailLoading) && <Spinner size={"2"} />
             }
 
-            <div className={styles['toggler']}>
+            {/* <div className={styles['toggler']}>
               Show Completed Items
               <Toggle
                 className='toggle-small'
@@ -147,88 +168,160 @@ export function InvestorRelationsRevised() {
                 checked={isCompletedItemsShown}
                 onChange={() => setIsCompletedItemsShown(!isCompletedItemsShown)}
               />
-            </div>
+            </div> */}
           </div>
 
-          <div className={`${styles['messages']} message-list scrollable-div`}>
-            {irEmails
-              .filter(msg => (isCompletedItemsShown ? msg.complete : !msg.complete)
-                && (!searchQuery || msg.subject.toLowerCase().includes(searchQuery.toLowerCase())))
-              .map((msg, idx) => (
-                <div
-                  key={idx}
-                  className={`message ${selectedIrEmail?.id === msg.id ? 'selected' : ''}`}
-                  onClick={() => { setSelectedIrEmail(msg); setSelectedInquiry(null) }}
-                >
-                  {/* move this to a common comp */}
-                  <div className={`radio-button-container ${msg.complete ? 'checked' : ''}`}
-                    title='Mark as Completed'
-                    onClick={(event) => markEmailComplete(event, msg)}>
-                    <i className="fa-solid fa-check"></i>
-                  </div>
+          <div>
+            <Tabs.Root
+              className="flex w-full h-full flex-col rounded-md overflow-hidden"
+              defaultValue={TabValues.ALL}
+              value={activeTab}
+              onValueChange={(value) => setActiveTab(value as TabValues)}
+            >
+              <Tabs.List className="flex" aria-label="Manage your project">
+                {tabItems.map((tab) => (
+                  <Tabs.Trigger
+                    key={tab.value}
+                    className="flex h-12 flex-1 cursor-pointer select-none items-center justify-center px-5 text-base font-medium text-gray-200 outline-none relative hover:text-teal-400 data-[state=active]:text-teal-400 data-[state=active]:shadow-[inset_0_-1px_0_0,0_1px_0_0]"
+                    value={tab.value}
+                  >
+                    {tab.label}
+                  </Tabs.Trigger>
+                ))}
+              </Tabs.List>
 
-                  <div className='content'>
-                    <div className='header'>
-                      <span className='sender'>
-                        {msg.important && <span className='priority'>❗</span>}
-                        {msg.sender}
-                      </span>
-                      <span className='time'>{formatDate(msg.received)}</span>
-                    </div>
-                    <div className='subject'>{msg.subject}</div>
-                    {/* <div className='body'>{msg.concise_summary}</div> */}
-                  </div>
+              <Tabs.Content value={activeTab} className="grow mt-2">
+                <div className={`${styles['messages']} message-list scrollable-div w-full`}>
+                  {(() => {
+                    const filteredEmails = irEmails
+                      .filter((msg) => {
+                        switch (activeTab) {
+                          case TabValues.OPEN:
+                            return !msg.complete;
+                          case TabValues.ARCHIVED:
+                            return msg.complete;
+                          default:
+                            return true;
+                        }
+                      })
+                      .filter((msg) =>
+                        (!searchQuery || msg.subject.toLowerCase().includes(searchQuery.toLowerCase()))
+                      );
+
+                    const filteredInquiries = inquiries
+                      .filter((msg) => {
+                        switch (activeTab) {
+                          case TabValues.OPEN:
+                            return msg.status !== InquiryStatus.Completed;
+                          case TabValues.ARCHIVED:
+                            return msg.status === InquiryStatus.Completed;
+                          default:
+                            return true;
+                        }
+                      })
+                      .filter((msg) =>
+                        !searchQuery || msg.subject?.toLowerCase().includes(searchQuery.toLowerCase())
+                      );
+
+                    if (filteredEmails.length === 0 && filteredInquiries.length === 0) {
+                      return (
+                        <div className="flex items-center justify-center p-4 text-gray-400">
+                          No data found
+                        </div>
+                      );
+                    }
+
+                    return (
+                      <>
+                        {filteredEmails.map((msg, idx) => (
+                          <div
+                            key={idx}
+                            className={`message ${selectedIrEmail?.id === msg.id ? 'selected' : ''}`}
+                            onClick={() => {
+                              setSelectedIrEmail(msg);
+                              setSelectedInquiry(null);
+                            }}
+                          >
+                            <div
+                              className={`radio-button-container ${msg.complete ? 'checked' : ''}`}
+                              title="Mark as Completed"
+                              onClick={(event) => markEmailComplete(event, msg)}
+                            >
+                              <i className="fa-solid fa-check"></i>
+                            </div>
+
+                            <div className="content">
+                              <div className="header">
+                                <span className="sender">
+                                  {msg.important && <span className="priority">❗</span>}
+                                  {msg.sender}
+                                </span>
+                                <span className="time">{formatDate(msg.received)}</span>
+                              </div>
+                              <div className="subject">{msg.subject}</div>
+                              {/* <div className='body'>{msg.concise_summary}</div> */}
+                            </div>
+                          </div>
+                        ))}
+
+                        {filteredInquiries.map((msg, idx) => (
+                          <div
+                            key={idx}
+                            className={`message ${selectedInquiry?.id === msg.id ? 'selected' : ''}`}
+                            onClick={() => {
+                              setSelectedIrEmail(null);
+                              setSelectedInquiry(msg);
+                            }}
+                          >
+                            <div
+                              className={`radio-button-container ${msg.status === InquiryStatus.Completed ? 'checked' : ''
+                                }`}
+                              title="Mark as Completed"
+                              onClick={(event) => markTaskComplete(event, msg)}
+                            >
+                              <i className="fa-solid fa-check"></i>
+                            </div>
+
+                            <div className="content">
+                              <div className="header">
+                                <span className="sender">
+                                  {msg.flag === InquiryFlag.Urgent && <span className="priority">❗</span>}
+                                  {msg.owner_name}
+                                </span>
+                                <span className="time">{formatDate(msg.date)}</span>
+                              </div>
+                              <div className="subject">{msg.subject}</div>
+
+                              <div className="body">
+                                <div className="body-content-left">
+                                  <span>Assignee: {msg.assignee_name}</span>
+                                  <span>Due Date: {formatDate(msg.due_date)}</span>
+                                </div>
+
+                                <div className="body-content-right">
+                                  <div className="pill teal">TASK</div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </>
+                    );
+                  })()}
                 </div>
-              ))}
+              </Tabs.Content>
+            </Tabs.Root>
 
-            {inquiries
-              .filter(msg => (isCompletedItemsShown ? msg.status === InquiryStatus.Completed : msg.status !== InquiryStatus.Completed)
-                && (!searchQuery || msg.subject?.toLowerCase().includes(searchQuery.toLowerCase()))
-              )
-              .map((msg, idx) => (
-                <div
-                  key={idx}
-                  className={`message ${selectedInquiry?.id === msg.id ? 'selected' : ''}`}
-                  onClick={() => {
-                    setSelectedIrEmail(null);
-                    setSelectedInquiry(msg);
-                  }}
-                >
-                  <div className={`radio-button-container ${msg.status === InquiryStatus.Completed ? 'checked' : ''}`} title='Mark as Completed' onClick={(event) => markTaskComplete(event, msg)}>
-                    <i className="fa-solid fa-check"></i>
-                  </div>
-
-                  <div className='content'>
-                    <div className='header'>
-                      <span className='sender'>
-                        {msg.flag === InquiryFlag.Urgent && <span className='priority'>❗</span>}
-                        {msg.owner_name}
-                      </span>
-                      <span className='time'>{formatDate(msg.date)}</span>
-                    </div>
-                    <div className='subject'>{msg.subject}</div>
-
-                    <div className='body'>
-                      <div className='body-content-left'>
-                        <span>Assignee: {msg.assignee_name}</span>
-                        <span>Due Date: {formatDate(msg.due_date)}</span>
-                      </div>
-
-                      <div className='body-content-right'>
-                        <div className='pill teal'>TASK</div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ))}
           </div>
-
         </div>
       </div>
 
       {
         selectedIrEmail &&
         <div className={styles['ir-responses']}>
+           <EmailAction
+          selectedIrEmail={selectedIrEmail}
+        />
           {
             isAiSummaryShown ?
               <SearchableMarkdown className={styles['summary-viewer']} markdownContent={aiSummary}>
@@ -239,10 +332,8 @@ export function InvestorRelationsRevised() {
                 {toggleElement}
               </EmailViewer>
           }
-
         </div>
       }
-
       {
         selectedInquiry &&
         <div className={styles['inquiry-summary']}>
