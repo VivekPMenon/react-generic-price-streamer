@@ -57,6 +57,12 @@ class InvestorRelationsService {
         });
     }
 
+    async deleteIrEmail(emailGuid: string, emailId: string): Promise<any> {
+        return await webApihandler.post(`update-ir-status?email_address=${emailId}`, [emailGuid], {}, {
+            serviceName: this.serviceName
+        });
+    }
+
     async submit(inquiry: InquiryRequest): Promise<boolean> {
         try {
             const newForm = await this.getTaskForm();
@@ -76,11 +82,11 @@ class InvestorRelationsService {
         }
     }
 
-    async getSubmittedTasks(assignee: string): Promise<InquiryRequest[]> {
+    async getSubmittedTasks(assigneeEmail: string): Promise<InquiryRequest[]> {
         return await webApihandler
             .get(
                 'submitted_tasks', {
-                assignee_name: assignee
+                assignee_email: assigneeEmail
             }, {
                 serviceName: this.serviceName
             });
@@ -104,29 +110,37 @@ class InvestorRelationsService {
     }
 
     async replyEmail(emailAddress: string, id: string, comment: string, pdfIds?: string[]): Promise<any> {
-        return await webApihandler.post('reply-email',
+        const formData = new FormData();
+        formData.append('email_address', emailAddress);
+        formData.append('id', id);
+        formData.append('comment', comment);
+        if (pdfIds && pdfIds.length > 0) {
+            pdfIds.forEach(pdfId => formData.append('pdf_ids', pdfId));
+        }
+
+        return await webApihandler.post(
+            'reply-email',
+            formData,
             undefined,
-            {email_address: emailAddress,
-             id:id,
-             comment: comment,
-             pdf_ids: pdfIds
-            },
-            {
-                serviceName: this.serviceName
-            });
+            { serviceName: this.serviceName }
+        );
     }
 
     async replyAllEmail(emailAddress: string, id: string, comment: string, pdfIds?: string[]): Promise<any> {
-        return await webApihandler.post('reply-all-email',
+        const formData = new FormData();
+        formData.append('email_address', emailAddress);
+        formData.append('id', id);
+        formData.append('comment', comment);
+        if (pdfIds && pdfIds.length > 0) {
+            pdfIds.forEach(pdfId => formData.append('pdf_ids', pdfId));
+        }
+
+        return await webApihandler.post(
+            'reply-all-email',
+            formData,
             undefined,
-            {email_address: emailAddress,
-             id:id,
-             comment: comment,
-             pdf_ids: pdfIds
-            },
-            {
-                serviceName: this.serviceName
-            });
+            { serviceName: this.serviceName }
+        );
     }
 
     async forwardEmail(emailAddress: string, id: string, toEmail: string): Promise<any> {

@@ -25,12 +25,12 @@ const EmailAction = ({ selectedIrEmail }: EmailActionProps) => {
 
     const openModal = (modalType: 'reply' | 'replyAll' | 'forward') => {
         if (selectedIrEmail) {
-        setComposeData({
-            to: modalType === 'forward' ? '' : selectedIrEmail.sender,
-            cc: '',
-            body: ''
-        });
-    }
+            setComposeData({
+                to: modalType === 'forward' ? '' : selectedIrEmail.sender,
+                cc: '',
+                body: ''
+            });
+        }
         setActiveModal(modalType);
         setReplyError('');
     };
@@ -75,10 +75,14 @@ const EmailAction = ({ selectedIrEmail }: EmailActionProps) => {
                         selectedIrEmail.id,
                         composeData.body,
                     );
+                    console.log('ReplyAll Response:', response);
+                    if (response?.data?.status === 200) {
+                        await investorRelationsService.deleteIrEmail(selectedIrEmail.id, userEmail!);
+                    }
                     break;
                 case 'forward':
                     response = await investorRelationsService.forwardEmail(
-                        selectedIrEmail.sender,
+                        userEmail!,
                         selectedIrEmail.id,
                         composeData.to
                     );
@@ -90,16 +94,40 @@ const EmailAction = ({ selectedIrEmail }: EmailActionProps) => {
                         selectedIrEmail.id,
                         composeData.body,
                     );
+                    console.log('Reply Response:', response);
+                    if (response?.data?.status === 200) {
+                        await investorRelationsService.deleteIrEmail(selectedIrEmail.id, userEmail!);
+                    }
                     break;
             }
 
-            if (response.status === 200) {
-                toast.success(response.message || 'Email sent successfully');
+            if (response?.data?.status === 200) {
+                toast.success(response?.data?.message || 'Email sent successfully');
             }
             closeModal();
         } catch (error) {
             toast.error('Error sending email');
             console.error('Error sending email:', error);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    const handleDelete = async () => {
+        if (!selectedIrEmail?.id) {
+            return;
+        }
+
+        try {
+            setIsLoading(true);
+            const response = await investorRelationsService.deleteIrEmail(selectedIrEmail.id, userEmail!);
+            if (response.status === 200) {
+                toast.success('Email deleted successfully');
+                // You might want to refresh the email list here
+            }
+        } catch (error) {
+            toast.error('Error deleting email');
+            console.error('Error deleting email:', error);
         } finally {
             setIsLoading(false);
         }
@@ -142,6 +170,7 @@ const EmailAction = ({ selectedIrEmail }: EmailActionProps) => {
                 />
                 <i
                     className="fa-solid fa-trash cursor-pointer"
+                    onClick={handleDelete}
                     data-tooltip-id="action-tooltip"
                     data-tooltip-content="Delete"
                 />
@@ -185,12 +214,12 @@ const EmailAction = ({ selectedIrEmail }: EmailActionProps) => {
                                         type="text"
                                         value={composeData.to}
                                         onChange={(e) => setComposeData({...composeData, to: e.target.value})}
-                                        className="flex-1 px-3 py-1 border border-gray-600 bg-gray-800 text-white rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                        placeholder="Enter email addresses"
+                                        disabled={activeModal !== 'forward'}
+                                        className={`text-gray-400 bg-transparent border-none outline-none ${activeModal === 'forward' ? 'cursor-text' : 'cursor-not-allowed'}`}
                                     />
                                 </div>
                                 
-                                {activeModal === 'replyAll' && (
+                                {/* {activeModal === 'replyAll' && (
                                     <div className="flex items-center space-x-2">
                                         <label className="text-sm font-medium text-gray-300 w-16">Cc:</label>
                                         <input
@@ -201,7 +230,7 @@ const EmailAction = ({ selectedIrEmail }: EmailActionProps) => {
                                             placeholder="Enter email addresses"
                                         />
                                     </div>
-                                )}
+                                )} */}
                             </div>
 
                             {/* Message Body */}
