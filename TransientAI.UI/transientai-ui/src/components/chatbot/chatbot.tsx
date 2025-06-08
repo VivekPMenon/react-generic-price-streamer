@@ -71,7 +71,15 @@ export function Chatbot() {
 
   if (isChatbotResponseActive) {
     return <div className={`${styles['chatbot-container']} widget`}>
-      <ChatbotResponse />
+      <ChatbotResponse
+          showBackButton={true}
+          inputHint={'Ask TransientAI anything - use \'@\' to find files, folders and other trading data'}
+          selectedThread={chatbotStore.use.selectedThread()}
+          isLoading={chatbotStore.use.isLoading()}
+          addToThread={chatbotStore.use.addToThread()}
+          setIsChatbotResponseActive={chatbotStore.use.setIsChatbotResponseActive()}
+          isChatbotResponseActive={chatbotStore.use.isChatbotResponseActive()}
+      />
     </div>;
   }
 

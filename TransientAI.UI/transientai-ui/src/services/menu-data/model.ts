@@ -1,13 +1,11 @@
 //src/services/menu-data/model.ts
-export interface MenuInfo {
-  id?: string;
-  key?: string;
-  description?: string;
+import {TabInfo} from "@/components/dashboard-tabs/model";
+
+export interface MenuInfo extends TabInfo {
   badgeCount?: number;
   icon?: string;
   subDescription?: string;
   children?: MenuInfo[];
-  route?: string;
   priorityId?: number;
 }
 
