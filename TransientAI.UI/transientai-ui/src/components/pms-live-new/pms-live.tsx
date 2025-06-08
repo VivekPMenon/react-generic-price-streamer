@@ -373,7 +373,12 @@ export const PmsLiveNew = ({}: Props) => {
       try {
         const response = await pmsDataService.getAllColumList()
         if (isMounted) {
-          setColumnList(response.data as IPmsGridColsList[])
+          // setColumnList(response.data as IPmsGridColsList[])
+          const columnsWithSelection = (response.data as IPmsGridColsList[]).map(col => ({
+            ...col,
+            is_selected: col.is_selected // Directly use is_selected from API response
+          }));
+          setColumnList(columnsWithSelection as IColumnItem[])
         }
       } catch (error) {
         console.error('Error fetching all columns:', error)

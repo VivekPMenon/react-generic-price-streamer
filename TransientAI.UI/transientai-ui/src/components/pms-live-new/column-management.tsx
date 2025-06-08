@@ -29,6 +29,9 @@ const SortableColumnItem = React.memo<{
     [index]
   )
 
+  // Add console log here to inspect item.is_selected
+  console.log(`Column: ${item.headerName || item.label}, is_selected: ${item.is_selected}`)
+
   return (
     <div
       className={`flex items-center bg-[#1F2937] p-2 rounded-sm hover:bg-[#374151] transition-colors cursor-move`}
@@ -85,10 +88,10 @@ const ColumnManagement: React.FC<ColumnManagementProps> = ({
     const columnsWithSelection: IColumnItem[] = availableColumns
       .filter(col => col.id) // Only include items that have an id
       .map(col => {
-        const fieldName = col.field || col.label!
+        // const fieldName = col.field || col.label!
         return {
           ...col,
-          is_selected: currentColumnFieldsSet.has(fieldName)
+          is_selected: col.is_selected // Directly use is_selected from API response
         }
       })
 
@@ -97,16 +100,16 @@ const ColumnManagement: React.FC<ColumnManagementProps> = ({
       const orderB = b.order_id ?? 0
       return orderA - orderB
     })
-  }, [availableColumns, currentColumnFieldsSet])
+  }, [availableColumns])
 
   // Use ref to track if initial load is done to prevent unnecessary updates
-  const isInitializedRef = useRef(false)
+  // const isInitializedRef = useRef(false)
 
   useEffect(() => {
-    if (!isInitializedRef.current) {
+    // if (!isInitializedRef.current) {
       setColumnList(initializedColumns)
-      isInitializedRef.current = true
-    }
+      // isInitializedRef.current = true
+    // }
   }, [initializedColumns])
 
   // Optimized column change handler using functional update pattern
