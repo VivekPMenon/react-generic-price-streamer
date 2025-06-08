@@ -98,7 +98,7 @@ export function RequestFormPopup(props: RequestPopupProps) {
                 inquiry: inquiry,
                 due_date: new Date(dueDate).toISOString(),
                 flag: flag,
-                assignee_name: assignee,
+                assignee_email: assignee,
                 date_edited: new Date().toISOString(),
                 status: InquiryStatus.Open,
                 completed: false

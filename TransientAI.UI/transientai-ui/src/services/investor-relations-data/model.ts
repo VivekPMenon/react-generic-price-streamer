@@ -12,8 +12,9 @@ export enum InquiryStatus {
 export interface InquiryRequest {
     id?: string;
     date?: string;
-    assignee_name?: string;
+    assignee_email?: string;
     owner_name?: string;
+    owner_email?: string;
     subject?: string;
     inquiry?: string;
     status?: InquiryStatus;
