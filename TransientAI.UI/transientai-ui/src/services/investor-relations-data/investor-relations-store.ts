@@ -101,7 +101,8 @@ export const useInvestorRelationsStore = create<InvestorRelationsStore>()((set, 
     const userContext = useUserContextStore.getState().userContext;
     try {
       set({ isSaving: true });
-      inquiry.owner_name = userContext.userName;
+      inquiry.owner_email = userContext.userInfo?.email || userContext.userId;
+      inquiry.owner_name = undefined;
       await investorRelationsService.submit(inquiry);
     } catch (e: any) {
       set({ error: 'Failed to save inquiry' });

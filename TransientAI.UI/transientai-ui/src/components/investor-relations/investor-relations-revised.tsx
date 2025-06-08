@@ -124,7 +124,7 @@ export function InvestorRelationsRevised() {
               inquiry={selectedInquiry?.inquiry}
               dueDate={selectedInquiry?.due_date}
               flag={selectedInquiry?.flag}
-              assignee={selectedInquiry?.assignee_name}
+              assignee={selectedInquiry?.assignee_email}
               isReadOnly={!!selectedInquiry}
               onClose={() => { setSelectedInquiry(null); setIsTaskOpen(false); }}>
             </RequestFormPopup>
@@ -286,7 +286,7 @@ export function InvestorRelationsRevised() {
                               <div className="header">
                                 <span className="sender">
                                   {msg.flag === InquiryFlag.Urgent && <span className="priority">❗</span>}
-                                  {msg.owner_name}
+                                  {msg.owner_email}
                                 </span>
                                 <span className="time">{formatDate(msg.date)}</span>
                               </div>
@@ -294,7 +294,7 @@ export function InvestorRelationsRevised() {
 
                               <div className="body">
                                 <div className="body-content-left">
-                                  <span>Assignee: {msg.assignee_name}</span>
+                                  <span>Assignee: {msg.assignee_email}</span>
                                   <span>Due Date: {formatDate(msg.due_date)}</span>
                                 </div>
 
@@ -343,11 +343,11 @@ export function InvestorRelationsRevised() {
           </div>
 
           <div className={styles['inquiry-field']}>
-            <span className={styles['label']}>Assigned By:</span> {selectedInquiry?.owner_name}
+            <span className={styles['label']}>Assigned By:</span> {selectedInquiry?.owner_email}
           </div>
 
           <div className={styles['inquiry-field']}>
-            <span className={styles['label']}>Assignee:</span> {selectedInquiry?.assignee_name}
+            <span className={styles['label']}>Assignee:</span> {selectedInquiry?.assignee_email}
           </div>
 
           <div className={styles['inquiry-field']}>
