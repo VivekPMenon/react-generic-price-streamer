@@ -1,6 +1,7 @@
 import { webApihandler } from "@/services/web-api-handler";
 import { InquiryRequest, InquiryStatus, IREmailMessage } from "@/services/investor-relations-data/model";
 import {endpointFinder} from "@/services/web-api-handler/endpoint-finder-service";
+import { userService } from "@/services/user-context/user-service";
 
 class InvestorRelationsService {
     readonly serviceName = 'hurricane-api';
@@ -104,9 +105,13 @@ class InvestorRelationsService {
     }
 
     async getAssignees(): Promise<string[]> {
-        return await webApihandler.get('assignee_emails', {}, {
-            serviceName: this.serviceName
-        });
+        // return await webApihandler.get('assignee_emails', {}, {
+        //     serviceName: this.serviceName
+        // });
+        const userListResponse = await userService.getUserList();
+        const assignees = userListResponse.map((user: any) => user.email);
+        console.log("assignee: ", assignees)
+        return assignees;
     }
 
     async replyEmail(emailAddress: string, id: string, comment: string, pdfIds?: string[]): Promise<any> {
