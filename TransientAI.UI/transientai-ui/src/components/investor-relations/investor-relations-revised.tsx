@@ -20,9 +20,9 @@ enum TabValues {
 }
 
 const tabItems = [
-  { value: TabValues.ALL, label: 'All' },
   { value: TabValues.OPEN, label: 'Open' },
-  { value: TabValues.ARCHIVED, label: 'Archived' }
+  { value: TabValues.ARCHIVED, label: 'Archived' },
+  { value: TabValues.ALL, label: 'All' }
 ];
 
 export function InvestorRelationsRevised() {
@@ -35,8 +35,7 @@ export function InvestorRelationsRevised() {
   const [isAiSummaryShown, setIsAiSummaryShown] = useState<boolean>(false);
   const [isSaving, setIsSaving] = useState<boolean>(false);
   const [isTaskOpen, setIsTaskOpen] = useState<boolean>(false);
-  const [isCompletedItemsShown, setIsCompletedItemsShown] = useState<boolean>(false);
-  const [activeTab, setActiveTab] = useState<TabValues>(TabValues.ALL);
+  const [activeTab, setActiveTab] = useState<TabValues>(TabValues.OPEN);
 
   const createTaskRef = useRef<HTMLInputElement>(null);
 
@@ -146,11 +145,7 @@ export function InvestorRelationsRevised() {
             <i className='fa-solid fa-remove' onClick={() => { setSearchQuery(''); }}></i> :
             <i className='fa-solid fa-magnifying-glass'></i>}
         </div>
-        {/* 
-        <div className={styles['prompt-results']}>
-          Prompt Results - TODO -- What does it go here? Is it plain text?
-        </div> */}
-
+        
         <div className={styles['mail-inbox']}>
           <div className={styles['title']}>
             <i className='fa-regular fa-envelope'></i>
@@ -158,23 +153,12 @@ export function InvestorRelationsRevised() {
             {
               (isSaving || isLoading || isIREmailLoading) && <Spinner size={"2"} />
             }
-
-            {/* <div className={styles['toggler']}>
-              Show Completed Items
-              <Toggle
-                className='toggle-small'
-                id='sort-action'
-                defaultChecked={isCompletedItemsShown}
-                checked={isCompletedItemsShown}
-                onChange={() => setIsCompletedItemsShown(!isCompletedItemsShown)}
-              />
-            </div> */}
           </div>
 
           <div>
             <Tabs.Root
               className="flex w-full h-full flex-col rounded-md overflow-hidden"
-              defaultValue={TabValues.ALL}
+              defaultValue={TabValues.OPEN}
               value={activeTab}
               onValueChange={(value) => setActiveTab(value as TabValues)}
             >

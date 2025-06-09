@@ -1,5 +1,5 @@
 import { webApihandler } from "@/services/web-api-handler";
-import { InquiryRequest, InquiryStatus, IREmailMessage } from "@/services/investor-relations-data/model";
+import { AttachmentData, InquiryRequest, InquiryStatus, IREmailMessage } from "@/services/investor-relations-data/model";
 import {endpointFinder} from "@/services/web-api-handler/endpoint-finder-service";
 import { userService } from "@/services/user-context/user-service";
 
@@ -109,44 +109,44 @@ class InvestorRelationsService {
         //     serviceName: this.serviceName
         // });
         const userListResponse = await userService.getUserList();
-        const assignees = userListResponse.map((user: any) => user.email);
-        console.log("assignee: ", assignees)
+        const assignees = userListResponse.map((user: any) => user.email);    
         return assignees;
     }
 
-    async replyEmail(emailAddress: string, id: string, comment: string, pdfIds?: string[]): Promise<any> {
-        const formData = new FormData();
-        formData.append('email_address', emailAddress);
-        formData.append('id', id);
-        formData.append('comment', comment);
-        if (pdfIds && pdfIds.length > 0) {
-            pdfIds.forEach(pdfId => formData.append('pdf_ids', pdfId));
-        }
+ async replyEmail(emailAddress: string, id: string, comment: string, attachments?: File[]): Promise<any> {
+    const payload = {
+        email_address: emailAddress,
+        id: id,
+        comment: comment,
+        ...(attachments && attachments.length > 0 && { attachments: attachments })
+    };
 
-        return await webApihandler.post(
-            'reply-email',
-            formData,
-            undefined,
-            { serviceName: this.serviceName }
-        );
-    }
+    return await webApihandler.post(
+        'reply-email',
+        payload,
+        {
+            'Content-Type': 'application/json'
+        },
+        { serviceName: this.serviceName }
+    );
+}
+    async replyAllEmail(emailAddress: string, id: string, comment: string, attachments?: File[]): Promise<any> {
+    const payload = {
+        email_address: emailAddress,
+        id: id,
+        comment: comment,
+        ...(attachments && attachments.length > 0 && { attachments: attachments })
+    };
 
-    async replyAllEmail(emailAddress: string, id: string, comment: string, pdfIds?: string[]): Promise<any> {
-        const formData = new FormData();
-        formData.append('email_address', emailAddress);
-        formData.append('id', id);
-        formData.append('comment', comment);
-        if (pdfIds && pdfIds.length > 0) {
-            pdfIds.forEach(pdfId => formData.append('pdf_ids', pdfId));
-        }
-
-        return await webApihandler.post(
-            'reply-all-email',
-            formData,
-            undefined,
-            { serviceName: this.serviceName }
-        );
-    }
+    return await webApihandler.post(
+        'reply-all-email',
+        payload,
+        {
+            'Content-Type': 'application/json'
+        },
+        { serviceName: this.serviceName }
+    );
+}
 
     async forwardEmail(emailAddress: string, id: string, toEmail: string): Promise<any> {
         return await webApihandler.post('forward-email',
