@@ -37,6 +37,20 @@
   background-color: $gray-1000;
 }
 
+.search-bar-with-selector {
+  margin-top: auto;
+  margin-bottom: 50px;
+}
+
+.search-bar-with-selector input {
+  width: 98%;
+  padding: 10px;
+  font-size: 14px;
+  border: none;
+  border-radius: 5px;
+  background-color: $gray-1000;
+}
+
 .message-content {
   display: flex;
   gap: 10px;

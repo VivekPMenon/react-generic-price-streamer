@@ -308,7 +308,7 @@ export function Notifications(props: NotificationsProps) {
           timestamp: inquiry.due_date ? new Date(inquiry.due_date).getTime() : 0,
           highlights: [
             `Due: ${inquiry.due_date ? new Date(inquiry.due_date).toDateString() : ''}`,
-            `Assigned to: ${inquiry.assignee_name}`,
+            `Assigned to: ${inquiry.assignee_email}`,
             `${inquiry.flag ? InquiryFlag[inquiry.flag] : ''}`
           ]
         })),
