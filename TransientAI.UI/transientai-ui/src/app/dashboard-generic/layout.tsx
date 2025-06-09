@@ -4,7 +4,7 @@ import { Header } from '@/components/header/header'
 import { Chatbot } from '@/components/chatbot/chatbot';
 import { Notifications } from '@/components/notifications';
 import {useEffect, useState} from 'react';
-import {Mode} from "@/services/menu-data";
+import {menuStore, Mode} from "@/services/menu-data";
 import {DashboardTabs} from "@/components/dashboard-tabs/dashboard-tabs";
 import {MsalProvider} from '@azure/msal-react';
 import {Spinner} from "@radix-ui/themes";
@@ -19,6 +19,7 @@ import {BondNews} from "@/components/news/bond-news";
 import msalInstance from '../msal-config';
 import styles from './page.module.scss';
 import 'react-tooltip/dist/react-tooltip.css'
+import {useRouter} from "next/navigation";
 
 const MODE: Mode = Mode.SELL;
 
@@ -29,8 +30,14 @@ export default function DashboardLayout ({
 }: Readonly<{
   children: React.ReactNode
 }>) {
-  // todo.. unable to add this to the root of the app, as it is server side rendered, create an intermediate layout that wil act as root for all client dashbaords
-  const { loadUserContext, isLoading, isAuthenticated } = useUserContextStore()
+  // todo.. unable to add this to the root of the app, as it is server-side rendered, create an intermediate layout that will act as root for all client dashboards
+  const { loadUserContext, isLoading, isAuthenticated } = useUserContextStore();
+  const [isFullPageView, setIsFullPageView] = useState<boolean>(false);
+  const [expandedPanels, setExpandedPanels] = useState<string[]>([]);
+  const [isMenuVisible, setIsMenuVisible] = useState<boolean>(true);
+  const [handleChatbot, setHandleChatbot] = useState<boolean>(false);
+  const selectedMenu = menuStore.use.selectedMenu();
+  const deviceType = useDeviceType();
 
   useEffect(() => {
     loadUserContext()
@@ -39,15 +46,13 @@ export default function DashboardLayout ({
   useEffect(() => {
     if (isAuthenticated) {
       window.history.replaceState({}, document.title, window.location.pathname)
-      serviceInitializer.initialize()
+      serviceInitializer.initialize();
     }
   }, [isAuthenticated])
 
-  const deviceType = useDeviceType()
-
-  const [expandedPanels, setExpandedPanels] = useState<string[]>([])
-  const [isMenuVisible, setIsMenuVisible] = useState<boolean>(true)
-  const [handleChatbot, setHandleChatbot] = useState<boolean>(false)
+  useEffect(() => {
+    setIsFullPageView(selectedMenu?.fullPage === true);
+  }, [selectedMenu]);
 
   function onExpandCollapse (panelName: string, isExpanded: boolean) {
     const latestExpandedPanels = [...expandedPanels]
@@ -64,6 +69,46 @@ export default function DashboardLayout ({
 
   function onMenuToggle () {
     setIsMenuVisible(!isMenuVisible)
+  }
+
+  let content = null;
+  let bottomContent = null;
+  if (!isFullPageView) {
+    let upperContent = null;
+    if (deviceType === 'mobile') {
+      upperContent = (
+          <div
+              onClick={() => setHandleChatbot(false)}
+              className='w-full flex justify-between items-center p-2 sticky top-0 bg-inherit'
+          >
+            Chatbot <i className='fa-regular fa-circle-xmark'></i>
+          </div>
+      );
+    }
+
+    content = (
+        <div
+            className={`${styles['right-panel']} ${
+                handleChatbot && deviceType === 'mobile'
+                    ? styles['collapsed']
+                    : ''
+            }`}
+        >
+          {upperContent}
+          <Chatbot />
+        </div>
+    );
+
+    if (deviceType === 'mobile') {
+      bottomContent = (
+        <div
+            className='w-10 h-10 flex items-center justify-center fixed bottom-5 right-2 bg-gray-500 rounded-full p-1 text-sm'
+            onClick={() => setHandleChatbot(true)}
+        >
+          <i className='fa-regular fa-message'></i>
+        </div>
+      );
+    }
   }
 
   return (
@@ -107,56 +152,33 @@ export default function DashboardLayout ({
               )}
             </div>
 
-            <div
-              className={`${styles['middle-panel']} ${
-                isMenuVisible && deviceType === 'mobile'
-                  ? styles['collapsed']
-                  : ''
-              }`}
-            >
-              <DashboardTabs>{children}</DashboardTabs>
-
-              <div className={`grid md:grid-cols-2 md:grid-rows-2 gap-3 basis-[50%]`}>
-                <div className={styles.tradingActivity}>
-                  <TradingActivity />
-                </div>
-                <div className={styles.holdingsPanel}>
-                  <Holdings />
-                </div>
-                <div className={styles.newsPanel}>
-                  <BondNews />
-                </div>
-                <div className={styles.tracesPanel}>
-                  <Traces />
-                </div>
-              </div>
-            </div>
-
-            <div
-              className={`${styles['right-panel']} ${
-                handleChatbot && deviceType === 'mobile'
-                  ? styles['collapsed']
-                  : ''
-              }`}
-            >
-              {deviceType === 'mobile' && (
-                <div
-                  onClick={() => setHandleChatbot(false)}
-                  className='w-full flex justify-between items-center p-2 sticky top-0 bg-inherit'
+            <div className={`${styles['middle-panel']} ${
+                  isMenuVisible && deviceType === 'mobile'
+                    ? styles['collapsed']
+                    : ''
+                  }`}
                 >
-                  Chatbot <i className='fa-regular fa-circle-xmark'></i>
-                </div>
+              <DashboardTabs>{children}</DashboardTabs>
+              {!isFullPageView && (<div className={`grid md:grid-cols-2 md:grid-rows-2 gap-3 basis-[50%]`}>
+                    <div className={styles.tradingActivity}>
+                      <TradingActivity />
+                    </div>
+                    <div className={styles.holdingsPanel}>
+                      <Holdings />
+                    </div>
+                    <div className={styles.newsPanel}>
+                      <BondNews />
+                    </div>
+                    <div className={styles.tracesPanel}>
+                      <Traces />
+                    </div>
+                  </div>
               )}
-              <Chatbot />
             </div>
-            {deviceType === 'mobile' && (
-              <div
-                className='w-10 h-10 flex items-center justify-center fixed bottom-5 right-2 bg-gray-500 rounded-full p-1 text-sm'
-                onClick={() => setHandleChatbot(true)}
-              >
-                <i className='fa-regular fa-message'></i>
-              </div>
-            )}
+
+            {content}
+            {bottomContent}
+
           </main>
         </div>
       )}

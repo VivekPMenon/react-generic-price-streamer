@@ -26,6 +26,7 @@ export function DashboardTabs({ children }: DashboardTabsProps) {
   const setActiveMenu = menuStore.use.setActiveMenu();
   const closeTab = menuStore.use.closeTab();
   const defaultMenu = menuStore.use.defaultMenu();
+  const fullMenuList = menuStore.use.fullMenuList();
 
   const tabs = useMemo<TabInfo[]>(() => calculateTabs(), [activeMenuList, selectedMenu]);
 
@@ -45,23 +46,24 @@ export function DashboardTabs({ children }: DashboardTabsProps) {
 
     if (deviceType === 'mobile') {
       return selectedMenu
-        ? [{ id: selectedMenu.id, description: selectedMenu.description, route: selectedMenu.route, key: selectedMenu.key }]
+        ? [{ ...selectedMenu }]
         : [];
     }
 
     return activeMenuList.map(menu => ({
-      id: menu.id,
-      description: menu.description,
-      route: menu.route,
-      key: menu.key,
+      ...menu
     }));
   }
 
   function selectTab(tab: TabInfo) {
     if (!tab.route) return;
     previousSelectedMenu.current = selectedMenu?.id;
-    setActiveMenu({ id: tab.id, description: tab.description, route: tab.route,key: tab.key });
-    router.push(tab.route);
+
+    const menuItem = fullMenuList.find(item => item.id === tab.id);
+    if (menuItem)   {
+      setActiveMenu({ ...menuItem });
+      router.push(tab.route);
+    }
   }
 
  function handleCloseTab(event: React.MouseEvent, tab: TabInfo) {

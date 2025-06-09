@@ -20,6 +20,7 @@ export const getConfig = (): EndpointConfig => {
       'hurricane-api-2-0': process.env.NEXT_PUBLIC_HURRICANE_API_2_0_URL || '',
       'corp-actions-api': process.env.NEXT_PUBLIC_CORP_ACTIONS_API_URL || '',
       'sell-side-api': process.env.NEXT_PUBLIC_SELL_SIDE_API_URL || '',
+      'fin-sight-api': process.env.NEXT_PUBLIC_FIN_SIGHT_API_URL || '',
       'api-dev': process.env.NEXT_PUBLIC_API_DEV_URL || ''
     },
     isAuthDisabled: false,
