@@ -29,9 +29,6 @@ const SortableColumnItem = React.memo<{
     [index]
   )
 
-  // Add console log here to inspect item.is_selected
-  console.log(`Column: ${item.headerName || item.label}, is_selected: ${item.is_selected}`)
-
   return (
     <div
       className={`flex items-center bg-[#1F2937] p-2 rounded-sm hover:bg-[#374151] transition-colors cursor-move`}
