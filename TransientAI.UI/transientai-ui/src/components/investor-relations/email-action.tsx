@@ -4,6 +4,7 @@ import { investorRelationsService, IREmailMessage } from '@/services/investor-re
 import { userService } from '@/services/user-context/user-service';
 import { toast } from 'react-toastify';
 import { Tooltip } from 'react-tooltip';
+import { useInvestorRelationsStore } from '@/services/investor-relations-data/investor-relations-store';
 
 interface EmailActionProps {
     selectedIrEmail: IREmailMessage | null;
@@ -19,9 +20,11 @@ const EmailAction = ({ selectedIrEmail }: EmailActionProps) => {
     const [attachments, setAttachments] = useState<File[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [replyError, setReplyError] = useState<string>('');
+    const [attachmentError, setAttachmentError] = useState<string>('');
 
     const { userContext } = useUserContextStore();
     const userEmail = userService.getPreviewUserEmail() || userContext?.userId;
+    const {loadEmails} =useInvestorRelationsStore()
 
     const openModal = (modalType: 'reply' | 'replyAll' | 'forward') => {
         if (selectedIrEmail) {
@@ -33,6 +36,7 @@ const EmailAction = ({ selectedIrEmail }: EmailActionProps) => {
         }
         setActiveModal(modalType);
         setReplyError('');
+        setAttachmentError('');
     };
 
     const closeModal = () => {
@@ -40,6 +44,36 @@ const EmailAction = ({ selectedIrEmail }: EmailActionProps) => {
         setComposeData({ to: '', cc: '', body: '' });
         setAttachments([]);
         setReplyError('');
+        setAttachmentError('');
+    };
+
+    const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files) {
+            const selectedFiles = Array.from(e.target.files);
+
+            // Check file size limit (25MB per file for Graph API)
+            const oversizedFiles = selectedFiles.filter(file => file.size > 25 * 1024 * 1024);
+            if (oversizedFiles.length > 0) {
+                setAttachmentError(`Files too large: ${oversizedFiles.map(f => f.name).join(', ')}. Maximum size is 25MB per file.`);
+                return;
+            }
+
+            setAttachments(selectedFiles);
+            setAttachmentError('');
+        }
+    };
+
+    const removeAttachment = (index: number) => {
+        const newAttachments = attachments.filter((_, i) => i !== index);
+        setAttachments(newAttachments);
+    };
+
+    const formatFileSize = (bytes: number): string => {
+        if (bytes === 0) return '0 Bytes';
+        const k = 1024;
+        const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
     };
 
     const handleSendEmail = async () => {
@@ -56,16 +90,6 @@ const EmailAction = ({ selectedIrEmail }: EmailActionProps) => {
             setIsLoading(true);
             setReplyError('');
 
-            const attachmentData = await Promise.all(
-                attachments.map(async (file) => {
-                    const base64 = await toBase64(file);
-                    return {
-                        filename: file.name,
-                        content: base64.split(',')[1],
-                    };
-                })
-            );
-
             let response;
 
             switch (activeModal) {
@@ -74,9 +98,9 @@ const EmailAction = ({ selectedIrEmail }: EmailActionProps) => {
                         userEmail!,
                         selectedIrEmail.id,
                         composeData.body,
+                        attachments.length > 0 ? attachments : undefined
                     );
-                    console.log('ReplyAll Response:', response);
-                    if (response?.data?.status === 200) {
+                    if (response?.status == 200) {
                         await investorRelationsService.deleteIrEmail(selectedIrEmail.id, userEmail!);
                     }
                     break;
@@ -93,17 +117,18 @@ const EmailAction = ({ selectedIrEmail }: EmailActionProps) => {
                         userEmail!,
                         selectedIrEmail.id,
                         composeData.body,
+                        attachments.length > 0 ? attachments : undefined
                     );
-                    console.log('Reply Response:', response);
-                    if (response?.data?.status === 200) {
+                    if (response?.status == 200) {
                         await investorRelationsService.deleteIrEmail(selectedIrEmail.id, userEmail!);
                     }
                     break;
             }
 
-            if (response?.data?.status === 200) {
-                toast.success(response?.data?.message || 'Email sent successfully');
-            }
+            if (response?.status == 200) {
+                toast.success(response?.message || 'Email sent successfully');
+                await loadEmails()
+            }   
             closeModal();
         } catch (error) {
             toast.error('Error sending email');
@@ -132,20 +157,6 @@ const EmailAction = ({ selectedIrEmail }: EmailActionProps) => {
             setIsLoading(false);
         }
     };
-
-    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (e.target.files) {
-            setAttachments(Array.from(e.target.files));
-        }
-    };
-
-    const toBase64 = (file: File): Promise<string> =>
-        new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = () => resolve(reader.result as string);
-            reader.onerror = (error) => reject(error);
-        });
 
     return (
         <div className='widget'>
@@ -218,19 +229,57 @@ const EmailAction = ({ selectedIrEmail }: EmailActionProps) => {
                                         className={`text-gray-400 bg-transparent border-none outline-none ${activeModal === 'forward' ? 'cursor-text' : 'cursor-not-allowed'}`}
                                     />
                                 </div>
-                                
-                                {/* {activeModal === 'replyAll' && (
+
+                                {/* Attachments Section */}
+                                <div className="space-y-2">
                                     <div className="flex items-center space-x-2">
-                                        <label className="text-sm font-medium text-gray-300 w-16">Cc:</label>
+                                        <label className="text-sm font-medium text-gray-300 w-16">Attach:</label>
                                         <input
-                                            type="text"
-                                            value={composeData.cc}
-                                            onChange={(e) => setComposeData({...composeData, cc: e.target.value})}
-                                            className="flex-1 px-3 py-1 border border-gray-600 bg-gray-800 text-white rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                            placeholder="Enter email addresses"
+                                            type="file"
+                                            multiple
+                                            onChange={handleFileChange}
+                                            className="hidden"
+                                            id="attachment-input"
                                         />
+                                        <label
+                                            htmlFor="attachment-input"
+                                            className="cursor-pointer flex items-center space-x-2 px-3 py-1 bg-gray-700 hover:bg-gray-600 rounded-md text-sm"
+                                        >
+                                            <i className="fa-solid fa-paperclip"></i>
+                                            <span>Choose Files</span>
+                                        </label>
                                     </div>
-                                )} */}
+
+                                    {/* Attachment Error */}
+                                    {attachmentError && (
+                                        <div className="text-red-400 text-sm ml-16">
+                                            {attachmentError}
+                                        </div>
+                                    )}
+
+                                    {/* Selected Attachments */}
+                                    {attachments.length > 0 && (
+                                        <div className="ml-16 space-y-1 grid md:grid-cols-3 items-center gap-2 max-h-[20vh] overflow-y-auto scrollable-div">
+                                            {attachments.map((file, index) => (
+                                                <div key={index} className="flex items-center justify-between p-2 bg-gray-800 rounded-md text-sm">
+                                                    <div className="flex items-center space-x-2">
+                                                        <i className="fa-solid fa-file text-gray-400"></i>
+                                                        <div className='grid grid-cols-1'>
+                                                            <span className="text-gray-300 truncate">{file.name}</span>
+                                                            <span className="text-gray-500">({formatFileSize(file.size)})</span>
+                                                        </div>
+                                                    </div>
+                                                    <button
+                                                        onClick={() => removeAttachment(index)}
+                                                        className="text-red-400 hover:text-red-300 p-1"
+                                                    >
+                                                        <i className="fa-solid fa-xmark"></i>
+                                                    </button>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
+                                </div>
                             </div>
 
                             {/* Message Body */}
@@ -270,6 +319,11 @@ const EmailAction = ({ selectedIrEmail }: EmailActionProps) => {
                                             Cancel
                                         </button>
                                     </div>
+                                    {attachments.length > 0 && (
+                                        <div className="text-sm text-gray-400">
+                                            {attachments.length} file{attachments.length > 1 ? 's' : ''} attached
+                                        </div>
+                                    )}
                                 </div>
                             </div>
                         </div>
