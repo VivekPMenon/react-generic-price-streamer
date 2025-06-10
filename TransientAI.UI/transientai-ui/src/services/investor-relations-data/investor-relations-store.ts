@@ -101,7 +101,8 @@ export const useInvestorRelationsStore = create<InvestorRelationsStore>()((set, 
     const userContext = useUserContextStore.getState().userContext;
     try {
       set({ isSaving: true });
-      inquiry.owner_email = userContext.userInfo?.email || userContext.userId;
+      const previewUserEmail = userService.getPreviewUserEmail();
+      inquiry.owner_email = previewUserEmail || userContext.userInfo?.email || userContext.userId;
       inquiry.owner_name = undefined;
       await investorRelationsService.submit(inquiry);
     } catch (e: any) {
