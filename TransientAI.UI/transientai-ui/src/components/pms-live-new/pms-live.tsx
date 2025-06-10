@@ -1,7 +1,12 @@
 import { useDeviceType } from '@/lib/hooks'
 import React, { useCallback, useEffect, useMemo, useState, useRef } from 'react'
 import { DataGrid } from '../data-grid'
-import { ColDef, GridOptions } from 'ag-grid-community'
+import {
+  ColDef,
+  GridOptions,
+  FilterChangedEvent,
+  SortChangedEvent
+} from 'ag-grid-community'
 import styles from './pms-live.module.scss'
 import ColumnManagement from './column-management'
 import { TaDialog } from '../shared/ta-dialog/ta-dialog'
@@ -11,30 +16,44 @@ import { IColumnItem, IPmsGridColsList } from './model'
 import CustomPagination from '../shared/ta-pagination/ta-pagination'
 
 interface Props {}
+interface SortOption {
+  field: string
+  direction: 'asc' | 'desc'
+}
 
 const MemoizedDataGrid = React.memo(DataGrid)
 
-// Memoized column transformation function outside component to prevent recreation
 const createColumnTransformer = () => {
   return (columns: IPmsGridColsList[]): IColumnItem[] => {
-    return columns.map(
-      col =>
-        ({
-          ...col,
-          field: col.field,
-          headerName: col.column_name || col.label,
-          headerClass: `${styles['table-header']} ag-left-aligned-header`,
-          aggFunc: 'sum',
-          suppressMovable: false,
-          pinned: col.is_frozen ? ('left' as const) : null,
-          cellClass: col.is_frozen ? 'frozen-column' : '',
-          minWidth: col.is_frozen ? 120 : undefined,
-          headerTooltip: col.is_frozen
-            ? `${col.column_name || col.label} (Pinned)`
-            : col.column_name || col.label,
-          menuTabs: ['generalMenuTab', 'filterMenuTab', 'columnsMenuTab']
-        } as IColumnItem)
-    )
+    return columns.map(col => {
+      const baseColumn = {
+        ...col,
+        field: col.field,
+        headerName: col.column_name || col.label,
+        headerClass: `${styles['table-header']} ag-left-aligned-header`,
+        aggFunc: 'sum',
+        suppressMovable: false,
+        pinned: col.is_frozen ? ('left' as const) : null,
+        cellClass: col.is_frozen ? 'frozen-column' : '',
+        minWidth: col.is_frozen ? 120 : undefined,
+        headerTooltip: col.is_frozen
+          ? `${col.column_name || col.label} (Pinned)`
+          : col.column_name || col.label,
+        menuTabs: ['generalMenuTab', 'filterMenuTab', 'columnsMenuTab']
+      }
+
+      // Customize filter params based on column
+      const filterParams = {
+        filterOptions: ['contains', 'equals'],
+        suppressAndOrCondition: true,
+        defaultOption: 'contains'
+      }
+
+      return {
+        ...baseColumn,
+        filterParams
+      } as IColumnItem
+    })
   }
 }
 
@@ -56,11 +75,60 @@ export const PmsLiveNew = ({}: Props) => {
   const [columnList, setColumnList] = useState<IColumnItem[]>([])
   const [visibleColumns, setVisibleColumns] = useState<IColumnItem[]>([])
 
+  // New state for filters and sorts
+  const [currentFilters, setCurrentFilters] = useState<any>({})
+  const [currentSorts, setCurrentSorts] = useState<SortOption[]>([])
+
   // Refs for stable references
   const transformColumnsRef = useRef(createColumnTransformer())
   const fetchRequestRef = useRef<AbortController | null>(null)
+  const filterTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+  const sortTimeoutRef = useRef<NodeJS.Timeout | null>(null)
   const deviceType = useDeviceType()
   const isMobile = deviceType !== 'desktop'
+
+  // Simple function to convert AG Grid filters to URL format
+  const convertFiltersToUrlFormat = useCallback((filterModel: any) => {
+    const urlFilters: { [key: string]: string } = {}
+
+    Object.entries(filterModel || {}).forEach(
+      ([field, filter]: [string, any]) => {
+        if (!filter) return
+
+        let filterValue = ''
+        
+        // Handle different filter types
+        if (filter.filter !== undefined) {
+          // Text/Number filters
+          const operator = filter.type === 'contains' ? 'like' : 'eq'
+          filterValue = `${operator}:${filter.filter}`
+        } else if (filter.values && Array.isArray(filter.values)) {
+          // Set filter (multi-select)
+          filterValue = `in:${filter.values.join(',')}`
+        } else if (filter.dateFrom) {
+          // Date filter
+          filterValue = `eq:${filter.dateFrom}`
+        }
+
+        if (filterValue) {
+          urlFilters[`filter_${field}`] = filterValue
+        }
+      }
+    )
+
+    return urlFilters
+  }, [])
+
+  // Simple function to convert AG Grid sorts to URL format
+  const convertSortsToUrlFormat = useCallback((sortOptions: SortOption[]) => {
+    if (!sortOptions || sortOptions.length === 0) return {}
+
+    // For simplicity, take only the first sort
+    const firstSort = sortOptions[0]
+    return {
+      sort: `${firstSort.field}:${firstSort.direction}`
+    }
+  }, [])
 
   // Memoized grid options - stable reference
   const gridOptions = useMemo<GridOptions<any>>(
@@ -75,7 +143,7 @@ export const PmsLiveNew = ({}: Props) => {
       suppressRowTransform: true,
       animateRows: false,
       suppressAggFuncInHeader: true,
-      suppressPinnedRight: true,
+      suppressPinnedRight: true
     }),
     []
   )
@@ -113,9 +181,15 @@ export const PmsLiveNew = ({}: Props) => {
     return [...frozenColumns, ...regularColumns]
   }, [visibleColumns])
 
-  // Optimized data fetching with abort controller
+  // Enhanced data fetching with filters and sorts
   const fetchPmsLiveData = useCallback(
-    async (page: number, size: number, manageLoading = true) => {
+    async (
+      page: number,
+      size: number,
+      manageLoading = true,
+      filters = {},
+      sorts: SortOption[] = []
+    ) => {
       // Cancel previous request if still pending
       if (fetchRequestRef.current) {
         fetchRequestRef.current.abort()
@@ -127,7 +201,14 @@ export const PmsLiveNew = ({}: Props) => {
         setIsLoading(true)
       }
       try {
-        const response = await pmsDataService.getPMSLiveData(page, size)
+        // Convert filters and sorts to URL format
+        const urlFilters = convertFiltersToUrlFormat(filters)
+        const urlSorts = convertSortsToUrlFormat(sorts)
+
+        const response = await pmsDataService.getPMSLiveData(page, size, {
+          ...urlFilters,
+          ...urlSorts
+        })
 
         // Batch state updates
         const pagination = response.pagination || {
@@ -144,6 +225,7 @@ export const PmsLiveNew = ({}: Props) => {
         setTotalItems(pagination.total_items)
         setPageSize(pagination.page_size)
       } catch (error) {
+        console.error('Error fetching data:', error)
       } finally {
         if (manageLoading) {
           setIsLoading(false)
@@ -151,7 +233,55 @@ export const PmsLiveNew = ({}: Props) => {
         fetchRequestRef.current = null
       }
     },
-    []
+    [convertFiltersToUrlFormat, convertSortsToUrlFormat]
+  )
+
+  const handleFilterChanged = useCallback(
+    (event: FilterChangedEvent) => {
+      if (filterTimeoutRef.current) {
+        clearTimeout(filterTimeoutRef.current)
+      }
+   
+        const filterModel = event.api.getFilterModel()
+        setCurrentFilters(filterModel)
+        filterTimeoutRef.current = setTimeout(() => {
+
+
+          // Deep compare with current filters to avoid unnecessary calls
+          if (JSON.stringify(filterModel) !== JSON.stringify(currentFilters)) {
+
+            fetchPmsLiveData(1, pageSize, true, filterModel, currentSorts)
+          }
+        }, 500) // 500ms debounce
+    },
+    [fetchPmsLiveData, pageSize, currentSorts, currentFilters]
+  )
+
+  // Sort change handler with debouncing
+  const handleSortChanged = useCallback(
+    (event: SortChangedEvent) => {
+      if (sortTimeoutRef.current) {
+        clearTimeout(sortTimeoutRef.current)
+      }
+
+      sortTimeoutRef.current = setTimeout(() => {
+        const columns = event.columns
+        if (!columns) {
+          return
+        }
+        const sort: SortOption[] = columns
+          .filter((col: any) => col.sort)
+          .map((x: any) => {
+            return { field: x?.colId, direction: x?.sort }
+          })
+
+        setCurrentSorts(sort)
+
+        // Fetch data with new sort
+        fetchPmsLiveData(currentPage, pageSize, true, currentFilters, sort)
+      }, 300) // 300ms debounce for sort
+    },
+    [fetchPmsLiveData, currentPage, pageSize, currentFilters]
   )
 
   // Optimized column list fetcher
@@ -243,8 +373,6 @@ export const PmsLiveNew = ({}: Props) => {
           })
           .filter(Boolean)
 
-        console.log('Final column order:', orderedColumnIds)
-
         const updateRequest = {
           updated_columns: orderedColumnIds
         }
@@ -252,8 +380,6 @@ export const PmsLiveNew = ({}: Props) => {
         setIsLoading(true)
         const res = await pmsDataService.updateColumns(updateRequest)
         columnList = res.data as IPmsGridColsList[]
-
-        console.log('Column order updated successfully')
       } catch (error) {
         console.error('Error updating column order:', error)
       } finally {
@@ -263,7 +389,7 @@ export const PmsLiveNew = ({}: Props) => {
           setVisibleColumns(list)
         }
       }
-    }, 300), // 500ms debounce delay
+    }, 300),
     [visibleColumns]
   )
 
@@ -294,23 +420,24 @@ export const PmsLiveNew = ({}: Props) => {
         // Check if the update was successful
         if (updateResponse && updateResponse.success !== false) {
           // Wait for both API calls to complete
-
           await Promise.allSettled([
             fetchDisplayColumnsList(false),
-            fetchPmsLiveData(currentPage, pageSize, false)
+            fetchPmsLiveData(
+              currentPage,
+              pageSize,
+              false,
+              currentFilters,
+              currentSorts
+            )
           ])
 
           // Close the dialog after successful update
           handleCloseForm()
-
-          console.log('Columns updated successfully')
         } else {
           throw new Error('Column update failed')
         }
       } catch (error) {
         console.error('Error updating columns:', error)
-        // Optionally show user-friendly error message
-        // You might want to add a toast notification here
       } finally {
         setIsLoading(false)
       }
@@ -318,29 +445,31 @@ export const PmsLiveNew = ({}: Props) => {
     [
       currentPage,
       pageSize,
+      currentFilters,
+      currentSorts,
       fetchDisplayColumnsList,
       fetchPmsLiveData,
       handleCloseForm
     ]
   )
 
-  // Optimized pagination handlers
+  // Enhanced pagination handlers to include filters and sorts
   const handlePageChange = useCallback(
     (page: number) => {
       if (page !== currentPage) {
-        fetchPmsLiveData(page, pageSize, true) // Manage loading for direct pagination
+        fetchPmsLiveData(page, pageSize, true, currentFilters, currentSorts)
       }
     },
-    [currentPage, pageSize, fetchPmsLiveData]
+    [currentPage, pageSize, currentFilters, currentSorts, fetchPmsLiveData]
   )
 
   const handlePageSizeChange = useCallback(
     (size: number) => {
       if (size !== pageSize) {
-        fetchPmsLiveData(INITIAL_PAGE, size, true) // Manage loading for direct pagination
+        fetchPmsLiveData(INITIAL_PAGE, size, true, currentFilters, currentSorts)
       }
     },
-    [pageSize, fetchPmsLiveData]
+    [pageSize, currentFilters, currentSorts, fetchPmsLiveData]
   )
 
   // Effects with cleanup
@@ -350,8 +479,8 @@ export const PmsLiveNew = ({}: Props) => {
     const fetchInitialData = async () => {
       if (isMounted) {
         await Promise.all([
-          fetchDisplayColumnsList(true), // Manage loading for initial load
-          fetchPmsLiveData(INITIAL_PAGE, INITIAL_PAGE_SIZE, false) // Don't double-manage loading
+          fetchDisplayColumnsList(true),
+          fetchPmsLiveData(INITIAL_PAGE, INITIAL_PAGE_SIZE, false, {}, [])
         ])
       }
     }
@@ -361,6 +490,12 @@ export const PmsLiveNew = ({}: Props) => {
       isMounted = false
       if (fetchRequestRef.current) {
         fetchRequestRef.current.abort()
+      }
+      if (filterTimeoutRef.current) {
+        clearTimeout(filterTimeoutRef.current)
+      }
+      if (sortTimeoutRef.current) {
+        clearTimeout(sortTimeoutRef.current)
       }
     }
   }, [fetchDisplayColumnsList, fetchPmsLiveData])
@@ -373,11 +508,12 @@ export const PmsLiveNew = ({}: Props) => {
       try {
         const response = await pmsDataService.getAllColumList()
         if (isMounted) {
-          // setColumnList(response.data as IPmsGridColsList[])
-          const columnsWithSelection = (response.data as IPmsGridColsList[]).map(col => ({
+          const columnsWithSelection = (
+            response.data as IPmsGridColsList[]
+          ).map(col => ({
             ...col,
-            is_selected: col.is_selected // Directly use is_selected from API response
-          }));
+            is_selected: col.is_selected
+          }))
           setColumnList(columnsWithSelection as IColumnItem[])
         }
       } catch (error) {
@@ -393,16 +529,32 @@ export const PmsLiveNew = ({}: Props) => {
     }
   }, [])
 
-  // Memoized grid configuration
+  // Enhanced grid configuration with filter and sort handlers
   const gridConfig = useMemo(
     () => ({
       ...gridOptions,
       onColumnPinned: handleColumnPinned,
-      suppressColumnMoveAnimation: true, // Smoother dragging
+      suppressColumnMoveAnimation: true,
       suppressDragLeaveHidesColumns: true,
-      onColumnMoved: handleColumnMoved
+      onColumnMoved: handleColumnMoved,
+      // Add filter and sort event handlers
+      onFilterChanged: handleFilterChanged,
+      onSortChanged: handleSortChanged,
+      alwaysShowHorizontalScroll: true,
+      alwaysShowVerticalScroll: true,
+      initialState: {
+      filter: {
+        filterModel: currentFilters
+      }
+    }
     }),
-    [gridOptions, handleColumnPinned, handleColumnMoved]
+    [
+      gridOptions,
+      handleColumnPinned,
+      handleColumnMoved,
+      handleFilterChanged,
+      handleSortChanged
+    ]
   )
 
   return (

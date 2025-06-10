@@ -53,7 +53,7 @@ export function InvestorRelationsRevised() {
   async function onEmailSelection(email: IREmailMessage) {
     const userContext = useUserContextStore.getState().userContext;
     const previewUserEmail = userService.getPreviewUserEmail();
-    const userEmail = previewUserEmail ?? userContext?.userId;
+    const userEmail = previewUserEmail || userContext.userInfo?.email || userContext.userId;
     const [emailContent, aiContent] = await Promise.all([
       investorRelationsService.getEmailContentAsHtml(email.id!, userEmail!),
       investorRelationsService.getIRSummary(email.id!, userEmail!)

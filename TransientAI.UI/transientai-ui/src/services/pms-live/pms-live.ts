@@ -2,11 +2,8 @@
 import { IColumnItem } from '@/components/pms-live-new'
 import { webApihandler } from '../web-api-handler'
 
-
 class PmsDataService {
   private serviceName = 'hurricane-api-2-0'
-
-
 
   //Users API'S
   async getDisplayColumList (): Promise<any> {
@@ -18,7 +15,7 @@ class PmsDataService {
     return results
   }
 
-   async getAllColumList (): Promise<any> {
+  async getAllColumList (): Promise<any> {
     const results = await webApihandler.get(
       'pms_live/all_fields',
       {},
@@ -27,21 +24,24 @@ class PmsDataService {
     return results
   }
 
-    
-   async getPMSLiveData (
+  async getPMSLiveData (
     page: number,
     page_size: number,
+    additionalParams: any = {},
     skip_pagination?: boolean
   ): Promise<any> {
-    const results = await webApihandler.get(
-      'pms_live/get_data',
-      { page: page, page_size: page_size, skip_pagination: skip_pagination },
-      { serviceName: this.serviceName }
-    )
+    const params = {
+      page: page,
+      page_size: page_size,
+      skip_pagination: skip_pagination,
+      ...additionalParams
+    }
+
+    const results = await webApihandler.get('pms_live/get_data', params, {
+      serviceName: this.serviceName
+    })
     return results
   }
-
-  
 
   async createUser (data: IColumnItem[]): Promise<any> {
     const results = await webApihandler.post(
@@ -71,8 +71,6 @@ class PmsDataService {
     )
     return results
   }
-
-  
 }
 
 export const pmsDataService = new PmsDataService()

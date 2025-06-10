@@ -369,13 +369,13 @@ export const PmsLive = () => {
       </section>
 
       <section className="flex h-[600px] gap-4 mt-5">
-        {/* <div className="w-[80%]" ref={managerDetailsRef}>
+        <div className="w-[80%]" ref={managerDetailsRef}>
           <TaTabs
             tabs={tabsConfig}
             onTabChange={handleTabChange}
             defaultTab="positions"
             value={activeTab}
-            className="inline-block"
+            className="inline-block mb-2"
           />
           {activeTab == "positions" ? (
             <MemoizedDataGrid
@@ -417,46 +417,9 @@ export const PmsLive = () => {
               }}
               loading={isLoading}
             />
-          ) : (
-            <MemoizedDataGrid
-              className="hurrican-grid"
-              domLayout={"normal"}
-              height={isMobile ? 500 : "95%"}
-              isSummaryGrid={false}
-              suppressScrollOnNewData={true}
-              suppressStatusBar={true}
-              suppressFloatingFilter={false}
-              columnDefs={managerDetailsColDefs}
-              rowData={managerDetails}
-              gridOptions={{
-                ...defaultGridOptions,
-                pinnedTopRowData: [
-                  managerDetails.reduce((totals, row) => {
-                    const positionValue = row.market_value || 0;
-                    totals.market_value = (totals.market_value || 0) + positionValue;
-                    // totals.name = "Total"; // Add a label for the "name" column
-                  return totals;
-                  }, {} as Partial<any>),
-                ],
-                getRowClass: (params) => {
-                  if (params.node.rowPinned === "top") {
-                    return styles["pinned-top-row"];
-                  }
-                  return "";
-                },
-                // getRowId: (params) => {
-                //   return `detail-${
-                //     params.data.id || params.data.security || params.data.ticker
-                //   }`;
-                // },
-              }}
-              loading={isLoading}
-            />
-          )}
-        </div> */}
-
-         <PmsLiveNew></PmsLiveNew>
-
+          ) : <PmsLiveNew></PmsLiveNew>           
+          }
+        </div>
         <div className="rounded-md p-2 h-[500px] w-[350px]">
           <h4 className="text-white text-center mb-2">Manager Exposure</h4>
           <BarChart data={activeTab === 'positions' ? managerPositionDetails : managerDetails} />
