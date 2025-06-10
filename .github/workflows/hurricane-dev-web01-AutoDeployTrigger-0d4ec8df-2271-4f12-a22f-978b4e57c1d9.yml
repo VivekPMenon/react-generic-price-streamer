@@ -43,6 +43,7 @@ jobs:
           NEXT_PUBLIC_AUTH_TENANT_ID=${{ secrets.NEXT_PUBLIC_AUTH_TENANT_ID }}
           NEXT_PUBLIC_AUTH_SCOPE=${{ secrets.NEXT_PUBLIC_AUTH_SCOPE }}
           NEXT_PUBLIC_REDIRECT_URI=${{ secrets.NEXT_PUBLIC_REDIRECT_URI }}
+          NEXT_PUBLIC_FIN_SIGHT_API_URL=${{ secrets.NEXT_PUBLIC_FIN_SIGHT_API_URL }}
           EOF
 
           echo "✅ .env file created. Contents (redacted):"
