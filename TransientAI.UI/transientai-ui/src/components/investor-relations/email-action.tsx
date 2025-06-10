@@ -58,7 +58,7 @@ const EmailAction = ({ selectedIrEmail }: EmailActionProps) => {
                 return;
             }
 
-            setAttachments(selectedFiles);
+            setAttachments(prev => [...prev, ...selectedFiles]);
             setAttachmentError('');
         }
     };
@@ -100,9 +100,6 @@ const EmailAction = ({ selectedIrEmail }: EmailActionProps) => {
                         composeData.body,
                         attachments.length > 0 ? attachments : undefined
                     );
-                    if (response?.status == 200) {
-                        await investorRelationsService.deleteIrEmail(selectedIrEmail.id, userEmail!);
-                    }
                     break;
                 case 'forward':
                     response = await investorRelationsService.forwardEmail(
@@ -119,9 +116,6 @@ const EmailAction = ({ selectedIrEmail }: EmailActionProps) => {
                         composeData.body,
                         attachments.length > 0 ? attachments : undefined
                     );
-                    if (response?.status == 200) {
-                        await investorRelationsService.deleteIrEmail(selectedIrEmail.id, userEmail!);
-                    }
                     break;
             }
 
