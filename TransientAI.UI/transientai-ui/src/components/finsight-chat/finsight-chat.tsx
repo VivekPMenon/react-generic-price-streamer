@@ -4,11 +4,11 @@ import React from "react";
 import {enumToKeyValuePair} from "@/lib/utility-functions/enum-operations";
 import { AgentType } from "@/services/chat-data";
 import {chatDataStore} from "@/services/chat-data/chat-data-store";
-import styles from "./chat.module.scss";
+import styles from "./finsight-chat.module.scss";
 import {ChatbotResponse} from "@/components/chatbot/chatbot-response";
 const Agents = enumToKeyValuePair(AgentType);
 
-export function Chat() {
+export function FinSightChat() {
     const isLoading = chatDataStore.use.isLoading();
     const selectedThread = chatDataStore.use.selectedThread();
     const addToThread = chatDataStore.use.addToThread();

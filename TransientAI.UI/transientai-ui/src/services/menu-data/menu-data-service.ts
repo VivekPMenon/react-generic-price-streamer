@@ -175,12 +175,12 @@ const sellMenuInfoList: MenuInfo[] = [
     route: '/dashboard-generic/breaking-news',
   },
   {
-    id: 'chat',
-    key: 'chat',
-    description: 'Chat',
+    id: 'finsight',
+    key: 'finsight',
+    description: 'FinSight',
     badgeCount: 3,
-    icon: 'fa-solid fa-newspaper',
-    route: '/dashboard-generic/chat',
+    icon: 'fas fa-comments',
+    route: '/dashboard-generic/finsight',
     fullPage: true,
   },
 ];
