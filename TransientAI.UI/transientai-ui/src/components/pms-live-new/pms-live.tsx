@@ -241,19 +241,18 @@ export const PmsLiveNew = ({}: Props) => {
       if (filterTimeoutRef.current) {
         clearTimeout(filterTimeoutRef.current)
       }
-
-      // Only proceed if this is a final filter change
-      if (event.api.isAnyFilterPresent()) {
+   
+        const filterModel = event.api.getFilterModel()
+        setCurrentFilters(filterModel)
         filterTimeoutRef.current = setTimeout(() => {
-          const filterModel = event.api.getFilterModel()
+
 
           // Deep compare with current filters to avoid unnecessary calls
           if (JSON.stringify(filterModel) !== JSON.stringify(currentFilters)) {
-            setCurrentFilters(filterModel)
+
             fetchPmsLiveData(1, pageSize, true, filterModel, currentSorts)
           }
         }, 500) // 500ms debounce
-      }
     },
     [fetchPmsLiveData, pageSize, currentSorts, currentFilters]
   )
@@ -540,7 +539,14 @@ export const PmsLiveNew = ({}: Props) => {
       onColumnMoved: handleColumnMoved,
       // Add filter and sort event handlers
       onFilterChanged: handleFilterChanged,
-      onSortChanged: handleSortChanged
+      onSortChanged: handleSortChanged,
+      alwaysShowHorizontalScroll: true,
+      alwaysShowVerticalScroll: true,
+      initialState: {
+      filter: {
+        filterModel: currentFilters
+      }
+    }
     }),
     [
       gridOptions,
