@@ -47,45 +47,17 @@ const EmailAction = ({ selectedIrEmail }: EmailActionProps) => {
         setAttachmentError('');
     };
 
-    // Convert file to base64
-    const fileToBase64 = (file: File): Promise<string> => {
-        return new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = () => {
-                // Remove the data URL prefix (data:type;base64,)
-                const base64 = reader.result?.toString().split(',')[1] || '';
-                resolve(base64);
-            };
-            reader.onerror = error => reject(error);
-        });
-    };
-
-    // Convert files to Microsoft Graph attachment format
-    const convertFilesToAttachments = async (files: File[]): Promise<AttachmentData[]> => {
-        try {
-            const attachments = await Promise.all(
-                files.map(async (file) => {
-                    const base64Content = await fileToBase64(file);
-                    
-                    return {
-                        "@odata.type": "#microsoft.graph.fileAttachment",
-                        name: file.name,
-                        contentType: file.type || 'application/octet-stream',
-                        contentBytes: base64Content,
-                        size: file.size
-                    };
-                })
-            );
-            return attachments;
-        } catch (error) {
-            throw new Error('Failed to convert files to attachments');
-        }
-    };
-
     const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files) {
             const selectedFiles = Array.from(e.target.files);
+
+            // Check file size limit (25MB per file for Graph API)
+            const oversizedFiles = selectedFiles.filter(file => file.size > 25 * 1024 * 1024);
+            if (oversizedFiles.length > 0) {
+                setAttachmentError(`Files too large: ${oversizedFiles.map(f => f.name).join(', ')}. Maximum size is 25MB per file.`);
+                return;
+            }
+
             setAttachments(selectedFiles);
             setAttachmentError('');
         }
@@ -128,8 +100,7 @@ const EmailAction = ({ selectedIrEmail }: EmailActionProps) => {
                         composeData.body,
                         attachments.length > 0 ? attachments : undefined
                     );
-                    console.log('ReplyAll Response:', response);
-                    if (response?.data?.status === 200) {
+                    if (response?.status == 200) {
                         await investorRelationsService.deleteIrEmail(selectedIrEmail.id, userEmail!);
                     }
                     break;
@@ -148,15 +119,14 @@ const EmailAction = ({ selectedIrEmail }: EmailActionProps) => {
                         composeData.body,
                         attachments.length > 0 ? attachments : undefined
                     );
-                    console.log('Reply Response:', response);
-                    if (response?.data?.status === 200) {
+                    if (response?.status == 200) {
                         await investorRelationsService.deleteIrEmail(selectedIrEmail.id, userEmail!);
                     }
                     break;
             }
 
-            if (response?.data?.status === 200) {
-                toast.success(response?.data?.message || 'Email sent successfully');
+            if (response?.status == 200) {
+                toast.success(response?.message || 'Email sent successfully');
                 await loadEmails()
             }   
             closeModal();
