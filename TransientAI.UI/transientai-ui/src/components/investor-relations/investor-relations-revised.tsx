@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import styles from './investor-relations-revised.module.scss';
-import { Spinner, Tabs } from '@radix-ui/themes';
+import { Button, Spinner, Tabs } from '@radix-ui/themes';
 import { InquiryFlag, InquiryRequest, InquiryStatus, investorRelationsService, IREmailMessage } from '@/services/investor-relations-data';
 import Toggle from 'react-toggle';
 import { useInvestorRelationsStore } from '@/services/investor-relations-data/investor-relations-store';
@@ -10,8 +10,11 @@ import { SearchableMarkdown } from '../markdown';
 import { RequestFormPopup } from './request-form-popup';
 import { toast } from 'react-toastify';
 import { useUserContextStore } from '@/services/user-context';
-import EmailAction from './email-action';
+import EmailAction, { Recipient } from './email-action';
 import { userService } from '@/services/user-context/user-service';
+import { TaDialog } from '../shared/ta-dialog/ta-dialog';
+import { adminDashboardDataService } from '@/services/admin-dashboard/admin-dashboard-data-service';
+import { User } from '../admin-dashboard/manage-project/users';
 
 enum TabValues {
   ALL = 'all',
@@ -27,8 +30,6 @@ const tabItems = [
 
 export function InvestorRelationsRevised() {
 
-  const testEmailId = 'awolfberg@hurricanecap.com';
-
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [emailHtml, setEmailHtml] = useState<string>('');
   const [aiSummary, setAiSummary] = useState<string>('');
@@ -36,6 +37,10 @@ export function InvestorRelationsRevised() {
   const [isSaving, setIsSaving] = useState<boolean>(false);
   const [isTaskOpen, setIsTaskOpen] = useState<boolean>(false);
   const [activeTab, setActiveTab] = useState<TabValues>(TabValues.OPEN);
+  const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
+const [confirmationMessage, setConfirmationMessage] = useState('');
+const confirmActionRef = useRef<() => void>(() => {});
+const [contacts, setContacts] = useState<Recipient[]>([])
 
   const createTaskRef = useRef<HTMLInputElement>(null);
 
@@ -48,6 +53,32 @@ export function InvestorRelationsRevised() {
 
   useEffect(() => {
     checkIRAccess()
+  }, [])
+
+ 
+
+  useEffect(() => {
+    const fetchInitialData = async () => {
+      try {
+
+        // Fetch users and roles in parallel with allSettled
+        const response = await adminDashboardDataService.getUserList(1, 10, true);
+        const contacts:Recipient[] = response?.data?.map((items: User): Recipient  => {
+
+          return {
+            name: items.full_name,
+            email: items.email,
+            type: 'person',
+            department: items.role_name
+          }
+        }) || [];
+        // Handle each result separately
+        setContacts(contacts || []);
+      } catch (error) {
+        console.error('Error in fetchInitialData:', error)
+      } finally { }
+    }
+    fetchInitialData()
   }, [])
 
   async function onEmailSelection(email: IREmailMessage) {
@@ -63,38 +94,53 @@ export function InvestorRelationsRevised() {
     setEmailHtml(emailContent);
   }
 
-  async function markEmailComplete(event: any, irEmail: IREmailMessage) {
-    event.stopPropagation();
-    try {
-      setIsSaving(true);
-      const userContext = useUserContextStore.getState().userContext;
-      const previewUserEmail = userService.getPreviewUserEmail();
-      const userEmail = previewUserEmail ?? userContext?.userId;
-      await investorRelationsService.markIrEmailAsComplete(irEmail.id!, userEmail!);
-      await loadEmails();
-
-      toast.success('Email marked as complete');
-    } catch (error) {
-      toast.error('Error while trying to mark the email as complete');
-    }
-    setIsSaving(false);
+  
+  function showConfirmation(message: string, onConfirm: () => void) {
+    setConfirmationMessage(message);
+    confirmActionRef.current = onConfirm;
+    setIsConfirmationOpen(true);
   }
 
-  async function markTaskComplete(event: any, inquiry: InquiryRequest) {
+  function handleEmailComplete(event: any, irEmail: IREmailMessage) {
     event.stopPropagation();
-    try {
-      setIsSaving(true);
 
-      inquiry.completed = true;
-      updateStatusFromCompleted(inquiry);
-      await changeStatus(inquiry.id!, inquiry.status!);
-
-      toast.success('Task marked as complete');
-    } catch (error) {
-      toast.error('Error while trying to mark the email as complete');
-    }
-    setIsSaving(false);
+    showConfirmation('Are you sure you want to mark this email as complete?', async () => {
+      try {
+        setIsSaving(true);
+        const userContext = useUserContextStore.getState().userContext;
+        const previewUserEmail = userService.getPreviewUserEmail();
+        const userEmail = previewUserEmail ?? userContext?.userId;
+        await investorRelationsService.markIrEmailAsComplete(irEmail.id!, userEmail!);
+        await loadEmails();
+        toast.success('Email marked as complete');
+      } catch {
+        toast.error('Error while trying to mark the email as complete');
+      } finally {
+        setIsSaving(false);
+      }
+    });
   }
+
+
+  function handleInquiryComplete(event: any, inquiry: InquiryRequest) {
+    event.stopPropagation();
+    setSelectedInquiry(inquiry);
+
+    showConfirmation('Are you sure you want to mark this task as complete?', async () => {
+      try {
+        setIsSaving(true);
+        inquiry.completed = true;
+        updateStatusFromCompleted(inquiry);
+        await changeStatus(inquiry.id!, inquiry.status!);
+        toast.success('Task marked as complete');
+      } catch {
+        toast.error('Error while trying to mark the task as complete');
+      } finally {
+        setIsSaving(false);
+      }
+    });
+  }
+
 
   const toggleElement =
     <div className={styles['ir-response-toggler']}>
@@ -108,8 +154,8 @@ export function InvestorRelationsRevised() {
     </div>;
 
   return (
-    <div className={styles['investor-relations']}>
-      <div className={styles['ir-requests']}>
+    <div className={`${styles['investor-relations']} grid gap-2 md:grid-cols-6 max-md:grid-cols-1`}>
+      <div className={`${styles['ir-requests']} md:col-span-2`}>
         {hasIRAccess && <div className={styles['title']}>
           IR Requests
 
@@ -220,29 +266,29 @@ export function InvestorRelationsRevised() {
                         {filteredEmails.map((msg, idx) => (
                           <div
                             key={idx}
-                            className={`message ${selectedIrEmail?.id === msg.id ? 'selected' : ''}`}
+                            className={`message flex max-w-full ${selectedIrEmail?.id === msg.id ? 'selected' : ''}`}
                             onClick={() => {
                               setSelectedIrEmail(msg);
                               setSelectedInquiry(null);
                             }}
                           >
                             <div
-                              className={`radio-button-container ${msg.complete ? 'checked' : ''}`}
+                              className={`radio-button-container flex-shrink-0 ${msg.complete ? 'checked' : ''}`}
                               title="Mark as Completed"
-                              onClick={(event) => markEmailComplete(event, msg)}
+                              onClick={(event) => handleEmailComplete(event, msg)}
                             >
                               <i className="fa-solid fa-check"></i>
                             </div>
 
-                            <div className="content">
+                            <div className="content flex-grow max-w-[90%]">
                               <div className="header">
-                                <span className="sender">
+                                <span className="sender truncate flex-none max-w-[60%]">
                                   {msg.important && <span className="priority">❗</span>}
                                   {msg.sender}
                                 </span>
                                 <span className="time">{formatDate(msg.received)}</span>
                               </div>
-                              <div className="subject">{msg.subject}</div>
+                              <div className="subject truncate max-w-[60%]">{msg.subject}</div>
                               {/* <div className='body'>{msg.concise_summary}</div> */}
                             </div>
                           </div>
@@ -250,31 +296,37 @@ export function InvestorRelationsRevised() {
 
                         {filteredInquiries.map((msg, idx) => (
                           <div
-                            key={idx}
-                            className={`message ${selectedInquiry?.id === msg.id ? 'selected' : ''}`}
+                            key={msg.id || idx} // Use unique ID instead of array index when possible
+                            className={`message flex max-w-full ${selectedInquiry?.id === msg.id ? 'selected' : ''
+                              }`}
                             onClick={() => {
                               setSelectedIrEmail(null);
                               setSelectedInquiry(msg);
                             }}
                           >
                             <div
-                              className={`radio-button-container ${msg.status === InquiryStatus.Completed ? 'checked' : ''
+                              className={`radio-button-container flex-shrink-0 ${msg.status === InquiryStatus.Completed ? 'checked' : ''
                                 }`}
                               title="Mark as Completed"
-                              onClick={(event) => markTaskComplete(event, msg)}
+                              onClick={(event) => handleInquiryComplete(event, msg)}
                             >
                               <i className="fa-solid fa-check"></i>
                             </div>
 
-                            <div className="content">
+                            <div className="content flex-grow max-w-[90%]">
                               <div className="header">
-                                <span className="sender">
-                                  {msg.flag === InquiryFlag.Urgent && <span className="priority">❗</span>}
+                                <span className="sender truncate flex-none max-w-[60%]">
+                                  {msg.flag === InquiryFlag.Urgent && (
+                                    <span className="priority">❗</span>
+                                  )}
                                   {msg.owner_email}
                                 </span>
                                 <span className="time">{formatDate(msg.date)}</span>
                               </div>
-                              <div className="subject">{msg.subject}</div>
+
+                              <div className="subject truncate max-w-[60%]">
+                                {msg.subject}
+                              </div>
 
                               <div className="body">
                                 <div className="body-content-left">
@@ -302,9 +354,10 @@ export function InvestorRelationsRevised() {
 
       {
         selectedIrEmail &&
-        <div className={styles['ir-responses']}>
+        <div className={`${styles['ir-responses']} md:col-span-4`}>
            <EmailAction
           selectedIrEmail={selectedIrEmail}
+          contacts={contacts}
         />
           {
             isAiSummaryShown ?
@@ -351,6 +404,31 @@ export function InvestorRelationsRevised() {
           </div>
         </div>
       }
+
+      <TaDialog
+        title="Confirmation"
+        isOpen={isConfirmationOpen}
+        onClose={() => setIsConfirmationOpen(false)}
+      >
+        <div className="w-full">
+          <label>{confirmationMessage}</label>
+          <div className="mt-6 grid grid-cols-2 gap-4">
+            <Button onClick={() => setIsConfirmationOpen(false)} size="3" color="gray">
+              Cancel
+            </Button>
+            <Button
+              onClick={() => {
+                confirmActionRef.current();
+                setIsConfirmationOpen(false);
+              }}
+              size="3"
+              color="teal"
+            >
+              Yes
+            </Button>
+          </div>
+        </div>
+      </TaDialog>
 
     </div>
   );
