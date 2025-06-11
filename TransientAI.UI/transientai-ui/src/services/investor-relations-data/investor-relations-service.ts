@@ -113,9 +113,11 @@ class InvestorRelationsService {
         return assignees;
     }
 
- async replyEmail(emailAddress: string, id: string, comment: string, attachments?: File[]): Promise<any> {
+ async replyEmail(emailAddress: string, to_emails:string, cc_emails:string, id: string, comment: string, attachments?: File[]): Promise<any> {
     const formData = new FormData();
     formData.append('email_address', emailAddress);
+    formData.append('to_emails',to_emails)
+    formData.append('cc_emails',cc_emails)
     formData.append('id', id);
     formData.append('comment', comment);
     
@@ -136,9 +138,11 @@ class InvestorRelationsService {
     );
 }
 
-async replyAllEmail(emailAddress: string, id: string, comment: string, attachments?: File[]): Promise<any> {
+async replyAllEmail(emailAddress: string, to_emails:string, cc_emails:string, id: string, comment: string, attachments?: File[]): Promise<any> {
     const formData = new FormData();
     formData.append('email_address', emailAddress);
+    formData.append('to_emails',to_emails)
+    formData.append('cc_emails',cc_emails)
     formData.append('id', id);
     formData.append('comment', comment);
     
@@ -159,12 +163,13 @@ async replyAllEmail(emailAddress: string, id: string, comment: string, attachmen
     );
 }
 
-    async forwardEmail(emailAddress: string, id: string, toEmail: string): Promise<any> {
+    async forwardEmail(emailAddress: string, to_emails:string, cc_emails:string, id: string): Promise<any> {
         return await webApihandler.post('forward-email',
             undefined,
             {email_address: emailAddress,
              id:id,
-             to_email: toEmail
+             to_emails: to_emails,
+             cc_emails: cc_emails
             },
             {
                 serviceName: this.serviceName

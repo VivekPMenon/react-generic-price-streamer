@@ -1,15 +1,8 @@
 @import '../../assets/variables.scss';
 
 .investor-relations {
-  display: flex;
-  height: 100%;
-  gap: 20px;
-  // padding: 10px;
-
   .ir-requests {
-    flex: 0 0 25%;
     flex-direction: column;
-    
     display: flex;
 
     .title {
