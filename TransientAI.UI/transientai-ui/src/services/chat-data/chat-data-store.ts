@@ -55,7 +55,6 @@ const useChatDataStore = create<ChatDataStore>()((set, get) => ({
         const {agent} = get();
         const user_id = useUserContextStore.getState().userContext.userId;
 
-        set({isLoading: true});
         chatDataService.sendChatRequest(query, user_id!, agent)
             .then(response => {
                 message.reasoning = undefined;
