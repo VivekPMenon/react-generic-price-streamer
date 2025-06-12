@@ -19,12 +19,22 @@ import { User } from '../admin-dashboard/manage-project/users';
 enum TabValues {
   ALL = 'all',
   OPEN = 'open',
-  ARCHIVED = 'archived'
+  COMPLETE = 'complete'
 }
+
+enum IRTabsValues {
+  INBOX = 'inbox',
+  TASK = 'task'
+}
+
+const IRTabs = [
+    { id: IRTabsValues.INBOX, label: 'Inbox', icon: 'fa-regular fa-envelope' },
+    { id: IRTabsValues.TASK, label: 'Task', icon: 'fa-solid fa-list-check' }
+  ];
 
 const tabItems = [
   { value: TabValues.OPEN, label: 'Open' },
-  { value: TabValues.ARCHIVED, label: 'Archived' },
+  { value: TabValues.COMPLETE, label: 'Complete' },
   { value: TabValues.ALL, label: 'All' }
 ];
 
@@ -36,11 +46,17 @@ export function InvestorRelationsRevised() {
   const [isAiSummaryShown, setIsAiSummaryShown] = useState<boolean>(false);
   const [isSaving, setIsSaving] = useState<boolean>(false);
   const [isTaskOpen, setIsTaskOpen] = useState<boolean>(false);
+  const [activeIRTab, setActiveIRTab] = useState<IRTabsValues>(IRTabsValues.INBOX);
   const [activeTab, setActiveTab] = useState<TabValues>(TabValues.OPEN);
   const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
-const [confirmationMessage, setConfirmationMessage] = useState('');
-const confirmActionRef = useRef<() => void>(() => {});
-const [contacts, setContacts] = useState<Recipient[]>([])
+  const [confirmationMessage, setConfirmationMessage] = useState('');
+  const confirmActionRef = useRef<() => void>(() => {});
+  const [contacts, setContacts] = useState<Recipient[]>([]);
+  
+  // Fixed state for thread management
+  const [expandedThreads, setExpandedThreads] = useState<Set<string>>(new Set());
+  const [threadMessages, setThreadMessages] = useState<Record<string, IREmailMessage[]>>({});
+  const [loadingThreads, setLoadingThreads] = useState<Set<string>>(new Set());
 
   const createTaskRef = useRef<HTMLInputElement>(null);
 
@@ -51,20 +67,21 @@ const [contacts, setContacts] = useState<Recipient[]>([])
       onEmailSelection(selectedIrEmail);
   }, [selectedIrEmail]);
 
+  useEffect(()=>{
+    setThreadMessages({})
+    setExpandedThreads(new Set());
+  },[irEmails])
+
   useEffect(() => {
     checkIRAccess()
   }, [])
 
- 
-
   useEffect(() => {
     const fetchInitialData = async () => {
       try {
-
         // Fetch users and roles in parallel with allSettled
         const response = await adminDashboardDataService.getUserList(1, 10, true);
         const contacts:Recipient[] = response?.data?.map((items: User): Recipient  => {
-
           return {
             name: items.full_name,
             email: items.email,
@@ -85,15 +102,117 @@ const [contacts, setContacts] = useState<Recipient[]>([])
     const userContext = useUserContextStore.getState().userContext;
     const previewUserEmail = userService.getPreviewUserEmail();
     const userEmail = previewUserEmail || userContext.userInfo?.email || userContext.userId;
-    const [emailContent, aiContent] = await Promise.all([
-      investorRelationsService.getEmailContentAsHtml(email.id!, userEmail!),
-      investorRelationsService.getIRSummary(email.id!, userEmail!)
-    ]);
+    
+    try {
+      const [emailContent, aiContent] = await Promise.all([
+        investorRelationsService.getEmailContentAsHtml(email.id!, userEmail!),
+        investorRelationsService.getIRSummary(email.id!, userEmail!)
+      ]);
 
-    setAiSummary(aiContent.ir_summary);
-    setEmailHtml(emailContent);
+      setAiSummary(aiContent.ir_summary);
+      setEmailHtml(emailContent);
+    } catch (error) {
+      console.error('Error loading email content:', error);
+      toast.error('Failed to load email content');
+    }
   }
 
+  // Fixed function to handle thread expansion
+  const handleThreadToggle = async (event: React.MouseEvent, conversation_id: string) => {
+    event.stopPropagation();
+
+    if (!conversation_id) {
+      console.error('No conversation_id provided');
+      return;
+    }
+
+    const isExpanded = expandedThreads.has(conversation_id);
+
+    if (isExpanded) {
+      // Collapse thread
+      const newExpandedThreads = new Set(expandedThreads);
+      newExpandedThreads.delete(conversation_id);
+      setExpandedThreads(newExpandedThreads);
+    } else {
+      // Expand thread - fetch thread messages if not already loaded
+      if (!threadMessages[conversation_id]) {
+        setLoadingThreads(prev => new Set(prev).add(conversation_id));
+
+        try {
+          const userContext = useUserContextStore.getState().userContext;
+          const previewUserEmail = userService.getPreviewUserEmail();
+          const userEmail = previewUserEmail || userContext.userInfo?.email || userContext.userId;
+          
+          const threadData = await investorRelationsService.getEmailThreads(conversation_id, userEmail!);
+          
+          setThreadMessages(prev => ({
+            ...prev,
+            [conversation_id]: threadData || []
+          }));
+        } catch (error) {
+          console.error('Error fetching thread messages:', error);
+          toast.error('Failed to load thread messages');
+          return;
+        } finally {
+          setLoadingThreads(prev => {
+            const newSet = new Set(prev);
+            newSet.delete(conversation_id);
+            return newSet;
+          });
+        }
+      }
+
+      // Expand thread
+      const newExpandedThreads = new Set(expandedThreads);
+      newExpandedThreads.add(conversation_id);
+      setExpandedThreads(newExpandedThreads);
+    }
+  };
+
+  // Fixed function to render thread messages
+  const renderThreadMessages = (conversation_id: string) => {
+    const threads = threadMessages[conversation_id] || [];
+    
+    if (threads.length === 0) {
+      return null;
+    }
+    
+    return threads.map((threadMsg, threadIdx) => (
+      <div
+        key={`thread-${conversation_id}-${threadMsg.id || threadIdx}`}
+        className={`message flex max-w-full ml-6 ${selectedIrEmail?.id === threadMsg.id ? 'selected' : ''}`}
+        onClick={() => {
+          setSelectedIrEmail(threadMsg);
+          setSelectedInquiry(null);
+        }}
+        style={{ paddingLeft: '5px', marginTop: '4px' }}
+      >
+        <div className='flex-shrink-0 grid grid-cols-2 items-center'>
+          <div className="invisible">
+            <i className="fa-light fa-chevron-right"></i>
+          </div>
+          <div
+            className={`radio-button-container flex-shrink-0 ${threadMsg.complete ? 'checked' : ''}`}
+            title="Mark as Completed"
+            onClick={(event) => handleEmailComplete(event, threadMsg)}
+          >
+            <i className="fa-solid fa-check"></i>
+          </div>
+        </div>
+
+        <div className="content flex-grow max-w-[90%]">
+          <div className="header">
+            <span className="sender truncate flex-none max-w-[60%]">
+              {threadMsg.important && <span className="priority">❗</span>}
+              {threadMsg.sender}
+            </span>
+            <span className="time">{formatDate(threadMsg.received)}</span>
+          </div>
+          <div className="subject truncate max-w-[60%]">{threadMsg.subject}</div>
+        </div>
+      </div>
+    ));
+  };
   
   function showConfirmation(message: string, onConfirm: () => void) {
     setConfirmationMessage(message);
@@ -104,7 +223,9 @@ const [contacts, setContacts] = useState<Recipient[]>([])
   function handleEmailComplete(event: any, irEmail: IREmailMessage) {
     event.stopPropagation();
 
-    showConfirmation('Are you sure you want to mark this email as complete?', async () => {
+    const status = irEmail.complete ? 'open' : 'complete';
+
+    showConfirmation(`Are you sure you want to mark this email as ${status}?`, async () => {
       try {
         setIsSaving(true);
         const userContext = useUserContextStore.getState().userContext;
@@ -112,35 +233,36 @@ const [contacts, setContacts] = useState<Recipient[]>([])
         const userEmail = previewUserEmail ?? userContext?.userId;
         await investorRelationsService.markIrEmailAsComplete(irEmail.id!, userEmail!);
         await loadEmails();
-        toast.success('Email marked as complete');
-      } catch {
-        toast.error('Error while trying to mark the email as complete');
+        toast.success(`Email marked as ${status}`);
+      } catch (error) {
+        console.error('Error marking email as complete:', error);
+        toast.error(`Error while trying to mark the email as ${status}`);
       } finally {
         setIsSaving(false);
       }
     });
   }
 
-
   function handleInquiryComplete(event: any, inquiry: InquiryRequest) {
     event.stopPropagation();
-    setSelectedInquiry(inquiry);
 
-    showConfirmation('Are you sure you want to mark this task as complete?', async () => {
+    const status = inquiry.status === InquiryStatus.Completed ? 'open' : 'complete';
+
+    showConfirmation(`Are you sure you want to mark this task as ${status}?`, async () => {
       try {
         setIsSaving(true);
         inquiry.completed = true;
         updateStatusFromCompleted(inquiry);
         await changeStatus(inquiry.id!, inquiry.status!);
-        toast.success('Task marked as complete');
-      } catch {
-        toast.error('Error while trying to mark the task as complete');
+        toast.success(`Task marked as ${status}`);
+      } catch (error) {
+        console.error('Error marking task as complete:', error);
+        toast.error(`Error while trying to mark the task as ${status}`);
       } finally {
         setIsSaving(false);
       }
     });
   }
-
 
   const toggleElement =
     <div className={styles['ir-response-toggler']}>
@@ -193,12 +315,22 @@ const [contacts, setContacts] = useState<Recipient[]>([])
         </div>
         
         <div className={styles['mail-inbox']}>
-          <div className={styles['title']}>
-            <i className='fa-regular fa-envelope'></i>
-            Inbox
-            {
-              (isSaving || isLoading || isIREmailLoading) && <Spinner size={"2"} />
-            }
+           <div className="bg-[#0b6157] rounded-lg p-1 shadow-lg mb-2 w-max">
+            <div className="flex space-x-1">
+              {IRTabs.map((tab) => (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveIRTab(tab.id)}
+                  className={`px-4 py-1 rounded-md flex items-center gap-2 text-sm font-medium transition-all duration-200 ${activeIRTab === tab.id
+                      ? 'bg-white text-[#0b6157] shadow-sm'
+                      : 'text-white hover:bg-white hover:bg-opacity-50'
+                    }`}
+                >
+                  <i className={tab.icon}></i>
+                  {tab.label}
+                </button>
+              ))}
+            </div>
           </div>
 
           <div>
@@ -228,14 +360,14 @@ const [contacts, setContacts] = useState<Recipient[]>([])
                         switch (activeTab) {
                           case TabValues.OPEN:
                             return !msg.complete;
-                          case TabValues.ARCHIVED:
+                          case TabValues.COMPLETE:
                             return msg.complete;
                           default:
                             return true;
                         }
                       })
                       .filter((msg) =>
-                        (!searchQuery || msg.subject.toLowerCase().includes(searchQuery.toLowerCase()))
+                        (!searchQuery || msg.subject.toLowerCase().includes(searchQuery.toLowerCase()) || msg.sender.toLowerCase().includes(searchQuery.toLowerCase()))
                       );
 
                     const filteredInquiries = inquiries
@@ -243,60 +375,84 @@ const [contacts, setContacts] = useState<Recipient[]>([])
                         switch (activeTab) {
                           case TabValues.OPEN:
                             return msg.status !== InquiryStatus.Completed;
-                          case TabValues.ARCHIVED:
+                          case TabValues.COMPLETE:
                             return msg.status === InquiryStatus.Completed;
                           default:
                             return true;
                         }
                       })
                       .filter((msg) =>
-                        !searchQuery || msg.subject?.toLowerCase().includes(searchQuery.toLowerCase())
+                        !searchQuery || msg.subject?.toLowerCase().includes(searchQuery.toLowerCase()) || msg?.assignee_email?.toLowerCase().includes(searchQuery.toLowerCase()) || msg?.owner_email?.toLowerCase().includes(searchQuery.toLowerCase())
                       );
 
                     if (filteredEmails.length === 0 && filteredInquiries.length === 0) {
                       return (
-                        <div className="flex items-center justify-center p-4 text-gray-400">
-                          No data found
+                        <div className='w-full flex justify-center items-center h-20'>
+                          {
+                            isIREmailLoading ? (<Spinner size={"3"} />) : (<div className="flex items-center justify-center p-4 text-gray-400">
+                              No data found
+                            </div>)
+                          }
                         </div>
                       );
                     }
 
                     return (
                       <>
-                        {filteredEmails.map((msg, idx) => (
-                          <div
-                            key={idx}
-                            className={`message flex max-w-full ${selectedIrEmail?.id === msg.id ? 'selected' : ''}`}
-                            onClick={() => {
-                              setSelectedIrEmail(msg);
-                              setSelectedInquiry(null);
-                            }}
-                          >
+                        {activeIRTab === IRTabsValues.INBOX && filteredEmails.map((msg, idx) => (
+                          <div key={msg.id || idx}>
+                            {/* Main Email Message */}
                             <div
-                              className={`radio-button-container flex-shrink-0 ${msg.complete ? 'checked' : ''}`}
-                              title="Mark as Completed"
-                              onClick={(event) => handleEmailComplete(event, msg)}
+                              className={`message flex max-w-full ${selectedIrEmail?.id === msg.id ? 'selected' : ''}`}
+                              onClick={() => {
+                                setSelectedIrEmail(msg);
+                                setSelectedInquiry(null);
+                              }}
                             >
-                              <i className="fa-solid fa-check"></i>
-                            </div>
-
-                            <div className="content flex-grow max-w-[90%]">
-                              <div className="header">
-                                <span className="sender truncate flex-none max-w-[60%]">
-                                  {msg.important && <span className="priority">❗</span>}
-                                  {msg.sender}
-                                </span>
-                                <span className="time">{formatDate(msg.received)}</span>
+                              <div className='flex-shrink-0 grid grid-cols-2 items-center'>
+                                <div 
+                                  className={`${msg.threadflag ? 'visible' : 'invisible'} cursor-pointer`}
+                                  onClick={(event) => handleThreadToggle(event, msg.conversation_id!)}
+                                >
+                                  {loadingThreads.has(msg.conversation_id!) ? (
+                                    <Spinner size="1" />
+                                  ) : (
+                                    <i 
+                                      className={`fa-light fa-chevron-right transition-transform duration-200 ${
+                                        expandedThreads.has(msg.conversation_id!) ? 'rotate-90' : ''
+                                      }`}
+                                    ></i>
+                                  )}
+                                </div>
+                                <div
+                                  className={`radio-button-container flex-shrink-0 ${msg.complete ? 'checked' : ''}`}
+                                  title="Mark as Completed"
+                                  onClick={(event) => handleEmailComplete(event, msg)}
+                                >
+                                  <i className="fa-solid fa-check"></i>
+                                </div>
                               </div>
-                              <div className="subject truncate max-w-[60%]">{msg.subject}</div>
-                              {/* <div className='body'>{msg.concise_summary}</div> */}
+
+                              <div className="content flex-grow max-w-[90%]">
+                                <div className="header">
+                                  <span className="sender truncate flex-none max-w-[60%]">
+                                    {msg.important && <span className="priority">❗</span>}
+                                    {msg.sender}
+                                  </span>
+                                  <span className="time">{formatDate(msg.received)}</span>
+                                </div>
+                                <div className="subject truncate max-w-[60%]">{msg.subject}</div>
+                              </div>
                             </div>
+                            
+                            {/* Thread Messages - Render if expanded */}
+                            {expandedThreads.has(msg.conversation_id!) && renderThreadMessages(msg.conversation_id!)}
                           </div>
                         ))}
 
-                        {filteredInquiries.map((msg, idx) => (
+                        {activeIRTab === IRTabsValues.TASK && filteredInquiries.map((msg, idx) => (
                           <div
-                            key={msg.id || idx} // Use unique ID instead of array index when possible
+                            key={msg.id || idx}
                             className={`message flex max-w-full ${selectedInquiry?.id === msg.id ? 'selected' : ''
                               }`}
                             onClick={() => {
@@ -374,7 +530,7 @@ const [contacts, setContacts] = useState<Recipient[]>([])
       {
         selectedInquiry &&
         <div className={styles['inquiry-summary']}>
-          <div className='fs-16'>Task Summary</div>
+          <div className='font-bold text-xl'>Task Summary</div>
           <div className={styles['inquiry-field']}>
             <span className={styles['label']}>Subject:</span> {selectedInquiry?.subject}
           </div>

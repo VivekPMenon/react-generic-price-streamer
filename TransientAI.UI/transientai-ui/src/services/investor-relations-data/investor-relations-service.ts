@@ -113,55 +113,55 @@ class InvestorRelationsService {
         return assignees;
     }
 
- async replyEmail(emailAddress: string, to_emails:string, cc_emails:string, id: string, comment: string, attachments?: File[]): Promise<any> {
-    const formData = new FormData();
-    formData.append('email_address', emailAddress);
-    formData.append('to_emails',to_emails)
-    formData.append('cc_emails',cc_emails)
-    formData.append('id', id);
-    formData.append('comment', comment);
-    
-    // Add attachments if they exist
-    if (attachments && attachments.length > 0) {
-        attachments.forEach((file) => {
-            formData.append('attachments', file);
-        });
+    async replyEmail(emailAddress: string, to_emails: string, cc_emails: string, id: string, comment: string, attachments?: File[]): Promise<any> {
+        const formData = new FormData();
+        formData.append('email_address', emailAddress);
+        formData.append('to_emails', to_emails)
+        formData.append('cc_emails', cc_emails)
+        formData.append('id', id);
+        formData.append('comment', comment);
+
+        // Add attachments if they exist
+        if (attachments && attachments.length > 0) {
+            attachments.forEach((file) => {
+                formData.append('attachments', file);
+            });
+        }
+
+        return await webApihandler.post(
+            'reply-email',
+            formData,
+            {
+                'Content-Type': 'application/json'
+            },
+            { serviceName: this.serviceName }
+        );
     }
 
-    return await webApihandler.post(
-        'reply-email',
-        formData,
-        {
-            'Content-Type': 'application/json'
-        },
-        { serviceName: this.serviceName }
-    );
-}
+    async replyAllEmail(emailAddress: string, to_emails: string, cc_emails: string, id: string, comment: string, attachments?: File[]): Promise<any> {
+        const formData = new FormData();
+        formData.append('email_address', emailAddress);
+        formData.append('to_emails', to_emails)
+        formData.append('cc_emails', cc_emails)
+        formData.append('id', id);
+        formData.append('comment', comment);
 
-async replyAllEmail(emailAddress: string, to_emails:string, cc_emails:string, id: string, comment: string, attachments?: File[]): Promise<any> {
-    const formData = new FormData();
-    formData.append('email_address', emailAddress);
-    formData.append('to_emails',to_emails)
-    formData.append('cc_emails',cc_emails)
-    formData.append('id', id);
-    formData.append('comment', comment);
-    
-    // Add attachments if they exist
-    if (attachments && attachments.length > 0) {
-        attachments.forEach((file) => {
-            formData.append('attachments', file);
-        });
+        // Add attachments if they exist
+        if (attachments && attachments.length > 0) {
+            attachments.forEach((file) => {
+                formData.append('attachments', file);
+            });
+        }
+
+        return await webApihandler.post(
+            'reply-all-email',
+            formData,
+            {
+                'Content-Type': 'application/json'
+            },
+            { serviceName: this.serviceName }
+        );
     }
-
-    return await webApihandler.post(
-        'reply-all-email',
-        formData,
-        {
-            'Content-Type': 'application/json'
-        },
-        { serviceName: this.serviceName }
-    );
-}
 
     async forwardEmail(emailAddress: string, to_emails:string, cc_emails:string, id: string): Promise<any> {
         return await webApihandler.post('forward-email',
@@ -190,6 +190,17 @@ async replyAllEmail(emailAddress: string, to_emails:string, cc_emails:string, id
             undefined,
             { serviceName }
         );
+    }
+
+     async getEmailThreads(conversation_id: string, emailId: string = ''): Promise<IREmailMessage[]> {
+        return await webApihandler
+            .get(
+                'api/conversation/threads', {
+                conversation_id : conversation_id,
+                email_address : emailId
+            }, {
+                serviceName: this.serviceName
+            });
     }
 }
 

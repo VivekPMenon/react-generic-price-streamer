@@ -106,9 +106,16 @@
       display: flex;
       gap: 10px;
       align-items: center;
+      white-space: nowrap;
+      font-size: 15px;
+      color: $white;
+      margin-left: 15px;
 
       .label {
         color: $font-color-200;
+        font-size: large;
+        font-weight: 500;
+        // white-space: nowrap;
       }
     }
   }
