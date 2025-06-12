@@ -26,6 +26,7 @@ export interface InquiryRequest {
 
 export interface IREmailMessage {
     id: string;
+    conversation_id: string;
     subject: string;
     sender: string;
     received: string; // ISO timestamp
@@ -33,5 +34,6 @@ export interface IREmailMessage {
     concise_summary: string;
     complete: boolean;
     important: boolean;
+    threadflag: boolean
 }
 
