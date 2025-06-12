@@ -22,9 +22,19 @@ enum TabValues {
   ARCHIVED = 'archived'
 }
 
+enum IRTabsValues {
+  INBOX = 'inbox',
+  TASK = 'task'
+}
+
+const IRTabs = [
+    { id: IRTabsValues.INBOX, label: 'Inbox', icon: 'fa-regular fa-envelope' },
+    { id: IRTabsValues.TASK, label: 'Task', icon: 'fa-solid fa-list-check' }
+  ];
+
 const tabItems = [
   { value: TabValues.OPEN, label: 'Open' },
-  { value: TabValues.ARCHIVED, label: 'Archived' },
+  { value: TabValues.ARCHIVED, label: 'Complete' },
   { value: TabValues.ALL, label: 'All' }
 ];
 
@@ -36,6 +46,7 @@ export function InvestorRelationsRevised() {
   const [isAiSummaryShown, setIsAiSummaryShown] = useState<boolean>(false);
   const [isSaving, setIsSaving] = useState<boolean>(false);
   const [isTaskOpen, setIsTaskOpen] = useState<boolean>(false);
+  const [activeIRTab, setActiveIRTab] = useState<IRTabsValues>(IRTabsValues.INBOX);
   const [activeTab, setActiveTab] = useState<TabValues>(TabValues.OPEN);
   const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
 const [confirmationMessage, setConfirmationMessage] = useState('');
@@ -104,7 +115,9 @@ const [contacts, setContacts] = useState<Recipient[]>([])
   function handleEmailComplete(event: any, irEmail: IREmailMessage) {
     event.stopPropagation();
 
-    showConfirmation('Are you sure you want to mark this email as complete?', async () => {
+    const status = irEmail.complete ? 'open' : 'complete';
+
+    showConfirmation(`Are you sure you want to mark this email as ${status}?`, async () => {
       try {
         setIsSaving(true);
         const userContext = useUserContextStore.getState().userContext;
@@ -112,9 +125,9 @@ const [contacts, setContacts] = useState<Recipient[]>([])
         const userEmail = previewUserEmail ?? userContext?.userId;
         await investorRelationsService.markIrEmailAsComplete(irEmail.id!, userEmail!);
         await loadEmails();
-        toast.success('Email marked as complete');
+        toast.success(`Email marked as ${status}`);
       } catch {
-        toast.error('Error while trying to mark the email as complete');
+        toast.error(`Error while trying to mark the email as ${status}`);
       } finally {
         setIsSaving(false);
       }
@@ -124,17 +137,18 @@ const [contacts, setContacts] = useState<Recipient[]>([])
 
   function handleInquiryComplete(event: any, inquiry: InquiryRequest) {
     event.stopPropagation();
-    setSelectedInquiry(inquiry);
 
-    showConfirmation('Are you sure you want to mark this task as complete?', async () => {
+    const status = inquiry.status === InquiryStatus.Completed ? 'open' : 'complete';
+
+    showConfirmation(`Are you sure you want to mark this task as ${status}?`, async () => {
       try {
         setIsSaving(true);
         inquiry.completed = true;
         updateStatusFromCompleted(inquiry);
         await changeStatus(inquiry.id!, inquiry.status!);
-        toast.success('Task marked as complete');
+        toast.success(`Task marked as ${status}`);
       } catch {
-        toast.error('Error while trying to mark the task as complete');
+        toast.error(`Error while trying to mark the task as ${status}`);
       } finally {
         setIsSaving(false);
       }
@@ -193,13 +207,31 @@ const [contacts, setContacts] = useState<Recipient[]>([])
         </div>
         
         <div className={styles['mail-inbox']}>
-          <div className={styles['title']}>
+           <div className="bg-[#0b6157] rounded-lg p-1 shadow-lg mb-2">
+            <div className="flex space-x-1">
+              {IRTabs.map((tab) => (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveIRTab(tab.id)}
+                  className={`px-4 py-1 rounded-md flex items-center gap-2 text-sm font-medium transition-all duration-200 ${activeIRTab === tab.id
+                      ? 'bg-white text-[#0b6157] shadow-sm'
+                      : 'text-white hover:bg-white hover:bg-opacity-50'
+                    }`}
+                >
+                  <i className={tab.icon}></i>
+                  {tab.label}
+                </button>
+              ))}
+            </div>
+          </div>
+          
+          {/* <div className={styles['title']}>
             <i className='fa-regular fa-envelope'></i>
             Inbox
             {
               (isSaving || isLoading || isIREmailLoading) && <Spinner size={"2"} />
             }
-          </div>
+          </div> */}
 
           <div>
             <Tabs.Root
@@ -263,7 +295,7 @@ const [contacts, setContacts] = useState<Recipient[]>([])
 
                     return (
                       <>
-                        {filteredEmails.map((msg, idx) => (
+                        {activeIRTab === IRTabsValues.INBOX && filteredEmails.map((msg, idx) => (
                           <div
                             key={idx}
                             className={`message flex max-w-full ${selectedIrEmail?.id === msg.id ? 'selected' : ''}`}
@@ -294,7 +326,7 @@ const [contacts, setContacts] = useState<Recipient[]>([])
                           </div>
                         ))}
 
-                        {filteredInquiries.map((msg, idx) => (
+                        {activeIRTab === IRTabsValues.TASK && filteredInquiries.map((msg, idx) => (
                           <div
                             key={msg.id || idx} // Use unique ID instead of array index when possible
                             className={`message flex max-w-full ${selectedInquiry?.id === msg.id ? 'selected' : ''
