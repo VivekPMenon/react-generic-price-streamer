@@ -83,7 +83,10 @@ export function ChatbotResponse(props: ChatbotResponseProps) {
           {chatHistoryElement}
         </div>
 
-        <div className={styles[`search-bar${props.showBackButton ? '' : '-with-selector'}`]}>
+        <div className={styles[`search-bar${props.showBackButton ? '' : ('-with-selector' + ((thread?.messages?.length ?? 0) === 0 ? '' : '-has-messages')) }`]}>
+            {!props.showBackButton && (thread?.messages?.length ?? 0) === 0 && (
+                <span>What can I help you with today?</span>
+            )}
           <input type="text"
                  placeholder={props.inputHint}
                  onKeyDown={onKeyDown}
