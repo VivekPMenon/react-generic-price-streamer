@@ -11,9 +11,10 @@ import { menuStore } from '@/services/menu-data';
 
 export interface DashboardTabsProps {
   children?: ReactNode;
+  className?: string;
 }
 
-export function DashboardTabs({ children }: DashboardTabsProps) {
+export function DashboardTabs({ children, className }: DashboardTabsProps) {
   const router = useRouter();
   const deviceType = useDeviceType();
 
@@ -90,7 +91,7 @@ export function DashboardTabs({ children }: DashboardTabsProps) {
   
 
   return (
-    <div className={`widget height-100p ${isExpanded ? 'expanded' : ''}`}>
+    <div className={`widget ${className ?? 'height-100p'} ${isExpanded ? 'expanded' : ''}`}>
       <Tabs.Root defaultValue={defaultMenu?.description} value={selectedMenu?.description || defaultMenu?.description} className="height-100p">
         <Tabs.List>
           {tabs.map(tab => {
