@@ -223,7 +223,7 @@ export function InvestorRelationsRevised() {
   function handleEmailComplete(event: any, irEmail: IREmailMessage) {
     event.stopPropagation();
 
-    const status = irEmail.complete ? 'open' : 'complete';
+    const status = irEmail.complete ? 'open' : 'completed';
 
     showConfirmation(`Are you sure you want to mark this email as ${status}?`, async () => {
       try {
@@ -246,12 +246,12 @@ export function InvestorRelationsRevised() {
   function handleInquiryComplete(event: any, inquiry: InquiryRequest) {
     event.stopPropagation();
 
-    const status = inquiry.status === InquiryStatus.Completed ? 'open' : 'complete';
+    const status = inquiry.status === InquiryStatus.Completed ? 'open' : 'completed';
 
     showConfirmation(`Are you sure you want to mark this task as ${status}?`, async () => {
       try {
         setIsSaving(true);
-        inquiry.completed = true;
+        inquiry.completed = inquiry.status === InquiryStatus.Completed ? false : true;
         updateStatusFromCompleted(inquiry);
         await changeStatus(inquiry.id!, inquiry.status!);
         toast.success(`Task marked as ${status}`);
@@ -305,7 +305,7 @@ export function InvestorRelationsRevised() {
             className='mb-2'
             autoFocus={true}
             autoComplete='on'
-            placeholder='Filter IR Requests By Subject'
+            placeholder='Filter IR Requests By Subject or Email'
             onChange={event => setSearchQuery(event.target.value)}
             value={searchQuery}
           />
