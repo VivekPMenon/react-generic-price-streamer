@@ -74,6 +74,10 @@ export const PmsLiveNew = ({}: Props) => {
   const [rawData, setRawData] = useState([])
   const [columnList, setColumnList] = useState<IColumnItem[]>([])
   const [visibleColumns, setVisibleColumns] = useState<IColumnItem[]>([])
+  const [loading, setLoading] = useState({
+    csv: false,
+    xlsx: false
+  })
 
   // New state for filters and sorts
   const [currentFilters, setCurrentFilters] = useState<any>({})
@@ -529,6 +533,104 @@ export const PmsLiveNew = ({}: Props) => {
     }
   }, [])
 
+ // Updated component download function
+// Updated component download function
+const downloadFileWithParams = async (fileType: 'csv' | 'xlsx') => {
+  setLoading(prev => ({ ...prev, [fileType]: true }));
+  
+  try {
+    const urlFilters = convertFiltersToUrlFormat(currentFilters);
+    const urlSorts = convertSortsToUrlFormat(currentSorts);
+    
+    const params = {
+      ...urlFilters,
+      ...urlSorts
+    };
+
+    const response = await pmsDataService.downloadCSVFile(fileType, params);
+    
+    let blob: Blob;
+    let filename = `pms_live.${fileType}`;
+    
+    // Handle different response types from webApihandler
+    if (response instanceof Response) {
+      // If webApihandler returns Response object
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      // Extract filename from headers
+      const contentDisposition = response.headers.get('Content-Disposition');
+      if (contentDisposition) {
+        const filenameMatch = contentDisposition.match(/filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/);
+        if (filenameMatch && filenameMatch[1]) {
+          filename = filenameMatch[1].replace(/['"]/g, '');
+        }
+      }
+      
+      blob = await response.blob();
+    } else if ((response as any) instanceof Blob) {
+      // If webApihandler returns Blob directly
+      blob = response;
+    } else if ((response as any) instanceof ArrayBuffer) {
+      // If webApihandler returns ArrayBuffer
+      const mimeType = fileType === 'xlsx' 
+        ? 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        : 'text/csv';
+      blob = new Blob([response], { type: mimeType });
+    } else {
+      // If webApihandler returns other data types, try to convert
+      const mimeType = fileType === 'xlsx' 
+        ? 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        : 'text/csv';
+      blob = new Blob([response], { type: mimeType });
+    }
+    
+    // Verify blob has content
+    if (blob.size === 0) {
+      throw new Error('Downloaded file is empty');
+    }
+
+    const downloadUrl = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = downloadUrl;
+    link.download = filename;
+    link.style.display = 'none';
+    
+    document.body.appendChild(link);
+    link.click();
+    
+    // Cleanup
+    document.body.removeChild(link);
+    window.URL.revokeObjectURL(downloadUrl);
+    
+    console.log(`Successfully downloaded: ${filename}`);
+    
+  } catch (error) {
+    console.error('Download failed:', error);
+    
+    
+    let errorMessage = 'Download failed. Please try again.';
+    
+    if (error instanceof Error) {
+      if (error.message.includes('HTTP error')) {
+        errorMessage = 'Server error occurred. Please contact support.';
+      } else if (error.message.includes('network')) {
+        errorMessage = 'Network error. Please check your connection.';
+      } else if (error.message.includes('empty')) {
+        errorMessage = 'No data available for download with current filters.';
+      } else if (error.message.includes('Failed to fetch')) {
+        errorMessage = 'Connection failed. Please check if the server is running.';
+      }
+    }
+    
+    alert(errorMessage);
+    
+  } finally {
+    setLoading(prev => ({ ...prev, [fileType]: false }));
+  }
+};
+
   // Enhanced grid configuration with filter and sort handlers
   const gridConfig = useMemo(
     () => ({
@@ -559,7 +661,7 @@ export const PmsLiveNew = ({}: Props) => {
 
   return (
     <div className={`${styles['hurricane-pms']} h-full scrollable-div w-full`}>
-      <div className='mb-4 flex justify-start'>
+      <div className='mb-4 flex justify-between items-center px-3'>
         <Button
           onClick={openColumnManagement}
           type='submit'
@@ -569,6 +671,18 @@ export const PmsLiveNew = ({}: Props) => {
         >
           Choose Columns
         </Button>
+        <div className="flex gap-4">
+          <Button
+            onClick={() => downloadFileWithParams('csv')}
+            disabled={loading.csv || rawData.length === 0}
+            type='submit'
+            size={'1'}
+            color='blue'
+            variant='solid'
+          >
+            {loading.csv ? 'Downloading...' : 'Export CSV'}
+          </Button>
+        </div>
       </div>
 
       <div style={{ height: `${GRID_HEIGHT}px`, width: '100%' }}>
