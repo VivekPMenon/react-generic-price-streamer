@@ -58,10 +58,10 @@ const createColumnTransformer = () => {
 }
 
 // Constants outside component to prevent recreation
-const PAGE_SIZE_OPTIONS = [10, 25, 50, 100]
+const PAGE_SIZE_OPTIONS = [10, 25, 50, 100, 500]
 const GRID_HEIGHT = 500
 const INITIAL_PAGE = 1
-const INITIAL_PAGE_SIZE = 10
+const INITIAL_PAGE_SIZE = 500
 
 export const PmsLiveNew = ({}: Props) => {
   // State management
