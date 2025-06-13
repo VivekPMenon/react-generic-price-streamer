@@ -5,7 +5,9 @@ import {
   ColDef,
   GridOptions,
   FilterChangedEvent,
-  SortChangedEvent
+  SortChangedEvent,
+  FilterModel,
+  SortModelItem
 } from 'ag-grid-community'
 import styles from './pms-live.module.scss'
 import ColumnManagement from './column-management'
@@ -17,10 +19,6 @@ import CustomPagination from '../shared/ta-pagination/ta-pagination'
 import { toast } from 'react-toastify'
 
 interface Props {}
-interface SortOption {
-  field: string
-  direction: 'asc' | 'desc'
-}
 
 const MemoizedDataGrid = React.memo(DataGrid)
 
@@ -81,8 +79,8 @@ export const PmsLiveNew = ({}: Props) => {
   })
 
   // New state for filters and sorts
-  const [currentFilters, setCurrentFilters] = useState<any>({})
-  const [currentSorts, setCurrentSorts] = useState<SortOption[]>([])
+  const [currentFilters, setCurrentFilters] = useState<FilterModel>({})
+  const [currentSorts, setCurrentSorts] = useState<SortModelItem[]>([])
 
   // Refs for stable references
   const transformColumnsRef = useRef(createColumnTransformer())
@@ -91,6 +89,63 @@ export const PmsLiveNew = ({}: Props) => {
   const sortTimeoutRef = useRef<NodeJS.Timeout | null>(null)
   const deviceType = useDeviceType()
   const isMobile = deviceType !== 'desktop'
+  const gridApiRef = useRef(null)
+  const columnApiRef = useRef(null)
+
+
+ useEffect(() => {
+  const updateFieldPreferences = async () => {
+    const hasFilterChanges = currentFilters && Object.keys(currentFilters).length > 0
+    const hasSortChanges = currentSorts && Object.keys(currentSorts).length > 0
+    
+    if (!hasFilterChanges && !hasSortChanges) {
+      console.log('Skipping field preferences update - no changes')
+      return
+    }
+
+    try {
+      const updateData: any = {}
+
+      if (hasFilterChanges) {
+        const transformedFilter = Object.entries(currentFilters).reduce((acc: any, [colId, filterData]: [string, any]) => {
+          const colname = visibleColumns.find(col => col.field === colId)?.id
+          if(colname){
+            let filterValue = filterData.type === 'contains' ? 'like' : 'eq'
+            acc[colname] = `${filterValue}:${filterData.filter}`
+          }
+          return acc
+        }, {} as Record<string, any>)
+
+        updateData.filter_option = transformedFilter
+      }
+
+      if (hasSortChanges) {
+        console.log('Updating field preferences with sorts:', currentSorts)
+        const transformedSort = currentSorts.reduce((acc, item) => {
+          const colname = visibleColumns.find(col => col.field === item.colId)?.id
+          if(colname){
+            acc[colname] = item.sort
+          }
+          return acc
+        }, {} as Record<string, string>)
+
+        updateData.sort_option = transformedSort
+      }
+
+      await pmsDataService.updateColumns(updateData)
+    } catch (error) {
+      console.error('Error updating field preferences:', error)
+    }
+  }
+
+  // Add a small delay to avoid excessive API calls during rapid changes
+  const timeoutId = setTimeout(() => {
+    updateFieldPreferences()
+  }, 1000) // 1 second delay
+
+  return () => clearTimeout(timeoutId)
+}, [currentFilters, currentSorts])
+
 
   // Simple function to convert AG Grid filters to URL format
   const convertFiltersToUrlFormat = useCallback((filterModel: any) => {
@@ -125,13 +180,13 @@ export const PmsLiveNew = ({}: Props) => {
   }, [])
 
   // Simple function to convert AG Grid sorts to URL format
-  const convertSortsToUrlFormat = useCallback((sortOptions: SortOption[]) => {
+  const convertSortsToUrlFormat = useCallback((sortOptions: SortModelItem[]) => {
     if (!sortOptions || sortOptions.length === 0) return {}
 
     // For simplicity, take only the first sort
     const firstSort = sortOptions[0]
     return {
-      sort: `${firstSort.field}:${firstSort.direction}`
+      sort: `${firstSort.colId}:${firstSort.sort}`
     }
   }, [])
 
@@ -193,7 +248,7 @@ export const PmsLiveNew = ({}: Props) => {
       size: number,
       manageLoading = true,
       filters = {},
-      sorts: SortOption[] = []
+      sorts: SortModelItem[] = []
     ) => {
       // Cancel previous request if still pending
       if (fetchRequestRef.current) {
@@ -242,19 +297,18 @@ export const PmsLiveNew = ({}: Props) => {
   )
 
   const handleFilterChanged = useCallback(
-    (event: FilterChangedEvent) => {
+   async (event: FilterChangedEvent) => {
       if (filterTimeoutRef.current) {
         clearTimeout(filterTimeoutRef.current)
       }
    
         const filterModel = event.api.getFilterModel()
         setCurrentFilters(filterModel)
+
         filterTimeoutRef.current = setTimeout(() => {
 
-
-          // Deep compare with current filters to avoid unnecessary calls
+        // Deep compare with current filters to avoid unnecessary calls
           if (JSON.stringify(filterModel) !== JSON.stringify(currentFilters)) {
-
             fetchPmsLiveData(1, pageSize, true, filterModel, currentSorts)
           }
         }, 500) // 500ms debounce
@@ -274,14 +328,14 @@ export const PmsLiveNew = ({}: Props) => {
         if (!columns) {
           return
         }
-        const sort: SortOption[] = columns
+        const sort: SortModelItem[] = columns
           .filter((col: any) => col.sort)
           .map((x: any) => {
-            return { field: x?.colId, direction: x?.sort }
+            return { colId: x?.colId, sort: x?.sort }
           })
 
         setCurrentSorts(sort)
-
+        
         // Fetch data with new sort
         fetchPmsLiveData(currentPage, pageSize, true, currentFilters, sort)
       }, 300) // 300ms debounce for sort
@@ -298,6 +352,17 @@ export const PmsLiveNew = ({}: Props) => {
       const response = await pmsDataService.getDisplayColumList()
       const data = response.data as IPmsGridColsList[]
       const columnsList = transformColumnsRef.current(data)
+      const filter = response?.filter_model  || {};
+      const sort = response?.sort_model  || [];
+      if (sort?.length > 0) {
+        const [colId] = Object.keys(sort).filter(key => key !== 'sort');
+        const result = [{
+          colId,
+          sort: sort.sort
+        }];
+        setCurrentSorts(result);
+      }
+      setCurrentFilters(filter);
       setVisibleColumns(columnsList)
     } catch (error) {
       console.error('Error fetching columns:', error)
@@ -479,31 +544,35 @@ export const PmsLiveNew = ({}: Props) => {
 
   // Effects with cleanup
   useEffect(() => {
-    let isMounted = true
+  let isMounted = true;
 
-    const fetchInitialData = async () => {
+  const fetchInitialData = async () => {
+    try {
+      await fetchDisplayColumnsList(true);
       if (isMounted) {
-        await Promise.all([
-          fetchDisplayColumnsList(true),
-          fetchPmsLiveData(INITIAL_PAGE, INITIAL_PAGE_SIZE, false, {}, [])
-        ])
+        await fetchPmsLiveData(INITIAL_PAGE, INITIAL_PAGE_SIZE, true, currentFilters, currentSorts);
       }
+    } catch (error) {
+      console.error('Error fetching initial data:', error);
     }
+  };
 
-    fetchInitialData()
-    return () => {
-      isMounted = false
-      if (fetchRequestRef.current) {
-        fetchRequestRef.current.abort()
-      }
-      if (filterTimeoutRef.current) {
-        clearTimeout(filterTimeoutRef.current)
-      }
-      if (sortTimeoutRef.current) {
-        clearTimeout(sortTimeoutRef.current)
-      }
+  fetchInitialData();
+
+  return () => {
+    isMounted = false;
+
+    if (fetchRequestRef.current) {
+      fetchRequestRef.current.abort();
     }
-  }, [fetchDisplayColumnsList, fetchPmsLiveData])
+    if (filterTimeoutRef.current) {
+      clearTimeout(filterTimeoutRef.current);
+    }
+    if (sortTimeoutRef.current) {
+      clearTimeout(sortTimeoutRef.current);
+    }
+  };
+}, [fetchDisplayColumnsList, fetchPmsLiveData]);
 
   useEffect(() => {
     let isMounted = true
@@ -630,6 +699,34 @@ const downloadFileWithParams = async (fileType: 'csv' | 'xlsx') => {
   }
 };
 
+const handleGridReady = useCallback((params:any) => {
+  // Assign the grid API to the ref
+  gridApiRef.current = params.api
+  columnApiRef.current = params.columnApi
+  
+  // Set initial filters if available
+  if (currentFilters && Object.keys(currentFilters).length > 0) {
+    params.api.setFilterModel(currentFilters)
+  }
+  
+  // Set initial sorts if available
+  if (currentSorts && currentSorts.length > 0) {
+    params.api.setSortModel(currentSorts)
+  }
+}, [currentFilters, currentSorts])
+
+
+// Add this callback to handle data rendered events
+const handleFirstDataRendered = useCallback((params: any) => {
+  // Restore filters after data is rendered
+  if (currentFilters && Object.keys(currentFilters).length > 0) {
+    params.api.setFilterModel(currentFilters)
+  }
+  if (currentSorts && currentSorts.length > 0) {
+    params.api.setSortModel(currentSorts)
+  }
+}, [currentFilters, currentSorts])
+
   // Enhanced grid configuration with filter and sort handlers
   const gridConfig = useMemo(
     () => ({
@@ -643,20 +740,22 @@ const downloadFileWithParams = async (fileType: 'csv' | 'xlsx') => {
       onSortChanged: handleSortChanged,
       alwaysShowHorizontalScroll: true,
       alwaysShowVerticalScroll: true,
-      initialState: {
-      filter: {
-        filterModel: currentFilters
-      }
-    }
+      onGridReady: handleGridReady ,
+      onFirstDataRendered: handleFirstDataRendered,
+      onRowDataUpdated: handleFirstDataRendered
     }),
     [
       gridOptions,
       handleColumnPinned,
       handleColumnMoved,
       handleFilterChanged,
-      handleSortChanged
+      handleSortChanged,
+      handleGridReady,
+      handleFirstDataRendered
     ]
   )
+
+  
 
   return (
     <div className={`${styles['hurricane-pms']} h-full scrollable-div w-full`}>
