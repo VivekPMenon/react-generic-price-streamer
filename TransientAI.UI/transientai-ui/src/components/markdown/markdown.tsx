@@ -90,8 +90,8 @@ export const SearchableMarkdown = ({ markdownContent, className, title, children
 
   return (
     <div className='markdown '>
-      <div className='search-bar'>
-        <div className='title'>
+      <div className='search-bar max-md:flex-col max-md:items-stretch'>
+        <div className='title max-md:!flex'>
           {children ? children : title}
         </div>
 
