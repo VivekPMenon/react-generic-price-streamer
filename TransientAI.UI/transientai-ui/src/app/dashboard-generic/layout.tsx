@@ -158,8 +158,8 @@ export default function DashboardLayout ({
                     : ''
                   }`}
                 >
-              <DashboardTabs>{children}</DashboardTabs>
-              {!isFullPageView && (<div className={`grid md:grid-cols-2 md:grid-rows-2 gap-3 basis-[50%]`}>
+              <DashboardTabs className={!isFullPageView ? styles['dashboard-tabs'] : undefined }>{children}</DashboardTabs>
+              {!isFullPageView && (<div className={`grid md:grid-cols-2 md:grid-rows-2 gap-3 basis-[60%]`}>
                     <div className={styles.tradingActivity}>
                       <TradingActivity />
                     </div>
