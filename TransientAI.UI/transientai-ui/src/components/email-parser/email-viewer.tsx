@@ -198,8 +198,8 @@ const EmailViewer = ({ emailHtml, htmlSource, className, scrollToSearchTerm, hid
     <div className="email-viewer-container">
       {
         !hideSearch &&
-        <div className='search-bar'>
-          <div className='title'>
+        <div className='search-bar max-md:flex-col max-md:items-stretch'>
+          <div className='title max-md:!flex'>
             {children}
           </div>
 
