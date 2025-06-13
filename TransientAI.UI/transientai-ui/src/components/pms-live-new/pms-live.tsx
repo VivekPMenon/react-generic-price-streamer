@@ -14,6 +14,7 @@ import { Button } from '@radix-ui/themes'
 import { pmsDataService } from '@/services/pms-live'
 import { IColumnItem, IPmsGridColsList } from './model'
 import CustomPagination from '../shared/ta-pagination/ta-pagination'
+import { toast } from 'react-toastify'
 
 interface Props {}
 interface SortOption {
@@ -603,13 +604,11 @@ const downloadFileWithParams = async (fileType: 'csv' | 'xlsx') => {
     // Cleanup
     document.body.removeChild(link);
     window.URL.revokeObjectURL(downloadUrl);
-    
-    console.log(`Successfully downloaded: ${filename}`);
-    
+     
+    toast.success(`Successfully downloaded: ${filename}`);
+        
   } catch (error) {
-    console.error('Download failed:', error);
-    
-    
+   
     let errorMessage = 'Download failed. Please try again.';
     
     if (error instanceof Error) {
@@ -624,7 +623,7 @@ const downloadFileWithParams = async (fileType: 'csv' | 'xlsx') => {
       }
     }
     
-    alert(errorMessage);
+    toast.error(errorMessage);
     
   } finally {
     setLoading(prev => ({ ...prev, [fileType]: false }));
