@@ -43,6 +43,31 @@ class PmsDataService {
     return results
   }
 
+ async downloadCSVFile(
+  export_format: 'csv' | 'xlsx',
+  filterParams: any = {}
+): Promise<Response> {
+  const params = {
+    export_format: export_format,
+    ...filterParams
+  };
+
+  const results = await webApihandler.get('pms_live/get_data', params, {
+    serviceName: this.serviceName,
+    responseType: 'blob',
+    headers: {
+      'Accept': export_format === 'xlsx' 
+        ? 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        : 'text/csv',
+      'Accept-Language': 'en,en-US;q=0.9,ta;q=0.8',
+      'Connection': 'keep-alive',
+      'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36'
+    }
+  });
+  
+  return results;
+}
+
   async createUser (data: IColumnItem[]): Promise<any> {
     const results = await webApihandler.post(
       'pms_live/preferences',
