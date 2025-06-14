@@ -241,7 +241,7 @@ export function InvestorRelationsRevised() {
         setIsSaving(true);
         const userContext = useUserContextStore.getState().userContext;
         const previewUserEmail = userService.getPreviewUserEmail();
-        const userEmail = previewUserEmail ?? userContext?.userId;
+        const userEmail = previewUserEmail || userContext.userInfo?.email;
         await investorRelationsService.markIrEmailAsComplete(irEmail.id!, userEmail!);
         await loadEmails();
         toast.success(`Email marked as ${status}`);
