@@ -110,7 +110,18 @@ export function InvestorRelationsRevised() {
       ]);
 
       setAiSummary(aiContent.ir_summary);
-      setEmailHtml(emailContent);
+      setEmailHtml(emailContent.html_content);
+      
+      // Update the email object with cc_addresses if available
+      if (emailContent.cc_addresses) {
+        const ccRecipients = emailContent.cc_addresses.map((email: string) => ({
+          name: email.split('@')[0].replace(/[._]/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
+          email: email,
+          type: 'person' as const
+        }));
+        // Update the email object without triggering a re-render
+        email.cc_addresses = ccRecipients;
+      }
     } catch (error) {
       console.error('Error loading email content:', error);
       toast.error('Failed to load email content');

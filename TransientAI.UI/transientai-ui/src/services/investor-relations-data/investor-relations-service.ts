@@ -36,10 +36,13 @@ class InvestorRelationsService {
         }
     }
 
-    async getEmailContentAsHtml(emailGuid: string, emailId: string): Promise<string> {
+    async getEmailContentAsHtml(emailGuid: string, emailId: string): Promise<{ html_content: string; cc_addresses?: string[] }> {
         const url = emailId ? `ir-email-html/${emailGuid}?research_email=${emailId}` : `ir-email-html/${emailGuid}`;
         const result = await webApihandler.get(url, {}, { serviceName: this.serviceName });
-        return result.html_content;
+        return {
+            html_content: result.html_content,
+            cc_addresses: result.cc_addresses
+        };
     }
 
     async getIRSummary(emailGuid: string, emailId: string): Promise<any> {
