@@ -34,7 +34,7 @@ const IRTabs = [
 
 const tabItems = [
   { value: TabValues.OPEN, label: 'Open' },
-  { value: TabValues.COMPLETE, label: 'Complete' },
+  { value: TabValues.COMPLETE, label: 'Completed' },
   { value: TabValues.ALL, label: 'All' }
 ];
 

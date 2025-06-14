@@ -151,7 +151,7 @@ const EmailAction = ({ selectedIrEmail,contacts = [] }: EmailActionProps) => {
         </div>
     );
 
-    const openModal = (modalType: 'reply' | 'replyAll' | 'forward') => {
+    const openModal = async (modalType: 'reply' | 'replyAll' | 'forward') => {
         if (selectedIrEmail) {
             if (modalType === 'forward') {
                 setToRecipients([]);
@@ -160,11 +160,59 @@ const EmailAction = ({ selectedIrEmail,contacts = [] }: EmailActionProps) => {
                 // For reply/replyAll, parse sender email and add as recipient
                 const senderEmail = selectedIrEmail.sender;
                 const senderName = senderEmail.split('@')[0].replace(/[._]/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
-                setToRecipients([{
-                    name: senderName,
-                    email: senderEmail,
-                    type: 'person'
-                }]);
+                
+                if (modalType === 'replyAll') {
+                    try {
+                        // Get email content to access recipients
+                        const userContext = useUserContextStore.getState().userContext;
+                        const previewUserEmail = userService.getPreviewUserEmail();
+                        const userEmail = previewUserEmail || userContext.userInfo?.email || userContext.userId;
+                        
+                        const emailContent = await investorRelationsService.getEmailContentAsHtml(selectedIrEmail.id!, userEmail!);
+                        
+                        // For replyAll, include both sender and recipients in "to" field
+                        const allRecipients: Recipient[] = [
+                            {
+                                name: senderName,
+                                email: senderEmail,
+                                type: 'person' as const
+                            }
+                        ];
+                        
+                        // Add recipients if they exist in the email content
+                        if (emailContent.recipients && emailContent.recipients.length > 0) {
+                            emailContent.recipients.forEach((recipient: string) => {
+                                // Skip if the recipient is the same as the sender
+                                if (recipient === senderEmail) return;
+                                
+                                const recipientName = recipient.split('@')[0].replace(/[._]/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+                                allRecipients.push({
+                                    name: recipientName,
+                                    email: recipient,
+                                    type: 'person' as const
+                                });
+                            });
+                        }
+                        
+                        setToRecipients(allRecipients);
+                    } catch (error) {
+                        console.error('Error getting email content:', error);
+                        // Fallback to just sender if we can't get recipients
+                        setToRecipients([{
+                            name: senderName,
+                            email: senderEmail,
+                            type: 'person' as const
+                        }]);
+                    }
+                } else {
+                    // For regular reply, just add sender
+                    setToRecipients([{
+                        name: senderName,
+                        email: senderEmail,
+                        type: 'person' as const
+                    }]);
+                }
+                
                 setToInput('');
 
                 // For replyAll, add CC recipients if available
