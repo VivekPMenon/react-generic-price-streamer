@@ -166,6 +166,11 @@ const EmailAction = ({ selectedIrEmail,contacts = [] }: EmailActionProps) => {
                     type: 'person'
                 }]);
                 setToInput('');
+
+                // For replyAll, add CC recipients if available
+                if (modalType === 'replyAll' && selectedIrEmail.cc_addresses) {
+                    setCcRecipients(selectedIrEmail.cc_addresses);
+                }
             }
             
             setComposeData({
@@ -175,8 +180,6 @@ const EmailAction = ({ selectedIrEmail,contacts = [] }: EmailActionProps) => {
             });
         }
         setActiveModal(modalType);
-        setCcRecipients([]);
-        setCcInput('');
         setShowCc(modalType === 'replyAll');
         setReplyError('');
         setAttachmentError('');
