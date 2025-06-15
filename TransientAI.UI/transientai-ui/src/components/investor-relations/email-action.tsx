@@ -319,7 +319,8 @@ const EmailAction = ({ selectedIrEmail,contacts = [] }: EmailActionProps) => {
                         userEmail!,
                         updatedComposeData.to,
                         updatedComposeData.cc,
-                        selectedIrEmail.id
+                        selectedIrEmail.id,
+                        updatedComposeData.body
                     );
                     break;
                 case 'reply':
