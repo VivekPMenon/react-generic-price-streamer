@@ -1,5 +1,5 @@
 export enum InquiryFlag {
-    Regular = <any>'regtask',
+    Regular = <any>'Regular',
     Important = <any>'important',
     Urgent = <any>'urgent'
 }
