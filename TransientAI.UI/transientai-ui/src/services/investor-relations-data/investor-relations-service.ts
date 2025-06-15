@@ -167,13 +167,14 @@ class InvestorRelationsService {
         );
     }
 
-    async forwardEmail(emailAddress: string, to_emails:string, cc_emails:string, id: string): Promise<any> {
+    async forwardEmail(emailAddress: string, to_emails:string, cc_emails:string, id: string, comment: string): Promise<any> {
         return await webApihandler.post('forward-email',
             undefined,
             {email_address: emailAddress,
              id:id,
              to_emails: to_emails,
-             cc_emails: cc_emails
+             cc_emails: cc_emails,
+             comment: comment
             },
             {
                 serviceName: this.serviceName
