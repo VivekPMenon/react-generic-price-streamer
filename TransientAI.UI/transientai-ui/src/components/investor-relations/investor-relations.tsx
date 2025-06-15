@@ -22,7 +22,7 @@ function getFlagStyle(flag: string|undefined|null) {
             style.color = 'orange';
             break;
         }
-        case 'regtask': {
+        case 'regular': {
             style.color = 'green';
             break;
         }
