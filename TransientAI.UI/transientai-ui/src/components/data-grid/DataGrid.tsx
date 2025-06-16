@@ -25,7 +25,7 @@ export const DataGrid = forwardRef<GridApi | null, IDataGridProps>((props, ref) 
       filter: 'agTextColumnFilter',
       sortable: true,
       resizable: true,
-      suppressHeaderMenuButton: true,
+      suppressHeaderMenuButton: false,
       width: 150,
       suppressHeaderFilterButton: true,
       ...props.defaultColDef
@@ -68,8 +68,8 @@ export const DataGrid = forwardRef<GridApi | null, IDataGridProps>((props, ref) 
         {...finalProps}
         statusBar={props.suppressStatusBar ? undefined : props.isSummaryGrid ? undefined : statusBar}
         onGridReady={onGridReady}
-        rowHeight={props.isSummaryGrid ? 50 : 35}
-        headerHeight={props.isSummaryGrid ? 50 : 35}
+        rowHeight={props.isSummaryGrid ? 50 : 30}
+        headerHeight={props.isSummaryGrid ? 50 : 30}
         floatingFiltersHeight={props.suppressFloatingFilter ? 0 : props.isSummaryGrid ? 25 : 20}
       />
     </div>

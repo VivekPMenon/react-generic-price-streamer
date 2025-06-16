@@ -1,0 +1,118 @@
+@import '../../assets/variables.scss';
+
+.portfolio-dashboard {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex: 0 0 auto;
+  align-content: center;
+}
+
+.title {
+  font-size: 14px;
+  // font-weight: bold;
+  color: white;
+  display: flex;
+  align-items: center;
+  flex: 2 1 50%;
+  gap: 50px;
+
+  img {
+    // border-radius: 3px;
+    height: 40px;
+    width: 40x;
+  }
+}
+
+.nav-and-content {
+  flex: 1 1 auto;
+  display: flex;
+  height: 100%;
+}
+
+.side-nav {
+  display: flex;
+  // width: 80px;
+  flex-direction: column;
+  justify-content: space-between;
+
+  .primary-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    padding: 5px 10px;
+    align-items: center;
+    cursor: pointer;
+  }
+
+
+  .fixed-nav {
+    @extend .primary-nav;
+    align-self: flex-end;
+  }
+
+  .nav-item {
+    padding: 15px;
+    cursor: pointer;
+    font-size: 18px;
+    opacity: .7;
+    display: flex;
+    align-items: center;
+    transition: all 200ms linear;
+
+    &.active,
+    &:hover {
+      opacity: 1;
+      background-color: $gray-100;
+      border-radius: 5px;
+    }
+  }
+
+  .profile-pic {
+    height: 55px;
+    width: 55px;
+    border-radius: 50%;
+    padding: 0px;
+    transition: all 200ms linear;
+
+    &:hover {
+      background-color: $gray-100;
+      border-radius: 5px;
+    }
+
+    img {
+      height: 40px;
+      border-radius: 50%;
+      opacity: 1;
+    }
+  }
+}
+
+.main-content {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  padding: 10px 10px 10px 0;
+
+  .top-content {
+    display: flex;
+    flex: 1 1 35%;
+  }
+
+  .middle-content {
+    display: flex;
+    flex: 1 1 35%;
+  }
+
+  .bottom-content {
+    display: flex;
+    flex: 1 1 20%;
+  }
+}
