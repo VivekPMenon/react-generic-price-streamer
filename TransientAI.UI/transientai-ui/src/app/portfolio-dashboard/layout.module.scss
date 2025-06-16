@@ -104,6 +104,11 @@
   .top-content {
     display: flex;
     flex: 1 1 50%;
+    gap: 10px;
+
+    &first-child {
+      flex: 1 1 80%;
+    }
   }
 
   .middle-content {

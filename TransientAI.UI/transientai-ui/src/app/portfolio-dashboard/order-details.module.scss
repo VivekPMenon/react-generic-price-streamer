@@ -1,0 +1,31 @@
+.order-details {
+  display: flex;
+  padding: 10px;
+  flex-direction: column;
+
+  .main-content {
+    display: flex;
+    gap: 10px;
+    width: 100%;
+
+    &>div {
+      flex: 1 1 33.3%;
+
+    }
+  }
+
+  .first-column,
+  .second-column,
+  .third-column {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .action-buttons {
+    display: flex;
+    gap: 10px;
+    align-items: end;
+    justify-content: center;
+  }
+}

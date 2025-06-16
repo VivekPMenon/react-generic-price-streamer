@@ -181,8 +181,12 @@ input[type='checkbox'] {
   gap: 20px;
   user-select: none;
 
-  & > * {
+  &>* {
     flex: 1 1 auto;
+  }
+
+  .form-field {
+    flex: 0 0 180px;
   }
 }
 
@@ -190,10 +194,15 @@ input[type='checkbox'] {
   display: flex;
   flex-direction: column;
   gap: 5px;
-  flex: 0 0 180px;
+  flex:  0 0 50px;
 
   .form-label {
     color: $font-color-200;
+    font-size: 12px;
+  }
+
+  .form-label-bold {
+    color: $font-color-100;
     font-size: 12px;
   }
 

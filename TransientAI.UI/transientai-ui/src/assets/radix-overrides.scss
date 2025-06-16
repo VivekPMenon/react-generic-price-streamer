@@ -5,3 +5,13 @@
 .rt-Box {
   padding-bottom: 15px;
 }
+
+.rt-BaseTabListTriggerInner.rt-TabsTriggerInner {
+  font-size: 13px;
+  font-weight: normal;
+  color: $font-color-100;
+}
+
+.rt-reset.rt-BaseTabListTrigger.rt-TabsTrigger {
+  cursor: pointer;
+}

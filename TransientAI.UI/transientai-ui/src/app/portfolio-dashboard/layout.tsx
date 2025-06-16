@@ -1,4 +1,5 @@
 import styles from './layout.module.scss';
+import { OrderDetails } from './order-details';
 import { StpFeeds } from './stp-feed';
 
 export default function Layout() {
@@ -42,10 +43,13 @@ export default function Layout() {
 
         <div className={styles['main-content']}>
           <div className={styles['top-content']}>
-            <div className='widget height-100p'>
-              <div className='widget-title'>STP Feeds</div>
+            <div className='flex-[1_1_75%]'>
               <StpFeeds></StpFeeds>
             </div>
+            <div className='flex-[1_1_25%]'>
+              <OrderDetails></OrderDetails>
+            </div>
+
           </div>
 
           <div className={styles['middle-content']}>

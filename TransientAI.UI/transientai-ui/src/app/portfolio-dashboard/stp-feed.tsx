@@ -22,42 +22,45 @@ const columnDefs: ColDef[] = [
 export function StpFeeds() {
 
   return (
-    <div className="height-100p">
-      <div className="search-panel mt-2 flex-[1_1_20%]">
-        <div className="form-field">
-          <div className="form-label">
-            From
+    <div className='widget height-100p'>
+      <div className='widget-title'>STP Feeds</div>
+      <div className="height-100p">
+        <div className="search-panel mt-2 flex-[1_1_20%]">
+          <div className="form-field">
+            <div className="form-label">
+              From
+            </div>
+            <input type="text" className="form-input" />
           </div>
-          <input type="text" className="form-input" />
+
+          <div className="form-field">
+            <div className="form-label">
+              To
+            </div>
+            <input type="text" className="form-input" />
+          </div>
+
+          <div className="form-field">
+            <div className="form-label">
+              Platform
+            </div>
+            <select className="form-select">
+              <option>Select Platform</option>
+            </select>
+          </div>
         </div>
 
-        <div className="form-field">
-          <div className="form-label">
-            To
-          </div>
-          <input type="text" className="form-input" />
-        </div>
-
-        <div className="form-field">
-          <div className="form-label">
-            Platform
-          </div>
-          <select className="form-select">
-            <option>Select Platform</option>
-          </select>
-        </div>
+        <DataGrid
+          isSummaryGrid={false}
+          suppressStatusBar={true}
+          sideBar={{
+            toolPanels: ['columns', 'filters'],
+            defaultToolPanel: undefined
+          }}
+          rowData={stpFeedJson as any}
+          columnDefs={columnDefs}>
+        </DataGrid>
       </div>
-
-      <DataGrid
-        isSummaryGrid={false}
-        suppressStatusBar={true}
-        sideBar={{
-          toolPanels: ['columns', 'filters'],
-          defaultToolPanel: undefined 
-        }}
-        rowData={stpFeedJson as any}
-        columnDefs={columnDefs}>
-      </DataGrid>
     </div>
   );
 }
