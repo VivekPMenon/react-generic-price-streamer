@@ -7,11 +7,13 @@ import { useUserContextStore } from "../user-context/user-context-store";
 export enum Mode {
   SELL = 'sell',
   BUY = 'buy',
+  ADMIN = 'admin'
 }
 
 const menuInfoList: MenuInfo[] = [
   {
     id: 'macro-panel',
+    key: 'macro-panel',
     route: '/dashboard/macro-panel',
     description: i18n.t('macro_panel'),
     badgeCount: 1,
@@ -19,6 +21,7 @@ const menuInfoList: MenuInfo[] = [
   },
   {
     id: 'research-reports',
+    key: 'research-reports',
     route: '/dashboard/research-reports',
     description:i18n.t('research_reports'),  //i18n.t('research_reports'),//
     // description: i18n.t('research_reports', { defaultValue: 'Research Reports' }), //TODO//TODO
@@ -33,6 +36,7 @@ const menuInfoList: MenuInfo[] = [
   // },
   {
     id: 'risk-reports',
+    key: 'risk-reports',
     route: '/dashboard/risk-report-portal',
     description: i18n.t('risk_report_portal'),
     badgeCount: 1,
@@ -40,6 +44,7 @@ const menuInfoList: MenuInfo[] = [
   },
   {
     id: 'corporate-actions',
+    key: 'corporate-actions',
     route: '/dashboard/corporate-actions',
     description: i18n.t('corporate_actions'),
     badgeCount: 1,
@@ -47,6 +52,7 @@ const menuInfoList: MenuInfo[] = [
   },
   {
     id: 'investor-relations',
+    key: 'investor-relations',
     route: '/dashboard/investor-relations',
     description: i18n.t('investor_relations'),
     badgeCount: 1,
@@ -54,6 +60,7 @@ const menuInfoList: MenuInfo[] = [
   },
   {
     id: 'market-data',
+    key: 'market-data',
     route: '/dashboard/market-data',
     description: i18n.t('market_data'),
     badgeCount: 1,
@@ -61,6 +68,7 @@ const menuInfoList: MenuInfo[] = [
   },
   {
     id: 'breaking-news',
+    key: 'breaking-news',
     description: i18n.t('breaking_news'), // Translated breaking news title
     badgeCount: 5,
     icon: 'fa-solid fa-newspaper',
@@ -68,6 +76,7 @@ const menuInfoList: MenuInfo[] = [
   },
   {
     id: 'risk-metrics',
+    key: 'risk-metrics',
     description: i18n.t('margin'),
     badgeCount: 1,
     icon: 'fa-solid fa-chart-column',
@@ -75,6 +84,7 @@ const menuInfoList: MenuInfo[] = [
   },
   {
     id: 'pms-pnl',
+    key: 'pms-pnl',
     description: i18n.t('pms'),
     badgeCount: 1,
     icon: 'fa-solid fa-briefcase',
@@ -82,13 +92,16 @@ const menuInfoList: MenuInfo[] = [
   },
   {
     id: 'hurricane-pms',
+    key: 'hurricane-pms',
     description: 'Hurricane PMS',
     badgeCount: 1,
     icon: 'fa-solid fa-briefcase',
     route: '/dashboard/hurricane-pms',
+    fullPage: true,
   },
   {
     id: 'Notes AI',
+    key: 'Notes AI',
     description: 'Notes AI',
     badgeCount: 1,
     icon: 'fa-regular fa-comments',
@@ -112,6 +125,7 @@ const sellMenuInfoList: MenuInfo[] = [
   // },
   {
     id: 'todays-axes',
+    key: 'todays-axes',
     description: `Today's Axes`,
     badgeCount: 4,
     icon: 'fa-solid fa-book-open',
@@ -125,6 +139,7 @@ const sellMenuInfoList: MenuInfo[] = [
   },
   {
     id: 'trading-activity',
+    key: 'trading-activity',
     description: 'Trading Activity',
     badgeCount: 3,
     icon: 'fa-solid fa-ranking-star',
@@ -132,6 +147,7 @@ const sellMenuInfoList: MenuInfo[] = [
   },
   {
     id: 'market-data',
+    key: 'market-data',
     description: 'Market Data',
     badgeCount: 4,
     icon: 'fa-solid fa-chart-simple',
@@ -152,13 +168,50 @@ const sellMenuInfoList: MenuInfo[] = [
   // },
   {
     id: 'breaking-new',
+    key: 'breaking-new',
     description: 'Breaking News',
     badgeCount: 3,
     icon: 'fa-solid fa-newspaper',
     route: '/dashboard-generic/breaking-news',
   },
+  {
+    id: 'finsight',
+    key: 'finsight',
+    description: 'FinSight',
+    badgeCount: 3,
+    icon: 'fas fa-comments',
+    route: '/dashboard-generic/finsight',
+    fullPage: true,
+  },
 ];
 
+export const AdminMenuList: MenuInfo[] = [
+  {
+    id: 'user-management',
+    key: 'user-management',
+    route: '/admin-dashboard/user-management',
+    description: i18n.t('Users'),
+    badgeCount: 1,
+    icon: 'fa-solid fa-users'
+  },
+  {
+    id: 'role-management',
+    key: 'role-management',
+    route: '/admin-dashboard/role-management',
+    description: i18n.t('Roles'),
+    badgeCount: 1,
+    icon: 'fa-solid fa-gears'
+  },
+  {
+    id: 'projects',
+    key: 'projects',
+    route: '/admin-dashboard/project-management',
+    description: i18n.t('Projects'),
+    badgeCount: 1,
+    icon: 'fa-solid fa-list-check'
+  }
+
+]
 export async function getMenuItems(mode: Mode) {
   if (mode === Mode.SELL) {
     return sellMenuInfoList;
@@ -204,4 +257,4 @@ export async function getMenuItems(mode: Mode) {
     console.error('Error fetching screens for role:', error);
     throw error;
   }
-};
+}

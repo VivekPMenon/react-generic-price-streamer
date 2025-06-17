@@ -7,9 +7,10 @@ import { useDeviceType } from '@/lib/hooks';
 import { useUserContextStore } from '@/services/user-context';
 import ProfilePopover from './profile-popover';
 import Image from 'next/image';
-import { menuStore } from '@/services/menu-data';
+import { menuStore, Mode } from '@/services/menu-data';
 import SharedDropdown, { DropdownOption } from '../shared/ta-select/ta-select';
 import { userService } from '@/services/user-context/user-service';
+import { usePathname, useRouter } from 'next/navigation';
 
 // Example user interface
 interface User {
@@ -28,10 +29,12 @@ interface User {
 export interface HeaderProps {
   onMenuToggle?: () => void;
   isMenuVisible?: boolean;
+  mode: Mode
 }
 
+const NotAllowedUrl = ['admin-dashboard'];
  
-export function Header({ onMenuToggle, isMenuVisible }: HeaderProps) {
+export function Header({ onMenuToggle, isMenuVisible, mode }: HeaderProps) {
 
   const { searchData, setSearchData } = useContext(SearchDataContext);
   const { userContext } = useUserContextStore();
@@ -40,6 +43,10 @@ export function Header({ onMenuToggle, isMenuVisible }: HeaderProps) {
   const [previewUserList, setPreviewUserList] = useState<User[]>([]);
   const [selectedPreviewUser, setSelectedPreviewUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const pathname = usePathname()
+  const currentRoute = pathname.split('/')[1]; // Gets the first segment after '/'
+  const isNotAllowedUrl = NotAllowedUrl.includes(currentRoute);
+   const router = useRouter()
 
   // Convert users to dropdown options format
   const userOptions = useCallback(() => {
@@ -69,16 +76,23 @@ export function Header({ onMenuToggle, isMenuVisible }: HeaderProps) {
         setSelectedPreviewUser(selected.data);
         userService.savePreviewUserRoleId(selected.value.toString());
         userService.savePreviewUserRole(selected.data.role);
+        userService.savePreviewUserEmail(selected.data.email);
       } else {
         setSelectedPreviewUser(null);
         userService.savePreviewUserRoleId('');
         userService.savePreviewUserRole('');
+        userService.savePreviewUserEmail('');
       }
       window.location.reload();
     } catch (err) {
       console.error('Error changing preview user:', err);
     }
   }, []);
+
+   const handleEditProject = () => {
+    router.push('/dashboard')
+    // Implement your delete logic here
+  }
 
   // Fetch users with proper error handling
   const fetchUsers = useCallback(async () => {
@@ -103,6 +117,8 @@ export function Header({ onMenuToggle, isMenuVisible }: HeaderProps) {
         } else {
           // Handle case where stored ID doesn't match any user
           userService.savePreviewUserRoleId('');
+          userService.savePreviewUserRole('');
+          userService.savePreviewUserEmail('');
         }
       }
     } catch (err) {
@@ -130,7 +146,7 @@ export function Header({ onMenuToggle, isMenuVisible }: HeaderProps) {
               <i className='fa-solid fa-bars'></i>
             </div>
             :
-            <img src="/images/TRANS_H_white-on-transparent.png" />
+            <img onClick={handleEditProject} src="/images/TRANS_H_white-on-transparent.png" />
         }
       </div>
 
@@ -177,7 +193,7 @@ export function Header({ onMenuToggle, isMenuVisible }: HeaderProps) {
           Hi {userContext?.userName}
         </div> */}
         {
-         userContext?.userInfo?.superadmin && <SharedDropdown
+         (userContext?.userInfo?.superadmin && !isNotAllowedUrl) && <SharedDropdown
             options={userOptions()}
             value={selectedOption()}
             onChange={handleSelectChange}
@@ -191,11 +207,13 @@ export function Header({ onMenuToggle, isMenuVisible }: HeaderProps) {
           />
         }
 
-        <div className={styles['client-logo']}>
-          <img src="/images/HurricaneLogo_Brightened.png"  alt='logo'/>
-          <span>HURRICANE CAPITAL</span>
-          {/* {userContext?.userId} */}
-        </div>
+        {
+           mode !== Mode.SELL && <div className={styles['client-logo']} onClick={handleEditProject}>
+            <img src="/images/HurricaneLogo_Brightened.png" alt='logo' />
+            <span>HURRICANE CAPITAL</span>
+            {/* {userContext?.userId} */}
+          </div>
+        }
 
         {
           !userContext.token ?

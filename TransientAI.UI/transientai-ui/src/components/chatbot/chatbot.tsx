@@ -35,6 +35,10 @@ export function Chatbot() {
   const [isAllChatsShown, setIsAllChatsShown] = useState<boolean>(false);
   const [idBeingDeleted, setIdBeingDeleted] = useState<string|null>(null);
 
+  const selectedThread = chatbotStore.use.selectedThread();
+  const isLoading = chatbotStore.use.isLoading();
+  const addToThread = chatbotStore.use.addToThread();
+
   const visibleChatHistories = useMemo<ChatThread[]>(
       () => calculateVisibleHistories(chatHistories, isAllChatsShown),
       [isAllChatsShown, chatHistories])
@@ -71,7 +75,15 @@ export function Chatbot() {
 
   if (isChatbotResponseActive) {
     return <div className={`${styles['chatbot-container']} widget`}>
-      <ChatbotResponse />
+      <ChatbotResponse
+          showBackButton={true}
+          inputHint={'Ask TransientAI anything - use \'@\' to find files, folders and other trading data'}
+          selectedThread={selectedThread}
+          isLoading={isLoading}
+          addToThread={addToThread}
+          setIsChatbotResponseActive={setIsChatbotResponseActive}
+          isChatbotResponseActive={isChatbotResponseActive}
+      />
     </div>;
   }
 

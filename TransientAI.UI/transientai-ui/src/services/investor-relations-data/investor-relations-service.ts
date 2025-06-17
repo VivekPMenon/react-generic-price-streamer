@@ -1,6 +1,7 @@
 import { webApihandler } from "@/services/web-api-handler";
 import { InquiryRequest, InquiryStatus, IREmailMessage } from "@/services/investor-relations-data/model";
 import {endpointFinder} from "@/services/web-api-handler/endpoint-finder-service";
+import { userService } from "@/services/user-context/user-service";
 
 class InvestorRelationsService {
     readonly serviceName = 'hurricane-api';
@@ -35,10 +36,14 @@ class InvestorRelationsService {
         }
     }
 
-    async getEmailContentAsHtml(emailGuid: string, emailId: string): Promise<string> {
+    async getEmailContentAsHtml(emailGuid: string, emailId: string): Promise<{ html_content: string; cc_addresses?: string[]; recipients?: string[] }> {
         const url = emailId ? `ir-email-html/${emailGuid}?research_email=${emailId}` : `ir-email-html/${emailGuid}`;
         const result = await webApihandler.get(url, {}, { serviceName: this.serviceName });
-        return result.html_content;
+        return {
+            html_content: result.html_content,
+            cc_addresses: result.cc_addresses,
+            recipients: result.recipients
+        };
     }
 
     async getIRSummary(emailGuid: string, emailId: string): Promise<any> {
@@ -52,6 +57,12 @@ class InvestorRelationsService {
     }
 
     async markIrEmailAsComplete(emailGuid: string, emailId: string): Promise<any> {
+        return await webApihandler.post(`update-ir-status?email_address=${emailId}`, [emailGuid], {}, {
+            serviceName: this.serviceName
+        });
+    }
+
+    async deleteIrEmail(emailGuid: string, emailId: string): Promise<any> {
         return await webApihandler.post(`update-ir-status?email_address=${emailId}`, [emailGuid], {}, {
             serviceName: this.serviceName
         });
@@ -76,11 +87,11 @@ class InvestorRelationsService {
         }
     }
 
-    async getSubmittedTasks(assignee: string): Promise<InquiryRequest[]> {
+    async getSubmittedTasks(assigneeEmail: string): Promise<InquiryRequest[]> {
         return await webApihandler
             .get(
                 'submitted_tasks', {
-                assignee_name: assignee
+                assignee_email: assigneeEmail
             }, {
                 serviceName: this.serviceName
             });
@@ -98,9 +109,103 @@ class InvestorRelationsService {
     }
 
     async getAssignees(): Promise<string[]> {
-        return await webApihandler.get('assignee_names', {}, {
-            serviceName: this.serviceName
-        });
+        // return await webApihandler.get('assignee_emails', {}, {
+        //     serviceName: this.serviceName
+        // });
+        const userListResponse = await userService.getUserList();
+        const assignees = userListResponse.map((user: any) => user.email);    
+        return assignees;
+    }
+
+    async replyEmail(emailAddress: string, to_emails: string, cc_emails: string, id: string, comment: string, attachments?: File[]): Promise<any> {
+        const formData = new FormData();
+        formData.append('email_address', emailAddress);
+        formData.append('to_emails', to_emails)
+        formData.append('cc_emails', cc_emails)
+        formData.append('id', id);
+        formData.append('comment', comment);
+
+        // Add attachments if they exist
+        if (attachments && attachments.length > 0) {
+            attachments.forEach((file) => {
+                formData.append('attachments', file);
+            });
+        }
+
+        return await webApihandler.post(
+            'reply-email',
+            formData,
+            {
+                'Content-Type': 'application/json'
+            },
+            { serviceName: this.serviceName }
+        );
+    }
+
+    async replyAllEmail(emailAddress: string, to_emails: string, cc_emails: string, id: string, comment: string, attachments?: File[]): Promise<any> {
+        const formData = new FormData();
+        formData.append('email_address', emailAddress);
+        formData.append('to_emails', to_emails)
+        formData.append('cc_emails', cc_emails)
+        formData.append('id', id);
+        formData.append('comment', comment);
+
+        // Add attachments if they exist
+        if (attachments && attachments.length > 0) {
+            attachments.forEach((file) => {
+                formData.append('attachments', file);
+            });
+        }
+
+        return await webApihandler.post(
+            'reply-all-email',
+            formData,
+            {
+                'Content-Type': 'application/json'
+            },
+            { serviceName: this.serviceName }
+        );
+    }
+
+    async forwardEmail(emailAddress: string, to_emails:string, cc_emails:string, id: string, comment: string): Promise<any> {
+        return await webApihandler.post('forward-email',
+            undefined,
+            {email_address: emailAddress,
+             id:id,
+             to_emails: to_emails,
+             cc_emails: cc_emails,
+             comment: comment
+            },
+            {
+                serviceName: this.serviceName
+            });
+    }
+
+    async getIrRequestForm() {
+        const query = `
+    {
+      getAddIrTaskStatus {
+        add_ir_task
+        }
+    }`;
+        const serviceName = 'hurricane-api-2-0';
+        return await webApihandler.post(
+            'graphql',
+            { query },
+            undefined,
+            { serviceName }
+        );
+    }
+
+     async getEmailThreads(conversation_id: string, emailId: string = ''): Promise<IREmailMessage[]> {
+        return await webApihandler
+            .get(
+                'api/conversation/threads', {
+                conversation_id : conversation_id,
+                email_address : emailId
+            }, {
+                serviceName: this.serviceName
+            });
     }
 }
 

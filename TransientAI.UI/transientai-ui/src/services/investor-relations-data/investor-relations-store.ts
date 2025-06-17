@@ -4,6 +4,7 @@ import { investorRelationsService } from '@/services/investor-relations-data/inv
 import { useUserContextStore } from '@/services/user-context';
 import { unseenItemsStore } from '../unseen-items-store/unseen-items-store';
 import { createSelectors } from "@/lib/utility-functions/store-operations";
+import { userService } from '../user-context/user-service';
 
 export const resourceNameInvestorRelations = 'investor-relations';
 
@@ -14,8 +15,10 @@ export interface InvestorRelationsStore {
   selectedIrEmail: IREmailMessage | null;
   assignees: string[];
   isLoading: boolean;
+  isIREmailLoading: boolean;
   isSaving: boolean;
   error: string;
+  hasIRAccess: boolean;
   setInquiries: (inquiries: InquiryRequest[]) => void;
   setSelectedInquiry: (inquiry: InquiryRequest | null) => void;
   setSelectedIrEmail: (email: IREmailMessage | null) => void;
@@ -27,6 +30,7 @@ export interface InvestorRelationsStore {
   loadAssignees: () => Promise<void>;
   updateStatusFromCompleted: (inquiry: InquiryRequest) => void;
   startPolling: () => void;
+  checkIRAccess: () => Promise<void>;
 }
 
 export const useInvestorRelationsStore = create<InvestorRelationsStore>()((set, get) => ({
@@ -38,6 +42,8 @@ export const useInvestorRelationsStore = create<InvestorRelationsStore>()((set, 
   isLoading: false,
   isSaving: false,
   error: '',
+  isIREmailLoading: false,
+  hasIRAccess: false,
 
   setInquiries: (inquiries: InquiryRequest[]) => set({ inquiries }),
 
@@ -47,9 +53,10 @@ export const useInvestorRelationsStore = create<InvestorRelationsStore>()((set, 
 
   loadInquiries: async () => {
     const userContext = useUserContextStore.getState().userContext;
+    const userEmail = userService.getPreviewUserEmail() || userContext.userId;
     try {
       set({ isLoading: true });
-      const inquiries = await investorRelationsService.getSubmittedTasks(userContext.userName!);
+      const inquiries = await investorRelationsService.getSubmittedTasks(userEmail!);
       inquiries.sort((a, b) => {
         const aDate = a?.date ? new Date(a.date).getTime() : -1;
         const bDate = b?.date ? new Date(b.date).getTime() : -1;
@@ -66,14 +73,16 @@ export const useInvestorRelationsStore = create<InvestorRelationsStore>()((set, 
 
   loadEmails: async () => {
     const userContext = useUserContextStore.getState().userContext;
+    const userEmail = userService.getPreviewUserEmail();
+    const currentEmail =  userEmail ? userEmail : userContext.userId;
     try {
-      set({ isLoading: true });
-      const irEmails = await investorRelationsService.getIREmails(userContext.userId!);
+      set({ isIREmailLoading: true });
+      const irEmails = await investorRelationsService.getIREmails(currentEmail!);
       set({ irEmails });
     } catch (e: any) {
       set({ inquiries: [], error: 'Failed to load IR Emails' });
     } finally {
-      set({ isLoading: false });
+      set({ isIREmailLoading: false });
     }
   },
 
@@ -92,7 +101,9 @@ export const useInvestorRelationsStore = create<InvestorRelationsStore>()((set, 
     const userContext = useUserContextStore.getState().userContext;
     try {
       set({ isSaving: true });
-      inquiry.owner_name = userContext.userName;
+      const previewUserEmail = userService.getPreviewUserEmail();
+      inquiry.owner_email = previewUserEmail || userContext.userInfo?.email || userContext.userId;
+      inquiry.owner_name = undefined;
       await investorRelationsService.submit(inquiry);
     } catch (e: any) {
       set({ error: 'Failed to save inquiry' });
@@ -151,5 +162,20 @@ export const useInvestorRelationsStore = create<InvestorRelationsStore>()((set, 
       unseenItemsStore.getState().addUnseenItems(resourceNameInvestorRelations, unseenDiff);
     }, 120000
     );
-  }
+  },
+
+  checkIRAccess: async () => {
+    try {
+      set({ isLoading: true });
+      const response = await investorRelationsService.getIrRequestForm();
+      const access = response.data.getAddIrTaskStatus.add_ir_task
+      set({ hasIRAccess: access });
+    } catch (error) {
+      console.error('Failed to check IR access:', error);
+      set({ hasIRAccess: false });
+    } finally {
+      set({ isLoading: false });
+    }
+  },
+
 }));

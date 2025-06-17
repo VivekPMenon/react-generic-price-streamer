@@ -19,6 +19,7 @@ interface SharedDropdownProps<T> {
   noOptionsMessage?: () => string;
   darkMode?: boolean;
   isClearable?: boolean;
+  isDisabled?:boolean;
 }
 
 const SharedDropdown = <T,>({
@@ -31,7 +32,8 @@ const SharedDropdown = <T,>({
   className = "text-base",
   noOptionsMessage = () => "No options found",
   darkMode = true,
-  isClearable = true // Defaulting to true so users can clear their selection
+  isClearable = true,
+  isDisabled = false // Defaulting to true so users can clear their selection
 }: SharedDropdownProps<T>) => {
   
   // Custom styles for react-select to match your theme
@@ -40,7 +42,8 @@ const SharedDropdown = <T,>({
       ...provided,
       fontSize: '14px',
       backgroundColor: '#1f2937', // bg-gray-800
-      width: '200px',
+      minWidth: '200px',
+      // width: '250px',
       borderColor: '#374151', // border-gray-700
       color: 'white',
       boxShadow: 'none',
@@ -129,6 +132,7 @@ const SharedDropdown = <T,>({
   return (
     <div className="flex-grow" style={containerStyle}>
       <Select
+        isDisabled={isDisabled}
         isLoading={isLoading}
         options={options}
         styles={customStyles}

@@ -6,7 +6,7 @@
   --ag-borders-critical: none;
   --ag-foreground-color: #{$font-color-100};
   --ag-row-border-width: 0px;
-  --ag-font-size: 13px;
+  --ag-font-size: 12px;
   --ag-borders-side-button: 0px;
   --ag-widget-vertical-spacing: 10px;
 
@@ -18,7 +18,7 @@
   --ag-even-row-background-color: #{$blue-alt};
 
   .ag-row-odd {
-    background-color: $grid-odd-row-color;
+    // background-color: $grid-odd-row-color;
   }
 
   .ag-row-even {
@@ -115,7 +115,7 @@
   }
 
   .ag-header-row {
-    color: #{$font-color-100};
+    color: #{$font-color-200};
   }
 
   .ag-cell {

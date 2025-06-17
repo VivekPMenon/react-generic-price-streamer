@@ -1,0 +1,40 @@
+@import '../../assets/variables.scss';
+
+
+.table-header {
+    color: $yellow;
+    font-weight: bold;
+}
+
+.pinned-top-row {
+    font-weight: 800;
+}
+
+.hurricane-pms :global(.hurrican-grid) :global(.ag-row-even:not(.ag-row-pinned)) {
+    background-color: #002060 !important;
+}
+
+.hurricane-pms :global(.hurrican-grid) :global(.ag-row-even1:not(.ag-row-pinned)) {
+    background-color: #0070c0 !important;
+}
+
+.hurricane-pms :global(.ag-row) {
+    border-bottom: 1px solid #374151;
+}
+
+.hurricane-pms :global(.ag-body-horizontal-scroll) {
+    display: flex !important;
+}
+
+.hurricane-pms :global(.ag-body-vertical-scroll) {
+    display: flex !important;
+}
+
+
+.pl-chart-container {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    padding: 0 8px;
+}

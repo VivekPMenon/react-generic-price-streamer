@@ -1,11 +1,12 @@
 @import './variables.scss';
 
 .widget {
-  border: 1px solid $border-color;
+  // border: 1px solid $border-color;
   border-radius: $border-radius;
+  background-color: #0f1421;
   padding: 5px 10px;
   font-size: 14px;
-  color: $font-color-100; 
+  color: $font-color-100;
 
   @media screen and (max-width: $mobile-breakpoint-max) {
     font-size: 13px;
@@ -24,7 +25,28 @@
 .widget-title {
   display: flex;
   align-items: center;
+  justify-content: space-between;
+  padding: 5px;
+  font-size: 13px;
+  color: $font-color-100;
 
+  .actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+
+    .action-button {
+      background-color: #1b1e27;
+      
+      border-radius: 3px;
+      height: 35px;
+      width: 35px;
+      cursor: pointer;
+    }
+
+    i {
+    }
+  }
 }
 
 .toggler {
@@ -68,7 +90,7 @@
     @media screen and (max-width: $mobile-breakpoint-max) {
       flex: 1 1 100%;
       padding: 10px 0px;
-      
+
       input {
         width: 100%;
         padding: 10px;

@@ -1,15 +1,8 @@
 @import '../../assets/variables.scss';
 
 .investor-relations {
-  display: flex;
-  height: 100%;
-  gap: 20px;
-  // padding: 10px;
-
   .ir-requests {
-    flex: 0 0 25%;
     flex-direction: column;
-    
     display: flex;
 
     .title {
@@ -113,9 +106,16 @@
       display: flex;
       gap: 10px;
       align-items: center;
+      white-space: nowrap;
+      font-size: 15px;
+      color: $white;
+      margin-left: 15px;
 
       .label {
         color: $font-color-200;
+        font-size: large;
+        font-weight: 500;
+        // white-space: nowrap;
       }
     }
   }

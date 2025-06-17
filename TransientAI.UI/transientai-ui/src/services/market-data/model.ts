@@ -97,3 +97,10 @@ export interface Instrument {
   type?: MarketDataType;
   dispose: null|(() => void);
 }
+export interface TickerSuggestion {
+    symbol?: string;
+    name?: string;
+    currency?: string;
+    exchangeFullName?: string;
+    exchange?: string;
+}

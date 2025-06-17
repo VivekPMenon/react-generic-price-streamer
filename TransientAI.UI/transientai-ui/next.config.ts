@@ -54,6 +54,11 @@ const nextConfig: NextConfig = {
         destination: '/dashboard-generic/todays-axes',
         permanent: true, // Set to false if temporary
       },
+      {
+        source: '/admin-dashboard',
+        destination: '/admin-dashboard/user-management',
+        permanent: true, // Set to false if temporary
+      }
     ];
   }
 };

@@ -41,7 +41,8 @@ const useMarketDataStore = create<MarketDataStore>()(
         },
         loadInstrument: async (company_or_ticker: string, type: MarketDataType|undefined, period: PeriodType, includeFinancials: boolean) => {
             const promises: Promise<any>[] = [
-                marketDataService.getMarketData(company_or_ticker, period, type)
+                marketDataService.getMarketData(company_or_ticker, period, type),
+                marketDataService.getIntradayData(company_or_ticker, undefined, type)
             ];
 
             if (includeFinancials) {
@@ -56,8 +57,20 @@ const useMarketDataStore = create<MarketDataStore>()(
                 return null;
             }
 
+            const intraday = results[1] as Instrument;
+            if (intraday) {
+                instrument.lastMarketData = instrument.lastMarketData;
+                instrument.current_price = intraday.current_price;
+                instrument.change = intraday.change;
+                instrument.percent_change = intraday.percent_change;
+                instrument.timestamp = intraday.timestamp;
+                intraday.marketData?.forEach(marketData => {
+                    instrument.marketData?.push(marketData);
+                })
+            }
+
             if (includeFinancials) {
-                instrument.financials = results[1] as FinancialData;
+                instrument.financials = results[2] as FinancialData;
             }
 
             return instrument;

@@ -12,6 +12,7 @@ export interface IDataGridProps extends AgGridReactProps {
   suppressStatusBar?: boolean;
   suppressFloatingFilter?: boolean;
   width?: string | number;
+  isNewGrid?: boolean;
 }
 
 // Expose the Grid API via ref
@@ -24,9 +25,14 @@ export const DataGrid = forwardRef<GridApi | null, IDataGridProps>((props, ref) 
       filter: 'agTextColumnFilter',
       sortable: true,
       resizable: true,
-      suppressHeaderMenuButton: true,
-      width: 150,
+      suppressHeaderMenuButton: false,
+      width: 110,
+      wrapHeaderText: true,
       suppressHeaderFilterButton: true,
+      autoHeaderHeight: true,
+      enablePivot: true,
+      enableRowGroup: true,
+      enableValue: true,
       ...props.defaultColDef
     },
     sideBar: false,
@@ -60,15 +66,16 @@ export const DataGrid = forwardRef<GridApi | null, IDataGridProps>((props, ref) 
   }, []);
 
   return (
-    <div className={`ag-theme-balham-dark height-100p ${props.isSummaryGrid ? 'summary-grid' : ''}`} 
+    <div className={`${props.isNewGrid ? 'ta-data-grid' : 'ag-theme-balham-dark'} height-100p ${props.isSummaryGrid ? 'summary-grid' : ''} `} 
       style={{ height: props.height }}>
       <AgGridReact
         key={JSON.stringify(props.rowData)}
         {...finalProps}
         statusBar={props.suppressStatusBar ? undefined : props.isSummaryGrid ? undefined : statusBar}
         onGridReady={onGridReady}
-        rowHeight={props.isSummaryGrid ? 60 : 35}
-        headerHeight={props.isSummaryGrid ? 60 : 35}
+        sideBar={props.sideBar}
+        rowHeight={props.isSummaryGrid ? 50 : 32}
+        // headerHeight={props.isSummaryGrid ? 50 : 30}
         floatingFiltersHeight={props.suppressFloatingFilter ? 0 : props.isSummaryGrid ? 25 : 20}
       />
     </div>

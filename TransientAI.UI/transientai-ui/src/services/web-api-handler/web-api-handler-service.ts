@@ -53,6 +53,8 @@ class WebApihandler {
               const account = msalInstance.getAllAccounts()[0];
               if (!account) throw new Error("No account found in MSAL");
 
+              await msalInstance.clearCache();
+              
               const tokenResponse = await msalInstance.acquireTokenSilent({
                 scopes: [currentEnv.authInfo?.scope!],
                 account: account,
@@ -262,7 +264,7 @@ class WebApihandler {
     return this.executeRequest(config);
   }
 
-  async delete(url: string, webApiOptions?: WebApihandlerOptions, params?: { [key: string]: any }) {
+  async delete(url: string, webApiOptions?: WebApihandlerOptions, params?: { [key: string]: any }, data?: any) {
     const finalUrl = this.getUrl(url, webApiOptions);
     const config: AxiosRequestConfig = {
       url: finalUrl,
@@ -272,6 +274,7 @@ class WebApihandler {
         preview_id: userService.getPreviewUserRoleId() || null,
         ...webApiOptions?.headers
       },
+      data,
       params
     };
     return this.executeRequest(config);

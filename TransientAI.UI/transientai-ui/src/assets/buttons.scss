@@ -53,6 +53,14 @@
   cursor: pointer;
 }
 
+.secondary-button.compact , .button.compact{
+  padding: 5px;
+  font-size: 12px;
+  border-radius: 3px;
+  min-width: 50px;
+  max-width: 50px;
+}
+
 .secondary-button:hover {
   background-color: $gray-dark;
   color: white;

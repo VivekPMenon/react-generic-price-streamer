@@ -1,5 +1,5 @@
 import {webApihandler} from "../web-api-handler";
-import {FinancialData, GraphDataPoint, ImageType, Instrument, MarketData, PeriodType, Price, TraceData} from "./model";
+import {FinancialData, GraphDataPoint, ImageType, Instrument, MarketData, PeriodType, Price, TickerSuggestion, TraceData} from "./model";
 import {isToday, parseIsoDate,} from "@/lib/utility-functions/date-operations";
 import {MarketDataType} from "@/services/macro-panel-data/model";
 
@@ -19,6 +19,11 @@ class MarketDataService {
   async getMarketDataPrices(isin?: string): Promise<Price[]> {
     const result = await webApihandler.post('market/market_data', { isin }, {});
     return result.market_data;
+  }
+
+  async getTickerSuggestion(symbol?: string): Promise<TickerSuggestion[]> {
+    const result = await webApihandler.get('custom-search', { symbol }, { serviceName: this.serviceName })
+    return result;
   }
 
   async getTraces(isin?: string): Promise<TraceData[]> {
@@ -110,7 +115,6 @@ class MarketDataService {
             });
 
     const marketData = result.data;
-    let previousClose: number|undefined = undefined;
     let latest: MarketData|undefined = undefined;
     if (marketData && marketData.length) {
       marketData.forEach((market: any) => {
@@ -119,13 +123,15 @@ class MarketDataService {
             ? new Date(market.timestamp)
             : market.date;
       });
+    }
 
-      latest = marketData[marketData.length - 1];
-      if (isToday(latest?.date) && marketData[marketData.length - 2]) {
-        previousClose = marketData[marketData.length - 2]?.close;
-      } else {
-        previousClose = latest?.close;
-      }
+    if (result) {
+      latest = {
+        open: result.open,
+        close: result.close,
+        high: result.high,
+        low: result.low,
+      };
     }
 
     return {
@@ -134,7 +140,7 @@ class MarketDataService {
       marketData: marketData,
       lastMarketData: latest,
       current_price: result.current_price,
-      previous_close: previousClose,
+      previous_close: latest?.close,
       change: result.change,
       percent_change: result.percent_change,
       timestamp: parseIsoDate(result.timestamp) || new Date(),

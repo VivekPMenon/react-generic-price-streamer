@@ -55,8 +55,8 @@ const useMenuStore = create<MenuState>((set) => ({
           selectedMenu: calculateCurrentMenu(menuInfoList)!,
           defaultMenu: calculateDefaultMenu(menuInfoList, defaultMenuId),
           isLoading: false,
-      })
-    } catch (error) { 
+      });
+    } catch (error) {
       set({ isLoading: false });
     }
   },
@@ -67,7 +67,6 @@ const useMenuStore = create<MenuState>((set) => ({
       const updatedMenuList = isExisting
         ? state.activeMenuList
         : [...state.activeMenuList, menu];
-
       return {
         activeMenuList: updatedMenuList,
         selectedMenu: menu,

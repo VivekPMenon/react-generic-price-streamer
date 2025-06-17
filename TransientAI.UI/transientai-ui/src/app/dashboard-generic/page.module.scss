@@ -76,7 +76,12 @@
     }
   }
 
-  
+  .dashboard-tabs {
+    height: 650px;
+    max-height: 650px;
+    gap: 10px;
+  }
+
   .widget {}
 
   .trading-activity {

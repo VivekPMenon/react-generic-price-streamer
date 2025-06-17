@@ -1,5 +1,5 @@
 export enum InquiryFlag {
-    Regular = <any>'regtask',
+    Regular = <any>'regular',
     Important = <any>'important',
     Urgent = <any>'urgent'
 }
@@ -12,8 +12,9 @@ export enum InquiryStatus {
 export interface InquiryRequest {
     id?: string;
     date?: string;
-    assignee_name?: string;
+    assignee_email?: string;
     owner_name?: string;
+    owner_email?: string;
     subject?: string;
     inquiry?: string;
     status?: InquiryStatus;
@@ -25,6 +26,7 @@ export interface InquiryRequest {
 
 export interface IREmailMessage {
     id: string;
+    conversation_id: string;
     subject: string;
     sender: string;
     received: string; // ISO timestamp
@@ -32,5 +34,14 @@ export interface IREmailMessage {
     concise_summary: string;
     complete: boolean;
     important: boolean;
+    threadflag: boolean;
+    cc_addresses?: Recipient[]; // Array of CC recipients
+}
+
+export interface Recipient {
+    name: string;
+    email: string;
+    type: 'person' | 'group';
+    department?: string;
 }
 

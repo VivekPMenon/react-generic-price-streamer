@@ -1,25 +1,29 @@
 import {ChangeEvent, useLayoutEffect, useRef, useState} from 'react';
 import styles from './chatbot-response.module.scss';
 import {ChatRole, ChatThread} from '@/services/chatbot-data/model';
-import {chatbotStore} from "@/services/chatbot-data/chatbot-data-store";
 import {ChatRequestComponent} from "@/components/chatbot/chat-request-component";
 import {ChatResponseComponent} from "@/components/chatbot/chat-response-component";
 
-export function ChatbotResponse() {
+export interface ChatbotResponseProps {
+    showBackButton: boolean;
+    inputHint: string;
+    isChatbotResponseActive: boolean;
+    setIsChatbotResponseActive: null|((value: boolean) => void);
+    selectedThread: ChatThread|null;
+    isLoading: boolean;
+    addToThread: null|((query: string, thread:ChatThread) => void);
+}
+
+export function ChatbotResponse(props: ChatbotResponseProps) {
   const [query, setQuery] = useState<string>('');
   const scrollDiv = useRef<HTMLDivElement>(null);
   const [scrollHeight, setScrollHeight] = useState(0);
   const [, setScrollHeightChanged] = useState(false);
-  const setIsChatbotResponseActive =  chatbotStore.use.setIsChatbotResponseActive();
-  const selectedThread = chatbotStore.use.selectedThread();
-  const isLoading = chatbotStore.use.isLoading();
-  const addToThread = chatbotStore.use.addToThread();
-
-  const [thread, setThread] = useState<ChatThread | null>(selectedThread);
+  const [thread, setThread] = useState<ChatThread | null>(props.selectedThread);
 
   useLayoutEffect(() => {
-      if (thread !== selectedThread || isLoading) {
-          setThread(selectedThread);
+      if (thread !== props.selectedThread || props.isLoading) {
+          setThread(props.selectedThread);
           const currentScrollHeight = scrollDiv.current?.scrollHeight;
           if (currentScrollHeight) {
               setScrollHeightChanged(true);
@@ -32,7 +36,7 @@ export function ChatbotResponse() {
               setScrollHeightChanged(false);
           }
       }
-    }, [scrollDiv, scrollHeight, isLoading, thread, selectedThread]);
+    }, [scrollDiv, scrollHeight, props.isLoading, thread, props.selectedThread]);
 
   function onKeyDown(event: any) {
     if (event.key !== "Enter") {
@@ -40,8 +44,8 @@ export function ChatbotResponse() {
     }
 
     const inputValue = event.target.value;
-    if (selectedThread) {
-      addToThread(inputValue, selectedThread);
+    if (props.selectedThread && props.addToThread) {
+      props.addToThread(inputValue, props.selectedThread);
     }
     setQuery('');
   }
@@ -51,7 +55,9 @@ export function ChatbotResponse() {
   }
 
   function navigateBack() {
-    setIsChatbotResponseActive(false);
+      if (props.setIsChatbotResponseActive) {
+          props.setIsChatbotResponseActive(false);
+      }
   }
 
   const chatHistoryElement = thread?.messages?.length ?
@@ -60,7 +66,7 @@ export function ChatbotResponse() {
           ? (<ChatRequestComponent
                   key={index}
                   message={chatHistory}
-                  isLoading={index === thread.messages.length - 1 && isLoading}
+                  isLoading={index === thread.messages.length - 1 && props.isLoading}
               />)
           : (<ChatResponseComponent
                   key={index}
@@ -70,16 +76,19 @@ export function ChatbotResponse() {
       : <></>;
 
   return (
-      <div className={styles['chatbot-response']}>
-        <button className='hyperlink' onClick={navigateBack}>Back to List</button>
+      <div className={styles[`chatbot-response`]}>
+        {props.showBackButton && (<button className='hyperlink' onClick={navigateBack}>Back to List</button>)}
 
         <div className={`${styles['chat-history']} scrollable-div`} ref={scrollDiv}>
           {chatHistoryElement}
         </div>
 
-        <div className={styles['search-bar']}>
+        <div className={styles[`search-bar${props.showBackButton ? '' : ('-with-selector' + ((thread?.messages?.length ?? 0) === 0 ? '' : '-has-messages')) }`]}>
+            {!props.showBackButton && (thread?.messages?.length ?? 0) === 0 && (
+                <span>What can I help you with today?</span>
+            )}
           <input type="text"
-                 placeholder="Ask TransientAI anything - use '@' to find files, folders and other trading data"
+                 placeholder={props.inputHint}
                  onKeyDown={onKeyDown}
                  onChange={onQueryChange}
                  value={query}/>
