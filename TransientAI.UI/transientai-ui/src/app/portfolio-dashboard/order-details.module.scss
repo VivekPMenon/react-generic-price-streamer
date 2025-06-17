@@ -2,6 +2,8 @@
   display: flex;
   padding: 10px;
   flex-direction: column;
+  height: 100%;
+  justify-content: space-between;
 
   .main-content {
     display: flex;

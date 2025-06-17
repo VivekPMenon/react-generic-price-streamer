@@ -26,8 +26,13 @@ export const DataGrid = forwardRef<GridApi | null, IDataGridProps>((props, ref) 
       sortable: true,
       resizable: true,
       suppressHeaderMenuButton: false,
-      width: 150,
+      width: 110,
+      wrapHeaderText: true,
       suppressHeaderFilterButton: true,
+      autoHeaderHeight: true,
+      enablePivot: true,
+      enableRowGroup: true,
+      enableValue: true,
       ...props.defaultColDef
     },
     sideBar: false,
@@ -69,8 +74,8 @@ export const DataGrid = forwardRef<GridApi | null, IDataGridProps>((props, ref) 
         statusBar={props.suppressStatusBar ? undefined : props.isSummaryGrid ? undefined : statusBar}
         onGridReady={onGridReady}
         sideBar={props.sideBar}
-        rowHeight={props.isSummaryGrid ? 50 : 30}
-        headerHeight={props.isSummaryGrid ? 50 : 30}
+        rowHeight={props.isSummaryGrid ? 50 : 32}
+        // headerHeight={props.isSummaryGrid ? 50 : 30}
         floatingFiltersHeight={props.suppressFloatingFilter ? 0 : props.isSummaryGrid ? 25 : 20}
       />
     </div>

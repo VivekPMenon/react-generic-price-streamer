@@ -1,5 +1,6 @@
 import styles from './layout.module.scss';
 import { OrderDetails } from './order-details';
+import { OrderQueryTool } from './order-query-tool';
 import { StpFeeds } from './stp-feed';
 
 export default function Layout() {
@@ -53,16 +54,14 @@ export default function Layout() {
           </div>
 
           <div className={styles['middle-content']}>
-            <div className='widget height-100p'>
-              <div className='widget-title'>Placeholder 1</div>
-            </div>
+            <OrderQueryTool></OrderQueryTool>
           </div>
 
-          <div className={styles['bottom-content']}>
+          {/* <div className={styles['bottom-content']}>
             <div className='widget height-100p'>
               <div className='widget-title'>Placeholder 1</div>
             </div>
-          </div>
+          </div> */}
         </div>
 
       </div>
